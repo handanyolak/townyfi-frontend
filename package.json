@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@metamask/detect-provider": "^1.2.0",
+    "@pinia/nuxt": "^0.4.2",
     "core-js": "^3.19.3",
     "nuxt-edge": "latest",
     "vue": "^2.6.14",

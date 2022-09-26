@@ -45,7 +45,7 @@ export default defineNuxtConfig({
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: [],
+  modules: ['@pinia/nuxt'],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},

@@ -4,7 +4,7 @@
       <div
         v-for="item in 9"
         :key="item"
-        class="flex items-start justify-center text-2xl font-bold border-8 shadow-2xl bg-gradient-to-r from-brown-light via-brown to-brown-dark rounded-xl border-brown"
+        class="flex flex-col items-center text-2xl font-bold border-8 shadow-2xl bg-gradient-to-r from-brown-light via-brown to-brown-dark rounded-xl border-brown"
       >
         <span class="px-4 my-2 bg-brown-light">
           <span
@@ -12,21 +12,28 @@
             >DESTINY</span
           >
         </span>
+        <span class="my-1 text-xs text-white">{{
+          informationStore.address
+        }}</span>
+        <span class="my-1 text-xs text-white">{{
+          informationStore.balance
+        }}</span>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, ref, inject } from 'vue'
+import { defineComponent } from 'vue'
+import { useStore } from '~/stores/index'
 
 export default defineComponent({
   setup() {
-    /* const foo = inject('foo')
+    const informationStore = useStore()
 
     return {
-      foo,
-    } */
+      informationStore,
+    }
   },
 })
 </script>
