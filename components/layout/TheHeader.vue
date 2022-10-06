@@ -21,31 +21,28 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, ref, onMounted, provide } from 'vue'
-import Web3 from 'web3'
-import detectEthereumProvider from '@metamask/detect-provider'
+import { storeToRefs } from 'pinia'
+import { defineComponent, ref, onMounted } from 'vue'
+import { ethers } from 'ethers'
 import { useStore } from '~/stores/index'
 
 export default defineComponent({
   setup() {
     // Constants
-    let web3: Web3
-    const provider: any = ref(null)
-    const isConnected = ref(false)
-    const address: Ref<string> = ref('')
-    const balance: Ref<string> = ref('')
-
     const informationStore = useStore()
+    const { address, balance } = storeToRefs(informationStore)
+    // @ts-ignore // TODO: remove this
+    if (ethereum === undefined) throw new Error('there is no metamask')
+    // @ts-ignore // TODO: remove this
+    const provider = new ethers.providers.Web3Provider(ethereum)
+    const isConnected = ref(false)
+    /* const address: Ref<string> = ref('') */
+    /* const balance: Ref<string> = ref('') */
 
     // Hooks
     onMounted(async () => {
-      await setProvider()
-
-      if (provider.value) {
-        // create web3 instance
-        web3 = new Web3(provider.value)
-
-        const accounts = await web3.eth.getAccounts()
+      if (provider) {
+        const accounts = await provider.listAccounts()
         if (accounts.length > 0) await connect()
       }
     })
@@ -54,11 +51,11 @@ export default defineComponent({
     const connectWeb3 = async () => {
       try {
         // if No web3 provider
-        if (!provider.value) {
-          throw new Error('No web3 provider detected.')
+        if (!provider) {
+          throw new Error('No provider detected.')
         }
         // ask to connect
-        await web3.eth.requestAccounts()
+        await provider.send('eth_requestAccounts', [])
 
         await connect()
       } catch (error) {
@@ -71,8 +68,9 @@ export default defineComponent({
       // get address, balance etc.
       await updateUserInfo()
       // Check connecting
-      isConnected.value =
-        (await web3.eth.net.isListening()) && provider.value.isConnected()
+
+      // TODO: remove this
+      isConnected.value = Boolean(address.value)
       if (!isConnected.value) {
         throw new Error('Connection Error.')
       }
@@ -88,15 +86,6 @@ export default defineComponent({
       console.log('Disconnected.')
     }
 
-    // set for web3 provider
-    const setProvider = async () => {
-      provider.value = await detectEthereumProvider({
-        mustBeMetaMask: true,
-        silent: true,
-        timeout: 3000,
-      })
-    }
-
     // get user address and balance
     const updateUserInfo = async (_address = null) => {
       await updateUserAddress(_address)
@@ -106,30 +95,35 @@ export default defineComponent({
     // get user address
     const updateUserAddress = async (_address = null) => {
       address.value =
-        _address || (await web3.eth.getAccounts())[0].toLowerCase()
+        _address ||
+        (await provider.send('eth_requestAccounts', []))[0].toLowerCase()
       informationStore.setAddress(address.value)
     }
 
     // get user address
     const updateUserBalance = async () => {
-      balance.value = web3.utils.fromWei(
-        await web3.eth.getBalance(address.value),
-        'ether'
+      balance.value = ethers.utils.formatEther(
+        (await provider.getBalance(address.value)).toString()
       )
       informationStore.setBalance(balance.value)
     }
 
     // start eth events
     const startEthEvents = () => {
-      provider.value.on('chainChanged', handleChainChanged)
-      provider.value.on('accountsChanged', handleAccountsChanged)
-      provider.value.on('disconnect', handleDisconnect)
+      // @ts-ignore // TODO: remove this
+      ethereum.on('chainChanged', handleChainChanged)
+      // @ts-ignore // TODO: remove this
+      ethereum.on('accountsChanged', handleAccountsChanged)
+      // @ts-ignore // TODO: remove this
+      ethereum.on('disconnect', handleDisconnect)
     }
 
     // stop eth events
     const stopEthEvents = () => {
-      provider.value.removeListener('chainChanged', handleChainChanged)
-      provider.value.removeListener('accountsChanged', handleAccountsChanged)
+      // @ts-ignore // TODO: remove this
+      ethereum.removeListener('chainChanged', handleChainChanged)
+      // @ts-ignore // TODO: remove this
+      ethereum.removeListener('accountsChanged', handleAccountsChanged)
     }
 
     // eth change chain event
