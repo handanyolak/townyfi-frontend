@@ -12,16 +12,11 @@
             >DESTINY</span
           >
         </span>
-        <span class="my-1 text-xs text-white">{{
-          informationStore.address
-        }}</span>
-        <span class="my-1 text-xs text-white">{{
-          informationStore.balance
-        }}</span>
+        <span class="my-1 text-xs text-white">{{ address }}</span>
+        <span class="my-1 text-xs text-white">{{ balance }}</span>
         <span class="my-1 text-xs text-white"
           >{{ user?.coordinate?._x }}, {{ user?.coordinate?._y }}</span
         >
-        <span class="my-1 text-xs text-white">{{ user?.health }}</span>
         <span class="my-1 text-xs text-white">{{ user?.health }}</span>
       </div>
     </div>
@@ -30,7 +25,8 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
-import { useStore } from '~/stores/index'
+import { useConnectStore } from '~/stores/connect'
+import { useContractStore } from '~/stores/contract'
 import { BigNumber, ethers } from 'ethers'
 import useKtaToken from '~/composable/useKtaToken'
 import useKta from '~/composable/useKta'
@@ -39,13 +35,15 @@ import { storeToRefs } from 'pinia'
 export default defineComponent({
   setup() {
     // Constants
-    const informationStore = useStore()
-    const { address } = storeToRefs(informationStore)
+    const connectInfo = useConnectStore()
+    const { address, balance } = storeToRefs(connectInfo)
+    const contractInfo = useContractStore()
+    const { user } = storeToRefs(contractInfo)
     // @ts-ignore // TODO: remove this
     if (ethereum === undefined) throw new Error('there is no metamask')
     // @ts-ignore // TODO: remove this // TODO: get provider from composable
     const provider = new ethers.providers.Web3Provider(ethereum)
-    const user = ref(null)
+    /* const user = ref(null) */
 
     const { ktaTokenContract } = useKtaToken()
     const { ktaContract } = useKta()
@@ -59,7 +57,9 @@ export default defineComponent({
       }
 
       const signer = await provider.getSigner()
+      // TODO: kutular componentlestirildikten sonra anlamsizlik gidecek
       user.value = await ktaContract.userByAddr(await signer.getAddress())
+      contractInfo.setUserInfo(user.value)
 
       /*
       user:
@@ -100,8 +100,10 @@ export default defineComponent({
     }
 
     return {
-      informationStore,
+      connectInfo,
       user,
+      address,
+      balance,
     }
   },
 })

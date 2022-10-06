@@ -24,20 +24,18 @@
 import { storeToRefs } from 'pinia'
 import { defineComponent, ref, onMounted } from 'vue'
 import { ethers } from 'ethers'
-import { useStore } from '~/stores/index'
+import { useConnectStore } from '~/stores/connect'
 
 export default defineComponent({
   setup() {
     // Constants
-    const informationStore = useStore()
+    const informationStore = useConnectStore()
     const { address, balance } = storeToRefs(informationStore)
     // @ts-ignore // TODO: remove this
     if (ethereum === undefined) throw new Error('there is no metamask')
     // @ts-ignore // TODO: remove this
     const provider = new ethers.providers.Web3Provider(ethereum)
     const isConnected = ref(false)
-    /* const address: Ref<string> = ref('') */
-    /* const balance: Ref<string> = ref('') */
 
     // Hooks
     onMounted(async () => {

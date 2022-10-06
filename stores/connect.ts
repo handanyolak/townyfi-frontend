@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-export const useStore = defineStore('userChainInfo', {
+export const useConnectStore = defineStore('connectStore', {
   state: () => ({
     address: '',
     balance: '',
