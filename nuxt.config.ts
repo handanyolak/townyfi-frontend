@@ -26,7 +26,7 @@ export default defineNuxtConfig({
   css: [],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins: ['~/plugins/ktaAdapter', '~/plugins/ktaTokenAdapter'],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: [
@@ -49,6 +49,13 @@ export default defineNuxtConfig({
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
+
+  runtimeConfig: {
+    public: {
+      ktaAddress: process.env.NUXT_KTA_ADDRESS,
+      ktaTokenAddress: process.env.NUXT_KTA_TOKEN_ADDRESS,
+    },
+  },
 
   tailwindcss: {
     config: {

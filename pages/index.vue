@@ -28,8 +28,6 @@ import { defineComponent, onMounted, ref } from 'vue'
 import { useConnectStore } from '~/stores/connect'
 import { useContractStore } from '~/stores/contract'
 import { BigNumber, ethers } from 'ethers'
-import useKtaToken from '~/composable/useKtaToken'
-import useKta from '~/composable/useKta'
 import { storeToRefs } from 'pinia'
 
 export default defineComponent({
@@ -37,19 +35,23 @@ export default defineComponent({
     // Constants
     const connectInfo = useConnectStore()
     const { address, balance } = storeToRefs(connectInfo)
-    const contractInfo = useContractStore()
+    const contractInfo: any = useContractStore()
     const { user } = storeToRefs(contractInfo)
+    // @ts-ignore // TODO: remove this
+    const { $kta, $ktaToken } = useNuxtApp()
     // @ts-ignore // TODO: remove this
     if (ethereum === undefined) throw new Error('there is no metamask')
     // @ts-ignore // TODO: remove this // TODO: get provider from composable
     const provider = new ethers.providers.Web3Provider(ethereum)
     /* const user = ref(null) */
 
-    const { ktaTokenContract } = useKtaToken()
-    const { ktaContract } = useKta()
+    const kta = $kta(provider)
+    const ktaToken = $ktaToken(provider)
+    const addressesByCoordinate = ref({})
 
     // Hooks
     onMounted(async () => {
+      console.log(ktaToken)
       if (!address) {
         //throw new Error('No Address')
         alert('No address')
@@ -57,9 +59,27 @@ export default defineComponent({
       }
 
       const signer = await provider.getSigner()
-      // TODO: kutular componentlestirildikten sonra anlamsizlik gidecek
-      user.value = await ktaContract.userByAddr(await signer.getAddress())
+      // TODO: kutular componentlestirildikten sonra anlamsizlik gidecekz
+
+      user.value = await kta.userByAddr(await signer.getAddress())
       contractInfo.setUserInfo(user.value)
+      const nearLevel = 1
+      const minScanX = user.value.coordinate._x.sub(nearLevel)
+      const maxScanX = user.value.coordinate._x.add(nearLevel)
+      const minScanY = user.value.coordinate._y.sub(nearLevel)
+      const maxScanY = user.value.coordinate._y.add(nearLevel)
+
+      for (let i = minScanX; i <= maxScanX; i++) {
+        for (let j = minScanY; j <= maxScanY; j++) {
+          // @ts-ignore
+          addressesByCoordinate.value[[i, j]] =
+            await kta.getAddressesByCoordinate([i, j])
+        }
+      }
+
+      console.log(addressesByCoordinate.value)
+
+      // @ts-ignore   b cnhchdht1QdressesByCoordinate.value[user.value.coordinate])
 
       /*
       user:
@@ -69,17 +89,17 @@ export default defineComponent({
       */
 
       /*  await (
-        await ktaTokenContract
+        await ktaToken
           .connect(signer)
-          .approve(ktaContract.address, ethers.constants.MaxUint256)
+          .approve(kta.address, ethers.constants.MaxUint256)
       ).wait()
 
-      await ktaContract
+      await kta
         .connect(signer)
         .register(ethers.constants.HashZero, ethers.constants.AddressZero) */
 
       /* startKtaTokenEvents() */
-      /*  await ktaTokenContract
+      /*  await ktaToken
         .connect(signer)
         .transfer(
           '0xb91760bA38F185660755fEEcDFaeCe974Ac04A91',
@@ -89,7 +109,7 @@ export default defineComponent({
 
     // Methods
     const startKtaTokenEvents = () => {
-      ktaTokenContract.on(
+      ktaToken.on(
         'Transfer',
         async (from: string, to: string, value: BigNumber) => {
           console.log(`from: ${from}`)
