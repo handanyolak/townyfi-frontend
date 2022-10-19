@@ -3,22 +3,22 @@
     <div class="grid h-screen grid-cols-3 gap-3">
       <div
         v-for="item in 9"
-        :key="item"
-        class="flex flex-col items-center text-2xl font-bold border-8 shadow-2xl bg-gradient-to-r from-brown-light via-brown to-brown-dark rounded-xl border-brown"
+        class="castle flex flex-col items-center text-2xl font-bold shadow-2xl rounded-xl"
       >
-        <span class="px-4 my-2 bg-brown-light">
-          <span
-            class="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-100 to-yellow-600"
-            >DESTINY</span
-          >
-        </span>
-        <span class="my-1 text-xs text-white">{{ address }}</span>
-        <span class="my-1 text-xs text-white">{{ balance }}</span>
-        <span class="my-1 text-xs text-white"
-          >{{ user?.coordinate?._x }}, {{ user?.coordinate?._y }}</span
-        >
-        <span class="my-1 text-xs text-white">{{ user?.health }}</span>
+        <button @click="toggleModal">
+          <img src="~/assets/img/soldier.svg" alt="soldier" />
+        </button>
       </div>
+      <InformationModal :show="showModal">
+        <div class="flex flex-col">
+          <span class="my-1 text-xs">{{ address }}</span>
+          <span class="my-1 text-xs">{{ balance }}</span>
+          <span class="my-1 text-xs"
+            >{{ user?.coordinate?._x }}, {{ user?.coordinate?._y }}</span
+          >
+          <span class="my-1 text-xs">{{ user?.health }}</span>
+        </div>
+      </InformationModal>
     </div>
   </div>
 </template>
@@ -29,6 +29,7 @@ import { useConnectStore } from '~/stores/connect'
 import { useContractStore } from '~/stores/contract'
 import { BigNumber, ethers } from 'ethers'
 import { storeToRefs } from 'pinia'
+import InformationModal from '@/components/InformationModal.vue'
 
 export default defineComponent({
   setup() {
@@ -44,10 +45,10 @@ export default defineComponent({
     // @ts-ignore // TODO: remove this // TODO: get provider from composable
     const provider = new ethers.providers.Web3Provider(ethereum)
     /* const user = ref(null) */
-
     const kta = $kta(provider)
     const ktaToken = $ktaToken(provider)
     const addressesByCoordinate = ref({})
+    const showModal = ref(false)
 
     // Hooks
     onMounted(async () => {
@@ -57,10 +58,8 @@ export default defineComponent({
         alert('No address')
         return
       }
-
       const signer = await provider.getSigner()
       // TODO: kutular componentlestirildikten sonra anlamsizlik gidecekz
-
       user.value = await kta.userByAddr(await signer.getAddress())
       contractInfo.setUserInfo(user.value)
       const nearLevel = 1
@@ -68,7 +67,6 @@ export default defineComponent({
       const maxScanX = user.value.coordinate._x.add(nearLevel)
       const minScanY = user.value.coordinate._y.sub(nearLevel)
       const maxScanY = user.value.coordinate._y.add(nearLevel)
-
       for (let i = minScanX; i <= maxScanX; i++) {
         for (let j = minScanY; j <= maxScanY; j++) {
           // @ts-ignore
@@ -76,37 +74,31 @@ export default defineComponent({
             await kta.getAddressesByCoordinate([i, j])
         }
       }
-
       console.log(addressesByCoordinate.value)
-
       // @ts-ignore   b cnhchdht1QdressesByCoordinate.value[user.value.coordinate])
-
       /*
-      user:
-      armor, health, mana, energy, levelId, exp, charPoint, coordinate
-      name, referrer
-
-      */
-
+            user:
+            armor, health, mana, energy, levelId, exp, charPoint, coordinate
+            name, referrer
+      
+            */
       /*  await (
-        await ktaToken
-          .connect(signer)
-          .approve(kta.address, ethers.constants.MaxUint256)
-      ).wait()
-
-      await kta
-        .connect(signer)
-        .register(ethers.constants.HashZero, ethers.constants.AddressZero) */
-
+              await ktaToken
+                .connect(signer)
+                .approve(kta.address, ethers.constants.MaxUint256)
+            ).wait()
+      
+            await kta
+              .connect(signer)
+              .register(ethers.constants.HashZero, ethers.constants.AddressZero) */
       /* startKtaTokenEvents() */
       /*  await ktaToken
-        .connect(signer)
-        .transfer(
-          '0xb91760bA38F185660755fEEcDFaeCe974Ac04A91',
-          ethers.utils.parseEther('1')
-        ) */
+              .connect(signer)
+              .transfer(
+                '0xb91760bA38F185660755fEEcDFaeCe974Ac04A91',
+                ethers.utils.parseEther('1')
+              ) */
     })
-
     // Methods
     const startKtaTokenEvents = () => {
       ktaToken.on(
@@ -118,13 +110,25 @@ export default defineComponent({
         }
       )
     }
-
+    const toggleModal = () => (showModal.value = !showModal.value)
     return {
       connectInfo,
       user,
       address,
       balance,
+      toggleModal,
+      showModal,
     }
   },
+  components: { InformationModal },
 })
 </script>
+
+<style>
+.castle {
+  background-image: url('~/assets/img/castle-brown.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 70%;
+}
+</style>
