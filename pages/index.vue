@@ -2,21 +2,23 @@
   <div class="container">
     <div class="grid h-screen grid-cols-3 gap-3">
       <div
-        v-for="item in 9"
-        class="castle flex flex-col items-center text-2xl font-bold shadow-2xl rounded-xl"
+        v-for="(item, index) in addressesByCoordinate"
+        :key="index"
+        class="flex flex-col items-center text-2xl font-bold shadow-2xl castle rounded-xl"
       >
-        <button @click="toggleModal">
+        <button @click="toggleModal(index)">
           <img src="~/assets/img/soldier.svg" alt="soldier" />
         </button>
       </div>
       <InformationModal :show="showModal">
         <div class="flex flex-col">
-          <span class="my-1 text-xs">{{ address }}</span>
-          <span class="my-1 text-xs">{{ balance }}</span>
-          <span class="my-1 text-xs"
-            >{{ user?.coordinate?._x }}, {{ user?.coordinate?._y }}</span
+          <span class="my-1 text-xs">{{ coordinateInfo.x }}</span>
+          <span class="my-1 text-xs">{{ coordinateInfo.y }}</span>
+          <span
+            v-for="address in coordinateInfo.addresses"
+            class="my-1 text-xs"
+            >{{ address }}</span
           >
-          <span class="my-1 text-xs">{{ user?.health }}</span>
         </div>
       </InformationModal>
     </div>
@@ -24,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
+import { defineComponent, onMounted, ref, reactive } from 'vue'
 import { useConnectStore } from '~/stores/connect'
 import { useContractStore } from '~/stores/contract'
 import { BigNumber, ethers } from 'ethers'
@@ -32,6 +34,7 @@ import { storeToRefs } from 'pinia'
 import InformationModal from '@/components/InformationModal.vue'
 
 export default defineComponent({
+  components: { InformationModal },
   setup() {
     // Constants
     const connectInfo = useConnectStore()
@@ -47,20 +50,26 @@ export default defineComponent({
     /* const user = ref(null) */
     const kta = $kta(provider)
     const ktaToken = $ktaToken(provider)
-    const addressesByCoordinate = ref({})
+    const addressesByCoordinate: any = ref([])
     const showModal = ref(false)
+    const coordinateInfo: any = reactive({
+      x: null,
+      y: null,
+      addresses: null,
+    })
 
     // Hooks
     onMounted(async () => {
-      console.log(ktaToken)
+      /* console.log(ktaToken) */
       if (!address) {
         //throw new Error('No Address')
         alert('No address')
         return
       }
       const signer = await provider.getSigner()
-      // TODO: kutular componentlestirildikten sonra anlamsizlik gidecekz
+      // TODO: kutular componentlestirildikten sonra anlamsizlik gidecek
       user.value = await kta.userByAddr(await signer.getAddress())
+      /* console.log(user.value) */
       contractInfo.setUserInfo(user.value)
       const nearLevel = 1
       const minScanX = user.value.coordinate._x.sub(nearLevel)
@@ -70,24 +79,26 @@ export default defineComponent({
       for (let i = minScanX; i <= maxScanX; i++) {
         for (let j = minScanY; j <= maxScanY; j++) {
           // @ts-ignore
-          addressesByCoordinate.value[[i, j]] =
-            await kta.getAddressesByCoordinate([i, j])
+          addressesByCoordinate.value.push({
+            x: i,
+            y: j,
+            addresses: await kta.getAddressesByCoordinate([i, j]),
+          })
         }
       }
-      console.log(addressesByCoordinate.value)
       // @ts-ignore   b cnhchdht1QdressesByCoordinate.value[user.value.coordinate])
       /*
             user:
             armor, health, mana, energy, levelId, exp, charPoint, coordinate
             name, referrer
-      
+
             */
       /*  await (
               await ktaToken
                 .connect(signer)
                 .approve(kta.address, ethers.constants.MaxUint256)
             ).wait()
-      
+
             await kta
               .connect(signer)
               .register(ethers.constants.HashZero, ethers.constants.AddressZero) */
@@ -104,23 +115,33 @@ export default defineComponent({
       ktaToken.on(
         'Transfer',
         async (from: string, to: string, value: BigNumber) => {
-          console.log(`from: ${from}`)
+          /*  console.log(`from: ${from}`)
           console.log('to: ' + to)
-          console.log('amount: ' + ethers.utils.formatEther(value))
+          console.log('amount: ' + ethers.utils.formatEther(value)) */
         }
       )
     }
-    const toggleModal = () => (showModal.value = !showModal.value)
+    const toggleModal = (index: any) => {
+      showModal.value = !showModal.value
+      coordinateInformation(index)
+    }
+
+    const coordinateInformation = (index: any) => {
+      coordinateInfo.x = addressesByCoordinate.value[index].x
+      coordinateInfo.y = addressesByCoordinate.value[index].y
+      coordinateInfo.addresses = addressesByCoordinate.value[index].addresses
+    }
     return {
-      connectInfo,
-      user,
-      address,
-      balance,
       toggleModal,
+      addressesByCoordinate,
+      coordinateInfo,
+      connectInfo,
       showModal,
+      balance,
+      address,
+      user,
     }
   },
-  components: { InformationModal },
 })
 </script>
 
