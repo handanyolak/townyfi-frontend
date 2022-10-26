@@ -1,15 +1,11 @@
 <template>
   <div class="container">
     <div class="grid h-screen grid-cols-3 gap-3">
-      <div
+      <CastleBox
         v-for="(item, index) in addressesByCoordinate"
         :key="index"
-        class="flex flex-col items-center text-2xl font-bold shadow-2xl castle rounded-xl"
-      >
-        <button @click="toggleModal(index)">
-          <img src="~/assets/img/soldier.svg" alt="soldier" />
-        </button>
-      </div>
+        @toggleModal="toggleModal($event, index)"
+      ></CastleBox>
       <InformationModal :show="showModal">
         <div class="flex flex-col">
           <span class="my-1 text-xs">{{ coordinateInfo.x }}</span>
@@ -31,10 +27,11 @@ import { useConnectStore } from '~/stores/connect'
 import { useContractStore } from '~/stores/contract'
 import { BigNumber, ethers } from 'ethers'
 import { storeToRefs } from 'pinia'
-import InformationModal from '@/components/InformationModal.vue'
+import InformationModal from '~/components/InformationModal.vue'
+import CastleBox from '~/components/CastleBox.vue'
 
 export default defineComponent({
-  components: { InformationModal },
+  components: { InformationModal, CastleBox },
   setup() {
     // Constants
     const connectInfo = useConnectStore()
@@ -47,7 +44,6 @@ export default defineComponent({
     if (ethereum === undefined) throw new Error('there is no metamask')
     // @ts-ignore // TODO: remove this // TODO: get provider from composable
     const provider = new ethers.providers.Web3Provider(ethereum)
-    /* const user = ref(null) */
     const kta = $kta(provider)
     const ktaToken = $ktaToken(provider)
     const addressesByCoordinate: any = ref([])
@@ -60,16 +56,13 @@ export default defineComponent({
 
     // Hooks
     onMounted(async () => {
-      /* console.log(ktaToken) */
       if (!address) {
-        //throw new Error('No Address')
         alert('No address')
         return
       }
       const signer = await provider.getSigner()
       // TODO: kutular componentlestirildikten sonra anlamsizlik gidecek
       user.value = await kta.userByAddr(await signer.getAddress())
-      /* console.log(user.value) */
       contractInfo.setUserInfo(user.value)
       const nearLevel = 1
       const minScanX = user.value.coordinate._x.sub(nearLevel)
@@ -121,16 +114,18 @@ export default defineComponent({
         }
       )
     }
-    const toggleModal = (index: any) => {
-      showModal.value = !showModal.value
-      coordinateInformation(index)
-    }
 
     const coordinateInformation = (index: any) => {
       coordinateInfo.x = addressesByCoordinate.value[index].x
       coordinateInfo.y = addressesByCoordinate.value[index].y
       coordinateInfo.addresses = addressesByCoordinate.value[index].addresses
     }
+
+    const toggleModal = (event: any, index: any) => {
+      coordinateInformation(index)
+      return (showModal.value = event)
+    }
+
     return {
       toggleModal,
       addressesByCoordinate,
