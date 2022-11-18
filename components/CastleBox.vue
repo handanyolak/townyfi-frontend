@@ -8,19 +8,21 @@
   </div>
 </template>
 
-<script>
-import { emit } from 'process'
-import { defineComponent } from 'vue'
+<script lang="ts">
+import { defineComponent, PropType } from 'vue'
+import { CoordinateItem } from '~/types/coordinate-item'
 
 export default defineComponent({
+  props: {
+    item: {
+      type: Object as PropType<CoordinateItem>,
+      required: true,
+    },
+  },
   setup(props, { emit }) {
-    // Constants
-    const showModal = ref(false)
-
     // Methods
     const toggleModal = () => {
-      showModal.value = !showModal.value
-      emit('toggleModal', showModal.value)
+      emit('modalOpened', props.item)
     }
 
     return {
