@@ -2,19 +2,18 @@
   <div class="container">
     <div class="grid h-screen grid-cols-3 gap-3">
       <CastleBox
-        v-for="(item, index) in addressesByCoordinate"
-        :key="index"
-        @toggleModal="toggleModal($event, index)"
+        v-for="item in addressesByCoordinate"
+        :item="item"
+        :key="item.x + '-' + item.y"
+        @modalOpened="openModal(item)"
       ></CastleBox>
-      <InformationModal :show="showModal">
+      <InformationModal v-if="showModal" @modalClosed="closeModal()">
         <div class="flex flex-col">
-          <span class="my-1 text-xs">{{ coordinateInfo.x }}</span>
-          <span class="my-1 text-xs">{{ coordinateInfo.y }}</span>
-          <span
-            v-for="address in coordinateInfo.addresses"
-            class="my-1 text-xs"
-            >{{ address }}</span
-          >
+          <span class="my-1 text-xs">{{ currentItem.x }}</span>
+          <span class="my-1 text-xs">{{ currentItem.y }}</span>
+          <span v-for="address in currentItem.addresses" class="my-1 text-xs">{{
+            address
+          }}</span>
         </div>
       </InformationModal>
     </div>
@@ -22,13 +21,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, reactive } from 'vue'
+import { defineComponent, onMounted, ref, Ref } from 'vue'
 import { useConnectStore } from '~/stores/connect'
 import { useContractStore } from '~/stores/contract'
 import { BigNumber, ethers } from 'ethers'
 import { storeToRefs } from 'pinia'
 import InformationModal from '~/components/InformationModal.vue'
 import CastleBox from '~/components/CastleBox.vue'
+import { CoordinateItem } from '~/types/coordinate-item'
 
 export default defineComponent({
   components: { InformationModal, CastleBox },
@@ -41,17 +41,17 @@ export default defineComponent({
     // @ts-ignore // TODO: remove this
     const { $kta, $ktaToken } = useNuxtApp()
     // @ts-ignore // TODO: remove this
-    if (ethereum === undefined) throw new Error('there is no metamask')
+    if (window.ethereum === undefined) throw new Error('there is no metamask')
     // @ts-ignore // TODO: remove this // TODO: get provider from composable
-    const provider = new ethers.providers.Web3Provider(ethereum)
+    const provider = new ethers.providers.Web3Provider(window.ethereum)
     const kta = $kta(provider)
     const ktaToken = $ktaToken(provider)
-    const addressesByCoordinate: any = ref([])
+    const addressesByCoordinate: Ref<CoordinateItem[]> = ref([])
     const showModal = ref(false)
-    const coordinateInfo: any = reactive({
-      x: null,
-      y: null,
-      addresses: null,
+    const currentItem: Ref<CoordinateItem> = ref({
+      x: 0,
+      y: 0,
+      addresses: [],
     })
 
     // Hooks
@@ -61,8 +61,11 @@ export default defineComponent({
         return
       }
       const signer = await provider.getSigner()
+      console.log(signer)
       // TODO: kutular componentlestirildikten sonra anlamsizlik gidecek
+      console.log(await signer.getAddress())
       user.value = await kta.userByAddr(await signer.getAddress())
+
       contractInfo.setUserInfo(user.value)
       const nearLevel = 1
       const minScanX = user.value.coordinate._x.sub(nearLevel)
@@ -71,12 +74,13 @@ export default defineComponent({
       const maxScanY = user.value.coordinate._y.add(nearLevel)
       for (let i = minScanX; i <= maxScanX; i++) {
         for (let j = minScanY; j <= maxScanY; j++) {
-          // @ts-ignore
-          addressesByCoordinate.value.push({
+          const coordinateItem: CoordinateItem = {
             x: i,
             y: j,
             addresses: await kta.getAddressesByCoordinate([i, j]),
-          })
+          }
+
+          addressesByCoordinate.value.push(coordinateItem)
         }
       }
       // @ts-ignore   b cnhchdht1QdressesByCoordinate.value[user.value.coordinate])
@@ -115,21 +119,18 @@ export default defineComponent({
       )
     }
 
-    const coordinateInformation = (index: any) => {
-      coordinateInfo.x = addressesByCoordinate.value[index].x
-      coordinateInfo.y = addressesByCoordinate.value[index].y
-      coordinateInfo.addresses = addressesByCoordinate.value[index].addresses
+    const openModal = (item: CoordinateItem) => {
+      currentItem.value = item
+      showModal.value = true
     }
 
-    const toggleModal = (event: any, index: any) => {
-      coordinateInformation(index)
-      return (showModal.value = event)
-    }
+    const closeModal = () => (showModal.value = false)
 
     return {
-      toggleModal,
+      openModal,
+      closeModal,
+      currentItem,
       addressesByCoordinate,
-      coordinateInfo,
       connectInfo,
       showModal,
       balance,
