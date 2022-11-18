@@ -2,33 +2,32 @@
   <div>
     <Teleport to="body">
       <transition
-        enter-active-class="transition ease-out duration-200 transform"
+        enter-active-class="transition duration-200 ease-out transform"
         enter-from-class="opacity-0"
         enter-to-class="opacity-100"
-        leave-active-class="transition ease-in duration-200 transform"
+        leave-active-class="transition duration-200 ease-in transform"
         leave-from-class="opacity-100"
         leave-to-class="opacity-0"
       >
         <div
-          v-show="showModal"
-          class="modal-backdrop fixed bg-black w-full h-full bg-opacity-20 inset-0"
+          class="fixed inset-0 w-full h-full bg-black modal-backdrop bg-opacity-20"
         >
           <div class="flex justify-center pt-24">
             <transition
-              enter-active-class="transition ease-out duration-300 transform"
-              enter-from-class="opacity-0 translate-y-10 scale-95"
-              enter-to-class="opacity-100 translate-y-10 scale-100"
-              leave-active-class="tease-in duration-200"
-              leave-from-class="opacity-100 translate-y-0 scale-100"
-              leave-to-class="opacity-0 translate-y-10 translate-y-0 scale-95"
+              enter-active-class="transition duration-300 ease-out transform"
+              enter-from-class="scale-95 translate-y-10 opacity-0"
+              enter-to-class="scale-100 translate-y-10 opacity-100"
+              leave-active-class="duration-200 tease-in"
+              leave-from-class="scale-100 translate-y-0 opacity-100"
+              leave-to-class="scale-95 translate-y-0 translate-y-10 opacity-0"
             >
               <div
-                class="modal relative bg-white shadow-xl w-1/2 p-4 rounded-lg"
+                class="relative w-1/2 p-4 bg-white rounded-lg shadow-xl modal"
                 role="dialog"
                 ref="modal"
               >
                 <button @click="closeModal" class="absolute right-2 top-2">
-                  <img class="h-5 w-5" src="~/assets/img/exit.svg" />
+                  <img class="w-5 h-5" src="~/assets/img/exit.svg" />
                 </button>
                 <slot />
               </div>
@@ -40,39 +39,23 @@
   </div>
 </template>
 
-<script>
-import { defineComponent, ref, watch } from 'vue'
+<script lang="ts">
+import { defineComponent, ref } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 
 export default defineComponent({
-  props: {
-    show: {
-      type: Boolean,
-      default: true,
-    },
-  },
-  setup(props) {
-    const showModal = ref(false)
+  setup(_, { emit }) {
     const modal = ref(null)
 
-    watch(
-      () => props.show,
-      (show) => {
-        showModal.value = show
-      }
-    )
     // Methods
     const closeModal = () => {
-      showModal.value = false
+      emit('modalClosed')
     }
 
-    // VueUse
-    onClickOutside(modal, (event) => closeModal())
+    onClickOutside(modal, () => closeModal())
 
     return {
       closeModal,
-      open,
-      showModal,
       modal,
     }
   },
