@@ -32,16 +32,16 @@ export default defineComponent({
     const informationStore = useConnectStore()
     const { address, balance } = storeToRefs(informationStore)
     // @ts-ignore // TODO: remove this
-    if (ethereum === undefined) throw new Error('there is no metamask')
+    if (window.ethereum === undefined) throw new Error('there is no metamask')
     // @ts-ignore // TODO: remove this
-    const provider = new ethers.providers.Web3Provider(ethereum)
+    const provider = new ethers.providers.Web3Provider(window.ethereum)
     const isConnected = ref(false)
 
     // Hooks
     onMounted(async () => {
       if (provider) {
-        const accounts = await provider.listAccounts()
-        if (accounts.length > 0) await connect()
+        //const accounts = await provider.listAccounts()
+        await connect()
       }
     })
 
