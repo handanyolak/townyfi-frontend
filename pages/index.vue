@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="grid h-screen grid-cols-3 gap-3">
+    <div v-if="ethereum" class="grid h-screen grid-cols-3 gap-3">
       <CastleBox
         v-for="item in addressesByCoordinate"
         :item="item"
@@ -17,33 +17,34 @@
         </div>
       </InformationModal>
     </div>
+    <div v-else>THERE IS NO METAMASK</div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, ref, Ref } from 'vue'
-import { useConnectStore } from '~/stores/connect'
+import { useConnectionStore } from '~/stores/connection'
 import { useContractStore } from '~/stores/contract'
 import { BigNumber, ethers } from 'ethers'
 import { storeToRefs } from 'pinia'
 import InformationModal from '~/components/InformationModal.vue'
 import CastleBox from '~/components/CastleBox.vue'
 import { CoordinateItem } from '~/types/coordinate-item'
+import { useUserWalletStore } from '~/stores/userWallet'
 
 export default defineComponent({
   components: { InformationModal, CastleBox },
   setup() {
     // Constants
-    const connectInfo = useConnectStore()
-    const { address, balance } = storeToRefs(connectInfo)
-    const contractInfo: any = useContractStore()
-    const { user } = storeToRefs(contractInfo)
     // @ts-ignore // TODO: remove this
     const { $kta, $ktaToken } = useNuxtApp()
-    // @ts-ignore // TODO: remove this
-    if (window.ethereum === undefined) throw new Error('there is no metamask')
-    // @ts-ignore // TODO: remove this // TODO: get provider from composable
-    const provider = new ethers.providers.Web3Provider(window.ethereum)
+    const connectionStore = useConnectionStore()
+    const userWalletStore = useUserWalletStore()
+    const { address, balance } = storeToRefs(userWalletStore)
+    const contractInfo: any = useContractStore()
+    const { user } = storeToRefs(contractInfo)
+    const provider = connectionStore.provider
+    const ethereum = connectionStore.ethereum
     const kta = $kta(provider)
     const ktaToken = $ktaToken(provider)
     const addressesByCoordinate: Ref<CoordinateItem[]> = ref([])
@@ -53,6 +54,7 @@ export default defineComponent({
       y: 0,
       addresses: [],
     })
+    const signer: any = ref({})
 
     // Hooks
     onMounted(async () => {
@@ -60,29 +62,31 @@ export default defineComponent({
         alert('No address')
         return
       }
-      const signer = await provider.getSigner()
-      console.log(signer)
-      // TODO: kutular componentlestirildikten sonra anlamsizlik gidecek
-      console.log(await signer.getAddress())
-      user.value = await kta.userByAddr(await signer.getAddress())
 
-      contractInfo.setUserInfo(user.value)
-      const nearLevel = 1
-      const minScanX = user.value.coordinate._x.sub(nearLevel)
-      const maxScanX = user.value.coordinate._x.add(nearLevel)
-      const minScanY = user.value.coordinate._y.sub(nearLevel)
-      const maxScanY = user.value.coordinate._y.add(nearLevel)
-      for (let i = minScanX; i <= maxScanX; i++) {
-        for (let j = minScanY; j <= maxScanY; j++) {
-          const coordinateItem: CoordinateItem = {
-            x: i,
-            y: j,
-            addresses: await kta.getAddressesByCoordinate([i, j]),
+      if (ethereum) {
+        user.value = await kta.userByAddr(
+          await connectionStore.signer.getAddress()
+        )
+        console.log(user.value)
+        contractInfo.setUserInfo(user.value)
+        const nearLevel = 1
+        const minScanX = user.value.coordinate._x.sub(nearLevel)
+        const maxScanX = user.value.coordinate._x.add(nearLevel)
+        const minScanY = user.value.coordinate._y.sub(nearLevel)
+        const maxScanY = user.value.coordinate._y.add(nearLevel)
+        for (let i = minScanX; i <= maxScanX; i++) {
+          for (let j = minScanY; j <= maxScanY; j++) {
+            const coordinateItem: CoordinateItem = {
+              x: i,
+              y: j,
+              addresses: await kta.getAddressesByCoordinate([i, j]),
+            }
+
+            addressesByCoordinate.value.push(coordinateItem)
           }
-
-          addressesByCoordinate.value.push(coordinateItem)
         }
       }
+
       // @ts-ignore   b cnhchdht1QdressesByCoordinate.value[user.value.coordinate])
       /*
             user:
@@ -112,9 +116,9 @@ export default defineComponent({
       ktaToken.on(
         'Transfer',
         async (from: string, to: string, value: BigNumber) => {
-          /*  console.log(`from: ${from}`)
+          console.log(`from: ${from}`)
           console.log('to: ' + to)
-          console.log('amount: ' + ethers.utils.formatEther(value)) */
+          console.log('amount: ' + ethers.utils.formatEther(value))
         }
       )
     }
@@ -131,11 +135,11 @@ export default defineComponent({
       closeModal,
       currentItem,
       addressesByCoordinate,
-      connectInfo,
       showModal,
       balance,
       address,
       user,
+      ethereum,
     }
   },
 })

@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="flex justify-between py-3 my-5">
+    <div v-if="ethereum" class="flex justify-between py-3 my-5">
       <span>TownyFi</span>
       <div class="space-x-2">
         <button
@@ -17,6 +17,7 @@
         </button>
       </div>
     </div>
+    <button v-else class="p-1 text-white rounded-sm bg-brown">install</button>
   </div>
 </template>
 
@@ -24,22 +25,26 @@
 import { storeToRefs } from 'pinia'
 import { defineComponent, ref, onMounted } from 'vue'
 import { ethers } from 'ethers'
-import { useConnectStore } from '~/stores/connect'
+import { useConnectionStore } from '~/stores/connection'
+import { useUserWalletStore } from '~/stores/userWallet'
 
 export default defineComponent({
   setup() {
     // Constants
-    const informationStore = useConnectStore()
-    const { address, balance } = storeToRefs(informationStore)
-    // @ts-ignore // TODO: remove this
-    if (window.ethereum === undefined) throw new Error('there is no metamask')
-    // @ts-ignore // TODO: remove this
-    const provider = new ethers.providers.Web3Provider(window.ethereum)
+    console.log(1)
+    const connectionStore = useConnectionStore()
+    const ethereum = connectionStore.ethereum
+    const userWalletStore = useUserWalletStore()
+    const { address, balance } = storeToRefs(userWalletStore)
+    const provider: any = ref()
+    if (ethereum) {
+      provider.value = new ethers.providers.Web3Provider(ethereum)
+    }
     const isConnected = ref(false)
 
     // Hooks
     onMounted(async () => {
-      if (provider) {
+      if (ethereum) {
         //const accounts = await provider.listAccounts()
         await connect()
       }
@@ -49,11 +54,11 @@ export default defineComponent({
     const connectWeb3 = async () => {
       try {
         // if No web3 provider
-        if (!provider) {
+        if (!ethereum) {
           throw new Error('No provider detected.')
         }
         // ask to connect
-        await provider.send('eth_requestAccounts', [])
+        await provider.value.send('eth_requestAccounts', [])
 
         await connect()
       } catch (error) {
@@ -92,35 +97,33 @@ export default defineComponent({
 
     // get user address
     const updateUserAddress = async (_address = null) => {
-      address.value =
+      userWalletStore.setAddress(
         _address ||
-        (await provider.send('eth_requestAccounts', []))[0].toLowerCase()
-      informationStore.setAddress(address.value)
+          (
+            await provider.value.send('eth_requestAccounts', [])
+          )[0].toLowerCase()
+      )
     }
 
     // get user address
     const updateUserBalance = async () => {
-      balance.value = ethers.utils.formatEther(
-        (await provider.getBalance(address.value)).toString()
+      userWalletStore.setBalance(
+        ethers.utils.formatEther(
+          (await provider.value.getBalance(address.value)).toString()
+        )
       )
-      informationStore.setBalance(balance.value)
     }
 
     // start eth events
     const startEthEvents = () => {
-      // @ts-ignore // TODO: remove this
       ethereum.on('chainChanged', handleChainChanged)
-      // @ts-ignore // TODO: remove this
       ethereum.on('accountsChanged', handleAccountsChanged)
-      // @ts-ignore // TODO: remove this
       ethereum.on('disconnect', handleDisconnect)
     }
 
     // stop eth events
     const stopEthEvents = () => {
-      // @ts-ignore // TODO: remove this
       ethereum.removeListener('chainChanged', handleChainChanged)
-      // @ts-ignore // TODO: remove this
       ethereum.removeListener('accountsChanged', handleAccountsChanged)
     }
 
@@ -149,9 +152,9 @@ export default defineComponent({
     return {
       connectWeb3,
       disconnectWeb3,
-      informationStore,
       balance,
       address,
+      ethereum,
     }
   },
 })
