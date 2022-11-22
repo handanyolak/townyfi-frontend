@@ -1,4 +1,4 @@
-import { providers } from 'ethers'
+import { providers, ethers } from 'ethers'
 import { defineStore } from 'pinia'
 import { useConnectionStore } from './connection'
 
@@ -23,6 +23,13 @@ export const useUserWalletStore = defineStore('userWalletStore', {
       this.setAddress(
         _address ||
           (await this.provider.send('eth_requestAccounts', []))[0].toLowerCase()
+      )
+    },
+    async updateUserBalance() {
+      this.setBalance(
+        ethers.utils.formatEther(
+          (await this.provider.getBalance(this.address)).toString()
+        )
       )
     },
   },

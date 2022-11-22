@@ -91,16 +91,7 @@ export default defineComponent({
     // get user address and balance
     const updateUserInfo = async (_address = null) => {
       await userWalletStore.updateUserAddress(_address)
-      await updateUserBalance()
-    }
-
-    // get user address
-    const updateUserBalance = async () => {
-      userWalletStore.setBalance(
-        ethers.utils.formatEther(
-          (await provider.value.getBalance(address.value)).toString()
-        )
-      )
+      await userWalletStore.updateUserBalance()
     }
 
     // start eth events
@@ -118,7 +109,7 @@ export default defineComponent({
 
     // eth change chain event
     const handleChainChanged = async () => {
-      await updateUserBalance()
+      await userWalletStore.updateUserBalance()
       console.log('Chain has changed.')
     }
 
