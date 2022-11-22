@@ -40,8 +40,8 @@ export default defineComponent({
     const { $kta, $ktaToken } = useNuxtApp()
     const connectionStore = useConnectionStore()
     const userWalletStore = useUserWalletStore()
-    const { address, balance } = storeToRefs(userWalletStore)
     const contractInfo: any = useContractStore()
+    const { address, balance } = storeToRefs(userWalletStore)
     const { user } = storeToRefs(contractInfo)
     const provider = connectionStore.provider
     const ethereum = connectionStore.ethereum
@@ -54,7 +54,6 @@ export default defineComponent({
       y: 0,
       addresses: [],
     })
-    const signer: any = ref({})
 
     // Hooks
     onMounted(async () => {
@@ -67,7 +66,6 @@ export default defineComponent({
         user.value = await kta.userByAddr(
           await connectionStore.signer.getAddress()
         )
-        console.log(user.value)
         contractInfo.setUserInfo(user.value)
         const nearLevel = 1
         const minScanX = user.value.coordinate._x.sub(nearLevel)

@@ -31,7 +31,6 @@ import { useUserWalletStore } from '~/stores/userWallet'
 export default defineComponent({
   setup() {
     // Constants
-    console.log(1)
     const connectionStore = useConnectionStore()
     const ethereum = connectionStore.ethereum
     const userWalletStore = useUserWalletStore()
@@ -91,18 +90,8 @@ export default defineComponent({
 
     // get user address and balance
     const updateUserInfo = async (_address = null) => {
-      await updateUserAddress(_address)
+      await userWalletStore.updateUserAddress(_address)
       await updateUserBalance()
-    }
-
-    // get user address
-    const updateUserAddress = async (_address = null) => {
-      userWalletStore.setAddress(
-        _address ||
-          (
-            await provider.value.send('eth_requestAccounts', [])
-          )[0].toLowerCase()
-      )
     }
 
     // get user address
