@@ -1,12 +1,12 @@
 import { providers, ethers } from 'ethers'
 import { defineStore } from 'pinia'
 import { useConnectionStore } from './connection'
-
 export const useUserWalletStore = defineStore('userWalletStore', {
   state: () => ({
     address: '',
     balance: '',
     isConnected: false,
+    register: false,
   }),
   getters: {
     provider(state): any {
@@ -15,14 +15,22 @@ export const useUserWalletStore = defineStore('userWalletStore', {
     ethereum(): any {
       return useConnectionStore().ethereum
     },
+    kta(): any {
+      return this.$nuxt.$kta(this.provider)
+    },
+    ktaToken(): any {
+      return this.$nuxt.$ktaToken(this.provider)
+    },
   },
-
   actions: {
     setAddress(newAddress: string) {
       this.address = newAddress
     },
     setBalance(newBalance: string) {
       this.balance = newBalance
+    },
+    setRegister(newRegister: boolean) {
+      this.register = newRegister
     },
     async connect() {
       await this.updateUserInfo()
@@ -33,6 +41,7 @@ export const useUserWalletStore = defineStore('userWalletStore', {
       }
 
       await this.startEthEvents()
+      await this.isRegistered()
     },
     async updateUserInfo(_address = null) {
       await this.updateUserAddress(_address)
@@ -99,6 +108,9 @@ export const useUserWalletStore = defineStore('userWalletStore', {
         // user denied account access
         console.log(error)
       }
+    },
+    async isRegistered() {
+      this.setRegister(await this.kta.isRegistered(this.address))
     },
   },
 })
