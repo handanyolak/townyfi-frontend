@@ -92,15 +92,7 @@ export default defineComponent({
             name, referrer
 
             */
-      /*  await (
-              await ktaToken
-                .connect(signer)
-                .approve(kta.address, ethers.constants.MaxUint256)
-            ).wait()
 
-            await kta
-              .connect(signer)
-              .register(ethers.constants.HashZero, ethers.constants.AddressZero) */
       /* startKtaTokenEvents() */
       /*  await ktaToken
               .connect(signer)
@@ -109,6 +101,7 @@ export default defineComponent({
                 ethers.utils.parseEther('1')
               ) */
     })
+
     // Methods
     const startKtaTokenEvents = () => {
       ktaToken.on(
