@@ -1,28 +1,41 @@
 <template>
   <div class="container">
-    <div v-if="ethereum" class="flex justify-between py-3 my-5">
+    <div v-if="hasMetamask" class="flex justify-between py-3 my-5">
       <span>TownyFi</span>
-      <div v-if="register" class="space-x-2">
+      <div v-if="onValidNetwork">
+        <div v-if="isConnected">
+          <div class="space-x-2">
+            <button
+              v-if="!isRegistered"
+              @click="userRegister()"
+              class="p-1 text-white rounded-sm bg-brown"
+            >
+              Register the game
+            </button>
+            <button
+              @click="disconnectWeb3()"
+              class="p-1 text-white rounded-sm bg-brown"
+            >
+              Disconnect Wallet
+            </button>
+          </div>
+        </div>
         <button
-          @click="connectWeb()"
+          @click="connectWeb3()"
+          v-else
           class="p-1 text-white rounded-sm bg-brown-dark"
         >
           Connect Wallet
         </button>
-        <button
-          @click="disconnectWeb()"
-          class="p-1 text-white rounded-sm bg-brown"
-        >
-          Disconnect Wallet
-        </button>
       </div>
-      <button
+      <a
         v-else
-        @click="userRegister()"
+        @click="switchNetwork()"
+        target="_blank"
         class="p-1 text-white rounded-sm bg-brown"
       >
-        Register the game
-      </button>
+        Switch Network
+      </a>
     </div>
     <a
       v-else
@@ -41,52 +54,73 @@ import { storeToRefs } from 'pinia'
 import { defineComponent, onMounted } from 'vue'
 import { useConnectionStore } from '~/stores/connection'
 import { useUserWalletStore } from '~/stores/userWallet'
+import { useUserGameStore } from '~/stores/userGame'
 
 export default defineComponent({
   setup() {
     // Constants
     const connectionStore = useConnectionStore()
+    const hasMetamask = connectionStore.hasMetamask
     const ethereum = connectionStore.ethereum
     const userWalletStore = useUserWalletStore()
+    const userGameStore = useUserGameStore()
     const kta = userWalletStore.kta
     const ktaToken = userWalletStore.ktaToken
-    const { register } = storeToRefs(userWalletStore)
+    const { connectWeb3, disconnectWeb3 } = userWalletStore
+    const { isRegistered } = storeToRefs(userGameStore)
+    const { onValidNetwork, isConnected } = storeToRefs(connectionStore)
 
     // Hooks
     onMounted(async () => {
-      if (ethereum) {
-        //const accounts = await provider.listAccounts()
-        await userWalletStore.connect()
+      if (hasMetamask) {
+        /* const accounts = await userWalletStore.provider */
+        /* await userWalletStore.connect() */
+        userWalletStore.startEthEvents()
       }
     })
 
     // Methods
-    const connectWeb = () => {
-      userWalletStore.connectWeb3()
-    }
-
-    const disconnectWeb = () => {
-      userWalletStore.disconnectWeb3()
+    const switchNetwork = async () => {
+      // TODO: chainId env'den alinacak
+      try {
+        await ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [
+            {
+              chainId: '0x' + Number(5).toString(16),
+            },
+          ],
+        })
+      } catch (error) {
+        console.log(error)
+      }
     }
 
     const userRegister = async () => {
-      await (
-        await ktaToken
-          .connect(connectionStore.signer)
-          .approve(kta.address, ethers.constants.MaxUint256)
-      ).wait()
+      try {
+        await (
+          await ktaToken
+            .connect(connectionStore.signer)
+            .approve(kta.address, ethers.constants.MaxUint256)
+        ).wait()
 
-      await kta
-        .connect(connectionStore.signer)
-        .register(ethers.constants.HashZero, ethers.constants.AddressZero)
+        await kta
+          .connect(connectionStore.signer)
+          .register(ethers.constants.HashZero, ethers.constants.AddressZero)
+      } catch (error) {
+        console.log(error)
+      }
     }
 
     return {
-      connectWeb,
-      disconnectWeb,
+      connectWeb3,
+      disconnectWeb3,
       userRegister,
-      ethereum,
-      register,
+      hasMetamask,
+      isRegistered,
+      onValidNetwork,
+      switchNetwork,
+      isConnected,
     }
   },
 })
