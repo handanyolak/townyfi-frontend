@@ -32,7 +32,7 @@ export default defineNuxtConfig({
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [],
+  css: ['@/assets/css/main.css'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: ['~/plugins/ktaAdapter', '~/plugins/ktaTokenAdapter'],
@@ -49,39 +49,26 @@ export default defineNuxtConfig({
   buildModules: [
     // https://go.nuxtjs.dev/stylelint
     '@nuxtjs/stylelint-module',
-    // https://go.nuxtjs.dev/tailwindcss
-    '@nuxtjs/tailwindcss',
+    '@nuxt/postcss8',
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: ['@pinia/nuxt', '@vueuse/nuxt'],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {},
+  build: {
+    postcss: {
+      plugins: {
+        tailwindcss: {},
+        autoprefixer: {},
+      },
+    },
+  },
 
   runtimeConfig: {
     public: {
       ktaAddress: process.env.NUXT_KTA_ADDRESS,
       ktaTokenAddress: process.env.NUXT_KTA_TOKEN_ADDRESS,
-    },
-  },
-
-  tailwindcss: {
-    config: {
-      theme: {
-        container: {
-          center: true,
-        },
-        extend: {
-          colors: {
-            brown: {
-              light: '#635542',
-              DEFAULT: '#745a3d',
-              dark: '#2a1d0e',
-            },
-          },
-        },
-      },
     },
   },
 })
