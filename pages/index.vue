@@ -1,12 +1,15 @@
 <template>
   <div class="container">
-    <div v-if="ethereum" class="grid h-screen grid-cols-3 gap-3">
+    <div
+      v-if="hasMetamask && onValidNetwork"
+      class="grid h-screen grid-cols-3 gap-3"
+    >
       <CastleBox
-        v-for="item in addressesByCoordinate"
+        v-for="(item, index) in addressesByCoordinate"
         :item="item"
-        :key="item.x + '-' + item.y"
+        :key="index"
         @modalOpened="openModal(item)"
-      ></CastleBox>
+      />
       <InformationModal v-if="showModal" @modalClosed="closeModal()">
         <div class="flex flex-col">
           <span class="my-1 text-xs">{{ currentItem.x }}</span>
@@ -17,37 +20,39 @@
         </div>
       </InformationModal>
     </div>
-    <div v-else>THERE IS NO METAMASK</div>
+    <GameInfo v-else />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, ref, Ref } from 'vue'
 import { useConnectionStore } from '~/stores/connection'
-import { useContractStore } from '~/stores/contract'
+import { useUserGameStore } from '~/stores/userGame'
 import { BigNumber, ethers } from 'ethers'
 import { storeToRefs } from 'pinia'
 import InformationModal from '~/components/InformationModal.vue'
+import GameInfo from '~/components/GameInfo.vue'
 import CastleBox from '~/components/CastleBox.vue'
+import TheLoading from '~/components/TheLoading.vue'
 import { CoordinateItem } from '~/types/coordinate-item'
 import { useUserWalletStore } from '~/stores/userWallet'
 
 export default defineComponent({
-  components: { InformationModal, CastleBox },
+  components: { InformationModal, CastleBox, TheLoading, GameInfo },
   setup() {
     // Constants
     // @ts-ignore // TODO: remove this
     const { $kta, $ktaToken } = useNuxtApp()
     const connectionStore = useConnectionStore()
     const userWalletStore = useUserWalletStore()
-    const contractInfo: any = useContractStore()
+    const userGameStore: any = useUserGameStore()
     const { address, balance } = storeToRefs(userWalletStore)
-    const { user } = storeToRefs(contractInfo)
+    const { onValidNetwork } = storeToRefs(connectionStore)
+    const { user, addressesByCoordinate } = storeToRefs(userGameStore)
     const provider = connectionStore.provider
-    const ethereum = connectionStore.ethereum
+    const hasMetamask = connectionStore.hasMetamask
     const kta = $kta(provider)
     const ktaToken = $ktaToken(provider)
-    const addressesByCoordinate: Ref<CoordinateItem[]> = ref([])
     const showModal = ref(false)
     const currentItem: Ref<CoordinateItem> = ref({
       x: 0,
@@ -57,32 +62,13 @@ export default defineComponent({
 
     // Hooks
     onMounted(async () => {
-      if (!address) {
-        alert('No address')
-        return
-      }
-
-      if (ethereum) {
-        user.value = await kta.userByAddr(
-          await connectionStore.signer.getAddress()
-        )
-        contractInfo.setUserInfo(user.value)
-        const nearLevel = 1
-        const minScanX = user.value.coordinate._x.sub(nearLevel)
-        const maxScanX = user.value.coordinate._x.add(nearLevel)
-        const minScanY = user.value.coordinate._y.sub(nearLevel)
-        const maxScanY = user.value.coordinate._y.add(nearLevel)
-        for (let i = minScanX; i <= maxScanX; i++) {
-          for (let j = minScanY; j <= maxScanY; j++) {
-            const coordinateItem: CoordinateItem = {
-              x: i,
-              y: j,
-              addresses: await kta.getAddressesByCoordinate([i, j]),
-            }
-
-            addressesByCoordinate.value.push(coordinateItem)
-          }
-        }
+      if (hasMetamask && onValidNetwork.value) {
+        // TODO: Bu fonskiyon normalde header'da calisiyor fakat zaman uyumsuzlugu yonetilemedigi icin gecici olarak cp yapildi.
+        // ileride event yontemiyle haberlesilebilir ya da daha iyi bir yol bulunabilir.
+        await userWalletStore.connect()
+        const userInfo = await kta.userByAddr(address.value)
+        userGameStore.setUserInfo(userInfo)
+        await userGameStore.userCoordinate()
       }
 
       // @ts-ignore   b cnhchdht1QdressesByCoordinate.value[user.value.coordinate])
@@ -130,7 +116,8 @@ export default defineComponent({
       balance,
       address,
       user,
-      ethereum,
+      hasMetamask,
+      onValidNetwork,
     }
   },
 })
