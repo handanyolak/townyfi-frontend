@@ -1,15 +1,14 @@
-import { providers, ethers } from 'ethers'
+import { providers, ethers, constants } from 'ethers'
 import { defineStore } from 'pinia'
 import { useConnectionStore } from './connection'
+import { useUserGameStore } from './userGame'
 export const useUserWalletStore = defineStore('userWalletStore', {
   state: () => ({
-    address: '',
+    address: constants.AddressZero,
     balance: '',
-    isConnected: false,
-    register: false,
   }),
   getters: {
-    provider(state): any {
+    provider(): any {
       return useConnectionStore().provider
     },
     ethereum(): any {
@@ -29,88 +28,78 @@ export const useUserWalletStore = defineStore('userWalletStore', {
     setBalance(newBalance: string) {
       this.balance = newBalance
     },
-    setRegister(newRegister: boolean) {
-      this.register = newRegister
-    },
     async connect() {
-      await this.updateUserInfo()
+      const accounts = await this.provider.listAccounts()
+      const isConnected = accounts.length > 0
+      useConnectionStore().setIsConnected(isConnected)
+      if (isConnected) await this.updateUserInfo()
 
-      this.isConnected = Boolean(this.address)
-      if (!this.isConnected) {
-        throw new Error('Connection Error.')
-      }
-
-      await this.startEthEvents()
-      await this.isRegistered()
+      useConnectionStore().onValidNetwork &&
+        useUserGameStore().setIsRegistered(
+          await this.kta.isRegistered(this.address)
+        )
     },
     async updateUserInfo(_address = null) {
       await this.updateUserAddress(_address)
       await this.updateUserBalance()
     },
     async updateUserAddress(_address = null) {
-      this.setAddress(
-        _address ||
-          (await this.provider.send('eth_requestAccounts', []))[0].toLowerCase()
-      )
+      this.setAddress(_address || (await this.provider.listAccounts())[0])
     },
     async updateUserBalance() {
       this.setBalance(
-        ethers.utils.formatEther(
-          (await this.provider.getBalance(this.address)).toString()
-        )
+        ethers.utils.formatEther(await this.provider.getBalance(this.address))
       )
     },
+    // TODO: ileride connection.ts'e tasinacaklar
     startEthEvents() {
-      ethereum.on('chainChanged', this.handleChainChanged)
-      ethereum.on('accountsChanged', this.handleAccountsChanged)
-      ethereum.on('disconnect', this.handleDisconnect)
+      this.ethereum.on('chainChanged', this.handleChainChanged)
+      this.ethereum.on('accountsChanged', this.handleAccountsChanged)
+      this.ethereum.on('disconnect', this.handleDisconnect)
     },
-    async handleChainChanged() {
+    async handleChainChanged(chainId) {
+      useConnectionStore().setOnValidNetwork(chainId == 5)
       await this.updateUserBalance()
       console.log('Chain has changed.')
     },
-    async handleAccountsChanged(_accounts: any) {
-      if (_accounts.length > 0) {
-        await this.updateUserInfo(_accounts[0].toLowerCase())
-        console.log(`Linked account changed to '${_accounts[0]}'`)
+    async handleAccountsChanged(accounts: any) {
+      const isConnected = accounts.length > 0
+      useConnectionStore().setIsConnected(isConnected)
+      if (isConnected) {
+        await this.updateUserInfo(accounts[0])
+        useUserGameStore().setIsRegistered(
+          await this.kta.isRegistered(this.address)
+        )
+        // TODO: change the setUser
+        useUserGameStore().setUserInfo(await this.kta.userByAddr(this.address))
+        await useUserGameStore().userCoordinate()
+        console.log(`Linked account changed to '${accounts[0]}'`)
       } else {
         console.log('Linked account not found. Page will be reloaded.')
         await this.disconnectWeb3()
       }
     },
-    stopEthEvents() {
-      ethereum.removeListener('chainChanged', this.handleChainChanged)
-      ethereum.removeListener('accountsChanged', this.handleAccountsChanged)
-    },
     async handleDisconnect() {
-      await stopEthEvents()
-      this.isConnected = false
+      useConnectionStore().setIsConnected(false)
     },
 
     async disconnectWeb3() {
-      // reset events
-      await this.stopEthEvents()
-      // set false to `isConnected`
-      this.isConnected = false
+      this.address = constants.AddressZero
+      this.balance = ''
+      useConnectionStore().setIsConnected(false)
       console.log('Disconnected.')
     },
     async connectWeb3() {
       try {
-        // if No web3 provider
         if (!this.ethereum) {
           throw new Error('No provider detected.')
         }
-        // ask to connect
         await this.provider.send('eth_requestAccounts', [])
 
         await this.connect()
       } catch (error) {
-        // user denied account access
         console.log(error)
       }
-    },
-    async isRegistered() {
-      this.setRegister(await this.kta.isRegistered(this.address))
     },
   },
 })
