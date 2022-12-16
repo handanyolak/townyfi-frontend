@@ -6,12 +6,7 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script setup lang="ts">
 import TheHeader from '~/components/layout/TheHeader.vue'
 /* import TheFooter from '~/components/layout/TheFooter.vue' */
-
-export default defineComponent({
-  setup() {},
-})
 </script>

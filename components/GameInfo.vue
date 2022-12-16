@@ -2,11 +2,6 @@
   <div>GAME INFO</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 // TODO: ileride duzenlenecek
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  setup() {},
-})
 </script>

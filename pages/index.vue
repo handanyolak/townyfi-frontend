@@ -24,8 +24,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, ref, Ref } from 'vue'
+<script setup lang="ts">
+import { onMounted, ref, Ref } from 'vue'
 import { useConnectionStore } from '~/stores/connection'
 import { useUserGameStore } from '~/stores/userGame'
 import { BigNumber, ethers } from 'ethers'
@@ -37,90 +37,71 @@ import TheLoading from '~/components/TheLoading.vue'
 import { CoordinateItem } from '~/types/coordinate-item'
 import { useUserWalletStore } from '~/stores/userWallet'
 
-export default defineComponent({
-  components: { InformationModal, CastleBox, TheLoading, GameInfo },
-  setup() {
-    // Constants
-    // @ts-ignore // TODO: remove this
-    const { $kta, $ktaToken } = useNuxtApp()
-    const connectionStore = useConnectionStore()
-    const userWalletStore = useUserWalletStore()
-    const userGameStore: any = useUserGameStore()
-    const { address, balance } = storeToRefs(userWalletStore)
-    const { onValidNetwork } = storeToRefs(connectionStore)
-    const { user, addressesByCoordinate } = storeToRefs(userGameStore)
-    const provider = connectionStore.provider
-    const hasMetamask = connectionStore.hasMetamask
-    const kta = $kta(provider)
-    const ktaToken = $ktaToken(provider)
-    const showModal = ref(false)
-    const currentItem: Ref<CoordinateItem> = ref({
-      x: 0,
-      y: 0,
-      addresses: [],
-    })
+// Constants
+const { $kta, $ktaToken } = useNuxtApp()
+const connectionStore = useConnectionStore()
+const userWalletStore = useUserWalletStore()
+const userGameStore: any = useUserGameStore()
+const { address, balance } = storeToRefs(userWalletStore)
+const { onValidNetwork } = storeToRefs(connectionStore)
+const { user, addressesByCoordinate } = storeToRefs(userGameStore)
+const provider = connectionStore.provider
+const hasMetamask = connectionStore.hasMetamask
+const kta = $kta(provider)
+const ktaToken = $ktaToken(provider)
+const showModal = ref(false)
+const currentItem: Ref<CoordinateItem> = ref({
+  x: 0,
+  y: 0,
+  addresses: [],
+})
 
-    // Hooks
-    onMounted(async () => {
-      if (hasMetamask && onValidNetwork.value) {
-        // TODO: Bu fonskiyon normalde header'da calisiyor fakat zaman uyumsuzlugu yonetilemedigi icin gecici olarak cp yapildi.
-        // ileride event yontemiyle haberlesilebilir ya da daha iyi bir yol bulunabilir.
-        await userWalletStore.connect()
-        const userInfo = await kta.userByAddr(address.value)
-        userGameStore.setUserInfo(userInfo)
-        await userGameStore.userCoordinate()
-      }
+// Hooks
+onMounted(async () => {
+  if (hasMetamask && onValidNetwork.value) {
+    // TODO: Bu fonskiyon normalde header'da calisiyor fakat zaman uyumsuzlugu yonetilemedigi icin gecici olarak cp yapildi.
+    // ileride event yontemiyle haberlesilebilir ya da daha iyi bir yol bulunabilir.
+    await userWalletStore.connect()
+    const userInfo = await kta.userByAddr(address.value)
+    userGameStore.setUserInfo(userInfo)
+    await userGameStore.userCoordinate()
+  }
 
-      // @ts-ignore   b cnhchdht1QdressesByCoordinate.value[user.value.coordinate])
-      /*
+  // @ts-ignore   b cnhchdht1QdressesByCoordinate.value[user.value.coordinate])
+  /*
             user:
             armor, health, mana, energy, levelId, exp, charPoint, coordinate
             name, referrer
 
             */
 
-      /* startKtaTokenEvents() */
-      /*  await ktaToken
+  /* startKtaTokenEvents() */
+  /*  await ktaToken
               .connect(signer)
               .transfer(
                 '0xb91760bA38F185660755fEEcDFaeCe974Ac04A91',
                 ethers.utils.parseEther('1')
               ) */
-    })
-
-    // Methods
-    const startKtaTokenEvents = () => {
-      ktaToken.on(
-        'Transfer',
-        async (from: string, to: string, value: BigNumber) => {
-          console.log(`from: ${from}`)
-          console.log('to: ' + to)
-          console.log('amount: ' + ethers.utils.formatEther(value))
-        }
-      )
-    }
-
-    const openModal = (item: CoordinateItem) => {
-      currentItem.value = item
-      showModal.value = true
-    }
-
-    const closeModal = () => (showModal.value = false)
-
-    return {
-      openModal,
-      closeModal,
-      currentItem,
-      addressesByCoordinate,
-      showModal,
-      balance,
-      address,
-      user,
-      hasMetamask,
-      onValidNetwork,
-    }
-  },
 })
+
+// Methods
+const startKtaTokenEvents = () => {
+  ktaToken.on(
+    'Transfer',
+    async (from: string, to: string, value: BigNumber) => {
+      console.log(`from: ${from}`)
+      console.log('to: ' + to)
+      console.log('amount: ' + ethers.utils.formatEther(value))
+    }
+  )
+}
+
+const openModal = (item: CoordinateItem) => {
+  currentItem.value = item
+  showModal.value = true
+}
+
+const closeModal = () => (showModal.value = false)
 </script>
 
 <style>

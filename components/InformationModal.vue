@@ -39,25 +39,17 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from 'vue'
+<script setup lang="ts">
+import { ref } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 
-export default defineComponent({
-  setup(_, { emit }) {
-    const modal = ref(null)
+const modal = ref(null)
 
-    // Methods
-    const closeModal = () => {
-      emit('modalClosed')
-    }
+const emit = defineEmits(['modalClosed'])
 
-    onClickOutside(modal, () => closeModal())
+const closeModal = () => {
+  emit('modalClosed')
+}
 
-    return {
-      closeModal,
-      modal,
-    }
-  },
-})
+onClickOutside(modal, () => closeModal())
 </script>
