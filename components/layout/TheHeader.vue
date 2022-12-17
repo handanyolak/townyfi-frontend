@@ -7,32 +7,32 @@
           <div class="space-x-2">
             <button
               v-if="!isRegistered"
-              @click="userRegister()"
               class="p-1 text-white rounded-sm bg-brown"
+              @click="userRegister()"
             >
               Register the game
             </button>
             <button
-              @click="disconnectWeb3()"
               class="p-1 text-white rounded-sm bg-brown"
+              @click="disconnectWeb3()"
             >
               Disconnect Wallet
             </button>
           </div>
         </div>
         <button
-          @click="connectWeb3()"
           v-else
           class="p-1 text-white rounded-sm bg-brown-dark"
+          @click="connectWeb3()"
         >
           Connect Wallet
         </button>
       </div>
       <a
         v-else
-        @click="switchNetwork()"
         target="_blank"
         class="p-1 text-white rounded-sm bg-brown"
+        @click="switchNetwork()"
       >
         Switch Network
       </a>
@@ -51,7 +51,6 @@
 <script setup lang="ts">
 import { ethers } from 'ethers'
 import { storeToRefs } from 'pinia'
-import { onMounted } from 'vue'
 import { useConnectionStore } from '~/stores/connection'
 import { useUserWalletStore } from '~/stores/userWallet'
 import { useUserGameStore } from '~/stores/userGame'
@@ -69,7 +68,7 @@ const { isRegistered } = storeToRefs(userGameStore)
 const { onValidNetwork, isConnected } = storeToRefs(connectionStore)
 
 // Hooks
-onMounted(async () => {
+onMounted(() => {
   if (hasMetamask) {
     /* const accounts = await userWalletStore.provider */
     /* await userWalletStore.connect() */
