@@ -6,17 +6,21 @@
     >
       <CastleBox
         v-for="(item, index) in addressesByCoordinate"
-        :item="item"
         :key="index"
+        :item="item"
         @modalOpened="openModal(item)"
       />
+
       <InformationModal v-if="showModal" @modalClosed="closeModal()">
         <div class="flex flex-col">
           <span class="my-1 text-xs">{{ currentItem.x }}</span>
           <span class="my-1 text-xs">{{ currentItem.y }}</span>
-          <span v-for="address in currentItem.addresses" class="my-1 text-xs">{{
-            address
-          }}</span>
+          <span
+            v-for="(_address, index) in currentItem.addresses"
+            :key="index"
+            class="my-1 text-xs"
+            >{{ _address }}</span
+          >
         </div>
       </InformationModal>
     </div>
@@ -25,36 +29,32 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, Ref } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useConnectionStore } from '~/stores/connection'
 import { useUserGameStore } from '~/stores/userGame'
-import { BigNumber, ethers } from 'ethers'
-import { storeToRefs } from 'pinia'
 import InformationModal from '~/components/InformationModal.vue'
 import GameInfo from '~/components/GameInfo.vue'
 import CastleBox from '~/components/CastleBox.vue'
-import TheLoading from '~/components/TheLoading.vue'
 import { CoordinateItem } from '~/types/coordinate-item'
 import { useUserWalletStore } from '~/stores/userWallet'
 
 // Constants
-const { $kta, $ktaToken } = useNuxtApp()
+const { $kta } = useNuxtApp()
 const connectionStore = useConnectionStore()
 const userWalletStore = useUserWalletStore()
 const userGameStore: any = useUserGameStore()
-const { address, balance } = storeToRefs(userWalletStore)
+const { address } = storeToRefs(userWalletStore)
 const { onValidNetwork } = storeToRefs(connectionStore)
-const { user, addressesByCoordinate } = storeToRefs(userGameStore)
+const { addressesByCoordinate } = storeToRefs(userGameStore)
 const provider = connectionStore.provider
 const hasMetamask = connectionStore.hasMetamask
 const kta = $kta(provider)
-const ktaToken = $ktaToken(provider)
 const showModal = ref(false)
-const currentItem: Ref<CoordinateItem> = ref({
+const currentItem = ref({
   x: 0,
   y: 0,
   addresses: [],
-})
+} as CoordinateItem)
 
 // Hooks
 onMounted(async () => {
@@ -66,35 +66,18 @@ onMounted(async () => {
     userGameStore.setUserInfo(userInfo)
     await userGameStore.userCoordinate()
   }
-
-  // @ts-ignore   b cnhchdht1QdressesByCoordinate.value[user.value.coordinate])
-  /*
-            user:
-            armor, health, mana, energy, levelId, exp, charPoint, coordinate
-            name, referrer
-
-            */
-
-  /* startKtaTokenEvents() */
-  /*  await ktaToken
-              .connect(signer)
-              .transfer(
-                '0xb91760bA38F185660755fEEcDFaeCe974Ac04A91',
-                ethers.utils.parseEther('1')
-              ) */
 })
 
-// Methods
-const startKtaTokenEvents = () => {
-  ktaToken.on(
-    'Transfer',
-    async (from: string, to: string, value: BigNumber) => {
-      console.log(`from: ${from}`)
-      console.log('to: ' + to)
-      console.log('amount: ' + ethers.utils.formatEther(value))
-    }
-  )
-}
+// const startKtaTokenEvents = () => {
+//   ktaToken.on(
+//     'Transfer',
+//     async (from: string, to: string, value: BigNumber) => {
+//       console.log(`from: ${from}`)
+//       console.log('to: ' + to)
+//       console.log('amount: ' + ethers.utils.formatEther(value))
+//     }
+//   )
+// }
 
 const openModal = (item: CoordinateItem) => {
   currentItem.value = item
