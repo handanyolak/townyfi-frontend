@@ -2,12 +2,7 @@ import { defineNuxtConfig } from '@nuxt/bridge'
 
 export default defineNuxtConfig({
   bridge: {
-    scriptSetup: false,
-  },
-
-  typescript: {
-    shim: true,
-    strict: false,
+    vite: true,
   },
 
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
@@ -48,8 +43,6 @@ export default defineNuxtConfig({
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
     // https://go.nuxtjs.dev/stylelint
-    '@nuxtjs/stylelint-module',
-    '@nuxt/postcss8',
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
