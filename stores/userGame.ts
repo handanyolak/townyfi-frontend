@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import { CoordinateItem } from '~/types/coordinate-item'
 import { useUserWalletStore } from './userWallet'
+import { CoordinateItem } from '~/types/coordinate-item'
 
 export const useUserGameStore = defineStore('userGameStore', {
   state: () => ({
@@ -21,17 +21,16 @@ export const useUserGameStore = defineStore('userGameStore', {
       this.isRegistered = newIsRegistered
     },
     // TODO: change function name
-    async userCoordinate() {
+    async userCoordinate(nearLevel: number) {
       console.log('userCoordinate')
       this.addressesByCoordinate = []
-      const nearLevel = 1
       const minScanX = this.user.coordinate._x.sub(nearLevel)
       const maxScanX = this.user.coordinate._x.add(nearLevel)
       const minScanY = this.user.coordinate._y.sub(nearLevel)
       const maxScanY = this.user.coordinate._y.add(nearLevel)
 
-      for (let i = minScanX; i <= maxScanX; i++) {
-        for (let j = minScanY; j <= maxScanY; j++) {
+      for (let j = maxScanY; j >= minScanY; j--) {
+        for (let i = minScanX; i <= maxScanX; i++) {
           const coordinateItem: CoordinateItem = {
             x: i,
             y: j,
