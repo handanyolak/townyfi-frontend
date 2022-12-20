@@ -1,10 +1,10 @@
 <template>
   <div class="container">
-    <div v-if="hasMetamask" class="flex justify-between py-3 my-5">
-      <span>TownyFi</span>
+    <div v-if="hasMetamask" class="flex justify-between py-3">
+      <span :class="isDark ? 'text-white' : ''">TownyFi</span>
       <div v-if="onValidNetwork">
         <div v-if="isConnected">
-          <div class="space-x-2">
+          <div class="flex items-center space-x-2">
             <button
               v-if="!isRegistered"
               class="p-1 text-white rounded-sm bg-brown"
@@ -18,6 +18,20 @@
             >
               Disconnect Wallet
             </button>
+            <div>
+              <img
+                v-if="isDark"
+                src="@/assets/img/dark-mode.svg"
+                class="w-5 h-5 cursor-pointer"
+                @click="toggleDark()"
+              />
+              <img
+                v-else
+                src="@/assets/img/light-mode.svg"
+                class="w-5 h-5 cursor-pointer"
+                @click="toggleDark()"
+              />
+            </div>
           </div>
         </div>
         <button
@@ -51,6 +65,7 @@
 <script setup lang="ts">
 import { ethers } from 'ethers'
 import { storeToRefs } from 'pinia'
+import { useDark, useToggle } from '@vueuse/core'
 import { useConnectionStore } from '~/stores/connection'
 import { useUserWalletStore } from '~/stores/userWallet'
 import { useUserGameStore } from '~/stores/userGame'
@@ -108,4 +123,8 @@ const userRegister = async () => {
     console.log(error)
   }
 }
+
+const isDark = useDark()
+
+const toggleDark = useToggle(isDark)
 </script>

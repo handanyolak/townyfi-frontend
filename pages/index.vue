@@ -1,8 +1,11 @@
 <template>
   <div class="container">
+    <div>
+      <button @click="foo()">set to 2</button>
+    </div>
     <div
       v-if="hasMetamask && onValidNetwork"
-      class="grid h-screen grid-cols-3 gap-3"
+      class="grid h-screen grid-cols-3 gap-4"
     >
       <CastleBox
         v-for="(item, index) in addressesByCoordinate"
@@ -58,26 +61,16 @@ const currentItem = ref({
 
 // Hooks
 onMounted(async () => {
+  const nearLevel = localStorage.getItem('nearLevel') || 1
   if (hasMetamask && onValidNetwork.value) {
     // TODO: Bu fonskiyon normalde header'da calisiyor fakat zaman uyumsuzlugu yonetilemedigi icin gecici olarak cp yapildi.
     // ileride event yontemiyle haberlesilebilir ya da daha iyi bir yol bulunabilir.
     await userWalletStore.connect()
     const userInfo = await kta.userByAddr(address.value)
     userGameStore.setUserInfo(userInfo)
-    await userGameStore.userCoordinate()
+    await userGameStore.userCoordinate(Number(nearLevel))
   }
 })
-
-// const startKtaTokenEvents = () => {
-//   ktaToken.on(
-//     'Transfer',
-//     async (from: string, to: string, value: BigNumber) => {
-//       console.log(`from: ${from}`)
-//       console.log('to: ' + to)
-//       console.log('amount: ' + ethers.utils.formatEther(value))
-//     }
-//   )
-// }
 
 const openModal = (item: CoordinateItem) => {
   currentItem.value = item
@@ -85,6 +78,11 @@ const openModal = (item: CoordinateItem) => {
 }
 
 const closeModal = () => (showModal.value = false)
+
+const foo = () => {
+  console.log(5)
+  localStorage.setItem('nearLevel', '2')
+}
 </script>
 
 <style>

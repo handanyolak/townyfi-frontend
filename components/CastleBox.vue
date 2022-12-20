@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col items-center text-2xl font-bold shadow-2xl castle rounded-xl"
+    class="flex flex-col items-center text-2xl font-bold shadow-2xl castle rounded-xl dark:shadow-slate-400 dark:shadow-lg"
   >
     <div>
       <span>{{ item.x }}</span>
