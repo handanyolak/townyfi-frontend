@@ -6,7 +6,7 @@
     "sourceMap": true,
     "experimentalDecorators": true,
     "baseUrl": ".",
-    "types": ["@nuxt/types", "@types/node", "@pinia/nuxt"]
+    "types": ["@nuxt/types", "@types/node", "@pinia/nuxt", "@nuxtjs/i18n"]
   },
   "exclude": ["node_modules", "dist"]
 }

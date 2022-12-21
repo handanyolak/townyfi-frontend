@@ -11,6 +11,10 @@ export default defineNuxtConfig({
   // Target: https://go.nuxtjs.dev/config-target
   target: 'static',
 
+  imports: {
+    dirs: ['stores'],
+  },
+
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     title: 'TownyFi-frontend',
@@ -46,7 +50,22 @@ export default defineNuxtConfig({
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: ['@pinia/nuxt', '@vueuse/nuxt'],
+  modules: ['@pinia/nuxt', '@vueuse/nuxt', '@nuxtjs/i18n'],
+
+  i18n: {
+    vueI18n: {
+      legacy: false,
+      locale: 'en',
+      messages: {
+        en: {
+          welcome: 'Welcome',
+        },
+        tr: {
+          welcome: 'Hosgeldin',
+        },
+      },
+    },
+  },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
@@ -63,5 +82,9 @@ export default defineNuxtConfig({
       ktaAddress: process.env.NUXT_KTA_ADDRESS,
       ktaTokenAddress: process.env.NUXT_KTA_TOKEN_ADDRESS,
     },
+  },
+
+  pinia: {
+    autoImports: ['defineStore', 'storeToRefs'],
   },
 })
