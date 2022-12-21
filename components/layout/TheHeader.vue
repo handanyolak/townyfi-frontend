@@ -64,11 +64,7 @@
 
 <script setup lang="ts">
 import { ethers } from 'ethers'
-import { storeToRefs } from 'pinia'
 import { useDark, useToggle } from '@vueuse/core'
-import { useConnectionStore } from '~/stores/connection'
-import { useUserWalletStore } from '~/stores/userWallet'
-import { useUserGameStore } from '~/stores/userGame'
 
 // Constants
 const connectionStore = useConnectionStore()

@@ -1,5 +1,4 @@
-import { defineStore } from 'pinia'
-import { ethers, providers } from 'ethers'
+import { providers } from 'ethers'
 
 export const useConnectionStore = defineStore('connectionStore', {
   state: () => ({
@@ -13,11 +12,11 @@ export const useConnectionStore = defineStore('connectionStore', {
     ethereum(): any {
       return window.ethereum
     },
-    provider(state): any {
+    provider(): any {
       if (this.hasMetamask)
         return new providers.Web3Provider(this.ethereum, 'any')
     },
-    signer(state): any {
+    signer(): any {
       if (this.hasMetamask) return this.provider.getSigner()
     },
   },

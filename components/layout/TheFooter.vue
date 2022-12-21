@@ -17,7 +17,6 @@
 
 <script setup lang="ts">
 import { BigNumber } from 'ethers'
-import { useConnectionStore } from '~/stores/connection'
 
 enum Direction {
   Up,

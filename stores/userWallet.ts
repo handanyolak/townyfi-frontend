@@ -1,7 +1,6 @@
-import { providers, ethers, constants } from 'ethers'
+import { ethers, constants } from 'ethers'
 import { defineStore } from 'pinia'
-import { useConnectionStore } from './connection'
-import { useUserGameStore } from './userGame'
+
 export const useUserWalletStore = defineStore('userWalletStore', {
   state: () => ({
     address: constants.AddressZero,
@@ -58,7 +57,7 @@ export const useUserWalletStore = defineStore('userWalletStore', {
       this.ethereum.on('disconnect', this.handleDisconnect)
     },
     async handleChainChanged(chainId) {
-      useConnectionStore().setOnValidNetwork(chainId == 5)
+      useConnectionStore().setOnValidNetwork(chainId === 5)
       await this.updateUserBalance()
       console.log('Chain has changed.')
     },
@@ -79,11 +78,11 @@ export const useUserWalletStore = defineStore('userWalletStore', {
         await this.disconnectWeb3()
       }
     },
-    async handleDisconnect() {
+    handleDisconnect() {
       useConnectionStore().setIsConnected(false)
     },
 
-    async disconnectWeb3() {
+    disconnectWeb3() {
       this.address = constants.AddressZero
       this.balance = ''
       useConnectionStore().setIsConnected(false)
