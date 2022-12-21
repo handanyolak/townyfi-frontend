@@ -2,15 +2,17 @@
   <Transition name="slide-fade">
     <div
       v-if="appOptionStore.showSidebar"
-      class="fixed top-0 z-50 min-h-screen bg-gray-400 w-60"
+      class="fixed top-0 z-50 min-h-screen bg-gray-400 w-[500px] p-3"
       @mouseleave="sideLeave()"
     >
       <div>Sidebar</div>
+      <SidebarTabVue />
     </div>
   </Transition>
 </template>
 
 <script setup lang="ts">
+import SidebarTabVue from '~/components/SidebarTab.vue'
 const appOptionStore = useAppOptions()
 
 const sideLeave = () => {
