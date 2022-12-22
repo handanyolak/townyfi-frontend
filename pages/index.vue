@@ -1,16 +1,5 @@
 <template>
   <div class="container">
-    <div
-      class="absolute left-0 p-2 transition ease-in-out rounded-r-lg pl-7 bg-amber-900"
-      :class="
-        appOptionStore.showSidebar
-          ? 'translate-x-0'
-          : 'duration-1000 -translate-x-6'
-      "
-      @mouseover="sideOver()"
-    >
-      <img src="@/assets/img/sword-sidebar.svg" class="w-10 h-10" />
-    </div>
     <div>
       <button @click="foo()">set to 2</button>
     </div>
@@ -39,6 +28,7 @@
       </InformationModal>
     </div>
     <GameInfo v-else />
+    <HoverMenu />
   </div>
 </template>
 
@@ -46,6 +36,7 @@
 import InformationModal from '~/components/InformationModal.vue'
 import GameInfo from '~/components/GameInfo.vue'
 import CastleBox from '~/components/CastleBox.vue'
+import HoverMenu from '~/components/HoverMenu.vue'
 import { CoordinateItem } from '~/types/coordinate-item'
 
 // Constants
@@ -53,7 +44,6 @@ const { $kta } = useNuxtApp()
 const connectionStore = useConnectionStore()
 const userWalletStore = useUserWalletStore()
 const userGameStore: any = useUserGameStore()
-const appOptionStore = useAppOptions()
 const { address } = storeToRefs(userWalletStore)
 const { onValidNetwork } = storeToRefs(connectionStore)
 const { addressesByCoordinate } = storeToRefs(userGameStore)
@@ -89,9 +79,6 @@ const closeModal = () => (showModal.value = false)
 
 const foo = () => {
   localStorage.setItem('nearLevel', '2')
-}
-const sideOver = () => {
-  appOptionStore.showSidebar = true
 }
 </script>
 
