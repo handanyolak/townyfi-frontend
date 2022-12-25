@@ -24,6 +24,9 @@ module.exports = {
       zIndex: {
         max: '99999',
       },
+      skew: {
+        65: '65deg',
+      },
     },
   },
   plugins: [],
