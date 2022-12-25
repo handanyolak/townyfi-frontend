@@ -83,12 +83,3 @@ const foo = () => {
   localStorage.setItem('nearLevel', '2')
 }
 </script>
-
-<style>
-.castle {
-  background-image: url('~/assets/img/castle-brown.svg');
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 70%;
-}
-</style>
