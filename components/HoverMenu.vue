@@ -9,7 +9,7 @@
       "
       @mouseover="sideOver('isGameInfo')"
     >
-      <img src="@/assets/img/sword-sidebar.svg" class="w-10 h-10" />
+      <img src="@/assets/img/flag.svg" class="w-10 h-10" />
     </div>
     <div
       class="absolute left-0 p-2 transition ease-in-out rounded-r-lg top-80 pl-7 bg-amber-900"
@@ -20,7 +20,7 @@
       "
       @mouseover="sideOver('isWeb3Info')"
     >
-      <img src="@/assets/img/sword-sidebar.svg" class="w-10 h-10" />
+      <img src="@/assets/img/flag.svg" class="w-10 h-10" />
     </div>
     <div
       class="absolute right-0 p-2 transition ease-in-out rounded-l-lg top-40 pr-7 bg-amber-900"
@@ -31,7 +31,7 @@
       "
       @mouseover="sideOver('isUserOptions')"
     >
-      <img src="@/assets/img/sword-sidebar.svg" class="w-10 h-10" />
+      <img src="@/assets/img/flag.svg" class="w-10 h-10" />
     </div>
     <div
       class="absolute right-0 p-2 transition ease-in-out rounded-l-lg top-80 pr-7 bg-amber-900"
@@ -42,7 +42,7 @@
       "
       @mouseover="sideOver('isInteractions')"
     >
-      <img src="@/assets/img/sword-sidebar.svg" class="w-10 h-10" />
+      <img src="@/assets/img/flag.svg" class="w-10 h-10" />
     </div>
   </div>
 </template>
