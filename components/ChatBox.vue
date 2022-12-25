@@ -29,15 +29,17 @@
               class="relative flex items-center"
             >
               <img
-                class="w-5 h-5 mr-2 rounded-full"
+                class="w-5 h-5 mr-4 rounded-full"
                 src="@/assets/img/soldier.svg"
               />
               <p
                 style="font-size: 12px"
-                class="p-2 my-2 rounded-xl message-box"
+                class="relative inline-block after:origin-top-right p-2 z-10 after:rounded-l-xl after:rounded-r-sm my-2 rounded-[10px] after:-left-4 after:absolute after:-z-10 after:border-r-[32px] after:border-b-[14px] after:skew-x-65 message-box"
                 :class="{
-                  'bg-cyan-800 text-white': message.author === 'you',
-                  'bg-gray-100': message.author !== 'you',
+                  'bg-cyan-800 text-white after:border-y-transparent after:border-r-cyan-800 after:border-l-transparent':
+                    message.author === 'you',
+                  'bg-gray-100 after:border-y-transparent after:border-r-gray-100 after:border-l-transparent':
+                    message.author !== 'you',
                 }"
               >
                 {{ message.body }}
@@ -145,31 +147,3 @@ const showChat = () => {
   isChat.value = !isChat.value
 }
 </script>
-
-<style scoped>
-/* .message-box {
-  position: relative;
-  background: #ff0d1e;
-  display: inline-block;
-  width: 239px;
-  height: 95px;
-  margin: 40px;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 10px;
-}
-.message-box:after {
-  content: '';
-  position: absolute;
-  top: 25px;
-  left: -32px;
-  width: 0;
-  height: 0;
-  border-style: inset;
-  border-width: 0 32px 20px 0;
-  border-color: transparent #ff0d1e transparent transparent;
-  transform: skew(65deg);
-  transform-origin: top right;
-  border-radius: 75% 0 0 0 / 35%;
-} */
-</style>
