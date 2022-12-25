@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col items-center text-2xl font-bold shadow-2xl castle rounded-xl dark:shadow-slate-400 dark:shadow-lg"
+    class="relative flex flex-col items-center text-2xl font-bold shadow-2xl castle rounded-xl dark:shadow-slate-400 dark:shadow-lg"
   >
     <div>
       <span>{{ item.x }}</span>
@@ -8,8 +8,19 @@
       <span>{{ item.y }}</span>
     </div>
     <button @click="toggleModal()">
-      <img src="@/assets/img/soldier.svg" alt="soldier" />
+      <img
+        class="absolute bottom-0 z-10 visible w-10 h-10 dark:invisible"
+        src="@/assets/img/knight.svg"
+        alt="soldier"
+      />
+      <img
+        class="absolute bottom-0 z-10 invisible w-10 h-10 dark:visible"
+        src="@/assets/img/soldier.svg"
+        alt="soldier"
+      />
     </button>
+
+    <CastleSvg class="absolute w-full h-full" />
   </div>
 </template>
 
