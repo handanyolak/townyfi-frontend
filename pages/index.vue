@@ -3,10 +3,7 @@
     <div>
       <button @click="foo()">set to 2</button>
     </div>
-    <div
-      v-if="hasMetamask && onValidNetwork"
-      class="grid h-screen grid-cols-3 gap-4"
-    >
+    <div v-if="hasMetamask && onValidNetwork" class="grid grid-cols-3 gap-4">
       <CastleBox
         v-for="(item, index) in addressesByCoordinate"
         :key="index"
