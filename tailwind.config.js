@@ -13,6 +13,9 @@ module.exports = {
     extend: {
       container: {
         center: true,
+        padding: {
+          DEFAULT: '6rem',
+        },
       },
       colors: {
         brown: {
