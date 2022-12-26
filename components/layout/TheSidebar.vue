@@ -38,9 +38,10 @@ const sideLeave = () => {
 <style>
 .slide-left-fade-enter-active,
 .slide-left-fade-leave-active {
-  transition-delay: 1s;
   transition: transform 0.8s ease;
+  transition-delay: 1s;
 }
+
 .slide-left-fade-enter,
 .slide-left-fade-leave-to {
   transform: translateX(-100%);
@@ -49,9 +50,10 @@ const sideLeave = () => {
 
 .slide-right-fade-enter-active,
 .slide-right-fade-leave-active {
-  transition-delay: 1s;
   transition: transform 0.8s ease;
+  transition-delay: 1s;
 }
+
 .slide-right-fade-enter,
 .slide-right-fade-leave-to {
   transform: translateX(100%);
