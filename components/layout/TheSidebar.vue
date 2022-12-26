@@ -13,7 +13,7 @@
           ? 'left-0'
           : 'right-0'
       "
-      class="fixed top-0 z-50 min-h-screen bg-gray-400 w-[500px] p-3"
+      class="fixed top-0 z-50 min-h-screen w-[500px] bg-gray-400 p-3"
       @mouseleave="sideLeave()"
     >
       <div>Sidebar</div>

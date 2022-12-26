@@ -10,7 +10,7 @@
         leave-to-class="opacity-0"
       >
         <div
-          class="fixed inset-0 w-full h-full bg-black modal-backdrop bg-opacity-20"
+          class="modal-backdrop fixed inset-0 h-full w-full bg-black bg-opacity-20"
         >
           <div class="flex justify-center pt-24">
             <Transition
@@ -23,11 +23,11 @@
             >
               <div
                 ref="modal"
-                class="relative w-1/2 p-4 bg-white rounded-lg shadow-xl modal"
+                class="modal relative w-1/2 rounded-lg bg-white p-4 shadow-xl"
                 role="dialog"
               >
                 <button class="absolute right-2 top-2" @click="closeModal">
-                  <img class="w-5 h-5" src="@/assets/img/exit.svg" />
+                  <img class="h-5 w-5" src="@/assets/img/exit.svg" />
                 </button>
                 <slot />
               </div>

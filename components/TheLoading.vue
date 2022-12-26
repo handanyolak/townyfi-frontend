@@ -1,14 +1,14 @@
 <template>
-  <div class="fixed inset-0 w-full h-full bg-gray-300 modal-backdrop">
-    <div class="flex items-center justify-center min-h-screen">
-      <div class="flex px-20 py-10 space-x-3 bg-white rounded-full loader">
-        <div class="w-10 h-10 rounded-full animate-bounce">
+  <div class="modal-backdrop fixed inset-0 h-full w-full bg-gray-300">
+    <div class="flex min-h-screen items-center justify-center">
+      <div class="loader flex space-x-3 rounded-full bg-white px-20 py-10">
+        <div class="h-10 w-10 animate-bounce rounded-full">
           <img src="~/assets/img/swords.svg" alt="swords" />
         </div>
-        <div class="w-10 h-10 rounded-full animate-bounce">
+        <div class="h-10 w-10 animate-bounce rounded-full">
           <img src="~/assets/img/castle-brown.svg" alt="swords" />
         </div>
-        <div class="w-10 h-10 rounded-full animate-bounce">
+        <div class="h-10 w-10 animate-bounce rounded-full">
           <img src="~/assets/img/swords.svg" alt="swords" />
         </div>
       </div>

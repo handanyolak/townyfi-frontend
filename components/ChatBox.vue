@@ -2,20 +2,20 @@
   <div>
     <div class="fixed bottom-0 right-1">
       <div
-        class="flex flex-col w-56 transition-all duration-700 ease"
+        class="ease flex w-56 flex-col transition-all duration-700"
         :class="isChat ? 'max-h-96' : 'max-h-10'"
       >
         <div
-          class="grid w-full h-10 grid-cols-2 p-2 bg-white border border-b shadow-md gap-x-1 rounded-t-2xl"
+          class="grid h-10 w-full grid-cols-2 gap-x-1 rounded-t-2xl border border-b bg-white p-2 shadow-md"
         >
           <button
-            class="px-2 py-1 text-white bg-yellow-800 outline-none rounded-t-xl"
+            class="rounded-t-xl bg-yellow-800 px-2 py-1 text-white outline-none"
             @click="toggleChatTabs(1)"
           >
             Chat Box
           </button>
           <button
-            class="px-2 py-1 text-white bg-yellow-800 outline-none rounded-t-xl"
+            class="rounded-t-xl bg-yellow-800 px-2 py-1 text-white outline-none"
             @click="toggleChatTabs(2)"
           >
             Logs
@@ -27,19 +27,19 @@
             :class="{ hidden: openChatTab !== 1, block: openChatTab === 1 }"
             class="bg-white"
           >
-            <div ref="chatArea" class="p-4 overflow-auto h-52">
+            <div ref="chatArea" class="h-52 overflow-auto p-4">
               <div
                 v-for="(message, index) in messages"
                 :key="index"
                 class="relative flex items-center"
               >
                 <img
-                  class="w-5 h-5 mr-4 rounded-full"
+                  class="mr-4 h-5 w-5 rounded-full"
                   src="@/assets/img/soldier.svg"
                 />
                 <p
                   style="font-size: 12px"
-                  class="relative inline-block after:origin-top-right p-2 z-10 after:rounded-l-xl after:rounded-r-sm my-2 rounded-[10px] after:-left-4 after:absolute after:-z-10 after:border-r-[32px] after:border-b-[14px] after:skew-x-65 message-box"
+                  class="message-box relative z-10 my-2 inline-block rounded-[10px] p-2 after:absolute after:-left-4 after:-z-10 after:origin-top-right after:skew-x-65 after:rounded-l-xl after:rounded-r-sm after:border-r-[32px] after:border-b-[14px]"
                   :class="{
                     'bg-cyan-800 text-white after:border-y-transparent after:border-r-cyan-800 after:border-l-transparent':
                       message.author === 'you',
@@ -53,12 +53,12 @@
             </div>
 
             <div class="">
-              <div class="flex items-center p-2 border-t">
-                <div class="w-full mx-2">
+              <div class="flex items-center border-t p-2">
+                <div class="mx-2 w-full">
                   <input
                     v-model="bobMessage"
                     style="font-size: 12px"
-                    class="w-full px-2 py-1 border border-gray-200 rounded-full outline-none"
+                    class="w-full rounded-full border border-gray-200 px-2 py-1 outline-none"
                     type="text"
                     placeholder="Aa"
                     autofocus
@@ -66,7 +66,7 @@
                 </div>
                 <div>
                   <button
-                    class="inline-flex p-1 rounded-full hover:bg-indigo-50"
+                    class="inline-flex rounded-full p-1 hover:bg-indigo-50"
                     type="button"
                     @click="sendMessage('in')"
                   >
@@ -74,12 +74,12 @@
                   </button>
                 </div>
               </div>
-              <div class="flex items-center p-2 border-t">
-                <div class="w-full mx-2">
+              <div class="flex items-center border-t p-2">
+                <div class="mx-2 w-full">
                   <input
                     v-model="youMessage"
                     style="font-size: 12px"
-                    class="w-full px-2 py-1 border border-gray-200 rounded-full outline-none"
+                    class="w-full rounded-full border border-gray-200 px-2 py-1 outline-none"
                     type="text"
                     placeholder="Aa"
                     autofocus
@@ -88,7 +88,7 @@
 
                 <div>
                   <button
-                    class="inline-flex p-1 rounded-full hover:bg-indigo-50"
+                    class="inline-flex rounded-full p-1 hover:bg-indigo-50"
                     type="button"
                     @click="sendMessage('out')"
                   >
@@ -101,11 +101,11 @@
 
           <div
             :class="{ hidden: openChatTab !== 2, block: openChatTab === 2 }"
-            class="h-full p-3 overflow-auto bg-white"
+            class="h-full overflow-auto bg-white p-3"
           >
-            <div v-for="item in 9" :key="item" class="flex my-2">
+            <div v-for="item in 9" :key="item" class="my-2 flex">
               <span
-                class="inline-block w-4 h-4 p-3 mr-1 bg-red-600 rounded-full"
+                class="mr-1 inline-block h-4 w-4 rounded-full bg-red-600 p-3"
               ></span>
               <p class="!text-xs">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit.

@@ -1,15 +1,15 @@
 <template>
   <div>
-    <button class="p-2 bg-red-500 rounded" @click="userMove(Direction.Up)">
+    <button class="rounded bg-red-500 p-2" @click="userMove(Direction.Up)">
       up
     </button>
-    <button class="p-2 bg-red-500 rounded" @click="userMove(Direction.Right)">
+    <button class="rounded bg-red-500 p-2" @click="userMove(Direction.Right)">
       right
     </button>
-    <button class="p-2 bg-red-500 rounded" @click="userMove(Direction.Down)">
+    <button class="rounded bg-red-500 p-2" @click="userMove(Direction.Down)">
       down
     </button>
-    <button class="p-2 bg-red-500 rounded" @click="userMove(Direction.Left)">
+    <button class="rounded bg-red-500 p-2" @click="userMove(Direction.Left)">
       left
     </button>
   </div>

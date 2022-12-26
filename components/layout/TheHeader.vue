@@ -7,13 +7,13 @@
           <div class="flex items-center space-x-2">
             <button
               v-if="!isRegistered"
-              class="p-1 text-white rounded-sm bg-brown"
+              class="rounded-sm bg-brown p-1 text-white"
               @click="userRegister()"
             >
               Register the game
             </button>
             <button
-              class="p-1 text-white rounded-sm bg-brown"
+              class="rounded-sm bg-brown p-1 text-white"
               @click="disconnectWeb3()"
             >
               Disconnect Wallet
@@ -22,13 +22,13 @@
               <img
                 v-if="isDark"
                 src="@/assets/img/dark-mode.svg"
-                class="w-5 h-5 cursor-pointer"
+                class="h-5 w-5 cursor-pointer"
                 @click="toggleDark()"
               />
               <img
                 v-else
                 src="@/assets/img/light-mode.svg"
-                class="w-5 h-5 cursor-pointer"
+                class="h-5 w-5 cursor-pointer"
                 @click="toggleDark()"
               />
             </div>
@@ -36,7 +36,7 @@
         </div>
         <button
           v-else
-          class="p-1 text-white rounded-sm bg-brown-dark"
+          class="rounded-sm bg-brown-dark p-1 text-white"
           @click="connectWeb3()"
         >
           Connect Wallet
@@ -45,7 +45,7 @@
       <a
         v-else
         target="_blank"
-        class="p-1 text-white rounded-sm bg-brown"
+        class="rounded-sm bg-brown p-1 text-white"
         @click="switchNetwork()"
       >
         Switch Network
@@ -55,7 +55,7 @@
       v-else
       href="https://metamask.io/download/"
       target="_blank"
-      class="p-1 text-white rounded-sm bg-brown"
+      class="rounded-sm bg-brown p-1 text-white"
     >
       install
     </a>
