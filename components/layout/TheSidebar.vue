@@ -39,7 +39,6 @@ const sideLeave = () => {
 .slide-left-fade-enter-active,
 .slide-left-fade-leave-active {
   transition: transform 0.8s ease;
-  transition-delay: 1s;
 }
 
 .slide-left-fade-enter,
@@ -51,7 +50,6 @@ const sideLeave = () => {
 .slide-right-fade-enter-active,
 .slide-right-fade-leave-active {
   transition: transform 0.8s ease;
-  transition-delay: 1s;
 }
 
 .slide-right-fade-enter,
