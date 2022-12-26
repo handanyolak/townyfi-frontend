@@ -2,7 +2,8 @@ import { providers } from 'ethers'
 
 export const useConnectionStore = defineStore('connectionStore', {
   state: () => ({
-    onValidNetwork: Boolean(window.ethereum) && window.ethereum.chainId == 5,
+    onValidNetwork:
+      Boolean(window.ethereum) && window.ethereum.chainId === '0x5',
     isConnected: false,
   }),
   getters: {
