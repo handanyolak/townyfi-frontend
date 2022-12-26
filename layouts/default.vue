@@ -1,5 +1,5 @@
 <template>
-  <div class="dark:bg-gray-900">
+  <div class="h-screen dark:bg-gray-900">
     <TheHeader />
     <TheSidebar />
     <Nuxt />
