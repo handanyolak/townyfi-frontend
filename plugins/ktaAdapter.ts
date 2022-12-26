@@ -1,7 +1,7 @@
 import { ethers } from 'ethers'
 import ktaAbi from '~/abi/ktaAbi.json'
 
-export default defineNuxtPlugin((nuxtApp) => {
+export default defineNuxtPlugin(() => {
   const config = useRuntimeConfig()
 
   return {
