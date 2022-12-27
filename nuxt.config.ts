@@ -50,22 +50,31 @@ export default defineNuxtConfig({
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: ['@pinia/nuxt', '@vueuse/nuxt', '@nuxtjs/i18n'],
+  modules: [
+    '@pinia/nuxt',
+    '@vueuse/nuxt',
+    // '@nuxtjs/i18n'
+  ],
 
-  i18n: {
-    vueI18n: {
-      legacy: false,
-      locale: 'en',
-      messages: {
-        en: {
-          welcome: 'Welcome',
-        },
-        tr: {
-          welcome: 'Hosgeldin',
-        },
-      },
-    },
-  },
+  // i18n: {
+  //   strategy: 'no_prefix',
+  //   locales: ['en', 'fr', 'es'],
+  //   defaultLocale: 'en',
+  //   vueI18n: {
+  //     fallbackLocale: 'en',
+  //     messages: {
+  //       en: {
+  //         welcome: 'Welcome',
+  //       },
+  //       fr: {
+  //         welcome: 'Bienvenue',
+  //       },
+  //       es: {
+  //         welcome: 'Bienvenido',
+  //       },
+  //     },
+  //   },
+  // },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {

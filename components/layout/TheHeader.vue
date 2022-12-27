@@ -1,5 +1,10 @@
 <template>
   <div class="container">
+    <div class="space-x-2">
+      <button class="rounded-md bg-red-500 p-2">EN</button>
+      <button class="rounded-md bg-red-500 p-2">FR</button>
+      <button class="rounded-md bg-red-500 p-2">ES</button>
+    </div>
     <div v-if="hasMetamask" class="flex justify-between py-3">
       <span :class="isDark ? 'text-white' : ''">TownyFi</span>
       <div v-if="onValidNetwork">
