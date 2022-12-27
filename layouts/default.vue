@@ -12,3 +12,9 @@ import TheHeader from '~/components/layout/TheHeader.vue'
 import TheFooter from '~/components/layout/TheFooter.vue'
 import TheSidebar from '~/components/layout/TheSidebar.vue'
 </script>
+
+<style>
+body {
+  overflow-x: hidden;
+}
+</style>
