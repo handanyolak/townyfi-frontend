@@ -12,7 +12,7 @@ export default defineNuxtConfig({
   target: 'static',
 
   imports: {
-    dirs: ['stores'],
+    dirs: ['stores', 'composables'],
   },
 
   // Global page headers: https://go.nuxtjs.dev/config-head
