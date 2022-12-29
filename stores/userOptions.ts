@@ -1,5 +1,11 @@
-export const useUserOptions = defineStore('userOptionsStore', {
-  state: () => ({}),
+export const useUserOptionsStore = defineStore('userOptionsStore', {
+  state: () => ({
+    language: 'tr',
+  }),
   getters: {},
-  actions: {},
+  actions: {
+    setLanguage(language: string) {
+      this.language = language
+    },
+  },
 })
