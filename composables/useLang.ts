@@ -3,17 +3,11 @@ export default (word: string) => {
   const { language } = userOptionsStore
 
   const words = {
-    tr: {
-      welcome: 'Hosgeldin',
-      my_love: '$ikim',
-    },
     en: {
-      welcome: 'Welcome',
-      my_love: 'My love',
+      disconnect_wallet: 'Disconnect Wallet',
     },
-    fr: {
-      welcome: 'Bienvenue',
-      my_love: 'Mon amour',
+    tr: {
+      disconnect_wallet: 'Cüzdan Bağlantısını Kes',
     },
   }
 
