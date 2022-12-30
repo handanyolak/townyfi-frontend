@@ -1,6 +1,6 @@
 export const useUserOptionsStore = defineStore('userOptionsStore', {
   state: () => ({
-    language: 'tr',
+    language: localStorage.getItem('lang'),
   }),
   getters: {},
   actions: {
