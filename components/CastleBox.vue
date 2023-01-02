@@ -3,9 +3,9 @@
     class="castle relative flex min-h-[350px] flex-col items-center rounded-xl text-2xl font-bold shadow-2xl dark:shadow-lg dark:shadow-slate-400"
   >
     <div>
-      <span>{{ item.x }}</span>
+      <span>{{ item.x.toString() }}</span>
       <span>,</span>
-      <span>{{ item.y }}</span>
+      <span>{{ item.y.toString() }}</span>
     </div>
     <button @click="toggleModal()">
       <img

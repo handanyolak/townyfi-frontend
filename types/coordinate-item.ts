@@ -1,5 +1,7 @@
+import { BigNumber } from 'ethers'
+
 export interface CoordinateItem {
-  x: number
-  y: number
+  x: BigNumber
+  y: BigNumber
   addresses: string[]
 }
