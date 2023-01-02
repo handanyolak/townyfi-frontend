@@ -1,4 +1,4 @@
-export default (word: string) => {
+export const useLang = (word: string) => {
   const userOptionsStore = useUserOptionsStore()
   const { language } = userOptionsStore
 
@@ -8,6 +8,9 @@ export default (word: string) => {
     },
     tr: {
       disconnect_wallet: 'Cüzdan Bağlantısını Kes',
+    },
+    gr: {
+      disconnect_wallet: 'Ich lie',
     },
   }
 
