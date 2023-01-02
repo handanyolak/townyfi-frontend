@@ -1,104 +1,127 @@
 import { ethers, constants } from 'ethers'
 import { defineStore } from 'pinia'
 
-export const useUserWalletStore = defineStore('userWalletStore', {
-  state: () => ({
-    address: constants.AddressZero,
-    balance: '',
-  }),
-  getters: {
-    provider(): any {
-      return useConnectionStore().provider
-    },
-    ethereum(): any {
-      return useConnectionStore().ethereum
-    },
-    kta(): any {
-      return this.$nuxt.$kta(this.provider)
-    },
-    ktaToken(): any {
-      return this.$nuxt.$ktaToken(this.provider)
-    },
-  },
-  actions: {
-    setAddress(newAddress: string) {
-      this.address = newAddress
-    },
-    setBalance(newBalance: string) {
-      this.balance = newBalance
-    },
-    async connect() {
-      const accounts = await this.provider.listAccounts()
-      const isConnected = accounts.length > 0
-      useConnectionStore().setIsConnected(isConnected)
-      if (isConnected) await this.updateUserInfo()
+export const useUserWalletStore = defineStore('userWalletStore', () => {
+  const address = ref(constants.AddressZero)
+  const balance = ref('')
 
-      useConnectionStore().onValidNetwork &&
-        useUserGameStore().setIsRegistered(
-          await this.kta.isRegistered(this.address)
-        )
-    },
-    async updateUserInfo(_address = null) {
-      await this.updateUserAddress(_address)
-      await this.updateUserBalance()
-    },
-    async updateUserAddress(_address = null) {
-      this.setAddress(_address || (await this.provider.listAccounts())[0])
-    },
-    async updateUserBalance() {
-      this.setBalance(
-        ethers.utils.formatEther(await this.provider.getBalance(this.address))
-      )
-    },
-    // TODO: ileride connection.ts'e tasinacaklar
-    startEthEvents() {
-      this.ethereum.on('chainChanged', this.handleChainChanged)
-      this.ethereum.on('accountsChanged', this.handleAccountsChanged)
-      this.ethereum.on('disconnect', this.handleDisconnect)
-    },
-    async handleChainChanged(chainId) {
-      useConnectionStore().setOnValidNetwork(chainId === 5)
-      await this.updateUserBalance()
-      console.log('Chain has changed.')
-    },
-    async handleAccountsChanged(accounts: any) {
-      const isConnected = accounts.length > 0
-      useConnectionStore().setIsConnected(isConnected)
-      if (isConnected) {
-        await this.updateUserInfo(accounts[0])
-        useUserGameStore().setIsRegistered(
-          await this.kta.isRegistered(this.address)
-        )
-        // TODO: change the setUser
-        useUserGameStore().setUserInfo(await this.kta.userByAddr(this.address))
-        await useUserGameStore().userCoordinate()
-        console.log(`Linked account changed to '${accounts[0]}'`)
-      } else {
-        console.log('Linked account not found. Page will be reloaded.')
-        await this.disconnectWeb3()
+  const kta = useKta()
+  const ktaToken = useKtaToken()
+
+  const connectionStore = useConnectionStore()
+  const userGameStore = useUserGameStore()
+
+  const provider = useProvider()
+  const ethereum = computed(() => connectionStore.ethereum)
+
+  const setUserInfo = (newUserInfo: any) => {
+    user.value = newUserInfo
+  }
+
+  const setAddress = (newAddress: string) => {
+    address.value = newAddress
+  }
+
+  const setBalance = (newBalance: string) => {
+    balance.value = newBalance
+  }
+
+  const connect = async () => {
+    const accounts = await provider.listAccounts()
+    const isConnected = accounts.length > 0
+    connectionStore.setIsConnected(isConnected)
+    if (isConnected) await updateUserInfo()
+
+    connectionStore.onValidNetwork &&
+      userGameStore.setIsRegistered(await kta.isRegistered(address.value))
+  }
+
+  const updateUserInfo = async (_address = null) => {
+    await updateUserAddress(_address)
+    await updateUserBalance()
+  }
+
+  const updateUserAddress = async (_address = null) => {
+    setAddress(_address || (await provider.listAccounts())[0])
+  }
+
+  const updateUserBalance = async () => {
+    setBalance(
+      ethers.utils.formatEther(await provider.getBalance(address.value))
+    )
+  }
+
+  const startEthEvents = () => {
+    ethereum.value.on('chainChanged', handleChainChanged)
+    ethereum.value.on('accountsChanged', handleAccountsChanged)
+    ethereum.value.on('disconnect', handleDisconnect)
+  }
+
+  const handleChainChanged = async (chainId) => {
+    connectionStore.setOnValidNetwork(chainId === 5)
+    await updateUserBalance()
+    console.log('Chain has changed.')
+  }
+
+  const handleAccountsChanged = async (accounts: string[]) => {
+    const isConnected = accounts.length > 0
+    connectionStore.setIsConnected(isConnected)
+    if (isConnected) {
+      await updateUserInfo(accounts[0])
+      userGameStore.setIsRegistered(await kta.isRegistered(address.value))
+      // TODO: change the setUser
+      userGameStore.setUserInfo(await kta.userByAddr(address.value))
+      await userGameStore.setUserCoordinate()
+      console.log(`Linked account changed to '${accounts[0]}'`)
+    } else {
+      console.log('Linked account not found. Page will be reloaded.')
+      await disconnectWeb3()
+    }
+  }
+
+  const handleDisconnect = () => {
+    connectionStore.setIsConnected(false)
+  }
+
+  const disconnectWeb3 = () => {
+    address.value = constants.AddressZero
+    balance.value = ''
+    connectionStore.setIsConnected(false)
+    console.log('Disconnected.')
+  }
+
+  const connectWeb3 = async () => {
+    try {
+      if (!ethereum.value) {
+        throw new Error('No provider detected.')
       }
-    },
-    handleDisconnect() {
-      useConnectionStore().setIsConnected(false)
-    },
+      await provider.send('eth_requestAccounts', [])
 
-    disconnectWeb3() {
-      this.address = constants.AddressZero
-      this.balance = ''
-      useConnectionStore().setIsConnected(false)
-      console.log('Disconnected.')
-    },
-    async connectWeb3() {
-      try {
-        if (!this.ethereum) {
-          throw new Error('No provider detected.')
-        }
-        await this.provider.send('eth_requestAccounts', [])
+      await connect()
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
-        await this.connect()
-      } catch (error) {
-        console.log(error)
-      }
-    },
-  },
+  return {
+    address,
+    balance,
+    provider,
+    ethereum,
+    kta,
+    ktaToken,
+    setAddress,
+    setBalance,
+    setUserInfo,
+    connect,
+    updateUserInfo,
+    updateUserAddress,
+    updateUserBalance,
+    startEthEvents,
+    handleChainChanged,
+    handleAccountsChanged,
+    handleDisconnect,
+    disconnectWeb3,
+    connectWeb3,
+  }
 })

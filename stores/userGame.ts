@@ -1,42 +1,52 @@
+import { BigNumber } from 'ethers'
 import { CoordinateItem } from '~/types/coordinate-item'
 
-export const useUserGameStore = defineStore('userGameStore', {
-  state: () => ({
-    user: {},
-    isRegistered: false,
-    addressesByCoordinate: [] as CoordinateItem[],
-  }),
-  getters: {
-    kta(): any {
-      return useUserWalletStore().kta
-    },
-  },
-  actions: {
-    setUserInfo(newUserInfo: any) {
-      this.user = newUserInfo
-    },
-    setIsRegistered(newIsRegistered: boolean) {
-      this.isRegistered = newIsRegistered
-    },
-    // TODO: change function name
-    async userCoordinate(nearLevel = 1) {
-      this.addressesByCoordinate = []
-      const minScanX = this.user.coordinate._x.sub(nearLevel).toNumber()
-      const maxScanX = this.user.coordinate._x.add(nearLevel).toNumber()
-      const minScanY = this.user.coordinate._y.sub(nearLevel).toNumber()
-      const maxScanY = this.user.coordinate._y.add(nearLevel).toNumber()
+export const useUserGameStore = defineStore('userGameStore', () => {
+  const user = ref({})
+  const isRegistered = ref(false)
+  const addressesByCoordinate = ref([]) as CoordinateItem[]
 
-      for (let j = maxScanY; j >= minScanY; j--) {
-        for (let i = minScanX; i <= maxScanX; i++) {
-          const coordinateItem: CoordinateItem = {
-            x: i,
-            y: j,
-            addresses: await this.kta.getAddressesByCoordinate([i, j]),
-          }
+  const kta = useKta()
+  const settings = computed(async () => await kta.settings())
 
-          this.addressesByCoordinate.push(coordinateItem)
+  const setUserInfo = (newUserInfo: any) => {
+    user.value = newUserInfo
+  }
+
+  const setIsRegistered = (newIsRegistered: boolean) => {
+    isRegistered.value = newIsRegistered
+  }
+
+  const setUserCoordinate = async (nearLevel = 1) => {
+    addressesByCoordinate.value = []
+    const minScanX = user.value.coordinate._x.sub(nearLevel)
+    const maxScanX = user.value.coordinate._x.add(nearLevel)
+    const minScanY = user.value.coordinate._y.sub(nearLevel)
+    const maxScanY = user.value.coordinate._y.add(nearLevel)
+
+    for (let j: BigNumber = maxScanY; j.gte(minScanY); ) {
+      for (let i: BigNumber = minScanX; i.lte(maxScanX); ) {
+        const coordinateItem: CoordinateItem = {
+          x: i,
+          y: j,
+          addresses: await kta.getAddressesByCoordinate([i, j]),
         }
+
+        addressesByCoordinate.value.push(coordinateItem)
+        i = i.add(1)
       }
-    },
-  },
+      j = j.sub(1)
+    }
+  }
+
+  return {
+    addressesByCoordinate,
+    isRegistered,
+    settings,
+    user,
+    kta,
+    setIsRegistered,
+    setUserCoordinate,
+    setUserInfo,
+  }
 })

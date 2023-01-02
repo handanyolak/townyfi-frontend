@@ -1,32 +1,30 @@
-import { providers } from 'ethers'
+export const useConnectionStore = defineStore('connectionStore', () => {
+  const isConnected = ref(false)
 
-export const useConnectionStore = defineStore('connectionStore', {
-  state: () => ({
-    onValidNetwork:
-      Boolean(window.ethereum) && window.ethereum.chainId === '0x5',
-    isConnected: false,
-  }),
-  getters: {
-    hasMetamask(): boolean {
-      return Boolean(window.ethereum)
-    },
-    ethereum(): any {
-      return window.ethereum
-    },
-    provider(): any {
-      if (this.hasMetamask)
-        return new providers.Web3Provider(this.ethereum, 'any')
-    },
-    signer(): any {
-      if (this.hasMetamask) return this.provider.getSigner()
-    },
-  },
-  actions: {
-    setOnValidNetwork(newValue: boolean) {
-      this.onValidNetwork = this.hasMetamask && newValue
-    },
-    setIsConnected(newValue: boolean) {
-      this.isConnected = newValue
-    },
-  },
+  const hasMetamask = Boolean(window.ethereum)
+  const ethereum = window.ethereum
+  const onValidNetwork = hasMetamask && ethereum.chainId === '0x5'
+
+  const provider = useProvider()
+
+  const signer = computed(() => provider.getSigner())
+
+  const setOnValidNetwork = (newValue: boolean) => {
+    onValidNetwork.value = hasMetamask && newValue
+  }
+
+  const setIsConnected = (newValue: boolean) => {
+    isConnected.value = newValue
+  }
+
+  return {
+    onValidNetwork,
+    isConnected,
+    hasMetamask,
+    ethereum,
+    provider,
+    signer,
+    setOnValidNetwork,
+    setIsConnected,
+  }
 })
