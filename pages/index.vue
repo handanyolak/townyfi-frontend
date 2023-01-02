@@ -31,6 +31,7 @@
 </template>
 
 <script setup lang="ts">
+import { BigNumber } from 'ethers'
 import InformationModal from '~/components/InformationModal.vue'
 import GameInfo from '~/components/GameInfo.vue'
 import CastleBox from '~/components/CastleBox.vue'
@@ -39,20 +40,18 @@ import ChatBox from '~/components/ChatBox.vue'
 import { CoordinateItem } from '~/types/coordinate-item'
 
 // Constants
-const { $kta } = useNuxtApp()
 const connectionStore = useConnectionStore()
 const userWalletStore = useUserWalletStore()
-const userGameStore: any = useUserGameStore()
+const userGameStore = useUserGameStore()
 const { address } = storeToRefs(userWalletStore)
 const { onValidNetwork } = storeToRefs(connectionStore)
 const { addressesByCoordinate } = storeToRefs(userGameStore)
-const provider = connectionStore.provider
 const hasMetamask = connectionStore.hasMetamask
-const kta = $kta(provider)
+const kta = useKta()
 const showModal = ref(false)
 const currentItem = ref({
-  x: 0,
-  y: 0,
+  x: BigNumber.from(0),
+  y: BigNumber.from(0),
   addresses: [],
 } as CoordinateItem)
 
@@ -65,7 +64,7 @@ onMounted(async () => {
     await userWalletStore.connect()
     const userInfo = await kta.userByAddr(address.value)
     userGameStore.setUserInfo(userInfo)
-    await userGameStore.userCoordinate(Number(nearLevel))
+    await userGameStore.setUserCoordinate(Number(nearLevel))
   }
 })
 

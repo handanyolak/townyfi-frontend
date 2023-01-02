@@ -85,7 +85,6 @@ const { onValidNetwork, isConnected } = storeToRefs(connectionStore)
 // Hooks
 onMounted(() => {
   if (hasMetamask) {
-    /* const accounts = await userWalletStore.provider */
     /* await userWalletStore.connect() */
     userWalletStore.startEthEvents()
   }

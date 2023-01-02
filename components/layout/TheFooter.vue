@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { BigNumber } from 'ethers'
+import { Coordinates } from '~/types/typechain-types/contracts/game/KillThemAll'
 
 enum Direction {
   Up,
@@ -25,20 +25,17 @@ enum Direction {
   Left,
 }
 
-interface Coordinate {
-  _x: BigNumber
-  _y: BigNumber
-}
-
 const connectionStore = useConnectionStore()
-const provider = connectionStore.provider
-const { $kta } = useNuxtApp()
-const kta = $kta(provider)
+const kta = useKta()
 
 onMounted(() => {
   kta.on(
     'UserMoved',
-    (user: string, oldCoordinate: Coordinate, newCoordinate: Coordinate) => {
+    (
+      user: string,
+      oldCoordinate: Coordinates.CoordinateStructOutput,
+      newCoordinate: Coordinates.CoordinateStructOutput
+    ) => {
       console.log(`user: ${user}`)
       console.log(`oldCoordinate: ${oldCoordinate}`)
       console.log(`newCoordinate: ${newCoordinate}`)
