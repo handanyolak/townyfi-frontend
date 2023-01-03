@@ -1,47 +1,37 @@
 <template>
-  <div class="w-full">
-    <ul class="my-3 grid grid-cols-3 space-x-2">
+  <div style="font-family: 'Bilbo Swash Caps'" class="mx-4 p-4">
+    <ul class="my-3 grid grid-cols-2 space-x-2">
       <li class="text-center">
         <a
-          class="block rounded p-2 text-xs font-bold uppercase leading-normal shadow-lg"
+          style="font-family: Pirata One, sans-serif"
+          class="block rounded p-2 font-bold uppercase leading-normal shadow-lg"
           :class="{
-            'bg-white text-pink-600': openTab !== 1,
-            'bg-pink-600 text-white': openTab === 1,
+            'bg-towni-brown-100 text-towni-brown-200 hover:shadow-towni-brown-300':
+              openTab !== 1,
+            'bg-towni-brown-200 text-towni-brown-100 ': openTab === 1,
           }"
           @click="toggleTabs(1)"
         >
-          Profile
+          User
         </a>
       </li>
       <li class="text-center">
         <a
-          class="block rounded p-2 text-xs font-bold uppercase leading-normal shadow-lg"
+          style="font-family: Pirata One, sans-serif"
+          class="block rounded p-2 font-bold uppercase leading-normal shadow-lg"
           :class="{
-            'bg-white text-pink-600': openTab !== 2,
-            'bg-pink-600 text-white': openTab === 2,
+            'bg-towni-brown-100 text-towni-brown-200 hover:shadow-towni-brown-300':
+              openTab !== 2,
+            'bg-towni-brown-200 text-towni-brown-100': openTab === 2,
           }"
           @click="toggleTabs(2)"
         >
-          Settings
-        </a>
-      </li>
-      <li class="text-center">
-        <a
-          class="block rounded p-2 text-xs font-bold uppercase leading-normal shadow-lg"
-          :class="{
-            'bg-white text-pink-600': openTab !== 3,
-            'bg-pink-600 text-white': openTab === 3,
-          }"
-          @click="toggleTabs(3)"
-        >
-          Options
+          Town
         </a>
       </li>
     </ul>
-    <div
-      class="relative mb-6 flex w-full min-w-0 flex-col break-words rounded bg-white shadow-lg"
-    >
-      <div class="px-4 py-5">
+    <div class="w-full">
+      <div>
         <div class="tab-content tab-space">
           <div :class="{ hidden: openTab !== 1, block: openTab === 1 }">
             <p>
@@ -88,3 +78,12 @@ const toggleTabs = (tabNumber: number) => {
   openTab.value = tabNumber
 }
 </script>
+
+<style scoped>
+@import url('https://fonts.googleapis.com/css?family=Pirata+One|Bilbo+Swash+Caps&display=swap');
+
+@font-face {
+  font-family: Morris;
+  src: url(https://cdn.statically.io/gh/EmmesCodes/Tipografias/dae9f5bb/MorrisInitials.ttf);
+}
+</style>
