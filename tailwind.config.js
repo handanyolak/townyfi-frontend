@@ -23,6 +23,11 @@ module.exports = {
           DEFAULT: '#745a3d',
           dark: '#2a1d0e',
         },
+        'towni-brown': {
+          100: '#e6c3a2',
+          200: '#c57b34',
+          300: '#b44e00',
+        },
       },
       zIndex: {
         max: '99999',
