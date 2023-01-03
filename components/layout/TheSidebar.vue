@@ -8,22 +8,47 @@
   >
     <div
       v-if="appOptionStore.showSidebar"
-      :class="
+      :class="[
+        'fixed top-0 z-50 min-h-screen w-[500px]',
         appOptionStore.isGameInfo || appOptionStore.isWeb3Info
-          ? 'left-0'
-          : 'right-0'
-      "
-      class="fixed top-0 z-50 min-h-screen w-[500px] bg-gray-400 p-3"
+          ? '-left-3'
+          : '-right-3',
+      ]"
       @mouseleave="sideLeave()"
     >
-      <div>Sidebar</div>
-      <SidebarTabVue />
+      <div>
+        <div
+          :class="[
+            'parchment absolute -top-3 w-full bg-white [filter:url(#wavy)]',
+            appOptionStore.isUserOptions || appOptionStore.isInteractions
+              ? ' rotate-180 transform'
+              : '',
+          ]"
+        ></div>
+        <div class="relative">
+          <SidebarTabVue />
+        </div>
+
+        <svg>
+          <filter id="wavy">
+            <feTurbulence
+              x="0"
+              y="0"
+              baseFrequency="0.02"
+              numOctaves="5"
+              seed="1"
+            />
+            <feDisplacementMap in="SourceGraphic" scale="40" />
+          </filter>
+        </svg>
+      </div>
     </div>
   </Transition>
 </template>
 
 <script setup lang="ts">
-import SidebarTabVue from '~/components/SidebarTab.vue'
+import SidebarTabVue from '@/components/SidebarTab.vue'
+
 const appOptionStore = useAppOptions()
 
 const sideLeave = () => {
@@ -56,5 +81,10 @@ const sideLeave = () => {
 .slide-right-fade-leave-to {
   transform: translateX(100%);
   transition: all 0.3s ease-out;
+}
+
+.parchment {
+  height: 210%;
+  box-shadow: 2px 3px 20px #411c06, 30px 65px 200px #91510ffc inset;
 }
 </style>
