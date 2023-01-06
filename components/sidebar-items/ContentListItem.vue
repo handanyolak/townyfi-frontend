@@ -2,10 +2,12 @@
   <div>
     <div class="group my-2 flex items-center shadow-towni-300">
       <div class="flex items-center">
-        <img
-          class="mr-1 h-3 w-3 opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
-          src="@/assets/img/information.svg"
-        />
+        <Tooltip>
+          <span>
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Tempore,
+            alias?
+          </span>
+        </Tooltip>
         <span class="flex items-center text-towni-brown-400">
           <slot name="list-title" />:
         </span>
@@ -22,13 +24,13 @@
         <div v-if="props.editable">
           <img
             v-if="isEdit"
-            class="h-5 w-5 opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
+            class="h-5 w-5 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
             src="@/assets/img/check.svg"
             @click="saveName()"
           />
           <img
             v-else
-            class="h-4 w-4 opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
+            class="h-4 w-4 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
             src="@/assets/img/edit.svg"
             @click="editName()"
           />
@@ -39,6 +41,7 @@
 </template>
 
 <script setup lang="ts">
+import Tooltip from '~/components/Tooltip.vue'
 const isEdit = ref(false)
 
 const props = defineProps({
