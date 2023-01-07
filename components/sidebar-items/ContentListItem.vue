@@ -25,7 +25,7 @@
           <img
             class="h-4 w-4 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
             :src="isEdit ? '/assets/img/check.svg' : '/assets/img/edit.svg'"
-            @click="isEdit ? saveName() : editName()"
+            @click="isEdit ? save() : edit()"
           />
         </div>
         <div v-if="copiable">
@@ -61,11 +61,11 @@ interface ContentListItemProps {
 const props = defineProps<ContentListItemProps>()
 const emit = defineEmits(['convert'])
 
-const editName = () => {
+const edit = () => {
   isEdit.value = true
 }
 
-const saveName = () => {
+const save = () => {
   isEdit.value = false
 }
 
