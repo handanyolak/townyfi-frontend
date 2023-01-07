@@ -1,27 +1,55 @@
 <template>
   <div>
     <ContentTitle>General</ContentTitle>
-    <div class="px-3">
-      <ContentListItem editable>
-        <template #list-title> Name </template>
-        <template #list-input>
-          <input v-model="name" type="text" />
-        </template>
-        <span>{{ name }}</span>
-      </ContentListItem>
-      <ContentListItem>
-        <template #list-title> Coordinate </template>
-        <span>{{ coordinate }}</span>
-      </ContentListItem>
-      <ContentListItem copiable :copy-value="address">
-        <template #list-title> Referrer </template>
-        <span>{{ referrer }}</span>
-      </ContentListItem>
-      <ContentListItem convertable @convert="convert()">
-        <template #list-title> Health </template>
-        <span>{{ health }}</span>
-      </ContentListItem>
-    </div>
+    <ContentListItem editable>
+      <template #list-title> Name </template>
+      <template #list-input>
+        <input v-model="general.name" type="text" />
+      </template>
+      <span>{{ general.name }}</span>
+    </ContentListItem>
+    <ContentListItem>
+      <template #list-title> Coordinate </template>
+      <span>{{ general.coordinate }}</span>
+    </ContentListItem>
+    <ContentListItem>
+      <template #list-title> Level </template>
+      <span>{{ general.level }}</span>
+    </ContentListItem>
+    <ContentListItem>
+      <template #list-title> Exp </template>
+      <span>{{ general.exp }}</span>
+    </ContentListItem>
+    <ContentListItem copiable :copy-value="address">
+      <template #list-title> Referrer </template>
+      <span>{{ referrer }}</span>
+    </ContentListItem>
+    <ContentTitle>Stats</ContentTitle>
+    <ContentListItem v-for="(item, key) in stats" :key="key">
+      <template #list-title>
+        {{ key }}
+      </template>
+      <span>{{ item }}</span>
+    </ContentListItem>
+    <ContentTitle>Character Points</ContentTitle>
+    <ContentListItem v-for="(item, key) in characterPoints" :key="key">
+      <template #list-title> {{ key }} </template>
+      <span>{{ item }}</span>
+    </ContentListItem>
+    <ContentListItem>
+      <template #list-title> Defend </template>
+      <span>{{ characterPoints.defind }}</span>
+    </ContentListItem>
+    <ContentTitle>Timers</ContentTitle>
+    <ContentListItem
+      v-for="(item, key) in timers"
+      :key="key"
+      convertable
+      @convert="convert()"
+    >
+      <template #list-title> {{ key }} </template>
+      <span>{{ item }}</span>
+    </ContentListItem>
   </div>
 </template>
 
@@ -30,10 +58,35 @@ import ContentTitle from '~/components/sidebar-items/ContentTitle.vue'
 import ContentListItem from '~/components/sidebar-items/ContentListItem.vue'
 
 const address = ref('0xB55F8FC6de35c643a2Ed462d3316706A4159D41D')
-const name = ref('Hadalobo')
-const coordinate = ref('(0,1)')
-const health = ref(23237438573957)
-const healthTime = ref(24)
+
+const convertTime = ref(24)
+
+const general = reactive({
+  name: 'Hadalobo',
+  coordinate: '(0,1)',
+  level: 4,
+  exp: 5,
+})
+const stats = reactive({
+  health: 24,
+  mana: 54,
+  energy: 17,
+  armor: 18,
+})
+const timers = reactive({
+  health: 23237438573957,
+  mana: 23237438573957,
+  energy: 23237438573957,
+  revive: 23237438573957,
+  teleport: 23237438573957,
+  townTP: 23237438573957,
+  prepare: 23237438573957,
+})
+
+const characterPoints = reactive({
+  attack: 3,
+  defind: 1,
+})
 
 const referrer = computed(
   () =>
@@ -43,6 +96,6 @@ const referrer = computed(
 )
 
 const convert = () => {
-  health.value = healthTime.value
+  timers.health = convertTime.value
 }
 </script>
