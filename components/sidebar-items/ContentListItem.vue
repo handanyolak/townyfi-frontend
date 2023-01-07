@@ -35,6 +35,12 @@
             @click="isCopy || copy()"
           />
         </div>
+        <img
+          v-if="convertable"
+          class="h-3 w-3 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
+          src="@/assets/img/convert.svg"
+          @click="convert()"
+        />
       </div>
     </div>
   </div>
@@ -48,10 +54,12 @@ const isCopy = ref(false)
 interface ContentListItemProps {
   editable?: boolean
   copiable?: boolean
+  convertable?: boolean
   copyValue?: string
 }
 
 const props = defineProps<ContentListItemProps>()
+const emit = defineEmits(['convert'])
 
 const editName = () => {
   isEdit.value = true
@@ -65,6 +73,10 @@ const copy = () => {
   navigator.clipboard.writeText(props.copyValue)
   isCopy.value = true
   setTimeout(() => (isCopy.value = false), 1000)
+}
+
+const convert = () => {
+  emit('convert')
 }
 </script>
 
