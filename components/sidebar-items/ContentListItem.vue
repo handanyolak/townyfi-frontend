@@ -21,18 +21,18 @@
             <slot />
           </span>
         </div>
-        <div v-if="props.editable">
+        <div v-if="editable">
           <img
-            v-if="isEdit"
-            class="h-5 w-5 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
-            src="@/assets/img/check.svg"
-            @click="saveName()"
-          />
-          <img
-            v-else
             class="h-4 w-4 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
-            src="@/assets/img/edit.svg"
-            @click="editName()"
+            :src="isEdit ? '/assets/img/check.svg' : '/assets/img/edit.svg'"
+            @click="isEdit ? saveName() : editName()"
+          />
+        </div>
+        <div v-if="copiable">
+          <img
+            class="h-4 w-4 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
+            :src="isCopy ? '/assets/img/check.svg' : '/assets/img/copy.svg'"
+            @click="isCopy || copy()"
           />
         </div>
       </div>
@@ -43,20 +43,28 @@
 <script setup lang="ts">
 import Tooltip from '~/components/Tooltip.vue'
 const isEdit = ref(false)
+const isCopy = ref(false)
 
-const props = defineProps({
-  editable: {
-    type: Boolean,
-    default: false,
-    required: false,
-  },
-})
+interface ContentListItemProps {
+  editable?: boolean
+  copiable?: boolean
+  copyValue?: string
+}
+
+const props = defineProps<ContentListItemProps>()
 
 const editName = () => {
   isEdit.value = true
 }
+
 const saveName = () => {
   isEdit.value = false
+}
+
+const copy = () => {
+  navigator.clipboard.writeText(props.copyValue)
+  isCopy.value = true
+  setTimeout(() => (isCopy.value = false), 1000)
 }
 </script>
 
