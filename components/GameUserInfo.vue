@@ -1,92 +1,90 @@
 <template>
   <div>
-    <ContentTitle>General</ContentTitle>
-    <ContentListItem editable>
-      <template #list-title> Name </template>
+    <ListTitle>General</ListTitle>
+    <ListItem editable>
+      <template #list-title> Name: </template>
       <template #list-input>
         <input v-model="general.name" type="text" />
       </template>
       <span>{{ general.name }}</span>
-    </ContentListItem>
-    <ContentListItem>
+    </ListItem>
+    <ListItem>
       <template #list-title> Coordinate </template>
       <span>{{ general.coordinate }}</span>
-    </ContentListItem>
-    <ContentListItem>
-      <template #list-title> Level </template>
+    </ListItem>
+    <ListItem>
+      <template #list-title> Level: </template>
       <span>{{ general.level }}</span>
-    </ContentListItem>
-    <ContentListItem>
-      <template #list-title> Exp </template>
+    </ListItem>
+    <ListItem>
+      <template #list-title> Exp: </template>
       <span>{{ general.exp }}</span>
-    </ContentListItem>
-    <ContentListItem copiable :copy-value="address">
-      <template #list-title> Referrer </template>
+    </ListItem>
+    <ListItem copiable :copy-value="general.address">
+      <template #list-title> Referrer: </template>
       <span>{{ referrer }}</span>
-    </ContentListItem>
-    <ContentTitle>Stats</ContentTitle>
-    <ContentListItem>
-      <template #list-title> Health </template>
+    </ListItem>
+    <ListTitle>Stats</ListTitle>
+    <ListItem>
+      <template #list-title> Health: </template>
       <span>{{ stats.health }}</span>
-    </ContentListItem>
-    <ContentListItem>
-      <template #list-title> Mana </template>
+    </ListItem>
+    <ListItem>
+      <template #list-title> Mana: </template>
       <span>{{ stats.mana }}</span>
-    </ContentListItem>
-    <ContentListItem>
-      <template #list-title> Energy </template>
+    </ListItem>
+    <ListItem>
+      <template #list-title> Energy: </template>
       <span>{{ stats.energy }}</span>
-    </ContentListItem>
-    <ContentListItem>
-      <template #list-title> Armor </template>
+    </ListItem>
+    <ListItem>
+      <template #list-title> Armor: </template>
       <span>{{ stats.armor }}</span>
-    </ContentListItem>
-    <ContentTitle>Character Points</ContentTitle>
-    <ContentListItem>
-      <template #list-title> Attack </template>
+    </ListItem>
+    <ListTitle>Character Points</ListTitle>
+    <ListItem>
+      <template #list-title> Attack: </template>
       <span>{{ characterPoints.attack }}</span>
-    </ContentListItem>
-    <ContentListItem>
-      <template #list-title> Defend </template>
+    </ListItem>
+    <ListItem>
+      <template #list-title> Defend: </template>
       <span>{{ characterPoints.defind }}</span>
-    </ContentListItem>
-    <ContentTitle>Timers</ContentTitle>
-    <ContentListItem convertable @convert="convert()">
-      <template #list-title> Health </template>
+    </ListItem>
+    <ListTitle>Timers</ListTitle>
+    <ListItem convertable @convert="convert()">
+      <template #list-title> Health: </template>
       <span>{{ timer.health }}</span>
-    </ContentListItem>
-    <ContentListItem convertable @convert="convert()">
-      <template #list-title> Mana </template>
+    </ListItem>
+    <ListItem convertable @convert="convert()">
+      <template #list-title> Mana: </template>
       <span>{{ timer.mana }}</span>
-    </ContentListItem>
-    <ContentListItem convertable @convert="convert()">
-      <template #list-title> Energy </template>
+    </ListItem>
+    <ListItem convertable @convert="convert()">
+      <template #list-title> Energy: </template>
       <span>{{ timer.energy }}</span>
-    </ContentListItem>
-    <ContentListItem convertable @convert="convert()">
-      <template #list-title> Revive </template>
+    </ListItem>
+    <ListItem convertable @convert="convert()">
+      <template #list-title> Revive: </template>
       <span>{{ timer.revive }}</span>
-    </ContentListItem>
-    <ContentListItem convertable @convert="convert()">
-      <template #list-title> Teleport </template>
+    </ListItem>
+    <ListItem convertable @convert="convert()">
+      <template #list-title> Teleport: </template>
       <span>{{ timer.teleport }}</span>
-    </ContentListItem>
-    <ContentListItem convertable @convert="convert()">
-      <template #list-title> Town TP </template>
+    </ListItem>
+    <ListItem convertable @convert="convert()">
+      <template #list-title> Town TP: </template>
       <span>{{ timer.townTP }}</span>
-    </ContentListItem>
-    <ContentListItem convertable @convert="convert()">
-      <template #list-title> Prepare </template>
+    </ListItem>
+    <ListItem convertable @convert="convert()">
+      <template #list-title> Prepare: </template>
       <span>{{ timer.prepare }}</span>
-    </ContentListItem>
+    </ListItem>
   </div>
 </template>
 
 <script setup lang="ts">
-import ContentTitle from '~/components/sidebar-items/ContentTitle.vue'
-import ContentListItem from '~/components/sidebar-items/ContentListItem.vue'
-
-const address = ref('0xB55F8FC6de35c643a2Ed462d3316706A4159D41D')
+import ListTitle from '~/components/sidebar-items/ListTitle.vue'
+import ListItem from '~/components/sidebar-items/ListItem.vue'
 
 const convertTime = ref(24)
 
@@ -95,6 +93,7 @@ const general = reactive({
   coordinate: '(0,1)',
   level: 4,
   exp: 5,
+  address: '0xB55F8FC6de35c643a2Ed462d3316706A4159D41D',
 })
 const stats = reactive({
   health: 24,
@@ -118,9 +117,9 @@ const characterPoints = reactive({
 
 const referrer = computed(
   () =>
-    address.value.substring(0, 5) +
+    general.address.substring(0, 5) +
     '...' +
-    address.value.substring(address.value.length - 5)
+    general.address.substring(general.address.length - 5)
 )
 
 const convert = () => {
