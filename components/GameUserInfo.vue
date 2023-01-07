@@ -25,30 +25,59 @@
       <span>{{ referrer }}</span>
     </ContentListItem>
     <ContentTitle>Stats</ContentTitle>
-    <ContentListItem v-for="(item, key) in stats" :key="key">
-      <template #list-title>
-        {{ key }}
-      </template>
-      <span>{{ item }}</span>
+    <ContentListItem>
+      <template #list-title> Health </template>
+      <span>{{ stats.health }}</span>
+    </ContentListItem>
+    <ContentListItem>
+      <template #list-title> Mana </template>
+      <span>{{ stats.mana }}</span>
+    </ContentListItem>
+    <ContentListItem>
+      <template #list-title> Energy </template>
+      <span>{{ stats.energy }}</span>
+    </ContentListItem>
+    <ContentListItem>
+      <template #list-title> Armor </template>
+      <span>{{ stats.armor }}</span>
     </ContentListItem>
     <ContentTitle>Character Points</ContentTitle>
-    <ContentListItem v-for="(item, key) in characterPoints" :key="key">
-      <template #list-title> {{ key }} </template>
-      <span>{{ item }}</span>
+    <ContentListItem>
+      <template #list-title> Attack </template>
+      <span>{{ characterPoints.attack }}</span>
     </ContentListItem>
     <ContentListItem>
       <template #list-title> Defend </template>
       <span>{{ characterPoints.defind }}</span>
     </ContentListItem>
     <ContentTitle>Timers</ContentTitle>
-    <ContentListItem
-      v-for="(item, key) in timers"
-      :key="key"
-      convertable
-      @convert="convert()"
-    >
-      <template #list-title> {{ key }} </template>
-      <span>{{ item }}</span>
+    <ContentListItem convertable @convert="convert()">
+      <template #list-title> Health </template>
+      <span>{{ timer.health }}</span>
+    </ContentListItem>
+    <ContentListItem convertable @convert="convert()">
+      <template #list-title> Mana </template>
+      <span>{{ timer.mana }}</span>
+    </ContentListItem>
+    <ContentListItem convertable @convert="convert()">
+      <template #list-title> Energy </template>
+      <span>{{ timer.energy }}</span>
+    </ContentListItem>
+    <ContentListItem convertable @convert="convert()">
+      <template #list-title> Revive </template>
+      <span>{{ timer.revive }}</span>
+    </ContentListItem>
+    <ContentListItem convertable @convert="convert()">
+      <template #list-title> Teleport </template>
+      <span>{{ timer.teleport }}</span>
+    </ContentListItem>
+    <ContentListItem convertable @convert="convert()">
+      <template #list-title> Town TP </template>
+      <span>{{ timer.townTP }}</span>
+    </ContentListItem>
+    <ContentListItem convertable @convert="convert()">
+      <template #list-title> Prepare </template>
+      <span>{{ timer.prepare }}</span>
     </ContentListItem>
   </div>
 </template>
@@ -73,7 +102,7 @@ const stats = reactive({
   energy: 17,
   armor: 18,
 })
-const timers = reactive({
+const timer = reactive({
   health: 23237438573957,
   mana: 23237438573957,
   energy: 23237438573957,
@@ -82,7 +111,6 @@ const timers = reactive({
   townTP: 23237438573957,
   prepare: 23237438573957,
 })
-
 const characterPoints = reactive({
   attack: 3,
   defind: 1,
@@ -96,6 +124,6 @@ const referrer = computed(
 )
 
 const convert = () => {
-  timers.health = convertTime.value
+  timer.health = convertTime.value
 }
 </script>
