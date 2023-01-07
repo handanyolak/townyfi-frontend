@@ -13,7 +13,7 @@
         <template #list-title> Coordinate </template>
         <span>{{ coordinate }}</span>
       </ContentListItem>
-      <ContentListItem>
+      <ContentListItem copiable :copy-value="address">
         <template #list-title> Referrer </template>
         <span>{{ referrer }}</span>
       </ContentListItem>
@@ -24,8 +24,8 @@
 <script setup lang="ts">
 import ContentTitle from '~/components/sidebar-items/ContentTitle.vue'
 import ContentListItem from '~/components/sidebar-items/ContentListItem.vue'
-const address = ref('0xB55F8FC6de35c643a2Ed462d3316706A4159D41D')
 
+const address = ref('0xB55F8FC6de35c643a2Ed462d3316706A4159D41D')
 const name = ref('Hadalobo')
 const coordinate = ref('(0,1)')
 
