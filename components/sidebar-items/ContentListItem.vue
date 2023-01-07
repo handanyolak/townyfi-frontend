@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="group my-2 flex items-center shadow-towni-300">
+    <div class="group my-2 flex items-center px-1 shadow-towni-300">
       <div class="flex items-center">
         <Tooltip>
           <span>
@@ -17,7 +17,7 @@
           <div v-if="isEdit" class="mx-1">
             <slot name="list-input" />
           </div>
-          <span v-else class="mx-1 px-1 text-sm text-towni-brown-500">
+          <span v-else class="mx-1 px-1 text-towni-brown-500">
             <slot />
           </span>
         </div>
@@ -82,6 +82,9 @@ const convert = () => {
 
 <style scoped="slotted">
 input {
-  @apply w-full rounded-sm bg-towni-brown-200 bg-opacity-20 px-1 text-sm text-towni-brown-500 outline-none backdrop-blur;
+  @apply w-full rounded-sm bg-towni-brown-200 bg-opacity-20 px-1 text-towni-brown-500 outline-none backdrop-blur;
+}
+span {
+  @apply text-sm;
 }
 </style>
