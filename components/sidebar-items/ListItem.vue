@@ -9,7 +9,7 @@
           </span>
         </Tooltip>
         <span class="flex items-center text-towni-brown-400">
-          <slot name="list-title" />:
+          <slot name="list-title" />
         </span>
       </div>
       <div class="flex flex-1 items-center justify-between">
@@ -83,8 +83,5 @@ const convert = () => {
 <style scoped="slotted">
 input {
   @apply w-full rounded-sm bg-towni-brown-200 bg-opacity-20 px-1 text-towni-brown-500 outline-none backdrop-blur;
-}
-span {
-  @apply text-sm;
 }
 </style>
