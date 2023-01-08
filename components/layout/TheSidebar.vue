@@ -53,11 +53,11 @@ const appOptionStore = useAppOptions()
 const tabs = ['User', 'Town']
 
 const sideLeave = () => {
-  appOptionStore.showSidebar = true
-  appOptionStore.isGameInfo = true
-  appOptionStore.isWeb3Info = true
-  appOptionStore.isUserOptions = true
-  appOptionStore.isInteractions = true
+  appOptionStore.showSidebar = false
+  appOptionStore.isGameInfo = false
+  appOptionStore.isWeb3Info = false
+  appOptionStore.isUserOptions = false
+  appOptionStore.isInteractions = false
 }
 </script>
 
