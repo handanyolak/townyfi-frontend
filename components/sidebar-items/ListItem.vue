@@ -9,13 +9,13 @@
           </span>
         </Tooltip>
         <span class="flex items-center text-towni-brown-400">
-          <slot name="list-title" />
+          <slot name="title" />
         </span>
       </div>
       <div class="flex flex-1 items-center justify-between">
         <div>
           <div v-if="isEdit" class="mx-1">
-            <slot name="list-input" />
+            <slot name="input" />
           </div>
           <span v-else class="mx-1 px-1 text-towni-brown-500">
             <slot />
