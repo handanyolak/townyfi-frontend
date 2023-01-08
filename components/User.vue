@@ -2,81 +2,81 @@
   <div>
     <ListTitle>General</ListTitle>
     <ListItem editable>
-      <template #list-title> Name: </template>
-      <template #list-input>
+      <template #title> Name: </template>
+      <template #input>
         <input v-model="general.name" type="text" />
       </template>
       <span>{{ general.name }}</span>
     </ListItem>
     <ListItem>
-      <template #list-title> Coordinate </template>
+      <template #title> Coordinate </template>
       <span>{{ general.coordinate }}</span>
     </ListItem>
     <ListItem>
-      <template #list-title> Level: </template>
+      <template #title> Level: </template>
       <span>{{ general.level }}</span>
     </ListItem>
     <ListItem>
-      <template #list-title> Exp: </template>
+      <template #title> Exp: </template>
       <span>{{ general.exp }}</span>
     </ListItem>
     <ListItem copiable :copy-value="general.address">
-      <template #list-title> Referrer: </template>
+      <template #title> Referrer: </template>
       <span>{{ referrer }}</span>
     </ListItem>
     <ListTitle>Stats</ListTitle>
     <ListItem>
-      <template #list-title> Health: </template>
+      <template #title> Health: </template>
       <span>{{ stats.health }}</span>
     </ListItem>
     <ListItem>
-      <template #list-title> Mana: </template>
+      <template #title> Mana: </template>
       <span>{{ stats.mana }}</span>
     </ListItem>
     <ListItem>
-      <template #list-title> Energy: </template>
+      <template #title> Energy: </template>
       <span>{{ stats.energy }}</span>
     </ListItem>
     <ListItem>
-      <template #list-title> Armor: </template>
+      <template #title> Armor: </template>
       <span>{{ stats.armor }}</span>
     </ListItem>
     <ListTitle>Character Points</ListTitle>
     <ListItem>
-      <template #list-title> Attack: </template>
+      <template #title> Attack: </template>
       <span>{{ characterPoints.attack }}</span>
     </ListItem>
     <ListItem>
-      <template #list-title> Defend: </template>
+      <template #title> Defend: </template>
       <span>{{ characterPoints.defind }}</span>
     </ListItem>
     <ListTitle>Timers</ListTitle>
     <ListItem convertable @convert="convert()">
-      <template #list-title> Health: </template>
+      <template #title> Health: </template>
       <span>{{ timer.health }}</span>
     </ListItem>
     <ListItem convertable @convert="convert()">
-      <template #list-title> Mana: </template>
+      <template #title> Mana: </template>
       <span>{{ timer.mana }}</span>
     </ListItem>
     <ListItem convertable @convert="convert()">
-      <template #list-title> Energy: </template>
+      <template #title> Energy: </template>
       <span>{{ timer.energy }}</span>
     </ListItem>
     <ListItem convertable @convert="convert()">
-      <template #list-title> Revive: </template>
+      <template #title> Revive: </template>
       <span>{{ timer.revive }}</span>
     </ListItem>
     <ListItem convertable @convert="convert()">
-      <template #list-title> Teleport: </template>
+      <template #title> Teleport: </template>
       <span>{{ timer.teleport }}</span>
     </ListItem>
     <ListItem convertable @convert="convert()">
-      <template #list-title> Town TP: </template>
+      <template #title> Town TP: </template>
       <span>{{ timer.townTP }}</span>
     </ListItem>
     <ListItem convertable @convert="convert()">
-      <template #list-title> Prepare: </template>
+      <template #title> Prepare: </template>
       <span>{{ timer.prepare }}</span>
     </ListItem>
   </div>
