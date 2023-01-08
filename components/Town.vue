@@ -2,58 +2,58 @@
   <div>
     <ListTitle>General</ListTitle>
     <ListItem editable>
-      <template #list-title> Name: </template>
-      <template #list-input>
+      <template #title> Name: </template>
+      <template #input>
         <input v-model="general.name" type="text" />
       </template>
       <span>{{ general.name }}</span>
     </ListItem>
     <ListItem>
-      <template #list-title> Coordinate </template>
+      <template #title> Coordinate </template>
       <span>{{ general.coordinate }}</span>
     </ListItem>
     <ListItem>
-      <template #list-title> Level: </template>
+      <template #title> Level: </template>
       <span>{{ general.level }}</span>
     </ListItem>
     <ListItem>
-      <template #list-title> Exp: </template>
+      <template #title> Exp: </template>
       <span>{{ general.exp }}</span>
     </ListItem>
     <ListItem copiable :copy-value="general.leaderAddress">
-      <template #list-title> Leader: </template>
+      <template #title> Leader: </template>
       <span>{{ leader }}</span>
     </ListItem>
     <ListItem>
-      <template #list-title> Status: </template>
+      <template #title> Status: </template>
       <span>{{ general.status }}</span>
     </ListItem>
     <ListTitle>Citizens</ListTitle>
     <ScrollableList
-      :citizen-addresses="citizenAddresses"
+      :items="citizenAddresses"
       :copy-value="addresses"
       copiable
     />
     <ListTitle>Timers</ListTitle>
     <ListItem>
-      <template #list-title> Protection: </template>
+      <template #title> Protection: </template>
       <span>{{ protection }}</span>
     </ListItem>
     <ListTitle>War</ListTitle>
     <ListItem>
-      <template #list-title> Attacker: </template>
+      <template #title> Attacker: </template>
       <span>{{ attacker }}</span>
     </ListItem>
     <ListItem>
-      <template #list-title> Defender: </template>
+      <template #title> Defender: </template>
       <span>{{ defender }}</span>
     </ListItem>
     <ListItem>
-      <template #list-title> Attackable: </template>
+      <template #title> Attackable: </template>
       <span>{{ attackable }}</span>
     </ListItem>
     <ListItem>
-      <template #list-title> Expired: </template>
+      <template #title> Expired: </template>
       <span>{{ expired }}</span>
     </ListItem>
   </div>
