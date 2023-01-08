@@ -1,25 +1,25 @@
 <template>
   <div class="h-24 overflow-y-auto overflow-x-hidden">
     <ListItem
-      v-for="(citizenAddress, index) in props.citizenAddresses"
+      v-for="(item, index) in items"
       :key="index"
       class="h-5"
       :copiable="copiable"
       :copy-value="copyValue[index]"
     >
-      <span>{{ citizenAddress }}</span>
+      <span>{{ item }}</span>
     </ListItem>
   </div>
 </template>
 
 <script setup lang="ts">
 interface ScrollableListProps {
-  citizenAddresses?: string[]
+  items?: string[]
   copyValue?: string | string[]
   copiable?: boolean
 }
 
-const props = defineProps<ScrollableListProps>()
+defineProps<ScrollableListProps>()
 </script>
 
 <style scoped>
