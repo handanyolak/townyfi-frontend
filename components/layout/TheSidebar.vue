@@ -26,7 +26,7 @@
           ]"
         ></div>
         <div class="relative">
-          <SidebarTabVue />
+          <SidebarTabVue :tabs="tabs" />
         </div>
 
         <svg>
@@ -50,13 +50,14 @@
 import SidebarTabVue from '@/components/SidebarTab.vue'
 
 const appOptionStore = useAppOptions()
+const tabs = ['User', 'Town']
 
 const sideLeave = () => {
-  appOptionStore.showSidebar = false
-  appOptionStore.isGameInfo = false
-  appOptionStore.isWeb3Info = false
-  appOptionStore.isUserOptions = false
-  appOptionStore.isInteractions = false
+  appOptionStore.showSidebar = true
+  appOptionStore.isGameInfo = true
+  appOptionStore.isWeb3Info = true
+  appOptionStore.isUserOptions = true
+  appOptionStore.isInteractions = true
 }
 </script>
 
@@ -84,7 +85,7 @@ const sideLeave = () => {
 }
 
 .parchment {
-  height: 210%;
+  height: 105%;
   box-shadow: 2px 3px 20px #411c06, 30px 65px 200px #91510ffc inset;
 }
 </style>
