@@ -32,7 +32,7 @@ const currentTab = ref(props.tabs[0])
 const currentComponent = computed(() => {
   const _currentTab = currentTab.value
 
-  return defineAsyncComponent(() => import(`/components/${_currentTab}.vue`))
+  return defineAsyncComponent(() => import(`../components/${_currentTab}.vue`))
 })
 
 const changeTab = (tab: string) => {
