@@ -1,21 +1,21 @@
 <template>
   <div>
-    <div class="fixed bottom-0 right-1">
+    <div class="fixed bottom-0 right-0">
       <div
         class="ease flex w-56 flex-col transition-all duration-700"
-        :class="isChat ? 'max-h-96' : 'max-h-10'"
+        :class="isChat ? 'max-h-80' : 'max-h-9'"
       >
         <div
-          class="grid h-10 w-full grid-cols-2 gap-x-1 rounded-t-2xl border border-b bg-white p-2 shadow-md"
+          class="grid h-10 w-full grid-cols-2 gap-x-1 rounded-t-2xl border border-b border-towni-brown-700 bg-towni-brown-700 p-2 shadow-md"
         >
           <button
-            class="rounded-t-xl bg-yellow-800 px-2 py-1 text-white outline-none"
+            class="rounded-t-xl bg-towni-brown-800 px-2 py-1 text-sm font-medium text-white outline-none transition-all duration-300 ease-out hover:bg-[#c99f75]"
             @click="toggleChatTabs(1)"
           >
             Chat Box
           </button>
           <button
-            class="rounded-t-xl bg-yellow-800 px-2 py-1 text-white outline-none"
+            class="rounded-t-xl bg-towni-brown-800 px-2 py-1 text-sm font-medium text-white outline-none transition-all duration-300 ease-out hover:bg-[#c99f75]"
             @click="toggleChatTabs(2)"
           >
             Logs
@@ -25,9 +25,9 @@
         <div class="h-72">
           <div
             :class="{ hidden: openChatTab !== 1, block: openChatTab === 1 }"
-            class="bg-white"
+            class="bg-towni-brown-700"
           >
-            <div ref="chatArea" class="h-52 overflow-auto p-4">
+            <div ref="chatArea" class="h-56 overflow-auto p-4">
               <div
                 v-for="(message, index) in messages"
                 :key="index"
@@ -41,9 +41,9 @@
                   style="font-size: 12px"
                   class="message-box relative z-10 my-2 inline-block rounded-[10px] p-2 after:absolute after:-left-4 after:-z-10 after:origin-top-right after:skew-x-65 after:rounded-l-xl after:rounded-r-sm after:border-r-[32px] after:border-b-[14px]"
                   :class="{
-                    'bg-cyan-800 text-white after:border-y-transparent after:border-r-cyan-800 after:border-l-transparent':
+                    'bg-towni-brown-200 text-white after:border-y-transparent after:border-r-towni-brown-200 after:border-l-transparent':
                       message.author === 'you',
-                    'bg-gray-100 after:border-y-transparent after:border-r-gray-100 after:border-l-transparent':
+                    'bg-towni-brown-600 after:border-y-transparent after:border-r-towni-brown-600 after:border-l-transparent':
                       message.author !== 'you',
                   }"
                 >
@@ -52,60 +52,40 @@
               </div>
             </div>
 
-            <div class="">
-              <div class="flex items-center border-t p-2">
-                <div class="mx-2 w-full">
-                  <input
-                    v-model="bobMessage"
-                    style="font-size: 12px"
-                    class="w-full rounded-full border border-gray-200 px-2 py-1 outline-none"
-                    type="text"
-                    placeholder="Aa"
-                    autofocus
-                  />
-                </div>
-                <div>
-                  <button
-                    class="inline-flex rounded-full p-1 hover:bg-indigo-50"
-                    type="button"
-                    @click="sendMessage('in')"
-                  >
-                    <img class="h-5 w-7" src="@/assets/img/send-alt.svg" />
-                  </button>
-                </div>
+            <div
+              class="flex h-16 items-center border-t border-towni-brown-1000 p-2"
+            >
+              <div class="mx-2 w-full">
+                <input
+                  v-model="youMessage"
+                  style="font-size: 12px"
+                  class="w-full rounded-full border border-towni-brown-900 bg-towni-brown-1000 px-2 py-1 outline-none transition-all duration-300 ease-out focus:border-towni-brown-200"
+                  type="text"
+                  placeholder="Aa"
+                  autofocus
+                  @keyup.enter="sendMessage('out')"
+                />
               </div>
-              <div class="flex items-center border-t p-2">
-                <div class="mx-2 w-full">
-                  <input
-                    v-model="youMessage"
-                    style="font-size: 12px"
-                    class="w-full rounded-full border border-gray-200 px-2 py-1 outline-none"
-                    type="text"
-                    placeholder="Aa"
-                    autofocus
-                  />
-                </div>
 
-                <div>
-                  <button
-                    class="inline-flex rounded-full p-1 hover:bg-indigo-50"
-                    type="button"
-                    @click="sendMessage('out')"
-                  >
-                    <img class="h-5 w-7" src="@/assets/img/send-alt.svg" />
-                  </button>
-                </div>
+              <div>
+                <button
+                  class="inline-flex rounded-full p-1 outline-none hover:bg-towni-brown-100"
+                  type="button"
+                  @click="sendMessage('out')"
+                >
+                  <img class="h-5 w-7" src="@/assets/img/send-alt.svg" />
+                </button>
               </div>
             </div>
           </div>
 
           <div
             :class="{ hidden: openChatTab !== 2, block: openChatTab === 2 }"
-            class="h-full overflow-auto bg-white p-3"
+            class="h-full overflow-auto bg-towni-brown-700 p-3"
           >
             <div v-for="item in 9" :key="item" class="my-2 flex">
               <span
-                class="mr-1 inline-block h-4 w-4 rounded-full bg-red-600 p-3"
+                class="mr-1 inline-block h-1 w-1 rounded-full bg-red-600 p-1"
               ></span>
               <p class="!text-xs">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit.
@@ -182,3 +162,18 @@ const toggleChat = () => {
   isChat.value = !isChat.value
 }
 </script>
+
+<style scoped>
+div::-webkit-scrollbar-thumb {
+  background-color: #c57b34;
+  border: 4px solid transparent;
+  border-radius: 8px;
+  background-clip: padding-box;
+}
+
+div::-webkit-scrollbar {
+  width: 12px;
+  background: transparent;
+  border-radius: 5px;
+}
+</style>
