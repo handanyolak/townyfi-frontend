@@ -6,19 +6,16 @@
       <div v-if="onValidNetwork">
         <div v-if="isConnected">
           <div class="flex items-center space-x-2">
-            <button
+            <TownyButton
               v-if="!isRegistered"
-              class="rounded-sm bg-brown p-1 text-white"
-              @click="userRegister()"
+              fill
+              @click.native="userRegister()"
             >
               Register the game
-            </button>
-            <button
-              class="rounded-sm bg-brown p-1 text-white"
-              @click="disconnectWeb3()"
-            >
+            </TownyButton>
+            <TownyButton border @click.native="disconnectWeb3()">
               {{ $t('disconnect_wallet') }}
-            </button>
+            </TownyButton>
             <LanguageDropdown />
             <div>
               <img
@@ -36,31 +33,28 @@
             </div>
           </div>
         </div>
-        <button
-          v-else
-          class="rounded-sm bg-brown-dark p-1 text-white"
-          @click="connectWeb3()"
-        >
+        <TownyButton v-else border @click.native="connectWeb3()">
           Connect Wallet
-        </button>
+        </TownyButton>
       </div>
-      <a
+
+      <TownyButton
         v-else
         target="_blank"
-        class="rounded-sm bg-brown p-1 text-white"
-        @click="switchNetwork()"
+        border
+        @click.native="switchNetwork()"
       >
         Switch Network
-      </a>
+      </TownyButton>
     </div>
-    <a
+    <TownyButton
       v-else
       href="https://metamask.io/download/"
       target="_blank"
-      class="rounded-sm bg-brown p-1 text-white"
+      border
     >
       install
-    </a>
+    </TownyButton>
   </div>
 </template>
 
@@ -68,6 +62,7 @@
 import { ethers } from 'ethers'
 import { useDark, useToggle } from '@vueuse/core'
 import LanguageDropdown from '~/components/LanguageDropdown.vue'
+import TownyButton from '~/components/TownyButton.vue'
 
 // Constants
 const $t = useLang
