@@ -80,6 +80,7 @@ export default defineNuxtConfig({
   build: {
     postcss: {
       plugins: {
+        // 'postcss-import': {},
         tailwindcss: {},
         autoprefixer: {},
       },
