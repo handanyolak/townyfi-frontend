@@ -5,31 +5,3 @@
 body {
   overflow-x: hidden;
 }
-
-@layer utilities {
-  .border-gradient {
-    background-image: linear-gradient(
-        theme('colors.towni-brown-light.100'),
-        theme('colors.towni-brown-light.100')
-      ),
-      linear-gradient(
-        theme('colors.towni-brown-light.200'),
-        theme('colors.towni-brown-dark.200')
-      );
-    background-clip: padding-box, border-box;
-    background-origin: padding-box, border-box;
-  }
-
-  .fill-gradient {
-    background-image: linear-gradient(
-        theme('colors.towni-brown-light.200'),
-        theme('colors.towni-brown-dark.200')
-      ),
-      linear-gradient(
-        theme('colors.towni-brown-light.200'),
-        theme('colors.towni-brown-dark.200')
-      );
-    background-clip: padding-box, border-box;
-    background-origin: padding-box, border-box;
-  }
-}
