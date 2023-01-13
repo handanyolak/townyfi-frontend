@@ -1,6 +1,6 @@
 <template>
   <div
-    class="castle relative flex min-h-[350px] flex-col items-center rounded-xl text-2xl font-bold shadow-2xl dark:shadow-lg dark:shadow-slate-400"
+    class="castle relative flex min-h-[350px] flex-col items-center rounded-xl border border-towni-brown-light-200 bg-[#fffcf8] text-2xl font-bold shadow-lg shadow-towni-brown-light-200 dark:border dark:border-slate-800 dark:bg-night-blue dark:shadow-lg dark:shadow-sky-900"
   >
     <div>
       <span>{{ item.x.toString() }}</span>

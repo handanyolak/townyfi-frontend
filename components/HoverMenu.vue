@@ -9,7 +9,7 @@
       "
       @mouseover="sideOver('isGameInfo')"
     >
-      <span class="w-full text-xs text-towni-brown-200">Game</span>
+      <span class="w-full text-xs text-towni-brown-dark-300">Game</span>
       <img src="@/assets/img/cardboard.svg" class="h-14 w-14" />
     </div>
     <div
@@ -21,7 +21,7 @@
       "
       @mouseover="sideOver('isWeb3Info')"
     >
-      <span class="w-full text-xs text-towni-brown-200">Wallet</span>
+      <span class="w-full text-xs text-towni-brown-dark-300">Wallet</span>
       <img src="@/assets/img/cardboard.svg" class="h-14 w-14" />
     </div>
     <div
@@ -33,7 +33,9 @@
       "
       @mouseover="sideOver('isUserOptions')"
     >
-      <span class="w-full pl-[7px] text-xs text-towni-brown-200">Actions</span>
+      <span class="w-full pl-[7px] text-xs text-towni-brown-dark-300"
+        >Actions</span
+      >
       <img src="@/assets/img/cardboard.svg" class="h-14 w-14" />
     </div>
     <div
@@ -45,7 +47,9 @@
       "
       @mouseover="sideOver('isInteractions')"
     >
-      <span class="w-full pl-[7px] text-xs text-towni-brown-200">Options</span>
+      <span class="w-full pl-[7px] text-xs text-towni-brown-dark-300"
+        >Options</span
+      >
       <img src="@/assets/img/cardboard.svg" class="h-14 w-14" />
     </div>
   </div>

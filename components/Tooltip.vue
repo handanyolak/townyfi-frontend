@@ -6,9 +6,9 @@
     />
     <span
       :class="[
-        'absolute bottom-4 w-64 transform rounded-md bg-towni-brown-100 py-1 text-center text-sm text-towni-brown-200 shadow-xl transition-all duration-700 ease-out',
+        'absolute bottom-4 w-64 transform rounded-md bg-towni-brown-light-400 py-1 text-center text-sm text-towni-brown-dark-300 shadow-xl transition-all duration-700 ease-out',
         isShowTooltip
-          ? 'visible translate-y-0 transform cursor-pointer bg-towni-brown-600'
+          ? 'visible translate-y-0 transform cursor-pointer bg-towni-brown-light-200'
           : 'invisible -translate-y-12',
       ]"
     >

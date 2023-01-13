@@ -14,7 +14,7 @@ body {
       ),
       linear-gradient(
         theme('colors.towni-brown-light.200'),
-        theme('colors.towni-brown.100')
+        theme('colors.towni-brown-dark.200')
       );
     background-clip: padding-box, border-box;
     background-origin: padding-box, border-box;
@@ -23,11 +23,11 @@ body {
   .fill-gradient {
     background-image: linear-gradient(
         theme('colors.towni-brown-light.200'),
-        theme('colors.towni-brown.100')
+        theme('colors.towni-brown-dark.200')
       ),
       linear-gradient(
         theme('colors.towni-brown-light.200'),
-        theme('colors.towni-brown.100')
+        theme('colors.towni-brown-dark.200')
       );
     background-clip: padding-box, border-box;
     background-origin: padding-box, border-box;

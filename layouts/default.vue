@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen dark:bg-gray-900">
+  <div class="dark:bg-night-blue min-h-screen bg-towni-brown-light-100">
     <TheHeader />
     <TheSidebar />
     <Nuxt />

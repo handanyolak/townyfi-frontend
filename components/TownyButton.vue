@@ -3,8 +3,8 @@
     :class="[
       'rounded-md border-2 border-solid border-transparent p-2 text-sm   transition-colors duration-200 ease-in-out ',
       border
-        ? 'border-gradient hover:fill-gradient text-towni-brown-200 hover:text-white'
-        : 'fill-gradient hover:border-gradient text-white hover:text-towni-brown-200',
+        ? 'border-gradient hover:fill-gradient text-towni-brown-dark-300 hover:text-white'
+        : 'fill-gradient hover:border-gradient text-white hover:text-towni-brown-dark-300',
     ]"
   >
     <slot />

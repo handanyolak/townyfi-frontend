@@ -6,16 +6,16 @@
         :class="isChat ? 'max-h-80' : 'max-h-9'"
       >
         <div
-          class="grid h-10 w-full grid-cols-2 gap-x-1 rounded-t-2xl border border-b border-towni-brown-700 bg-towni-brown-700 p-2 shadow-md"
+          class="grid h-10 w-full grid-cols-2 gap-x-1 rounded-t-2xl border border-b border-towni-brown-light-300 bg-towni-brown-light-300 p-2 shadow-md"
         >
           <button
-            class="rounded-t-xl bg-towni-brown-800 px-2 py-1 text-sm font-medium text-white outline-none transition-all duration-300 ease-out hover:bg-[#c99f75]"
+            class="rounded-t-xl bg-towni-brown-dark-100 px-2 py-1 text-sm font-medium text-white outline-none transition-all duration-300 ease-out hover:bg-[#c99f75]"
             @click="toggleChatTabs(1)"
           >
             Chat Box
           </button>
           <button
-            class="rounded-t-xl bg-towni-brown-800 px-2 py-1 text-sm font-medium text-white outline-none transition-all duration-300 ease-out hover:bg-[#c99f75]"
+            class="rounded-t-xl bg-towni-brown-dark-100 px-2 py-1 text-sm font-medium text-white outline-none transition-all duration-300 ease-out hover:bg-[#c99f75]"
             @click="toggleChatTabs(2)"
           >
             Logs
@@ -25,7 +25,7 @@
         <div class="h-72">
           <div
             :class="{ hidden: openChatTab !== 1, block: openChatTab === 1 }"
-            class="bg-towni-brown-700"
+            class="bg-towni-brown-light-300"
           >
             <div ref="chatArea" class="h-56 overflow-auto p-4">
               <div
@@ -41,9 +41,9 @@
                   style="font-size: 12px"
                   class="message-box relative z-10 my-2 inline-block rounded-[10px] p-2 after:absolute after:-left-4 after:-z-10 after:origin-top-right after:skew-x-65 after:rounded-l-xl after:rounded-r-sm after:border-r-[32px] after:border-b-[14px]"
                   :class="{
-                    'bg-towni-brown-200 text-white after:border-y-transparent after:border-r-towni-brown-200 after:border-l-transparent':
+                    'bg-towni-brown-dark-300 text-white after:border-y-transparent after:border-r-towni-brown-dark-300 after:border-l-transparent':
                       message.author === 'you',
-                    'bg-towni-brown-600 after:border-y-transparent after:border-r-towni-brown-600 after:border-l-transparent':
+                    'bg-towni-brown-light-200 after:border-y-transparent after:border-r-towni-brown-light-200 after:border-l-transparent':
                       message.author !== 'you',
                   }"
                 >
@@ -53,13 +53,13 @@
             </div>
 
             <div
-              class="flex h-16 items-center border-t border-towni-brown-1000 p-2"
+              class="border-towni-brown-light-4000 flex h-16 items-center border-t p-2"
             >
               <div class="mx-2 w-full">
                 <input
                   v-model="youMessage"
                   style="font-size: 12px"
-                  class="w-full rounded-full border border-towni-brown-900 bg-towni-brown-1000 px-2 py-1 outline-none transition-all duration-300 ease-out focus:border-towni-brown-200"
+                  class="bg-towni-brown-light-4000 w-full rounded-full border border-towni-brown-light-500 px-2 py-1 outline-none transition-all duration-300 ease-out focus:border-towni-brown-dark-300"
                   type="text"
                   placeholder="Aa"
                   autofocus
@@ -69,7 +69,7 @@
 
               <div>
                 <button
-                  class="inline-flex rounded-full p-1 outline-none hover:bg-towni-brown-100"
+                  class="inline-flex rounded-full p-1 outline-none hover:bg-towni-brown-light-400"
                   type="button"
                   @click="sendMessage('out')"
                 >
@@ -81,7 +81,7 @@
 
           <div
             :class="{ hidden: openChatTab !== 2, block: openChatTab === 2 }"
-            class="h-full overflow-auto bg-towni-brown-700 p-3"
+            class="h-full overflow-auto bg-towni-brown-light-300 p-3"
           >
             <div v-for="item in 9" :key="item" class="my-2 flex">
               <span
