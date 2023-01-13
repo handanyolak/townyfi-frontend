@@ -1,8 +1,17 @@
 <template>
   <div class="container">
     <div class="space-x-2"></div>
-    <div v-if="hasMetamask" class="flex justify-between py-3">
-      <span :class="isDark ? 'text-white' : ''">TownyFi</span>
+    <div v-if="hasMetamask" class="flex justify-between py-5">
+      <div>
+        <span
+          class="flex items-center bg-gradient-to-r from-towni-brown-dark-400 to-towni-brown-dark-200 bg-clip-text text-5xl font-extrabold text-transparent"
+          :class="isDark ? 'text-white' : ''"
+          style="font-family: Pirata One, sans-serif"
+        >
+          <img class="h-7 w-7" src="@/assets/img/paper-document.svg" />
+          Towny Fi
+        </span>
+      </div>
       <div v-if="onValidNetwork">
         <div v-if="isConnected">
           <div class="flex items-center space-x-2">
@@ -122,3 +131,12 @@ const isDark = useDark()
 
 const toggleDark = useToggle(isDark)
 </script>
+
+<style scoped>
+@import url('https://fonts.googleapis.com/css?family=Pirata+One|Bilbo+Swash+Caps&display=swap');
+
+@font-face {
+  font-family: Morris;
+  src: url(https://cdn.statically.io/gh/EmmesCodes/Tipografias/dae9f5bb/MorrisInitials.ttf);
+}
+</style>
