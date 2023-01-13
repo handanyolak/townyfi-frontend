@@ -1,13 +1,17 @@
 <template>
   <button
-    :class="[
-      'rounded-md border-2 border-solid border-transparent p-2 text-sm   transition-colors duration-200 ease-in-out ',
-      border
-        ? 'border-gradient hover:fill-gradient text-towni-brown-dark-300 hover:text-white'
-        : 'fill-gradient hover:border-gradient text-white hover:text-towni-brown-dark-300',
-    ]"
+    class="group mx-auto rounded-full bg-gradient-to-tr from-towni-brown-dark-300 via-towni-brown-dark-200 to-towni-brown-light-400 p-[2px] text-sm transition-colors duration-1000 ease-in-out"
   >
-    <slot />
+    <div
+      :class="[
+        'rounded-full p-2 transition-colors duration-500 ease-in-out',
+        border
+          ? 'bg-towni-brown-light-100  text-towni-brown-dark-200 group-hover:bg-transparent  group-hover:text-white '
+          : 'bg-transparent text-white group-hover:bg-towni-brown-light-100 group-hover:text-towni-brown-dark-200',
+      ]"
+    >
+      <slot />
+    </div>
   </button>
 </template>
 
