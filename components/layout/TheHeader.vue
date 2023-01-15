@@ -9,7 +9,7 @@
           style="font-family: Pirata One, sans-serif"
         >
           <img class="h-7 w-7" src="@/assets/img/paper-document.svg" />
-          Towny Fi
+          TownyFi
         </span>
       </div>
       <div v-if="onValidNetwork">
@@ -22,7 +22,7 @@
             >
               Register the game
             </TownyButton>
-            <TownyButton border @click.native="disconnectWeb3()">
+            <TownyButton fill @click.native="disconnectWeb3()">
               {{ $t('disconnect_wallet') }}
             </TownyButton>
             <LanguageDropdown />

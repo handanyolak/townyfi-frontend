@@ -13,6 +13,8 @@
 </template>
 
 <script setup lang="ts">
+import ListItem from '~/components/sidebar-items/ListItem.vue'
+
 interface ScrollableListProps {
   items?: string[]
   copyValue?: string | string[]

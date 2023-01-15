@@ -1,18 +1,12 @@
 <template>
   <Transition
-    :name="
-      appOptionStore.isWeb3Info || appOptionStore.isGameInfo
-        ? 'slide-left-fade'
-        : 'slide-right-fade'
-    "
+    :name="isGameInfo || isWeb3Info ? 'slide-left-fade' : 'slide-right-fade'"
   >
     <div
       v-if="appOptionStore.showSidebar"
       :class="[
         'fixed top-0 z-50 min-h-screen w-[500px]',
-        appOptionStore.isGameInfo || appOptionStore.isWeb3Info
-          ? '-left-3'
-          : '-right-3',
+        isGameInfo || isWeb3Info ? '-left-3' : '-right-3',
       ]"
       @mouseleave="sideLeave()"
     >
@@ -21,7 +15,7 @@
           :class="[
             'parchment absolute -top-3 w-full bg-white [filter:url(#wavy)]',
             appOptionStore.isUserOptions || appOptionStore.isInteractions
-              ? ' rotate-180 transform'
+              ? 'rotate-180 transform'
               : '',
           ]"
         ></div>
@@ -50,14 +44,19 @@
 import SidebarTabVue from '@/components/SidebarTab.vue'
 
 const appOptionStore = useAppOptions()
+const { isGameInfo, isWeb3Info } = storeToRefs(appOptionStore)
 const tabs = ['User', 'Town']
 
 const sideLeave = () => {
+  console.log(isWeb3Info.value)
+  console.log(isGameInfo.value)
   appOptionStore.showSidebar = false
-  appOptionStore.isGameInfo = false
-  appOptionStore.isWeb3Info = false
+  isGameInfo.value = false
+  isWeb3Info.value = false
   appOptionStore.isUserOptions = false
   appOptionStore.isInteractions = false
+  console.log(isWeb3Info.value)
+  console.log(isGameInfo.value)
 }
 </script>
 

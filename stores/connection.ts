@@ -3,7 +3,7 @@ export const useConnectionStore = defineStore('connectionStore', () => {
 
   const hasMetamask = Boolean(window.ethereum)
   const ethereum = window.ethereum
-  const onValidNetwork = hasMetamask && ethereum.chainId === '0x5'
+  const onValidNetwork = ref(hasMetamask && ethereum.chainId === '0x5')
 
   const provider = useProvider()
 

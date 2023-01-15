@@ -8,7 +8,7 @@ export const useUserOptionsStore = defineStore('userOptionsStore', () => {
     return true
   }
 
-  function detectLanguage() {
+  function detectLanguage(): string {
     const currentLanguage = localStorage.getItem('lang')
 
     if (!currentLanguage) {

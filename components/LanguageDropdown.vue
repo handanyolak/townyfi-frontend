@@ -7,7 +7,7 @@
         @click="toggleLanguage()"
         @blur="showLanguageDropdown = false"
       >
-        <img class="mr-1 h-4 w-4" :src="`/assets/img/${language}.svg`" />
+        <img class="mr-1 h-4 w-4" :src="languageIcon()" />
         <span class="text-sm capitalize">{{ language }}</span>
         <img
           class="block h-4 w-4 transform transition-transform duration-200 ease-in-out dark:hidden"
@@ -34,7 +34,7 @@
               useUserOptions.setLanguage(item) && toggleLanguage()
             "
           >
-            <img class="mr-1 h-4 w-4" :src="`/assets/img/${item}.svg`" />
+            <img class="mr-1 h-4 w-4" :src="languageIcon(item)" />
             <p class="text-sm capitalize dark:text-white">{{ item }}</p>
           </li>
         </ul>
@@ -53,6 +53,12 @@ const languages = computed(() => {
 
   return allLanguages.filter((item) => item !== language.value)
 })
+
+const languageIcon = computed(
+  () =>
+    (_language = language.value) =>
+      new URL(`/assets/img/${_language}.svg`, import.meta.url).href
+)
 
 const toggleLanguage = () => {
   showLanguageDropdown.value = !showLanguageDropdown.value

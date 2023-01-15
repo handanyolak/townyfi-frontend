@@ -32,11 +32,6 @@
 
 <script setup lang="ts">
 import { BigNumber } from 'ethers'
-import InformationModal from '~/components/InformationModal.vue'
-import GameInfo from '~/components/GameInfo.vue'
-import CastleBox from '~/components/CastleBox.vue'
-import HoverMenu from '~/components/HoverMenu.vue'
-import ChatBox from '~/components/ChatBox.vue'
 import { CoordinateItem } from '~/types/coordinate-item'
 
 // Constants

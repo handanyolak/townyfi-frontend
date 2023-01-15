@@ -24,14 +24,14 @@
         <div v-if="editable">
           <img
             class="h-4 w-4 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
-            :src="isEdit ? '/assets/img/check.svg' : '/assets/img/edit.svg'"
+            :src="isEdit ? languageIcon('check') : languageIcon('edit')"
             @click="isEdit ? save() : edit()"
           />
         </div>
         <div v-if="copiable">
           <img
             class="h-4 w-4 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
-            :src="isCopy ? '/assets/img/check.svg' : '/assets/img/copy.svg'"
+            :src="isCopy ? languageIcon('check') : languageIcon('copy')"
             @click="isCopy || copy()"
           />
         </div>
@@ -65,6 +65,11 @@ const edit = () => {
   isEdit.value = true
 }
 
+const languageIcon = computed(
+  () => (_language: string) =>
+    new URL(`/assets/img/${_language}.svg`, import.meta.url).href
+)
+
 const save = () => {
   isEdit.value = false
 }
@@ -80,8 +85,8 @@ const convert = () => {
 }
 </script>
 
-<style scoped="slotted">
-input {
+<style scoped>
+:slotted(input) {
   @apply w-full rounded-sm bg-towni-brown-dark-300 bg-opacity-20 px-1 text-towni-brown-dark-600 outline-none backdrop-blur;
 }
 </style>

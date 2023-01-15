@@ -1,5 +1,4 @@
 import { ethers, constants } from 'ethers'
-import { defineStore } from 'pinia'
 
 export const useUserWalletStore = defineStore('userWalletStore', () => {
   const address = ref(constants.AddressZero)
