@@ -1,25 +1,25 @@
 <template>
   <div>
     <div
-      class="towny-menu-image absolute left-0 top-40 rounded-r-lg pl-7 shadow-2xl transition ease-in-out"
+      class="towny-menu-image absolute left-0 top-40 cursor-pointer rounded-r-lg pl-7 shadow-2xl transition ease-in-out"
       :class="isGameInfo ? 'translate-x-0' : '-translate-x-6 duration-1000'"
-      @mouseover="sideOver('isGameInfo')"
+      @click="sideOver('isGameInfo')"
     >
       <span class="w-full text-xs text-towni-brown-dark-300">Game</span>
       <img src="@/assets/img/cardboard.svg" class="h-14 w-14" />
     </div>
     <div
-      class="towny-menu-image absolute left-0 bottom-40 rounded-r-lg pl-7 shadow-2xl transition ease-in-out"
+      class="towny-menu-image absolute left-0 bottom-40 cursor-pointer rounded-r-lg pl-7 shadow-2xl transition ease-in-out"
       :class="isWeb3Info ? 'translate-x-0' : '-translate-x-6 duration-1000'"
-      @mouseover="sideOver('isWeb3Info')"
+      @click="sideOver('isWeb3Info')"
     >
       <span class="w-full text-xs text-towni-brown-dark-300">Wallet</span>
       <img src="@/assets/img/cardboard.svg" class="h-14 w-14" />
     </div>
     <div
-      class="towny-menu-image absolute right-0 top-40 rounded-l-lg pr-7 shadow-2xl transition ease-in-out"
+      class="towny-menu-image absolute right-0 top-40 cursor-pointer rounded-l-lg pr-7 shadow-2xl transition ease-in-out"
       :class="isUserOptions ? 'translate-x-0' : 'translate-x-6 duration-1000'"
-      @mouseover="sideOver('isUserOptions')"
+      @click="sideOver('isUserOptions')"
     >
       <span class="w-full pl-[7px] text-xs text-towni-brown-dark-300"
         >Actions</span
@@ -27,11 +27,11 @@
       <img src="@/assets/img/cardboard.svg" class="h-14 w-14" />
     </div>
     <div
-      class="towny-menu-image absolute right-0 bottom-40 rounded-l-lg pr-7 shadow-2xl transition ease-in-out"
+      class="towny-menu-image absolute right-0 bottom-40 cursor-pointer rounded-l-lg pr-7 shadow-2xl transition ease-in-out"
       :class="
         isInteractions ? 'translate-x-0 ' : 'translate-x-6  duration-1000'
       "
-      @mouseover="sideOver('isInteractions')"
+      @click="sideOver('isInteractions')"
     >
       <span class="w-full pl-[7px] text-xs text-towni-brown-dark-300"
         >Options</span
