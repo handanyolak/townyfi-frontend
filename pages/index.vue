@@ -32,7 +32,7 @@
 
 <script setup lang="ts">
 import { BigNumber } from 'ethers'
-import { CoordinateItem } from '~/types/coordinate-item'
+import { CoordinateItem } from '~/types'
 
 // Constants
 const connectionStore = useConnectionStore()

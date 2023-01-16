@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import { CoordinateItem } from '~/types/coordinate-item'
+import { CoordinateItem } from '~/types'
 interface CastleBoxProps {
   item: CoordinateItem
 }
