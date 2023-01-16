@@ -1,18 +1,18 @@
 <template>
   <div class="mx-4 p-4">
-    <ul class="my-3 grid grid-cols-2 space-x-2">
+    <ul class="my-3 grid space-x-2" :class="`grid-cols-${tabs.length}`">
       <li v-for="(tab, index) in tabs" :key="index" class="text-center">
         <a
           style="font-family: Pirata One, sans-serif"
           :class="[
             'block cursor-pointer rounded p-2 font-bold uppercase leading-normal shadow-lg',
-            currentTab === tab
+            currentTabName === tab.name
               ? 'bg-towni-brown-dark-300 text-towni-brown-light-400 '
               : 'bg-towni-brown-light-400 text-towni-brown-dark-300 hover:shadow-towni-brown-dark-500',
           ]"
           @click="changeTab(tab)"
         >
-          {{ tab }}
+          {{ tab.name }}
         </a>
       </li>
     </ul>
@@ -23,20 +23,27 @@
 </template>
 
 <script setup lang="ts">
+import { Tab } from '~/types'
+
 interface ContentListItemProps {
-  tabs: string[]
+  tabs: Tab[]
 }
+
 const props = defineProps<ContentListItemProps>()
-const currentTab = ref(props.tabs[0])
+const currentTabName = ref(props.tabs[0].name)
+const currentTabComponent = ref(props.tabs[0].component)
 
 const currentComponent = computed(() => {
-  const _currentTab = currentTab.value
+  const _currentTabComponent = currentTabComponent.value
 
-  return defineAsyncComponent(() => import(`../components/${_currentTab}.vue`))
+  return defineAsyncComponent(
+    () => import(`../components/${_currentTabComponent}.vue`)
+  )
 })
 
-const changeTab = (tab: string) => {
-  currentTab.value = tab
+const changeTab = (tab: Tab) => {
+  currentTabName.value = tab.name
+  currentTabComponent.value = tab.component
 }
 </script>
 
