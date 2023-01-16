@@ -1,56 +1,73 @@
 <template>
-  <div>
-    <Transition
-      :name="isGameInfo || isWeb3Info ? 'slide-left-fade' : 'slide-right-fade'"
+  <Transition
+    :name="isGameInfo || isWeb3Info ? 'slide-left-fade' : 'slide-right-fade'"
+  >
+    <div
+      v-if="showSidebar"
+      ref="sideBar"
+      :class="[
+        'fixed -top-3 z-50 min-h-screen w-96',
+        isGameInfo || isWeb3Info ? '-left-4' : '-right-4',
+      ]"
     >
-      <div
-        v-if="showSidebar"
+      <img
         :class="[
-          'fixed -top-3 z-50 min-h-screen w-96',
-          isGameInfo || isWeb3Info ? '-left-4' : '-right-4',
+          'absolute top-2  z-10 h-10 w-10 cursor-pointer',
+          isGameInfo || isWeb3Info ? '-right-2' : '-left-2',
         ]"
-        @mouseleave="sideLeave()"
-      >
-        <div>
-          <div
-            :class="[
-              'parchment absolute -top-3 w-full bg-white [filter:url(#wavy)]',
-              isUserOptions || isInteractions ? 'rotate-180 transform' : '',
-            ]"
-          ></div>
-          <div class="relative">
-            <SidebarTabVue :tabs="tabs" />
-          </div>
-          <svg>
-            <filter id="wavy">
-              <feTurbulence
-                x="0"
-                y="0"
-                baseFrequency="0.02"
-                numOctaves="5"
-                seed="1"
-              />
-              <feDisplacementMap in="SourceGraphic" scale="40" />
-            </filter>
-          </svg>
+        src="@/assets/img/exit.svg"
+        @click="sideLeave()"
+      />
+      <div>
+        <div
+          :class="[
+            'parchment absolute -top-3 w-full bg-white [filter:url(#wavy)]',
+            isUserOptions || isInteractions ? 'rotate-180 transform' : '',
+          ]"
+        ></div>
+        <div class="relative">
+          <SidebarTab v-if="isGameInfo" :tabs="tabs" />
         </div>
+        <svg>
+          <filter id="wavy">
+            <feTurbulence
+              x="0"
+              y="0"
+              baseFrequency="0.02"
+              numOctaves="5"
+              seed="1"
+            />
+            <feDisplacementMap in="SourceGraphic" scale="40" />
+          </filter>
+        </svg>
       </div>
-    </Transition>
-  </div>
+    </div>
+  </Transition>
 </template>
 
 <script setup lang="ts">
-import SidebarTabVue from '@/components/SidebarTab.vue'
+import { onClickOutside } from '@vueuse/core'
+import SidebarTab from '@/components/SidebarTab.vue'
+import { Tab } from '~/types'
 
 const appOptionStore = useAppOptions()
 const { isGameInfo, isWeb3Info, isUserOptions, isInteractions, showSidebar } =
   storeToRefs(appOptionStore)
 
-const tabs = ['User', 'Town']
+const tabs: Tab[] = [
+  {
+    name: 'User',
+    component: 'User',
+  },
+  {
+    name: 'Town',
+    component: 'Town',
+  },
+]
+const sideBar = ref(null)
 
 const sideLeave = () => {
   showSidebar.value = false
-
   requestAnimationFrame(() => {
     isGameInfo.value = false
     isWeb3Info.value = false
@@ -58,6 +75,8 @@ const sideLeave = () => {
     isInteractions.value = false
   })
 }
+
+onClickOutside(sideBar, () => sideLeave())
 </script>
 
 <style>
@@ -66,7 +85,7 @@ const sideLeave = () => {
   transition: transform 0.8s ease;
 }
 
-.slide-left-fade-enter,
+.slide-left-fade-enter-from,
 .slide-left-fade-leave-to {
   transform: translateX(-100%);
   transition: all 0.3s ease-out;
@@ -77,7 +96,7 @@ const sideLeave = () => {
   transition: transform 0.8s ease;
 }
 
-.slide-right-fade-enter,
+.slide-right-fade-enter-from,
 .slide-right-fade-leave-to {
   transform: translateX(100%);
   transition: all 0.3s ease-out;
