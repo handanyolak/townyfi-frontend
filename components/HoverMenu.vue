@@ -2,11 +2,7 @@
   <div>
     <div
       class="towny-menu-image absolute left-0 top-40 rounded-r-lg pl-7 shadow-2xl transition ease-in-out"
-      :class="
-        appOptionStore.isGameInfo
-          ? 'translate-x-0'
-          : '-translate-x-6 duration-1000'
-      "
+      :class="isGameInfo ? 'translate-x-0' : '-translate-x-6 duration-1000'"
       @mouseover="sideOver('isGameInfo')"
     >
       <span class="w-full text-xs text-towni-brown-dark-300">Game</span>
@@ -14,11 +10,7 @@
     </div>
     <div
       class="towny-menu-image absolute left-0 bottom-40 rounded-r-lg pl-7 shadow-2xl transition ease-in-out"
-      :class="
-        appOptionStore.isWeb3Info
-          ? 'translate-x-0'
-          : '-translate-x-6 duration-1000'
-      "
+      :class="isWeb3Info ? 'translate-x-0' : '-translate-x-6 duration-1000'"
       @mouseover="sideOver('isWeb3Info')"
     >
       <span class="w-full text-xs text-towni-brown-dark-300">Wallet</span>
@@ -26,11 +18,7 @@
     </div>
     <div
       class="towny-menu-image absolute right-0 top-40 rounded-l-lg pr-7 shadow-2xl transition ease-in-out"
-      :class="
-        appOptionStore.isUserOptions
-          ? 'translate-x-0'
-          : 'translate-x-6 duration-1000'
-      "
+      :class="isUserOptions ? 'translate-x-0' : 'translate-x-6 duration-1000'"
       @mouseover="sideOver('isUserOptions')"
     >
       <span class="w-full pl-[7px] text-xs text-towni-brown-dark-300"
@@ -41,9 +29,7 @@
     <div
       class="towny-menu-image absolute right-0 bottom-40 rounded-l-lg pr-7 shadow-2xl transition ease-in-out"
       :class="
-        appOptionStore.isInteractions
-          ? 'translate-x-0 '
-          : 'translate-x-6  duration-1000'
+        isInteractions ? 'translate-x-0 ' : 'translate-x-6  duration-1000'
       "
       @mouseover="sideOver('isInteractions')"
     >
@@ -57,9 +43,12 @@
 
 <script setup lang="ts">
 const appOptionStore = useAppOptions()
+const { isGameInfo, isWeb3Info, isUserOptions, isInteractions } =
+  storeToRefs(appOptionStore)
 
-// TODO: typescript named string type yapilacak drawerName: 'rawen' | 'sushi"
-const sideOver = (drawerName: string) => {
+const sideOver = (
+  drawerName: 'isGameInfo' | 'isWeb3Info' | 'isUserOptions' | 'isInteractions'
+) => {
   appOptionStore[drawerName] = true
   appOptionStore.showSidebar = true
 }
