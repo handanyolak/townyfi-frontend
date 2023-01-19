@@ -42,6 +42,7 @@ const currentComponent = computed(() => {
 })
 
 const changeTab = (tab: Tab) => {
+  useSound('demo_public_sounds_button', 'wav')
   currentTabName.value = tab.name
   currentTabComponent.value = tab.component
 }

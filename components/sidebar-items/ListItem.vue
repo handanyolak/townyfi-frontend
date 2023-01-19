@@ -65,10 +65,7 @@ const edit = () => {
   isEdit.value = true
 }
 
-const languageIcon = computed(
-  () => (_language: string) =>
-    new URL(`/assets/img/${_language}.svg`, import.meta.url).href
-)
+const languageIcon = computed(() => (_language: string) => useSvg(_language))
 
 const save = () => {
   isEdit.value = false

@@ -57,7 +57,7 @@ const languages = computed(() => {
 const languageIcon = computed(
   () =>
     (_language = language.value) =>
-      new URL(`/assets/img/${_language}.svg`, import.meta.url).href
+      useSvg(_language)
 )
 
 const toggleLanguage = () => {
