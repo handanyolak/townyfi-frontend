@@ -38,6 +38,10 @@ module.exports = {
         },
         'night-blue': '#0a0a16',
       },
+      backgroundImage: {
+        'castle-light': "url('@/assets/img/castle-light.svg')",
+        'castle-dark': "url('@/assets/img/castle-dark.svg')",
+      },
       boxShadow: {
         'towni-300': '0px 3px 8px -6px #b44e00',
       },
@@ -48,17 +52,13 @@ module.exports = {
         65: '65deg',
       },
     },
+    borderWidth: {
+      DEFAULT: '1px',
+      14: '14px',
+      20: '20px',
+    },
+    backgroundSize: {
+      '60%': '60%',
+    },
   },
-  plugins: [
-    // plugin(function ({ addComponents, theme }) {
-    //   addComponents({
-    //     '.example': {
-    //       backgroundColor: theme('colors.white'),
-    //       borderRadius: theme('borderRadius.lg'),
-    //       padding: theme('spacing.6'),
-    //       boxShadow: theme('boxShadow.xl'),
-    //     },
-    //   })
-    // }),
-  ],
 }
