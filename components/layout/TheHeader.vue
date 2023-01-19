@@ -28,16 +28,24 @@
             <LanguageDropdown />
             <div>
               <img
-                v-if="isDark"
-                src="@/assets/img/dark-mode.svg"
+                :src="themeIcon"
                 class="h-5 w-5 cursor-pointer"
-                @click="toggleDark()"
+                @click="toggleTheme()"
               />
+            </div>
+            <div>
               <img
-                v-else
-                src="@/assets/img/light-mode.svg"
+                :src="audioIcon"
+                class="h-7 w-7 cursor-pointer"
+                @click="toggleAudio()"
+              />
+            </div>
+            <div>
+              <img
+                v-if="audio"
+                :src="musicIcon"
                 class="h-5 w-5 cursor-pointer"
-                @click="toggleDark()"
+                @click="toggleMusic()"
               />
             </div>
           </div>
@@ -69,11 +77,10 @@
 
 <script setup lang="ts">
 import { ethers } from 'ethers'
-import { useDark, useToggle } from '@vueuse/core'
+import { useDark, useToggle, useStorage } from '@vueuse/core'
 import LanguageDropdown from '~/components/LanguageDropdown.vue'
 import TownyButton from '~/components/TownyButton.vue'
 
-// Constants
 const $t = useLang
 const connectionStore = useConnectionStore()
 const hasMetamask = connectionStore.hasMetamask
@@ -85,8 +92,62 @@ const ktaToken = userWalletStore.ktaToken
 const { connectWeb3, disconnectWeb3 } = userWalletStore
 const { isRegistered } = storeToRefs(userGameStore)
 const { onValidNetwork, isConnected } = storeToRefs(connectionStore)
+const audio = useStorage('audio', false)
+const music = ref(false)
+const isDark = useDark({
+  storageKey: 'theme',
+  valueDark: 'dark',
+  valueLight: 'light',
+})
+const mainThemeAudio = ref<HTMLAudioElement | null>(null)
 
-// Hooks
+const toggleTheme = useToggle(isDark)
+const _toggleAudio = useToggle(audio)
+const _toggleMusic = useToggle(music)
+
+const toggleAudio = () => {
+  _toggleAudio()
+
+  if (!audio.value) {
+    pauseMusic()
+  }
+}
+
+const toggleMusic = () => {
+  _toggleMusic()
+
+  if (music.value && audio.value) {
+    playMusic()
+  } else {
+    pauseMusic()
+  }
+}
+
+const playMusic = async () => {
+  if (!mainThemeAudio.value) {
+    mainThemeAudio.value = new Audio(
+      // @ts-ignore
+      (await import('../../assets/sound/in-dreams.mp3')).default
+    )
+    mainThemeAudio.value.loop = true
+  }
+
+  mainThemeAudio.value.play()
+}
+
+const pauseMusic = () => {
+  music.value = false
+  mainThemeAudio.value?.pause()
+}
+
+const audioIcon = computed(() => useSvg(audio.value ? 'sound' : 'sound-mute'))
+
+const musicIcon = computed(() => useSvg(music.value ? 'pause' : 'music'))
+
+const themeIcon = computed(() =>
+  useSvg(isDark.value ? 'dark-mode' : 'light-mode')
+)
+
 onMounted(() => {
   if (hasMetamask) {
     /* await userWalletStore.connect() */
@@ -94,7 +155,6 @@ onMounted(() => {
   }
 })
 
-// Methods
 const switchNetwork = async () => {
   // TODO: chainId env'den alinacak
   try {
@@ -126,10 +186,6 @@ const userRegister = async () => {
     console.log(error)
   }
 }
-
-const isDark = useDark()
-
-const toggleDark = useToggle(isDark)
 </script>
 
 <style scoped>
