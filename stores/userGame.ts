@@ -1,8 +1,9 @@
 import { BigNumber } from 'ethers'
+import { cloneDeep } from 'lodash'
 import { CoordinateItem } from '~/types/coordinate-item'
 
 export const useUserGameStore = defineStore('userGameStore', () => {
-  const user = ref({})
+  const user = ref(null)
   const isRegistered = ref(false)
   const addressesByCoordinate = ref([]) as CoordinateItem[]
 
@@ -13,10 +14,24 @@ export const useUserGameStore = defineStore('userGameStore', () => {
     user.value = newUserInfo
   }
 
+  const setUserProperty = (newProperty: string, newValue: any) => {
+    const newUser = cloneDeep(user.value)
+    console.log('newUser')
+    console.log(newUser)
+    console.log('newUser[newProperty]')
+    console.log(newUser[newProperty])
+    console.log('newValue')
+    console.log(newValue)
+    newUser[newProperty] = newValue
+
+    setUserInfo(newUser)
+  }
+
   const setIsRegistered = (newIsRegistered: boolean) => {
     isRegistered.value = newIsRegistered
   }
 
+  // TODO: adi yanlis
   const setUserCoordinate = async (nearLevel = 1) => {
     addressesByCoordinate.value = []
     const minScanX = user.value.coordinate._x.sub(nearLevel)
@@ -48,5 +63,6 @@ export const useUserGameStore = defineStore('userGameStore', () => {
     setIsRegistered,
     setUserCoordinate,
     setUserInfo,
+    setUserProperty,
   }
 })
