@@ -3,7 +3,7 @@
     <div
       class="round-parchment h-20 -scale-105 transform rounded-xl bg-white"
     ></div>
-    <div class="parchment h-[50vh] bg-white text-towni-brown-dark-600">
+    <div class="parchment bg-white text-towni-brown-dark-600">
       <div class="animate-fadein">
         <slot />
       </div>
@@ -13,8 +13,6 @@
     ></div>
   </div>
 </template>
-
-<script setup lang="ts"></script>
 
 <style scoped>
 .round-parchment {
