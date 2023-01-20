@@ -42,6 +42,15 @@ module.exports = {
         'castle-light': "url('@/assets/img/castle-light.svg')",
         'castle-dark': "url('@/assets/img/castle-dark.svg')",
       },
+      keyframes: {
+        fadein: {
+          '0%': { opacity: 0 },
+          '100%': { opacity: 1 },
+        },
+      },
+      animation: {
+        fadein: 'fadein 3s 1',
+      },
       boxShadow: {
         'towni-300': '0px 3px 8px -6px #b44e00',
       },
