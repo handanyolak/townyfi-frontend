@@ -11,17 +11,23 @@
         @modalOpened="openModal(item)"
       />
 
-      <InformationModal v-if="showModal" @modalClosed="closeModal()">
-        <div class="flex flex-col">
-          <span class="my-1 text-xs">{{ currentItem.x }}</span>
-          <span class="my-1 text-xs">{{ currentItem.y }}</span>
-          <span
-            v-for="(_address, index) in currentItem.addresses"
-            :key="index"
-            class="my-1 text-xs"
-            >{{ _address }}</span
-          >
-        </div>
+      <InformationModal
+        v-if="showModal"
+        :content-classes="'min-h-[50%] w-1/3 bg-transparent'"
+        @modalClosed="closeModal()"
+      >
+        <Parchment>
+          <div class="flex flex-col p-5">
+            <span class="my-1 text-xs">{{ currentItem.x }}</span>
+            <span class="my-1 text-xs">{{ currentItem.y }}</span>
+            <span
+              v-for="(_address, index) in currentItem.addresses"
+              :key="index"
+              class="my-1 text-xs"
+              >{{ _address }}</span
+            >
+          </div>
+        </Parchment>
       </InformationModal>
     </div>
     <GameInfo v-else />
@@ -33,6 +39,7 @@
 <script setup lang="ts">
 import { BigNumber } from 'ethers'
 import { CoordinateItem } from '~/types'
+import { Coordinates } from '~/types/typechain-types/contracts/game/KillThemAll'
 
 // Constants
 const connectionStore = useConnectionStore()
@@ -49,11 +56,26 @@ const currentItem = ref({
   y: BigNumber.from(0),
   addresses: [],
 } as CoordinateItem)
-
 // Hooks
 onMounted(async () => {
   const nearLevel = localStorage.getItem('nearLevel') || 1
   if (hasMetamask && onValidNetwork.value) {
+    // TODO: userGameStore'a startGameEvents fonksiyonunda eklenecek
+    kta.on(
+      'UserMoved',
+      (
+        user: string,
+        oldCoordinate: Coordinates.CoordinateStructOutput,
+        newCoordinate: Coordinates.CoordinateStructOutput
+      ) => {
+        console.log(`user: ${user}`)
+        console.log(`oldCoordinate: ${oldCoordinate}`)
+        console.log(`newCoordinate: ${newCoordinate}`)
+
+        userGameStore.setUserProperty('coordinate', newCoordinate)
+      }
+    )
+
     // TODO: Bu fonskiyon normalde header'da calisiyor fakat zaman uyumsuzlugu yonetilemedigi icin gecici olarak cp yapildi.
     // ileride event yontemiyle haberlesilebilir ya da daha iyi bir yol bulunabilir.
     await userWalletStore.connect()
@@ -74,3 +96,5 @@ const foo = () => {
   localStorage.setItem('nearLevel', '2')
 }
 </script>
+
+<style scoped></style>
