@@ -2,6 +2,12 @@
 export default defineNuxtConfig({
   ssr: false,
 
+  vite: {
+    build: {
+      assetsInlineLimit: 0,
+    },
+  },
+
   modules: ['@pinia/nuxt', '@vueuse/nuxt'],
 
   css: ['~/assets/css/main.css'],
