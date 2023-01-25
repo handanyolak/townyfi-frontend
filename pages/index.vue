@@ -1,9 +1,6 @@
 <template>
   <div class="container">
-    <div>
-      <button @click="foo()">set to 2</button>
-    </div>
-    <div v-if="hasMetamask && onValidNetwork" class="grid grid-cols-3 gap-4">
+    <div v-if="hasMetamask && onValidNetwork" class="grid gap-8 md:grid-cols-3">
       <CastleBox
         v-for="(item, index) in addressesByCoordinate"
         :key="index"
@@ -39,7 +36,7 @@
 <script setup lang="ts">
 import { BigNumber } from 'ethers'
 import { CoordinateItem } from '~/types'
-import { Coordinates } from '~/types/typechain-types/contracts/game/KillThemAll'
+import { Coordinates } from '~/types/typechain/contracts/game/KillThemAll'
 
 // Constants
 const connectionStore = useConnectionStore()
@@ -65,8 +62,8 @@ onMounted(async () => {
       'UserMoved',
       (
         user: string,
-        oldCoordinate: Coordinates.CoordinateStructOutput,
-        newCoordinate: Coordinates.CoordinateStructOutput
+        oldCoordinate: Coordinates.CoordinateStruct,
+        newCoordinate: Coordinates.CoordinateStruct
       ) => {
         console.log(`user: ${user}`)
         console.log(`oldCoordinate: ${oldCoordinate}`)
@@ -92,9 +89,9 @@ const openModal = (item: CoordinateItem) => {
 
 const closeModal = () => (showModal.value = false)
 
-const foo = () => {
+/* const foo = () => {
   localStorage.setItem('nearLevel', '2')
-}
+} */
 </script>
 
 <style scoped></style>
