@@ -1,5 +1,7 @@
 import { providers } from 'ethers'
 
 export const useProvider = () => {
-  return new providers.Web3Provider(window.ethereum, 'any')
+  if (window.ethereum) {
+    return new providers.Web3Provider(window.ethereum, 'any')
+  }
 }
