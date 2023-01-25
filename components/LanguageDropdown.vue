@@ -2,7 +2,7 @@
   <div class="flex items-center justify-center">
     <div class="relative z-50 w-16">
       <button
-        class="flex items-center justify-between p-2 shadow-md shadow-gray-200 outline-none dark:bg-gray-900 dark:text-white"
+        class="flex items-center justify-between p-2 outline-none dark:text-white"
         :class="!showLanguageDropdown ? 'rounded-md' : 'rounded-t-md'"
         @click="toggleLanguage()"
         @blur="showLanguageDropdown = false"
@@ -23,7 +23,7 @@
       <Transition name="dropdown">
         <ul
           v-show="showLanguageDropdown"
-          class="absolute left-0 right-0 mb-4 h-20 divide-y overflow-auto shadow-md shadow-gray-200 dark:bg-gray-900"
+          class="absolute left-0 right-0 mb-4 h-20 overflow-auto bg-towni-brown-light-100 dark:bg-night-blue"
           :class="!showLanguageDropdown ? 'rounded-md' : 'rounded-b-md'"
         >
           <li
