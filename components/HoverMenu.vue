@@ -5,7 +5,7 @@
       :class="isGameInfo ? 'translate-x-0' : '-translate-x-6 duration-1000'"
       @click="sideOver('isGameInfo')"
     >
-      <span class="w-full text-xs text-towni-brown-dark-300">Game</span>
+      <span class="w-full pl-2 text-xs text-towni-brown-dark-300">Game</span>
       <img src="@/assets/img/cardboard.svg" class="h-14 w-14" />
     </div>
     <div
@@ -13,7 +13,7 @@
       :class="isWeb3Info ? 'translate-x-0' : '-translate-x-6 duration-1000'"
       @click="sideOver('isWeb3Info')"
     >
-      <span class="w-full text-xs text-towni-brown-dark-300">Wallet</span>
+      <span class="w-full pl-2 text-xs text-towni-brown-dark-300">Wallet</span>
       <img src="@/assets/img/cardboard.svg" class="h-14 w-14" />
     </div>
     <div
@@ -21,9 +21,7 @@
       :class="isUserOptions ? 'translate-x-0' : 'translate-x-6 duration-1000'"
       @click="sideOver('isUserOptions')"
     >
-      <span class="w-full pl-[7px] text-xs text-towni-brown-dark-300"
-        >Actions</span
-      >
+      <span class="w-full pl-2 text-xs text-towni-brown-dark-300">Actions</span>
       <img src="@/assets/img/cardboard.svg" class="h-14 w-14" />
     </div>
     <div
@@ -33,9 +31,7 @@
       "
       @click="sideOver('isInteractions')"
     >
-      <span class="w-full pl-[7px] text-xs text-towni-brown-dark-300"
-        >Options</span
-      >
+      <span class="w-full pl-2 text-xs text-towni-brown-dark-300">Options</span>
       <img src="@/assets/img/cardboard.svg" class="h-14 w-14" />
     </div>
   </div>
