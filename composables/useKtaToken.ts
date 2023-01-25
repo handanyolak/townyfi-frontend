@@ -1,5 +1,5 @@
 import { ethers } from 'ethers'
-import { KtaToken } from '~/types/typechain-types/contracts/game/token/KtaToken'
+import { KtaToken } from '~/types'
 import ktaTokenAbi from '~/abi/ktaTokenAbi.json'
 
 export const useKtaToken = (): KtaToken => {

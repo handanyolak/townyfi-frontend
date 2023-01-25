@@ -1,5 +1,5 @@
 import { ethers } from 'ethers'
-import { KillThemAll } from '~/types/typechain-types/contracts/game/KillThemAll'
+import { KillThemAll } from '~/types'
 import ktaAbi from '~/abi/ktaAbi.json'
 
 export const useKta = (): KillThemAll => {

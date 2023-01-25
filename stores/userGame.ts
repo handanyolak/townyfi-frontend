@@ -1,16 +1,17 @@
 import { BigNumber } from 'ethers'
 import { cloneDeep } from 'lodash'
-import { CoordinateItem } from '~/types/coordinate-item'
+import { CoordinateItem } from '~/types'
+import { IKillThemAll } from '~/types/typechain/contracts/game/KillThemAll'
 
 export const useUserGameStore = defineStore('userGameStore', () => {
-  const user = ref(null)
+  const user = ref<IKillThemAll.UserStruct>(null)
   const isRegistered = ref(false)
   const addressesByCoordinate = ref([]) as CoordinateItem[]
 
   const kta = useKta()
   const settings = computed(async () => await kta.settings())
 
-  const setUserInfo = (newUserInfo: any) => {
+  const setUserInfo = (newUserInfo: IKillThemAll.UserStruct) => {
     user.value = newUserInfo
   }
 

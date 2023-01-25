@@ -1,13 +1,3 @@
-import './typechain-types'
-import { BigNumber } from 'ethers'
-
-export interface CoordinateItem {
-  x: BigNumber
-  y: BigNumber
-  addresses: string[]
-}
-
-export interface Tab {
-  name: string
-  component: string
-}
+export * from './typechain'
+export * from './components/CastleBox'
+export * from './components/SidebarTab'
