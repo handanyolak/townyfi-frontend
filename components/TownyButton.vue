@@ -4,7 +4,7 @@
   >
     <div
       :class="[
-        'rounded-full p-2 transition-colors duration-500 ease-in-out',
+        'rounded-full py-2 px-4  transition-colors duration-500 ease-in-out',
         border
           ? 'bg-towni-brown-light-100 text-towni-brown-dark-200 group-hover:bg-transparent group-hover:text-white  dark:bg-night-blue'
           : 'bg-transparent text-white group-hover:bg-towni-brown-light-100 group-hover:text-towni-brown-dark-200 dark:group-hover:bg-night-blue',
