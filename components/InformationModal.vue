@@ -7,7 +7,7 @@
           :class="contentClasses"
           class="modal relative min-h-[20%] min-w-[30%] rounded-lg bg-white"
         >
-          <button class="absolute right-2 top-2" @click="closeModal">
+          <button class="absolute right-2 top-2 z-50" @click="closeModal">
             <img class="h-10 w-10" src="@/assets/img/exit.svg" />
           </button>
           <slot />
