@@ -3,6 +3,12 @@
     <div class="group my-2 flex items-center px-1 shadow-towni-300">
       <div class="flex items-center">
         <Tooltip>
+          <template #tooltip-image>
+            <img
+              class="mr-1 h-3 w-3 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
+              src="@/assets/img/information.svg"
+            />
+          </template>
           <span>
             Lorem, ipsum dolor sit amet consectetur adipisicing elit. Tempore,
             alias?
@@ -29,11 +35,16 @@
           />
         </div>
         <div v-if="copiable">
-          <img
-            class="h-4 w-4 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
-            :src="isCopy ? languageIcon('check') : languageIcon('copy')"
-            @click="isCopy || copy()"
-          />
+          <Tooltip auto-close>
+            <template #tooltip-image>
+              <img
+                class="h-4 w-4 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
+                :src="isCopy ? languageIcon('check') : languageIcon('copy')"
+                @click="isCopy || copy()"
+              />
+            </template>
+            <span> Copied! </span>
+          </Tooltip>
         </div>
         <img
           v-if="convertable"
