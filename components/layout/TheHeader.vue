@@ -3,7 +3,6 @@
     <div class="flex justify-between py-5">
       <span
         class="flex items-center bg-gradient-to-r from-towni-brown-dark-400 via-towni-brown-dark-400 to-towni-brown-dark-200 bg-clip-text text-5xl font-extrabold text-transparent"
-        :class="isDark ? 'text-white' : ''"
         style="font-family: Pirata One, sans-serif"
       >
         <img class="h-7 w-7" src="@/assets/img/paper-document.svg" />
