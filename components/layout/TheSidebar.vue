@@ -37,7 +37,7 @@
               numOctaves="5"
               seed="1"
             />
-            <feDisplacementMap in="SourceGraphic" scale="40" />
+            <feDisplacementMap in="SourceGraphic" scale="30" />
           </filter>
         </svg>
       </div>
@@ -103,7 +103,7 @@ onClickOutside(sideBar, () => sideLeave())
 }
 
 .parchment {
-  height: 105%;
+  height: 110vh;
   box-shadow: 2px 3px 20px #411c06, 30px 65px 200px #91510ffc inset;
 }
 </style>

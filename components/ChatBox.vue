@@ -88,7 +88,7 @@
                 <span
                   class="mr-1 inline-block h-1 w-1 rounded-full bg-red-600 p-1"
                 ></span>
-                <p class="!text-xs">
+                <p class="text-xs">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit.
                   Inventore, blanditiis?
                 </p>

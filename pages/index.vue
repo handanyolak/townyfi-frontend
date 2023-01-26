@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div v-if="hasMetamask && onValidNetwork" class="grid gap-8 md:grid-cols-3">
+    <div v-if="hasMetamask && onValidNetwork" class="grid gap-6 md:grid-cols-3">
       <CastleBox
         v-for="(item, index) in addressesByCoordinate"
         :key="index"
