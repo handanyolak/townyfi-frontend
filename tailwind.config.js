@@ -16,9 +16,6 @@ module.exports = {
     extend: {
       container: {
         center: true,
-        padding: {
-          DEFAULT: '6rem',
-        },
       },
       colors: {
         'towni-brown-light': {
@@ -27,6 +24,7 @@ module.exports = {
           300: '#E8D5B2',
           400: '#e6c3a2',
           500: '#d6b16b',
+          600: '#FFD479',
         },
         'towni-brown-dark': {
           100: '#C69666',
@@ -37,6 +35,29 @@ module.exports = {
           600: '#3f2007',
         },
         'night-blue': '#0a0a16',
+      },
+      height: {
+        '10v': '10vh',
+        '20v': '20vh',
+        '30v': '30vh',
+        '40v': '40vh',
+        '50v': '50vh',
+        '60v': '60vh',
+        '70v': '70vh',
+        '80v': '80vh',
+        '90v': '90vh',
+        '100v': '100vh',
+      },
+      backgroundSize: {
+        /*         auto: 'auto',
+        cover: 'cover',
+        contain: 'contain', */
+        '20%': '20%',
+        '30%': '30%',
+        '45%': '45%',
+        '50%': '50%',
+        '60%': '60%',
+        '70%': '70%',
       },
       backgroundImage: {
         'castle-light': "url('@/assets/img/castle-light.svg')",
@@ -63,11 +84,10 @@ module.exports = {
     },
     borderWidth: {
       DEFAULT: '1px',
-      14: '14px',
+      12: '12px',
+      18: '18px',
       20: '20px',
-    },
-    backgroundSize: {
-      '60%': '60%',
+      30: '30px',
     },
   },
 }
