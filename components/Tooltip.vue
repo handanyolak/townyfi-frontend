@@ -26,7 +26,6 @@ const props = defineProps({
     default: false,
   },
 })
-console.log(props.autoClose)
 onClickOutside(tooltip, () => (isShowTooltip.value = false))
 const toggleTooltip = () => {
   isShowTooltip.value = !isShowTooltip.value
