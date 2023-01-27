@@ -12,9 +12,10 @@
       </div>
       <span
         :class="{
-          'bg-red-600': item.addresses.length <= 10,
-          'bg-blue-600': item.addresses.length <= 30,
-          'bg-yellow-600': item.addresses.length <= 50,
+          'bg-green-500': item.addresses.length <= 10,
+          'bg-yellow-500':
+            item.addresses.length > 10 && item.addresses.length < 1000,
+          'bg-red-500': item.addresses.length >= 1000,
         }"
         class="inline-block h-1 w-1 rounded-full p-1"
       ></span>
@@ -75,6 +76,7 @@
 </template>
 
 <script setup lang="ts">
+import { useUserGameStore } from '~/stores/userGame'
 import { CoordinateItem } from '~/types'
 
 enum Direction {
