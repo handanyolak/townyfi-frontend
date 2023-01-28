@@ -1,5 +1,7 @@
 <template>
-  <div class="min-h-screen bg-towni-brown-light-100 dark:bg-[#040413]">
+  <div
+    class="min-h-screen bg-towni-brown-light-100 transition-colors duration-300 dark:bg-[#040413]"
+  >
     <TheHeader />
     <TheSidebar />
     <slot />

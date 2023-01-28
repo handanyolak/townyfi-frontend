@@ -29,7 +29,7 @@
           <li
             v-for="(item, index) in languages"
             :key="index"
-            class="flex h-10 cursor-pointer items-center border-t border-gray-300 p-2 transition-colors duration-300 hover:bg-gray-200 dark:border-gray-700 dark:hover:bg-gray-800"
+            class="flex h-10 cursor-pointer items-center border-t border-gray-300 p-2 duration-300 hover:bg-gray-200 dark:border-gray-700 dark:hover:bg-gray-800"
             @mousedown.prevent="
               useUserOptions.setLanguage(item) && toggleLanguage()
             "
