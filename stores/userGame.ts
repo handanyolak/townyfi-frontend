@@ -1,5 +1,4 @@
 import { BigNumber } from 'ethers'
-import { cloneDeep } from 'lodash'
 import { CoordinateItem } from '~/types'
 import { IKillThemAll } from '~/types/typechain/contracts/game/KillThemAll'
 
@@ -15,17 +14,11 @@ export const useUserGameStore = defineStore('userGameStore', () => {
     user.value = newUserInfo
   }
 
-  const setUserProperty = (newProperty: string, newValue: any) => {
-    const newUser = cloneDeep(user.value)
-    console.log('newUser')
-    console.log(newUser)
-    console.log('newUser[newProperty]')
-    console.log(newUser[newProperty])
-    console.log('newValue')
-    console.log(newValue)
-    newUser[newProperty] = newValue
-
-    setUserInfo(newUser)
+  const setUserProperty = <T extends keyof IKillThemAll.UserStruct>(
+    property: T,
+    newValue: IKillThemAll.UserStruct[T]
+  ) => {
+    user.value[property] = newValue
   }
 
   const setIsRegistered = (newIsRegistered: boolean) => {

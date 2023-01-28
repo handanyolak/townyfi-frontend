@@ -4,80 +4,82 @@
     <ListItem editable>
       <template #title> Name: </template>
       <template #input>
-        <input v-model="general.name" type="text" />
+        <input v-model="userName" type="text" />
       </template>
-      <span>{{ general.name }}</span>
+      <span>{{ userName }}</span>
     </ListItem>
     <ListItem>
       <template #title> Coordinate </template>
-      <span>{{ general.coordinate }}</span>
+      <span>({{ userGameStore.user.coordinate._x.toString() }}</span>
+      <span>,</span>
+      <span>{{ userGameStore.user.coordinate._y.toString() }})</span>
     </ListItem>
     <ListItem>
       <template #title> Level: </template>
-      <span>{{ general.level }}</span>
+      <span>{{ userGameStore.user.levelId }}</span>
     </ListItem>
     <ListItem>
       <template #title> Exp: </template>
-      <span>{{ general.exp }}</span>
+      <span>{{ userGameStore.user.exp }}</span>
     </ListItem>
-    <ListItem copiable :copy-value="general.address">
+    <ListItem copiable :copy-value="reffererAddress">
       <template #title> Referrer: </template>
       <span>{{ referrer }}</span>
     </ListItem>
     <ListTitle>Stats</ListTitle>
     <ListItem>
       <template #title> Health: </template>
-      <span>{{ stats.health }}</span>
+      <span>{{ userGameStore.user.health }}</span>
     </ListItem>
     <ListItem>
       <template #title> Mana: </template>
-      <span>{{ stats.mana }}</span>
+      <span>{{ userGameStore.user.mana }}</span>
     </ListItem>
     <ListItem>
       <template #title> Energy: </template>
-      <span>{{ stats.energy }}</span>
+      <span>{{ userGameStore.user.energy }}</span>
     </ListItem>
     <ListItem>
       <template #title> Armor: </template>
-      <span>{{ stats.armor }}</span>
+      <span>{{ userGameStore.user.armor }}</span>
     </ListItem>
     <ListTitle>Character Points</ListTitle>
     <ListItem>
       <template #title> Attack: </template>
-      <span>{{ characterPoints.attack }}</span>
+      <span>{{ userGameStore.user.charPoint.attack }}</span>
     </ListItem>
     <ListItem>
       <template #title> Defend: </template>
-      <span>{{ characterPoints.defind }}</span>
+      <span>{{ userGameStore.user.charPoint.defend }}</span>
     </ListItem>
     <ListTitle>Timers</ListTitle>
     <ListItem convertable @convert="convert()">
       <template #title> Health: </template>
-      <span>{{ timer.health }}</span>
+      <span>{{ userGameStore.user.timer.getHealth.toString() }}</span>
     </ListItem>
     <ListItem convertable @convert="convert()">
       <template #title> Mana: </template>
-      <span>{{ timer.mana }}</span>
+      <span>{{ userGameStore.user.timer.getMana.toString() }}</span>
     </ListItem>
     <ListItem convertable @convert="convert()">
       <template #title> Energy: </template>
-      <span>{{ timer.energy }}</span>
+      <span>{{ userGameStore.user.timer.getEnergy.toString() }}</span>
     </ListItem>
     <ListItem convertable @convert="convert()">
       <template #title> Revive: </template>
-      <span>{{ timer.revive }}</span>
+      <span>{{ userGameStore.user.timer.revive.toString() }}</span>
     </ListItem>
     <ListItem convertable @convert="convert()">
       <template #title> Teleport: </template>
-      <span>{{ timer.teleport }}</span>
+      <span>{{ userGameStore.user.timer.teleport.toString() }}</span>
     </ListItem>
     <ListItem convertable @convert="convert()">
       <template #title> Town TP: </template>
-      <span>{{ timer.townTP }}</span>
+      <span>{{ userGameStore.user.timer.teleportToTown.toString() }}</span>
     </ListItem>
     <ListItem convertable @convert="convert()">
       <template #title> Prepare: </template>
-      <span>{{ timer.prepare }}</span>
+      <span>{{ userGameStore.user.timer.prepareToAttack.toString() }}</span>
     </ListItem>
   </div>
 </template>
@@ -87,6 +89,17 @@ import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 
 const convertTime = ref(24)
+
+const userGameStore = useUserGameStore()
+
+const userName = computed(() =>
+  userGameStore.user.name ===
+  '0x0000000000000000000000000000000000000000000000000000000000000000'
+    ? 'user'
+    : userGameStore.user.name
+)
+
+console.log(userGameStore.user)
 
 const general = reactive({
   name: 'Hadalobo',
@@ -115,11 +128,12 @@ const characterPoints = reactive({
   defind: 1,
 })
 
+const reffererAddress = userGameStore.user.referrer as string
 const referrer = computed(
   () =>
-    general.address.substring(0, 5) +
+    reffererAddress.substring(0, 5) +
     '...' +
-    general.address.substring(general.address.length - 5)
+    reffererAddress.substring(reffererAddress.length - 5)
 )
 
 const convert = () => {

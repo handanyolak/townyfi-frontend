@@ -69,14 +69,16 @@ onMounted(async () => {
         console.log(`oldCoordinate: ${oldCoordinate}`)
         console.log(`newCoordinate: ${newCoordinate}`)
 
-        userGameStore.setUserProperty('coordinate', newCoordinate)
+        if (user === useUserWalletStore().address) {
+          userGameStore.setUserProperty('coordinate', newCoordinate)
+        }
       }
     )
 
     // TODO: Bu fonskiyon normalde header'da calisiyor fakat zaman uyumsuzlugu yonetilemedigi icin gecici olarak cp yapildi.
     // ileride event yontemiyle haberlesilebilir ya da daha iyi bir yol bulunabilir.
     await userWalletStore.connect()
-    const userInfo = await kta.userByAddr(address.value)
+    const userInfo = { ...(await kta.userByAddr(address.value)) }
     userGameStore.setUserInfo(userInfo)
     await userGameStore.setUserCoordinate(Number(nearLevel))
   }
