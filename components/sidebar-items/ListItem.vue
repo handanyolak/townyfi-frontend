@@ -61,6 +61,7 @@
 import Tooltip from '~/components/Tooltip.vue'
 const isEdit = ref(false)
 const isCopy = ref(false)
+const isConvert = ref(false)
 
 interface ContentListItemProps {
   editable?: boolean
@@ -89,7 +90,8 @@ const copy = () => {
 }
 
 const convert = () => {
-  emit('convert')
+  isConvert.value = !isConvert.value
+  emit('convert', isConvert.value)
 }
 </script>
 
