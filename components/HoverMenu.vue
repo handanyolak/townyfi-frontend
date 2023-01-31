@@ -45,8 +45,10 @@ const { isGameInfo, isWeb3Info, isUserOptions, isInteractions } =
 const sideOver = (
   drawerName: 'isGameInfo' | 'isWeb3Info' | 'isUserOptions' | 'isInteractions'
 ) => {
-  appOptionStore[drawerName] = true
-  appOptionStore.showSidebar = true
+  requestAnimationFrame(() => {
+    appOptionStore[drawerName] = true
+    appOptionStore.showSidebar = true
+  })
 }
 </script>
 
