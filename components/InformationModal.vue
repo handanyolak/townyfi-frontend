@@ -21,7 +21,7 @@
 import { onClickOutside } from '@vueuse/core'
 
 interface ContentClassesProps {
-  contentClasses: string
+  contentClasses?: string
 }
 
 defineProps<ContentClassesProps>()
