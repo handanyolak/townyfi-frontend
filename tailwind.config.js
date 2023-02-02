@@ -73,6 +73,7 @@ module.exports = {
         fadein: 'fadein 3s 1',
       },
       boxShadow: {
+        'towni-200': '0px 0px 15px 0px rgba(198, 140, 82, 0.8)',
         'towni-300': '0px 3px 8px -6px #b44e00',
       },
       zIndex: {
