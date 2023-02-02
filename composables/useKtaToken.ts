@@ -6,6 +6,6 @@ export const useKtaToken = (): KtaToken => {
   return new ethers.Contract(
     useRuntimeConfig().public.ktaTokenAddress,
     ktaTokenAbi,
-    useProvider()
+    useProvider()?.getSigner()
   )
 }

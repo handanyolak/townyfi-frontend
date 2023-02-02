@@ -6,6 +6,6 @@ export const useKta = (): KillThemAll => {
   return new ethers.Contract(
     useRuntimeConfig().public.ktaAddress,
     ktaAbi,
-    useProvider()
+    useProvider()?.getSigner()
   )
 }
