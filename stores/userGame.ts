@@ -6,7 +6,7 @@ export const useUserGameStore = defineStore('userGameStore', () => {
   const user = ref<IKillThemAll.UserStruct>(null)
   const isRegistered = ref(false)
   const addressesByCoordinate = ref([]) as CoordinateItem[]
-
+  const isLoading = ref(false)
   const kta = useKta()
   const settings = computed(async () => await kta.settings())
 
@@ -27,6 +27,7 @@ export const useUserGameStore = defineStore('userGameStore', () => {
 
   // TODO: adi yanlis
   const setUserCoordinate = async (nearLevel = 1) => {
+    isLoading.value = true
     addressesByCoordinate.value = []
     const minScanX = user.value.coordinate._x.sub(nearLevel)
     const maxScanX = user.value.coordinate._x.add(nearLevel)
@@ -46,6 +47,7 @@ export const useUserGameStore = defineStore('userGameStore', () => {
       }
       j = j.sub(1)
     }
+    isLoading.value = false
   }
 
   return {
@@ -54,6 +56,7 @@ export const useUserGameStore = defineStore('userGameStore', () => {
     settings,
     user,
     kta,
+    isLoading,
     setIsRegistered,
     setUserCoordinate,
     setUserInfo,
