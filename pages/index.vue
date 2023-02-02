@@ -14,15 +14,19 @@
         @modalClosed="closeModal()"
       >
         <Parchment>
-          <div class="flex flex-col p-5">
-            <span class="my-1 text-xs">{{ currentItem.x }}</span>
-            <span class="my-1 text-xs">{{ currentItem.y }}</span>
-            <span
-              v-for="(_address, index) in currentItem.addresses"
-              :key="index"
-              class="my-1 text-xs"
-              >{{ _address }}</span
-            >
+          <template #parchment-title> Addresses </template>
+          <div class="flex flex-col">
+            <div>
+              <Accordion
+                v-for="(_address, index) in currentItem.addresses"
+                :key="index"
+              >
+                <template #address>
+                  <div>{{ _address }}</div>
+                </template>
+                <OtherUser :address="_address" />
+              </Accordion>
+            </div>
           </div>
         </Parchment>
       </InformationModal>
@@ -30,6 +34,10 @@
     <GameInfo v-else />
     <HoverMenu />
     <ChatBox />
+
+    <Transition name="slide">
+      <TheLoading v-show="isLoading" />
+    </Transition>
   </div>
 </template>
 
@@ -37,14 +45,16 @@
 import { BigNumber } from 'ethers'
 import { CoordinateItem } from '~/types'
 import { Coordinates } from '~/types/typechain/contracts/game/KillThemAll'
+import OtherUser from '~/components/OtherUser.vue'
+import Accordion from '~/components/Accordion.vue'
+import TheLoading from '~/components/TheLoading.vue'
 
-// Constants
 const connectionStore = useConnectionStore()
 const userWalletStore = useUserWalletStore()
 const userGameStore = useUserGameStore()
 const { address } = storeToRefs(userWalletStore)
 const { onValidNetwork } = storeToRefs(connectionStore)
-const { addressesByCoordinate } = storeToRefs(userGameStore)
+const { addressesByCoordinate, isLoading } = storeToRefs(userGameStore)
 const hasMetamask = connectionStore.hasMetamask
 const kta = useKta()
 const showModal = ref(false)
@@ -53,10 +63,18 @@ const currentItem = ref({
   y: BigNumber.from(0),
   addresses: [],
 } as CoordinateItem)
-// Hooks
+
 onMounted(async () => {
   const nearLevel = localStorage.getItem('nearLevel') || 1
   if (hasMetamask && onValidNetwork.value) {
+    userWalletStore.setCurrentBlockNumber(
+      await connectionStore.provider!!.getBlockNumber()
+    )
+
+    connectionStore.provider!!.on('block', (blockNumber: number) => {
+      userWalletStore.setCurrentBlockNumber(blockNumber)
+    })
+
     // TODO: userGameStore'a startGameEvents fonksiyonunda eklenecek
     kta.on(
       'UserMoved',
@@ -96,4 +114,37 @@ const closeModal = () => (showModal.value = false)
 } */
 </script>
 
-<style scoped></style>
+<style scoped>
+.slide-enter {
+  opacity: 0;
+}
+
+.slide-enter-active {
+  animation: slide-in 1s ease-in forwards;
+  transition: opacity 0.5s;
+}
+
+.slide-leave-active {
+  animation: slide-out 1s ease-out forwards;
+  opacity: 0;
+  transition: opacity 1s;
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateY(20px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-out {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(20px);
+  }
+}
+</style>
