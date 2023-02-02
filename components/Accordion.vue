@@ -13,7 +13,7 @@
     </ListTitle>
     <div
       :class="[
-        ' overflow-auto transition-all duration-1000 ease-in-out',
+        ' overflow-y-auto overflow-x-hidden transition-all duration-1000 ease-in-out',
         isOpen ? 'max-h-96' : 'max-h-0',
       ]"
     >
