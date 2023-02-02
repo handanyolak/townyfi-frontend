@@ -4,13 +4,15 @@
     <ListItem editable>
       <template #title> Name: </template>
       <template #input>
-        <input v-model="general.name" type="text" />
+        <input v-model="name" type="text" />
       </template>
-      <span>{{ general.name }}</span>
+      <span>{{ name }}</span>
     </ListItem>
     <ListItem>
       <template #title> Coordinate </template>
-      <span>{{ general.coordinate }}</span>
+      <span>({{ townInfo.coordinate._x.toString() }}</span>
+      <span>,</span>
+      <span>{{ townInfo.coordinate._y.toString() }})</span>
     </ListItem>
     <ListItem>
       <template #title> Level: </template>
@@ -18,7 +20,7 @@
     </ListItem>
     <ListItem>
       <template #title> Exp: </template>
-      <span>{{ general.exp }}</span>
+      <span>{{ townInfo.exp }}</span>
     </ListItem>
     <ListItem copiable :copy-value="general.leaderAddress">
       <template #title> Leader: </template>
@@ -26,7 +28,7 @@
     </ListItem>
     <ListItem>
       <template #title> Status: </template>
-      <span>{{ general.status }}</span>
+      <span>{{ townInfo.status }}</span>
     </ListItem>
     <ListTitle>Citizens</ListTitle>
     <ScrollableList
@@ -37,7 +39,7 @@
     <ListTitle>Timers</ListTitle>
     <ListItem>
       <template #title> Protection: </template>
-      <span>{{ protection }}</span>
+      <span>{{ townInfo.protectionAt.toString() }}</span>
     </ListItem>
     <ListTitle>War</ListTitle>
     <ListItem>
@@ -60,10 +62,20 @@
 </template>
 
 <script setup lang="ts">
+import { ethers } from 'ethers'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ScrollableList from '~/components/sidebar-items/ScrollableList.vue'
 
+const userGameStore = useUserGameStore()
+const { user } = storeToRefs(userGameStore)
+const name = ref(ethers.utils.parseBytes32String(user.value.name as any))
+
+const kta = useKta()
+const townInfo = {
+  ...(await kta.townById(user.value.townInfo.townId.toString())),
+}
+console.log(townInfo)
 const general = reactive({
   name: 'Hadalobo',
   coordinate: '(0,1)',
@@ -81,7 +93,6 @@ const addresses = ref([
   '0xF55F8FC6de35c643a2Ed462d3316706A4159D41D',
 ])
 
-const protection = ref(3743879)
 const attacker = ref(1)
 const defender = ref(2)
 const attackable = ref(3743879)
