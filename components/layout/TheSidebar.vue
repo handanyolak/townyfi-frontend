@@ -26,7 +26,8 @@
           ]"
         ></div>
         <div class="relative">
-          <SidebarTab v-if="isGameInfo" :tabs="tabs" />
+          <SidebarTab v-if="isGameInfo" :tabs="gameInfotabs" />
+          <SidebarTab v-if="isUserOptions" :tabs="userOptionstabs" />
         </div>
         <svg>
           <filter id="wavy">
@@ -47,14 +48,17 @@
 
 <script setup lang="ts">
 import { onClickOutside } from '@vueuse/core'
-import SidebarTab from '@/components/SidebarTab.vue'
+
+import SidebarTab from '~/components/SidebarTab.vue'
 import { Tab } from '~/types'
 
 const appOptionStore = useAppOptions()
 const { isGameInfo, isWeb3Info, isUserOptions, isInteractions, showSidebar } =
   storeToRefs(appOptionStore)
 
-const tabs: Tab[] = [
+const sideBar = ref(null)
+
+const gameInfotabs: Tab[] = [
   {
     name: 'User',
     component: 'User',
@@ -64,10 +68,17 @@ const tabs: Tab[] = [
     component: 'Town',
   },
 ]
-const sideBar = ref(null)
+
+const userOptionstabs: Tab[] = [
+  {
+    name: 'Actions',
+    component: 'Actions',
+  },
+]
 
 const sideLeave = () => {
   showSidebar.value = false
+
   requestAnimationFrame(() => {
     isGameInfo.value = false
     isWeb3Info.value = false
