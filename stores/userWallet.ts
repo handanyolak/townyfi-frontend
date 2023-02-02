@@ -3,6 +3,7 @@ import { ethers, constants } from 'ethers'
 export const useUserWalletStore = defineStore('userWalletStore', () => {
   const address = ref(constants.AddressZero)
   const balance = ref('')
+  const currentBlockNumber = ref(0)
 
   const kta = useKta()
   const ktaToken = useKtaToken()
@@ -23,6 +24,10 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
 
   const setBalance = (newBalance: string) => {
     balance.value = newBalance
+  }
+
+  const setCurrentBlockNumber = (newBlockNumber: number) => {
+    currentBlockNumber.value = newBlockNumber
   }
 
   const connect = async () => {
@@ -109,6 +114,7 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
     ethereum,
     kta,
     ktaToken,
+    currentBlockNumber,
     setAddress,
     setBalance,
     setUserInfo,
@@ -122,5 +128,6 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
     handleDisconnect,
     disconnectWeb3,
     connectWeb3,
+    setCurrentBlockNumber,
   }
 })
