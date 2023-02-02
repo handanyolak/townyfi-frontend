@@ -1,8 +1,8 @@
 <template>
   <div class="flex items-center justify-center">
-    <div class="relative z-50 w-16">
+    <div class="relative z-40 w-16">
       <button
-        class="flex items-center justify-between p-2 outline-none dark:text-white"
+        class="flex items-center justify-between p-2 text-towni-brown-dark-600 outline-none dark:text-towni-brown-light-200"
         :class="!showLanguageDropdown ? 'rounded-md' : 'rounded-t-md'"
         @click="toggleLanguage()"
         @blur="showLanguageDropdown = false"
@@ -10,14 +10,9 @@
         <img class="mr-1 h-4 w-4" :src="languageIcon()" />
         <span class="text-sm capitalize">{{ language }}</span>
         <img
-          class="block h-4 w-4 transform transition-transform duration-200 ease-in-out dark:hidden"
+          class="block h-4 w-4 transform transition-transform duration-200 ease-in-out"
           :class="showLanguageDropdown ? 'rotate-180' : 'rotate-0'"
           src="@/assets/img/arrow-down.svg"
-        />
-        <img
-          class="hidden h-4 w-4 transform transition-transform duration-200 ease-in-out dark:block"
-          :class="showLanguageDropdown ? 'rotate-180' : 'rotate-0'"
-          src="@/assets/img/arrow-down-white.svg"
         />
       </button>
       <Transition name="dropdown">
@@ -35,7 +30,11 @@
             "
           >
             <img class="mr-1 h-4 w-4" :src="languageIcon(item)" />
-            <p class="text-sm capitalize dark:text-white">{{ item }}</p>
+            <p
+              class="text-sm capitalize text-towni-brown-dark-600 dark:text-towni-brown-light-200"
+            >
+              {{ item }}
+            </p>
           </li>
         </ul>
       </Transition>
