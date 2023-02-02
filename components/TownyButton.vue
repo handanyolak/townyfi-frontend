@@ -1,6 +1,9 @@
 <template>
   <button
-    class="group mx-auto rounded-full bg-gradient-to-tr from-towni-brown-dark-300 via-towni-brown-dark-200 to-towni-brown-light-400 p-[2px] text-sm duration-1000 ease-in-out"
+    :class="[
+      ' mx-auto rounded-full bg-gradient-to-tr from-towni-brown-dark-300 via-towni-brown-dark-200 to-towni-brown-light-400 p-[2px] text-sm duration-1000 ease-in-out',
+      hoverEffect ? 'group' : '',
+    ]"
   >
     <div
       :class="[
@@ -19,6 +22,7 @@
 interface ButtonThemeProps {
   fill?: boolean
   border?: boolean
+  hoverEffect?: boolean
 }
 defineProps<ButtonThemeProps>()
 </script>
