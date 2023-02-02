@@ -2,7 +2,7 @@
   <div class="container">
     <div class="flex justify-between py-5">
       <span
-        class="flex items-center bg-gradient-to-r from-towni-brown-dark-400 via-towni-brown-dark-400 to-towni-brown-dark-200 bg-clip-text text-5xl font-extrabold text-transparent"
+        class="flex select-none items-center bg-gradient-to-r from-towni-brown-dark-400 via-towni-brown-dark-400 to-towni-brown-dark-200 bg-clip-text text-5xl font-extrabold text-transparent"
         style="font-family: Pirata One, sans-serif"
       >
         <img class="h-7 w-7" src="@/assets/img/paper-document.svg" />
@@ -11,19 +11,25 @@
       <div class="flex items-center space-x-2">
         <div v-if="hasMetamask" class="flex justify-between py-5">
           <div v-if="onValidNetwork">
-            <div v-if="isConnected">
+            <div v-if="isConnected" class="space-x-1">
               <TownyButton
                 v-if="!isRegistered"
                 fill
+                hover-effect
                 @click.native="userRegister()"
               >
-                Register the game
+                Register
               </TownyButton>
-              <TownyButton fill @click.native="disconnectWeb3()">
+              <TownyButton fill hover-effect @click.native="disconnectWeb3()">
                 {{ $t('disconnect_wallet') }}
               </TownyButton>
             </div>
-            <TownyButton v-else border @click.native="connectWeb3()">
+            <TownyButton
+              v-else
+              border
+              hover-effect
+              @click.native="connectWeb3()"
+            >
               Connect Wallet
             </TownyButton>
           </div>
@@ -31,6 +37,7 @@
             v-else
             target="_blank"
             border
+            hover-effect
             @click.native="switchNetwork()"
           >
             Switch Network
@@ -41,6 +48,7 @@
           href="https://metamask.io/download/"
           target="_blank"
           border
+          hover-effect
         >
           Install Metamask
         </TownyButton>
@@ -63,6 +71,27 @@
         />
       </div>
     </div>
+
+    <InformationModal v-if="showModal" @modalClosed="closeModal()">
+      <div class="p-12">
+        <ListTitle>Register</ListTitle>
+
+        <ListItem class="my-5" editable>
+          <template #title> Name: </template>
+          <template #input>
+            <input v-model="userName" type="text" />
+          </template>
+          <span>{{ userName }}</span>
+        </ListItem>
+        <ListItem editable>
+          <template #title> Referrer: </template>
+          <template #input>
+            <input v-model="userName" type="text" />
+          </template>
+          <span>{{ userName }}</span>
+        </ListItem>
+      </div>
+    </InformationModal>
   </div>
 </template>
 
@@ -70,7 +99,10 @@
 import { ethers } from 'ethers'
 import { useDark, useToggle, useStorage } from '@vueuse/core'
 import LanguageDropdown from '~/components/LanguageDropdown.vue'
+import InformationModal from '~/components/InformationModal.vue'
 import TownyButton from '~/components/TownyButton.vue'
+import ListItem from '~/components/sidebar-items/ListItem.vue'
+import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 
 const $t = useLang
 const connectionStore = useConnectionStore()
@@ -83,6 +115,8 @@ const ktaToken = userWalletStore.ktaToken
 const { connectWeb3, disconnectWeb3 } = userWalletStore
 const { isRegistered } = storeToRefs(userGameStore)
 const { onValidNetwork, isConnected } = storeToRefs(connectionStore)
+const showModal = ref(false)
+const userName = ref('Handan')
 const audio = useStorage('audio', false)
 const music = ref(false)
 const isDark = useDark({
@@ -163,20 +197,24 @@ const switchNetwork = async () => {
 }
 
 const userRegister = async () => {
-  try {
-    await (
-      await ktaToken
-        .connect(connectionStore.signer)
-        .approve(kta.address, ethers.constants.MaxUint256)
-    ).wait()
+  openModal()
+  await (
+    await ktaToken.approve(kta.address, ethers.constants.MaxUint256)
+  ).wait()
 
-    await kta
-      .connect(connectionStore.signer)
-      .register(ethers.constants.HashZero, ethers.constants.AddressZero)
-  } catch (error) {
-    console.log(error)
-  }
+  await kta.register(
+    // TODO: kullanicidan input alinmali
+    ethers.utils.formatBytes32String('hada'),
+    // TODO: kullanicidan referrer bilgisi alinmali bossa AddressZero
+    ethers.constants.AddressZero
+  )
 }
+
+const openModal = () => {
+  showModal.value = true
+}
+
+const closeModal = () => (showModal.value = false)
 </script>
 
 <style scoped>
