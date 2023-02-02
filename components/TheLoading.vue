@@ -1,12 +1,23 @@
 <template>
-  <div class="modal-backdrop fixed inset-0 h-full w-full bg-gray-300">
+  <div
+    class="modal-backdrop fixed inset-0 z-50 h-full w-full bg-towni-brown-light-100 dark:bg-night-blue"
+  >
     <div class="flex min-h-screen items-center justify-center">
-      <div class="loader flex space-x-3 rounded-full bg-white px-20 py-10">
+      <div class="loader flex space-x-3 rounded-full px-20 py-10">
         <div class="h-10 w-10 animate-bounce rounded-full">
           <img src="~/assets/img/swords.svg" alt="swords" />
         </div>
         <div class="h-10 w-10 animate-bounce rounded-full">
-          <img src="~/assets/img/castle-brown.svg" alt="swords" />
+          <img
+            class="block dark:hidden"
+            src="~/assets/img/knight.svg"
+            alt="knight"
+          />
+          <img
+            class="hidden dark:block"
+            src="~/assets/img/soldier.svg"
+            alt="soldier"
+          />
         </div>
         <div class="h-10 w-10 animate-bounce rounded-full">
           <img src="~/assets/img/swords.svg" alt="swords" />
