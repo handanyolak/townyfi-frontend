@@ -10,7 +10,8 @@
   "dependencies": {
     "ethers": "^5.7.1",
     "moment": "^2.29.4",
-    "pinia": "^2.0.28"
+    "pinia": "^2.0.28",
+    "vue-toastification": "^2.0.0-rc.5"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.16.3",

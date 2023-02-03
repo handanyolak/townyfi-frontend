@@ -10,6 +10,8 @@ export default defineNuxtConfig({
 
   modules: ['@pinia/nuxt', '@vueuse/nuxt'],
 
+  plugins: ['@/plugins/vue-toastification'],
+
   css: ['~/assets/css/main.css'],
 
   components: true,
