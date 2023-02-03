@@ -48,7 +48,7 @@ const useUserOptions = useUserOptionsStore()
 const { language } = storeToRefs(useUserOptions)
 
 const languages = computed(() => {
-  const allLanguages = ['en', 'tr', 'gr']
+  const allLanguages = ['en', 'tr', 'de']
 
   return allLanguages.filter((item) => item !== language.value)
 })
