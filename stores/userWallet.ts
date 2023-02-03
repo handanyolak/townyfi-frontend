@@ -1,4 +1,6 @@
 import { ethers, constants } from 'ethers'
+import { useTownyToast } from '~/composables/useTownyToast'
+import { $t } from '~/composables/useLang'
 
 export const useUserWalletStore = defineStore('userWalletStore', () => {
   const address = ref(constants.AddressZero)
@@ -64,7 +66,7 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
   const handleChainChanged = async (chainId) => {
     connectionStore.setOnValidNetwork(chainId === 5)
     await updateUserBalance()
-    console.log('Chain has changed.')
+    useTownyToast('info', $t('chain_changed'))
   }
 
   const handleAccountsChanged = async (accounts: string[]) => {
@@ -76,9 +78,9 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
       // TODO: change the setUser
       userGameStore.setUserInfo(await kta.userByAddr(address.value))
       await userGameStore.setUserCoordinate()
-      console.log(`Linked account changed to '${accounts[0]}'`)
+      useTownyToast('info', `${$t('address_changed')} ${accounts[0]}`)
     } else {
-      console.log('Linked account not found. Page will be reloaded.')
+      useTownyToast('error', $t('address_not_found'))
       await disconnectWeb3()
     }
   }
@@ -91,7 +93,7 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
     address.value = constants.AddressZero
     balance.value = ''
     connectionStore.setIsConnected(false)
-    console.log('Disconnected.')
+    useTownyToast('success', $t('disconnected'))
   }
 
   const connectWeb3 = async () => {

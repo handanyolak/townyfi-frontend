@@ -1,4 +1,7 @@
 {
   "disconnect_wallet": "Brieftasche Trennen",
-  "chain_changed": "Kette wurde gewechselt."
+  "chain_changed": "Kette wurde gewechselt.",
+  "address_changed": "Verknüpfte Adresse wurde geändert:",
+  "address_not_found": "Verknüpfte Adresse nicht gefunden. Seite wird neu geladen.",
+  "disconnected": "Getrennt."
 }

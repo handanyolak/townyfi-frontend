@@ -1,4 +1,7 @@
 {
   "disconnect_wallet": "Cüzdan Bağlantısını Kes",
-  "chain_changed": "Ağ değiştirildi."
+  "chain_changed": "Ağ değiştirildi.",
+  "address_changed": "Bağlı adres değiştirildi:",
+  "address_not_found": "Bağlı adres bulunamadı. Sayfa yeniden yüklenecek.",
+  "disconnected": "Bağlantı kesildi."
 }

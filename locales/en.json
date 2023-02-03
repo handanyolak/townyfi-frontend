@@ -1,4 +1,7 @@
 {
   "disconnect_wallet": "Disconnect Wallet",
-  "chain_changed": "Chain has been changed."
+  "chain_changed": "Chain has been changed.",
+  "address_changed": "Linked address has been changed:",
+  "address_not_found": "Linked address not found. Page will be reloaded.",
+  "disconnected": "Disconnected."
 }

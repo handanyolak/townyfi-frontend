@@ -75,7 +75,7 @@ const kta = useKta()
 const townInfo = {
   ...(await kta.townById(user.value.townInfo.townId.toString())),
 }
-console.log(townInfo)
+
 const general = reactive({
   name: 'Hadalobo',
   coordinate: '(0,1)',

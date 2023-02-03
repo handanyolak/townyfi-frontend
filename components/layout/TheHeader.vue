@@ -103,8 +103,8 @@ import InformationModal from '~/components/InformationModal.vue'
 import TownyButton from '~/components/TownyButton.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
+import { $t } from '~/composables/useLang'
 
-const $t = useLang
 const connectionStore = useConnectionStore()
 const hasMetamask = connectionStore.hasMetamask
 const ethereum = connectionStore.ethereum

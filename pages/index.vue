@@ -35,7 +35,7 @@
     <HoverMenu />
     <ChatBox />
 
-    <Transition name="slide">
+    <Transition name="loading-slide">
       <TheLoading v-show="isLoading" />
     </Transition>
   </div>
@@ -48,7 +48,7 @@ import { Coordinates } from '~/types/typechain/contracts/game/KillThemAll'
 import OtherUser from '~/components/OtherUser.vue'
 import Accordion from '~/components/Accordion.vue'
 import TheLoading from '~/components/TheLoading.vue'
-
+import { useTownyToast } from '~/composables/useTownyToast'
 const connectionStore = useConnectionStore()
 const userWalletStore = useUserWalletStore()
 const userGameStore = useUserGameStore()
@@ -80,12 +80,10 @@ onMounted(async () => {
       'UserMoved',
       (
         user: string,
-        oldCoordinate: Coordinates.CoordinateStruct,
+        _, // oldCoordinate: Coordinates.CoordinateStruct,
         newCoordinate: Coordinates.CoordinateStruct
       ) => {
-        console.log(`user: ${user}`)
-        console.log(`oldCoordinate: ${oldCoordinate}`)
-        console.log(`newCoordinate: ${newCoordinate}`)
+        useTownyToast('info', `New Coordinate: ${newCoordinate}`)
 
         if (user === useUserWalletStore().address) {
           userGameStore.setUserProperty('coordinate', newCoordinate)
@@ -114,17 +112,17 @@ const closeModal = () => (showModal.value = false)
 } */
 </script>
 
-<style scoped>
-.slide-enter {
+<style>
+.loading-slide-enter {
   opacity: 0;
 }
 
-.slide-enter-active {
+.loading-slide-enter-active {
   animation: slide-in 1s ease-in forwards;
   transition: opacity 0.5s;
 }
 
-.slide-leave-active {
+.loading-slide-leave-active {
   animation: slide-out 1s ease-out forwards;
   opacity: 0;
   transition: opacity 1s;
@@ -146,5 +144,9 @@ const closeModal = () => (showModal.value = false)
   to {
     transform: translateY(20px);
   }
+}
+
+.toast-theme {
+  @apply bg-towni-brown-dark-300 bg-opacity-30 text-towni-brown-dark-300  backdrop-blur-sm;
 }
 </style>
