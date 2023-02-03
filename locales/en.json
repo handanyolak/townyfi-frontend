@@ -1,3 +1,4 @@
 {
-  "disconnect_wallet": "Disconnect Wallet"
+  "disconnect_wallet": "Disconnect Wallet",
+  "chain_changed": "Chain has been changed."
 }
