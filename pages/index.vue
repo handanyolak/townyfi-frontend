@@ -21,7 +21,7 @@
                 v-for="(_address, index) in currentItem.addresses"
                 :key="index"
               >
-                <template #address>
+                <template #title>
                   <div>{{ _address }}</div>
                 </template>
                 <OtherUser :address="_address" />

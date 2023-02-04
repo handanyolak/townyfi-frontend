@@ -9,7 +9,7 @@
         src="@/assets/img/arrow-down.svg"
         :class="isOpen ? 'rotate-180' : 'rotate-0'"
       />
-      <slot name="address" />
+      <slot name="title" />
     </ListTitle>
     <div
       :class="[
