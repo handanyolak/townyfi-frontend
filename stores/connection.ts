@@ -1,13 +1,14 @@
 export const useConnectionStore = defineStore('connectionStore', () => {
-  const isConnected = ref(false)
+  const { ktaChainId } = useRuntimeConfig().public
+  const provider = useProvider()
+  const signer = computed(() => provider.getSigner())
 
+  const isConnected = ref(false)
   const hasMetamask = Boolean(window.ethereum)
   const ethereum = window.ethereum
-  const onValidNetwork = ref(hasMetamask && ethereum.chainId === '0x5')
-
-  const provider = useProvider()
-
-  const signer = computed(() => provider.getSigner())
+  const onValidNetwork = ref(
+    hasMetamask && ethereum.chainId === '0x' + ktaChainId.toString(16)
+  )
 
   const setOnValidNetwork = (newValue: boolean) => {
     onValidNetwork.value = hasMetamask && newValue

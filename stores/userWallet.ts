@@ -3,18 +3,17 @@ import { useTownyToast } from '~/composables/useTownyToast'
 import { $t } from '~/composables/useLang'
 
 export const useUserWalletStore = defineStore('userWalletStore', () => {
+  const { ktaChainId } = useRuntimeConfig().public
+  const kta = useKta()
+  const ktaToken = useKtaToken()
+  const connectionStore = useConnectionStore()
+  const userGameStore = useUserGameStore()
+  const provider = useProvider()
+  const ethereum = computed(() => connectionStore.ethereum)
+
   const address = ref(constants.AddressZero)
   const balance = ref('')
   const currentBlockNumber = ref(0)
-
-  const kta = useKta()
-  const ktaToken = useKtaToken()
-
-  const connectionStore = useConnectionStore()
-  const userGameStore = useUserGameStore()
-
-  const provider = useProvider()
-  const ethereum = computed(() => connectionStore.ethereum)
 
   const setUserInfo = (newUserInfo: any) => {
     user.value = newUserInfo
@@ -64,8 +63,10 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
   }
 
   const handleChainChanged = async (chainId) => {
-    connectionStore.setOnValidNetwork(chainId === 5)
+    connectionStore.setOnValidNetwork(chainId === ktaChainId)
+
     await updateUserBalance()
+
     useTownyToast('info', $t('chain_changed'))
   }
 
