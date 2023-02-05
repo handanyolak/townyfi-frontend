@@ -83,6 +83,7 @@ import { ethers } from 'ethers'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import { IKillThemAll } from '~/types/typechain/contracts/game/KillThemAll'
+import { toCapitalizedWords, middleCropping } from '~/utils'
 
 const userGameStore = useUserGameStore()
 const userWalletStore = useUserWalletStore()
@@ -93,12 +94,7 @@ const stringName = ref(ethers.utils.parseBytes32String(user.value.name as any))
 const nameError = ref('')
 const reffererAddress = user.value.referrer as string
 
-const referrer = computed(
-  () =>
-    reffererAddress.substring(0, 5) +
-    '...' +
-    reffererAddress.substring(reffererAddress.length - 5)
-)
+const referrer = computed(() => middleCropping(reffererAddress))
 
 const maxString = () => {
   try {
@@ -108,15 +104,6 @@ const maxString = () => {
     nameError.value = 'Name must be less than 32 bytes'
   }
 }
-
-const toCapitalizedWords = (name: string) => {
-  const words = name.match(/[A-Za-z][a-z]*/g) || []
-
-  return words.map(capitalize).join(' ')
-}
-
-const capitalize = (word: string) =>
-  word.charAt(0).toUpperCase() + word.substring(1)
 
 const convert = (
   isConvert: boolean,

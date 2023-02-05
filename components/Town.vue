@@ -4,7 +4,7 @@
     <ListItem editable>
       <template #title> Name: </template>
       <template #input>
-        <input v-model="name" type="text" />
+        <input v-model="name" />
       </template>
       <span>{{ name }}</span>
     </ListItem>
@@ -16,13 +16,13 @@
     </ListItem>
     <ListItem>
       <template #title> Level: </template>
-      <span>{{ general.level }}</span>
+      <span>{{ townInfo.levelId }}</span>
     </ListItem>
     <ListItem>
       <template #title> Exp: </template>
       <span>{{ townInfo.exp }}</span>
     </ListItem>
-    <ListItem copiable :copy-value="general.leaderAddress">
+    <ListItem copiable :copy-value="townInfo.leader">
       <template #title> Leader: </template>
       <span>{{ leader }}</span>
     </ListItem>
@@ -76,15 +76,6 @@ const townInfo = {
   ...(await kta.townById(user.value.townInfo.townId.toString())),
 }
 
-const general = reactive({
-  name: 'Hadalobo',
-  coordinate: '(0,1)',
-  level: 4,
-  exp: 5,
-  leaderAddress: '0xB55F8FC6de35c643a2Ed462d3316706A4159D41D',
-  status: 'Settle',
-})
-
 const addresses = ref([
   '0xB55F8FC6de35c643a2Ed462d3316706A4159D41D',
   '0xC55F8FC6de37c643a2Ed462d3316706A4159D41D',
@@ -98,17 +89,9 @@ const defender = ref(2)
 const attackable = ref(3743879)
 const expired = ref(3743879)
 
-const leader = computed(
-  () =>
-    general.leaderAddress.substring(0, 5) +
-    '...' +
-    general.leaderAddress.substring(general.leaderAddress.length - 5)
-)
+const leader = computed(() => middleCropping(townInfo.leader))
 
 const citizenAddresses = computed(() =>
-  addresses.value.map(
-    (address) =>
-      address.substring(0, 5) + '...' + address.substring(address.length - 5)
-  )
+  addresses.value.map((address) => middleCropping(address))
 )
 </script>

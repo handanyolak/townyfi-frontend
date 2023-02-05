@@ -74,6 +74,7 @@ import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import { useKta } from '~/composables/useKta'
 import { IKillThemAll } from '~/types/typechain/contracts/game/KillThemAll'
+import { toCapitalizedWords, middleCropping } from '~/utils'
 
 const kta = useKta()
 const userGameStore = useUserGameStore()
@@ -96,21 +97,7 @@ const userName = computed(() =>
 )
 
 const reffererAddress = user.value.referrer as string
-const referrer = computed(
-  () =>
-    reffererAddress.substring(0, 5) +
-    '...' +
-    reffererAddress.substring(reffererAddress.length - 5)
-)
-
-const toCapitalizedWords = (name: string) => {
-  const words = name.match(/[A-Za-z][a-z]*/g) || []
-
-  return words.map(capitalize).join(' ')
-}
-
-const capitalize = (word: string) =>
-  word.charAt(0).toUpperCase() + word.substring(1)
+const referrer = computed(() => middleCropping(reffererAddress))
 
 const convert = (
   isConvert: boolean,
