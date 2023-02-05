@@ -1,30 +1,33 @@
 <template>
   <div>
-    <ListTitle>Teleport</ListTitle>
-    <div class="grid grid-cols-2">
-      <ListItem editable>
-        <template #title> X: </template>
-        <template #input>
-          <input v-model="coordinateX" type="text" />
-        </template>
-        <span>{{ coordinateX }}</span>
-      </ListItem>
-      <ListItem editable>
-        <template #title> Y: </template>
-        <template #input>
-          <input v-model="coordinateY" type="text" />
-        </template>
-        <span>{{ coordinateY }}</span>
-      </ListItem>
-    </div>
-    <div class="flex justify-center">
-      <TownyButton @click="teleport()">Teleport</TownyButton>
-    </div>
+    <Accordion>
+      <template #title>
+        <div>Teleport</div>
+      </template>
+      <div class="grid grid-cols-2">
+        <ListItem editable>
+          <template #title> X: </template>
+          <template #input>
+            <input v-model="coordinateX" type="text" />
+          </template>
+          <span>{{ coordinateX }}</span>
+        </ListItem>
+        <ListItem editable>
+          <template #title> Y: </template>
+          <template #input>
+            <input v-model="coordinateY" type="text" />
+          </template>
+          <span>{{ coordinateY }}</span>
+        </ListItem>
+      </div>
+      <div class="flex justify-center">
+        <TownyButton @click="teleport()">Teleport</TownyButton>
+      </div>
+    </Accordion>
   </div>
 </template>
 
 <script setup lang="ts">
-import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import { useUserGameStore } from '~/stores/userGame'
 
