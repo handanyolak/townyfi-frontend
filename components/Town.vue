@@ -3,7 +3,7 @@
     <ListTitle>General</ListTitle>
     <ListItem editable>
       <template #title> Name: </template>
-      <template #input>
+      <template #item>
         <input v-model="name" />
       </template>
       <span>{{ name }}</span>

@@ -3,7 +3,7 @@
     <ListTitle>General</ListTitle>
     <ListItem editable>
       <template #title> Name: </template>
-      <template #input>
+      <template #item>
         <div class="relative">
           <input v-model="stringName" type="text" @keyup="maxString()" />
           <div

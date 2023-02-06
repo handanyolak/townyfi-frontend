@@ -21,7 +21,7 @@
       <div class="flex flex-1 items-center justify-between">
         <div>
           <div v-if="isEdit" class="mx-1">
-            <slot name="input" />
+            <slot name="item" />
           </div>
           <span v-else class="mx-1 px-1 text-towni-brown-dark-600">
             <slot />

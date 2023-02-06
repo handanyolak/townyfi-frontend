@@ -7,14 +7,14 @@
       <div class="grid grid-cols-2">
         <ListItem editable>
           <template #title> X: </template>
-          <template #input>
+          <template #item>
             <input v-model="coordinateX" type="text" />
           </template>
           <span>{{ coordinateX }}</span>
         </ListItem>
         <ListItem editable>
           <template #title> Y: </template>
-          <template #input>
+          <template #item>
             <input v-model="coordinateY" type="text" />
           </template>
           <span>{{ coordinateY }}</span>
