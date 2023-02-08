@@ -4,24 +4,27 @@
       <template #title>
         <div>Teleport</div>
       </template>
-      <div class="grid grid-cols-2">
-        <ListItem editable>
+      <div class="flex">
+        <ListItem input>
           <template #title> X: </template>
           <template #item>
             <input v-model="coordinateX" type="text" />
           </template>
           <span>{{ coordinateX }}</span>
         </ListItem>
-        <ListItem editable>
+        <ListItem input>
           <template #title> Y: </template>
           <template #item>
             <input v-model="coordinateY" type="text" />
           </template>
           <span>{{ coordinateY }}</span>
         </ListItem>
-      </div>
-      <div class="flex justify-center">
-        <TownyButton @click="teleport()">Teleport</TownyButton>
+        <img
+          class="cursor-pointer"
+          src="@/assets/img/check.svg"
+          alt="save"
+          @click="teleport()"
+        />
       </div>
     </Accordion>
   </div>
