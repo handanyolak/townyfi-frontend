@@ -1,6 +1,7 @@
 import { ethers, constants } from 'ethers'
 import { useTownyToast } from '~/composables/useTownyToast'
 import { $t } from '~/composables/useLang'
+import { numberToHex } from '~/utils'
 
 export const useUserWalletStore = defineStore('userWalletStore', () => {
   const { ktaChainId } = useRuntimeConfig().public
@@ -63,7 +64,7 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
   }
 
   const handleChainChanged = async (chainId) => {
-    connectionStore.setOnValidNetwork(chainId === ktaChainId)
+    connectionStore.setOnValidNetwork(chainId === numberToHex(ktaChainId))
 
     await updateUserBalance()
 

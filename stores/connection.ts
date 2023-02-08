@@ -1,3 +1,5 @@
+import { numberToHex } from '~/utils'
+
 export const useConnectionStore = defineStore('connectionStore', () => {
   const { ktaChainId } = useRuntimeConfig().public
   const provider = useProvider()
@@ -7,7 +9,7 @@ export const useConnectionStore = defineStore('connectionStore', () => {
   const hasMetamask = Boolean(window.ethereum)
   const ethereum = window.ethereum
   const onValidNetwork = ref(
-    hasMetamask && ethereum.chainId === '0x' + ktaChainId.toString(16)
+    hasMetamask && ethereum.chainId === numberToHex(ktaChainId)
   )
 
   const setOnValidNetwork = (newValue: boolean) => {

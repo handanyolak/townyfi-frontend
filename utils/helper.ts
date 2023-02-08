@@ -12,5 +12,10 @@ export const middleCropping = (str: string) => {
   return str.substring(0, 5) + '...' + str.substring(str.length - 5)
 }
 
-const capitalize = (word: string) =>
-  word.charAt(0).toUpperCase() + word.substring(1)
+export const numberToHex = (number: number) => {
+  return '0x' + number.toString(16)
+}
+
+const capitalize = (word: string) => {
+  return word.charAt(0).toUpperCase() + word.substring(1)
+}
