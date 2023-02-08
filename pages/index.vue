@@ -32,7 +32,7 @@
       </InformationModal>
     </div>
     <GameInfo v-else />
-    <HoverMenu />
+    <HoverMenu v-if="onValidNetwork" />
     <ChatBox />
 
     <Transition name="loading-slide">
@@ -44,19 +44,17 @@
 <script setup lang="ts">
 import { BigNumber } from 'ethers'
 import { CoordinateItem } from '~/types'
-import { Coordinates } from '~/types/typechain/contracts/game/KillThemAll'
 import OtherUser from '~/components/OtherUser.vue'
 import Accordion from '~/components/Accordion.vue'
 import TheLoading from '~/components/TheLoading.vue'
-import { useTownyToast } from '~/composables/useTownyToast'
+
+const appOptionsStore = useAppOptionsStore()
 const connectionStore = useConnectionStore()
-const userWalletStore = useUserWalletStore()
 const userGameStore = useUserGameStore()
-const { address } = storeToRefs(userWalletStore)
+const { initializeApp } = appOptionsStore
+const { hasMetamask } = connectionStore
 const { onValidNetwork } = storeToRefs(connectionStore)
 const { addressesByCoordinate, isLoading } = storeToRefs(userGameStore)
-const hasMetamask = connectionStore.hasMetamask
-const kta = useKta()
 const showModal = ref(false)
 const currentItem = ref({
   x: BigNumber.from(0),
@@ -65,39 +63,7 @@ const currentItem = ref({
 } as CoordinateItem)
 
 onMounted(async () => {
-  const nearLevel = localStorage.getItem('nearLevel') || 1
-  if (hasMetamask && onValidNetwork.value) {
-    userWalletStore.setCurrentBlockNumber(
-      await connectionStore.provider!!.getBlockNumber()
-    )
-
-    connectionStore.provider!!.on('block', (blockNumber: number) => {
-      userWalletStore.setCurrentBlockNumber(blockNumber)
-    })
-
-    // TODO: userGameStore'a startGameEvents fonksiyonunda eklenecek
-    kta.on(
-      'UserMoved',
-      (
-        user: string,
-        _, // oldCoordinate: Coordinates.CoordinateStruct,
-        newCoordinate: Coordinates.CoordinateStruct
-      ) => {
-        useTownyToast('info', `New Coordinate: ${newCoordinate}`)
-
-        if (user === useUserWalletStore().address) {
-          userGameStore.setUserProperty('coordinate', newCoordinate)
-        }
-      }
-    )
-
-    // TODO: Bu fonskiyon normalde header'da calisiyor fakat zaman uyumsuzlugu yonetilemedigi icin gecici olarak cp yapildi.
-    // ileride event yontemiyle haberlesilebilir ya da daha iyi bir yol bulunabilir.
-    await userWalletStore.connect()
-    const userInfo = { ...(await kta.userByAddr(address.value)) }
-    userGameStore.setUserInfo(userInfo)
-    await userGameStore.setUserCoordinate(Number(nearLevel))
-  }
+  await initializeApp()
 })
 
 const openModal = (item: CoordinateItem) => {
@@ -106,10 +72,6 @@ const openModal = (item: CoordinateItem) => {
 }
 
 const closeModal = () => (showModal.value = false)
-
-/* const foo = () => {
-  localStorage.setItem('nearLevel', '2')
-} */
 </script>
 
 <style>

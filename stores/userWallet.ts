@@ -5,10 +5,11 @@ import { numberToHex } from '~/utils'
 
 export const useUserWalletStore = defineStore('userWalletStore', () => {
   const { ktaChainId } = useRuntimeConfig().public
-  const kta = useKta()
-  const ktaToken = useKtaToken()
+  const appOptionsStore = useAppOptionsStore()
   const connectionStore = useConnectionStore()
   const userGameStore = useUserGameStore()
+  const kta = useKta()
+  const ktaToken = useKtaToken()
   const provider = useProvider()
   const ethereum = computed(() => connectionStore.ethereum)
 
@@ -65,6 +66,8 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
 
   const handleChainChanged = async (chainId) => {
     connectionStore.setOnValidNetwork(chainId === numberToHex(ktaChainId))
+
+    await appOptionsStore.initializeApp()
 
     await updateUserBalance()
 
