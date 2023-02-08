@@ -52,9 +52,10 @@ import { onClickOutside } from '@vueuse/core'
 import SidebarTab from '~/components/SidebarTab.vue'
 import { Tab } from '~/types'
 
-const appOptionStore = useAppOptions()
+const appOptionStore = useAppOptionsStore()
 const { isGameInfo, isWeb3Info, isUserOptions, isInteractions, showSidebar } =
   storeToRefs(appOptionStore)
+const { sideLeave } = appOptionStore
 
 const sideBar = ref(null)
 
@@ -75,17 +76,6 @@ const userOptionstabs: Tab[] = [
     component: 'Actions',
   },
 ]
-
-const sideLeave = () => {
-  showSidebar.value = false
-
-  requestAnimationFrame(() => {
-    isGameInfo.value = false
-    isWeb3Info.value = false
-    isUserOptions.value = false
-    isInteractions.value = false
-  })
-}
 
 onClickOutside(sideBar, () => sideLeave())
 </script>

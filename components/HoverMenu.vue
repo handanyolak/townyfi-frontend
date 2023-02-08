@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-const appOptionStore = useAppOptions()
+const appOptionStore = useAppOptionsStore()
 const { isGameInfo, isWeb3Info, isUserOptions, isInteractions } =
   storeToRefs(appOptionStore)
 
