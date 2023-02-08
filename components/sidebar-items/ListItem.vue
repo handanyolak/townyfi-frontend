@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="group my-2 flex items-center px-1 shadow-towni-300">
+    <div class="group my-2 flex items-center py-2 px-1 shadow-towni-300">
       <div class="flex items-center">
         <Tooltip>
           <template #tooltip-image>
@@ -20,7 +20,7 @@
       </div>
       <div class="flex flex-1 items-center justify-between">
         <div>
-          <div v-if="isEdit" class="mx-1">
+          <div v-if="isEdit || input" class="mx-1">
             <slot name="item" />
           </div>
           <span v-else class="mx-1 px-1 text-towni-brown-dark-600">
@@ -68,6 +68,7 @@ interface ContentListItemProps {
   copiable?: boolean
   convertable?: boolean
   copyValue?: string
+  input?: boolean
 }
 
 const props = defineProps<ContentListItemProps>()
