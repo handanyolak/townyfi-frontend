@@ -5,7 +5,9 @@
     >
       <slot name="parchment-title" />
     </div>
-    <div class="parchment bg-white py-8 px-2 text-towni-brown-dark-600">
+    <div
+      class="parchment overflow-hidden bg-white py-8 px-2 text-towni-brown-dark-600"
+    >
       <div class="animate-fadein">
         <slot />
       </div>
