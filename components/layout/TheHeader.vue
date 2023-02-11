@@ -16,7 +16,7 @@
                 v-if="!isRegistered"
                 fill
                 hover-effect
-                @click.native="userRegister()"
+                @click.native="openModal()"
               >
                 Register
               </TownyButton>
@@ -73,23 +73,24 @@
     </div>
 
     <InformationModal v-if="showModal" @modalClosed="closeModal()">
-      <div class="p-12">
-        <ListTitle>Register</ListTitle>
+      <div class="flex flex-col items-center space-y-4 p-12">
+        <ListTitle class="w-full">Register</ListTitle>
 
-        <ListItem class="my-5" editable>
+        <ListItem class="w-full" input>
           <template #title> Name: </template>
-          <template #input>
-            <input v-model="userName" type="text" />
+          <template #item>
+            <input v-model="register.name" type="text" />
           </template>
-          <span>{{ userName }}</span>
+          <span>{{ register.name }}</span>
         </ListItem>
-        <ListItem editable>
+        <ListItem class="w-full" input>
           <template #title> Referrer: </template>
-          <template #input>
-            <input v-model="userName" type="text" />
+          <template #item>
+            <input v-model="register.referrer" type="text" />
           </template>
-          <span>{{ userName }}</span>
+          <span>{{ register.referrer }}</span>
         </ListItem>
+        <TownyButton class="my-3" @click="userRegister()">Register</TownyButton>
       </div>
     </InformationModal>
   </div>
@@ -116,15 +117,19 @@ const { connectWeb3, disconnectWeb3 } = userWalletStore
 const { isRegistered } = storeToRefs(userGameStore)
 const { onValidNetwork, isConnected } = storeToRefs(connectionStore)
 const showModal = ref(false)
-const userName = ref('Handan')
 const audio = useStorage('audio', false)
 const music = ref(false)
+const register = reactive({
+  name: '',
+  referrer: '',
+})
 const isDark = useDark({
   storageKey: 'theme',
   valueDark: 'dark',
   valueLight: 'light',
 })
 const mainThemeAudio = ref<HTMLAudioElement | null>(null)
+const { ktaChainId } = useRuntimeConfig().public
 
 const toggleTheme = useToggle(isDark)
 const _toggleAudio = useToggle(audio)
@@ -181,13 +186,12 @@ onMounted(() => {
 })
 
 const switchNetwork = async () => {
-  // TODO: chainId env'den alinacak
   try {
     await ethereum.request({
       method: 'wallet_switchEthereumChain',
       params: [
         {
-          chainId: '0x' + Number(5).toString(16),
+          chainId: '0x' + ktaChainId.toString(16),
         },
       ],
     })
@@ -197,22 +201,19 @@ const switchNetwork = async () => {
 }
 
 const userRegister = async () => {
-  openModal()
   await (
     await ktaToken.approve(kta.address, ethers.constants.MaxUint256)
   ).wait()
 
   await kta.register(
     // TODO: kullanicidan input alinmali
-    ethers.utils.formatBytes32String('hada'),
+    ethers.utils.formatBytes32String(register.name),
     // TODO: kullanicidan referrer bilgisi alinmali bossa AddressZero
-    ethers.constants.AddressZero
+    register.referrer === '' ? ethers.constants.AddressZero : register.referrer
   )
 }
 
-const openModal = () => {
-  showModal.value = true
-}
+const openModal = () => (showModal.value = true)
 
 const closeModal = () => (showModal.value = false)
 </script>

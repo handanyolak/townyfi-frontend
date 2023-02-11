@@ -19,7 +19,7 @@
         </span>
       </div>
       <div class="flex flex-1 items-center justify-between">
-        <div>
+        <div class="w-full">
           <div v-if="isEdit || input" class="mx-1">
             <slot name="item" />
           </div>
