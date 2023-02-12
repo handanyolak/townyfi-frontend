@@ -1,6 +1,6 @@
 <template>
   <ClientOnly>
-    <div>
+    <div ref="chatBox">
       <div class="fixed bottom-0 right-0">
         <div
           class="ease flex w-56 flex-col transition-all duration-700"
@@ -102,9 +102,12 @@
 </template>
 
 <script setup lang="ts">
+import { onClickOutside } from '@vueuse/core'
+
 const bobMessage = ref('')
 const youMessage = ref('')
 const isChat = ref(false)
+const chatBox = ref(null)
 
 const messages: any = [
   {
@@ -162,6 +165,8 @@ const sendMessage = (direction) => {
 const toggleChat = () => {
   isChat.value = !isChat.value
 }
+
+onClickOutside(chatBox, () => (isChat.value = false))
 </script>
 
 <style scoped>
