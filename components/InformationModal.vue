@@ -5,7 +5,7 @@
         <div
           ref="modal"
           :class="contentClasses"
-          class="modal relative min-h-[20%] min-w-[30%] rounded-lg bg-white"
+          class="modal relative min-h-[20%] min-w-[30%] rounded-lg bg-towni-brown-light-100"
         >
           <button class="absolute right-2 top-2 z-50" @click="closeModal">
             <img class="h-10 w-10" src="@/assets/img/exit.svg" />
