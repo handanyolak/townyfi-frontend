@@ -73,45 +73,16 @@
     </div>
 
     <InformationModal v-if="showModal" @modalClosed="toggleModal(false)">
-      <div class="flex flex-col items-center space-y-4 p-12">
-        <ListTitle class="w-full">Register</ListTitle>
-
-        <ListItem class="w-full" input>
-          <template #title> Name: </template>
-          <template #item>
-            <input v-model="register.name" type="text" />
-          </template>
-          <span>{{ register.name }}</span>
-        </ListItem>
-        <ListItem class="w-full" input>
-          <template #title> Referrer: </template>
-          <template #item>
-            <input v-model="register.referrer" type="text" />
-          </template>
-          <span>{{ register.referrer }}</span>
-        </ListItem>
-        <TownyButton
-          v-if="ktaAllowance.lt(setting.price.register)"
-          class="my-3"
-          @click="userApprove()"
-          >Approve</TownyButton
-        >
-        <TownyButton v-else class="my-3" @click="userRegister()"
-          >Register</TownyButton
-        >
-      </div>
+      <Register @registerClosed="toggleModal(false)" />
     </InformationModal>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ethers } from 'ethers'
 import { useDark, useToggle, useStorage } from '@vueuse/core'
 import LanguageDropdown from '~/components/LanguageDropdown.vue'
 import InformationModal from '~/components/InformationModal.vue'
 import TownyButton from '~/components/TownyButton.vue'
-import ListItem from '~/components/sidebar-items/ListItem.vue'
-import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import { $t } from '~/composables/useLang'
 
 const connectionStore = useConnectionStore()
@@ -119,19 +90,13 @@ const hasMetamask = connectionStore.hasMetamask
 const ethereum = connectionStore.ethereum
 const userWalletStore = useUserWalletStore()
 const userGameStore = useUserGameStore()
-const kta = userWalletStore.kta
-const ktaToken = userWalletStore.ktaToken
 const { connectWeb3, disconnectWeb3 } = userWalletStore
-const { ktaAllowance } = storeToRefs(userWalletStore)
-const { isRegistered, setting } = storeToRefs(userGameStore)
+const { isRegistered } = storeToRefs(userGameStore)
 const { onValidNetwork, isConnected } = storeToRefs(connectionStore)
 const showModal = ref(false)
 const audio = useStorage('audio', false)
 const music = ref(false)
-const register = reactive({
-  name: '',
-  referrer: '',
-})
+
 const isDark = useDark({
   storageKey: 'theme',
   valueDark: 'dark',
@@ -207,21 +172,6 @@ const switchNetwork = async () => {
   } catch (error) {
     console.log(error)
   }
-}
-
-const userRegister = async () => {
-  const tx = await kta.register(
-    ethers.utils.formatBytes32String(register.name),
-    register.referrer === '' ? ethers.constants.AddressZero : register.referrer
-  )
-
-  await tx.wait()
-
-  showModal.value = false
-}
-
-const userApprove = async () => {
-  await ktaToken.approve(kta.address, ethers.constants.MaxUint256)
 }
 
 const toggleModal = (modalValue: boolean) => (showModal.value = modalValue)
