@@ -16,7 +16,7 @@
                 v-if="!isRegistered"
                 fill
                 hover-effect
-                @click.native="openModal()"
+                @click.native="toggleModal(true)"
               >
                 Register
               </TownyButton>
@@ -72,7 +72,7 @@
       </div>
     </div>
 
-    <InformationModal v-if="showModal" @modalClosed="closeModal()">
+    <InformationModal v-if="showModal" @modalClosed="toggleModal(false)">
       <div class="flex flex-col items-center space-y-4 p-12">
         <ListTitle class="w-full">Register</ListTitle>
 
@@ -90,7 +90,15 @@
           </template>
           <span>{{ register.referrer }}</span>
         </ListItem>
-        <TownyButton class="my-3" @click="userRegister()">Register</TownyButton>
+        <TownyButton
+          v-if="ktaAllowance.lt(setting.price.register)"
+          class="my-3"
+          @click="userApprove()"
+          >Approve</TownyButton
+        >
+        <TownyButton v-else class="my-3" @click="userRegister()"
+          >Register</TownyButton
+        >
       </div>
     </InformationModal>
   </div>
@@ -114,7 +122,8 @@ const userGameStore = useUserGameStore()
 const kta = userWalletStore.kta
 const ktaToken = userWalletStore.ktaToken
 const { connectWeb3, disconnectWeb3 } = userWalletStore
-const { isRegistered } = storeToRefs(userGameStore)
+const { ktaAllowance } = storeToRefs(userWalletStore)
+const { isRegistered, setting } = storeToRefs(userGameStore)
 const { onValidNetwork, isConnected } = storeToRefs(connectionStore)
 const showModal = ref(false)
 const audio = useStorage('audio', false)
@@ -201,21 +210,21 @@ const switchNetwork = async () => {
 }
 
 const userRegister = async () => {
-  await (
-    await ktaToken.approve(kta.address, ethers.constants.MaxUint256)
-  ).wait()
-
-  await kta.register(
-    // TODO: kullanicidan input alinmali
+  const tx = await kta.register(
     ethers.utils.formatBytes32String(register.name),
-    // TODO: kullanicidan referrer bilgisi alinmali bossa AddressZero
     register.referrer === '' ? ethers.constants.AddressZero : register.referrer
   )
+
+  await tx.wait()
+
+  showModal.value = false
 }
 
-const openModal = () => (showModal.value = true)
+const userApprove = async () => {
+  await ktaToken.approve(kta.address, ethers.constants.MaxUint256)
+}
 
-const closeModal = () => (showModal.value = false)
+const toggleModal = (modalValue: boolean) => (showModal.value = modalValue)
 </script>
 
 <style scoped>
