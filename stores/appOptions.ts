@@ -1,13 +1,22 @@
+import { Event, BigNumber } from 'ethers'
+
 export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const connectionStore = useConnectionStore()
   const userGameStore = useUserGameStore()
   const userWalletStore = useUserWalletStore()
   const { hasMetamask, provider } = connectionStore
   const { onValidNetwork } = storeToRefs(connectionStore)
-  const { setUserInfo, setUserCoordinate, setUserProperty } = userGameStore
-  const { setCurrentBlockNumber, connect } = userWalletStore
+  const {
+    setUser,
+    setUserCoordinate,
+    setUserProperty,
+    setIsRegistered,
+    setSetting,
+  } = userGameStore
+  const { setCurrentBlockNumber, connect, setKtaAllowance } = userWalletStore
   const { address } = storeToRefs(userWalletStore)
   const kta = useKta()
+  const ktaToken = useKtaToken()
 
   const initialized = ref(false)
   const showSidebar = ref(false)
@@ -28,45 +37,71 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   }
 
   const initializeApp = async () => {
-    console.log('hasMetamask')
-    console.log(hasMetamask)
-    console.log('onValidNetwork')
-    console.log(onValidNetwork.value)
-    console.log('initialized')
-    console.log(initialized.value)
-    if (hasMetamask && onValidNetwork.value && !initialized.value) {
-      initialized.value = true
-
-      // TODO: Bu fonskiyon normalde header'da calisiyor fakat zaman uyumsuzlugu yonetilemedigi icin gecici olarak cp yapildi.
-      // ileride event yontemiyle haberlesilebilir ya da daha iyi bir yol bulunabilir.
+    if (hasMetamask) {
       await connect()
-      const userInfo = { ...(await kta.userByAddr(address.value)) }
-      setUserInfo(userInfo)
-      await setUserCoordinate()
 
-      // bir kereye mahsus calisacak fonksiyonlar
-      setCurrentBlockNumber(await provider!!.getBlockNumber())
+      if (onValidNetwork.value && !initialized.value) {
+        initialized.value = true
 
-      provider!!.on('block', (blockNumber: number) => {
-        setCurrentBlockNumber(blockNumber)
-      })
+        await setUserInfo()
 
-      // TODO: userGameStore'a startGameEvents fonksiyonunda eklenecek
-      kta.on(
-        kta.interface.getEvent('UserMoved').name,
-        (
-          user: string,
-          _, // oldCoordinate: Coordinates.CoordinateStruct,
-          newCoordinate: Coordinates.CoordinateStruct
-        ) => {
-          useTownyToast('info', `New Coordinate: ${newCoordinate}`)
+        setKtaAllowance(await ktaToken.allowance(address.value, kta.address))
 
-          if (user === address.value) {
-            setUserProperty('coordinate', newCoordinate)
+        setSetting(await kta.settings())
+
+        setCurrentBlockNumber(await provider!!.getBlockNumber())
+
+        provider!!.on('block', (blockNumber: number) => {
+          setCurrentBlockNumber(blockNumber)
+        })
+
+        // TODO: startGameEvents fonksiyonunda eklenecek
+        kta.on(
+          kta.interface.getEvent('UserMoved').name,
+          (
+            user: string,
+            _, // oldCoordinate: Coordinates.CoordinateStruct,
+            newCoordinate: Coordinates.CoordinateStruct
+          ) => {
+            useTownyToast('info', `New Coordinate: ${newCoordinate}`)
+
+            if (user === address.value) {
+              setUserProperty('coordinate', newCoordinate)
+            }
           }
-        }
-      )
+        )
+
+        // TODO: bu bilgiyi transaction'dan almak yerine parametre olarak alacagiz cunku frontend'e yuk biniyor.
+        kta.on(
+          kta.interface.getEvent('UserRegistered').name,
+          async (event: Event) => {
+            const tx = await event.getTransaction()
+            const registeredAddress = tx.from
+
+            if (registeredAddress === address.value) {
+              await setUserInfo()
+            }
+          }
+        )
+
+        ktaToken.on(
+          ktaToken.interface.getEvent('Approval').name,
+          (owner: string, spender: string, value: BigNumber) => {
+            if (owner === address.value && spender === kta.address) {
+              setKtaAllowance(value)
+            }
+          }
+        )
+      }
     }
+  }
+
+  // TODO: anlam karisikligini gidermek icin setPlayerInfo olarak her yeri guncellemek ve contract tarafini da guncellemek istiyoruz
+  const setUserInfo = async () => {
+    setIsRegistered(await kta.isRegistered(address.value))
+    const userInfo = { ...(await kta.userByAddr(address.value)) }
+    setUser(userInfo)
+    await setUserCoordinate()
   }
 
   return {
@@ -77,5 +112,6 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     isInteractions,
     sideLeave,
     initializeApp,
+    setUserInfo,
   }
 })
