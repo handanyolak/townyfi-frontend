@@ -4,14 +4,18 @@ import { IKillThemAll } from '~/types/typechain/contracts/game/KillThemAll'
 
 export const useUserGameStore = defineStore('userGameStore', () => {
   const user = ref<IKillThemAll.UserStruct>(null)
-  const isRegistered = ref(false)
+  const isRegistered = ref(true)
   const addressesByCoordinate = ref([]) as CoordinateItem[]
   const isLoading = ref(false)
   const kta = useKta()
-  const settings = computed(async () => await kta.settings())
+  const setting = ref<IKillThemAll.SettingStructOutput>(null)
 
-  const setUserInfo = (newUserInfo: IKillThemAll.UserStruct) => {
-    user.value = newUserInfo
+  const setUser = (newUser: IKillThemAll.UserStruct) => {
+    user.value = newUser
+  }
+
+  const setSetting = (newSetting: IKillThemAll.SettingStructOutput) => {
+    setting.value = newSetting
   }
 
   const setUserProperty = <T extends keyof IKillThemAll.UserStruct>(
@@ -25,7 +29,6 @@ export const useUserGameStore = defineStore('userGameStore', () => {
     isRegistered.value = newIsRegistered
   }
 
-  // TODO: adi yanlis
   const setUserCoordinate = async (nearLevel = 1) => {
     isLoading.value = true
     addressesByCoordinate.value = []
@@ -53,13 +56,14 @@ export const useUserGameStore = defineStore('userGameStore', () => {
   return {
     addressesByCoordinate,
     isRegistered,
-    settings,
+    setting,
     user,
     kta,
     isLoading,
     setIsRegistered,
     setUserCoordinate,
-    setUserInfo,
+    setUser,
     setUserProperty,
+    setSetting,
   }
 })
