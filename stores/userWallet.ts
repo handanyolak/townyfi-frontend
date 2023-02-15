@@ -1,13 +1,9 @@
-import { ethers, constants } from 'ethers'
+import { ethers, constants, BigNumber } from 'ethers'
 import { useTownyToast } from '~/composables/useTownyToast'
 import { $t } from '~/composables/useLang'
-import { numberToHex } from '~/utils'
 
 export const useUserWalletStore = defineStore('userWalletStore', () => {
-  const { ktaChainId } = useRuntimeConfig().public
-  const appOptionsStore = useAppOptionsStore()
   const connectionStore = useConnectionStore()
-  const userGameStore = useUserGameStore()
   const kta = useKta()
   const ktaToken = useKtaToken()
   const provider = useProvider()
@@ -15,9 +11,10 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
 
   const address = ref(constants.AddressZero)
   const balance = ref('')
+  const ktaAllowance = ref<BigNumber>('')
   const currentBlockNumber = ref(0)
 
-  const setUserInfo = (newUserInfo: any) => {
+  const setUser = (newUserInfo: any) => {
     user.value = newUserInfo
   }
 
@@ -33,17 +30,19 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
     currentBlockNumber.value = newBlockNumber
   }
 
+  const setKtaAllowance = (newKtaAllowance: BigNumber) => {
+    ktaAllowance.value = newKtaAllowance
+  }
+
   const connect = async () => {
     const accounts = await provider.listAccounts()
     const isConnected = accounts.length > 0
     connectionStore.setIsConnected(isConnected)
-    if (isConnected) await updateUserInfo()
-
-    connectionStore.onValidNetwork &&
-      userGameStore.setIsRegistered(await kta.isRegistered(address.value))
+    // TODO: buraya gerek var mi arastiralim
+    if (isConnected) await updateUserWalletInfo()
   }
 
-  const updateUserInfo = async (_address = null) => {
+  const updateUserWalletInfo = async (_address = null) => {
     await updateUserAddress(_address)
     await updateUserBalance()
   }
@@ -64,50 +63,29 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
     ethereum.value.on('disconnect', handleDisconnect)
   }
 
-  const handleChainChanged = async (chainId) => {
-    connectionStore.setOnValidNetwork(chainId === numberToHex(ktaChainId))
-
-    await appOptionsStore.initializeApp()
-
-    await updateUserBalance()
-
-    useTownyToast('info', $t('chain_changed'))
+  const handleChainChanged = () => {
+    window.location.reload()
   }
 
-  const handleAccountsChanged = async (accounts: string[]) => {
-    const isConnected = accounts.length > 0
-    connectionStore.setIsConnected(isConnected)
-    if (isConnected) {
-      await updateUserInfo(accounts[0])
-      userGameStore.setIsRegistered(await kta.isRegistered(address.value))
-      // TODO: change the setUser
-      userGameStore.setUserInfo(await kta.userByAddr(address.value))
-      await userGameStore.setUserCoordinate()
-      useTownyToast('info', `${$t('address_changed')} ${accounts[0]}`)
-    } else {
-      useTownyToast('error', $t('address_not_found'))
-      await disconnectWeb3()
-    }
+  const handleAccountsChanged = () => {
+    window.location.reload()
   }
 
   const handleDisconnect = () => {
     connectionStore.setIsConnected(false)
   }
 
-  const disconnectWeb3 = () => {
-    address.value = constants.AddressZero
-    balance.value = ''
+  const disconnectWeb3 = async () => {
+    await handleAccountsChanged([ethers.constants.AddressZero])
     connectionStore.setIsConnected(false)
     useTownyToast('success', $t('disconnected'))
   }
 
   const connectWeb3 = async () => {
     try {
-      if (!ethereum.value) {
-        throw new Error('No provider detected.')
-      }
-      await provider.send('eth_requestAccounts', [])
-
+      await provider!!.send('eth_requestAccounts', [])
+      const accounts = await provider!!.listAccounts()
+      await handleAccountsChanged(accounts)
       await connect()
     } catch (error) {
       console.log(error)
@@ -122,11 +100,12 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
     kta,
     ktaToken,
     currentBlockNumber,
+    ktaAllowance,
     setAddress,
     setBalance,
-    setUserInfo,
+    setUser,
     connect,
-    updateUserInfo,
+    updateUserWalletInfo,
     updateUserAddress,
     updateUserBalance,
     startEthEvents,
@@ -136,5 +115,6 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
     disconnectWeb3,
     connectWeb3,
     setCurrentBlockNumber,
+    setKtaAllowance,
   }
 })
