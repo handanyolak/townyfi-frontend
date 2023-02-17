@@ -4,7 +4,10 @@
     <ListItem editable>
       <template #title> Name: </template>
       <template #item>
-        <input v-model="name" />
+        <VForm class="flex flex-col items-center">
+          <VField v-model="name" name="name" :rules="nameRules" />
+          <VErrorMessage class="text-red-800" name="name" />
+        </VForm>
       </template>
       <span>{{ name }}</span>
     </ListItem>
@@ -63,6 +66,7 @@
 
 <script setup lang="ts">
 import { ethers } from 'ethers'
+import * as yup from 'yup'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ScrollableList from '~/components/sidebar-items/ScrollableList.vue'
@@ -70,7 +74,7 @@ import ScrollableList from '~/components/sidebar-items/ScrollableList.vue'
 const userGameStore = useUserGameStore()
 const { user } = storeToRefs(userGameStore)
 const name = ref(ethers.utils.parseBytes32String(user.value.name as any))
-
+const nameRules = yup.string().bytes32()
 const kta = useKta()
 const townInfo = {
   ...(await kta.townById(user.value.townInfo.townId.toString())),
