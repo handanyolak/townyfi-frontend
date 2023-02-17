@@ -4,17 +4,10 @@
     <ListItem editable>
       <template #title> Name: </template>
       <template #item>
-        <div class="relative">
-          <input v-model="stringName" type="text" @keyup="maxString()" />
-          <div
-            :class="[
-              'absolute w-full bg-towni-brown-dark-500 text-[11px] transition-all duration-1000 ease-in-out',
-              nameError ? 'max-h-10' : 'max-h-0',
-            ]"
-          >
-            {{ nameError }}
-          </div>
-        </div>
+        <VForm class="flex flex-col items-center">
+          <VField v-model="name" name="name" :rules="nameRules" />
+          <VErrorMessage class="text-red-800" name="name" />
+        </VForm>
       </template>
       <span>{{ ethers.utils.parseBytes32String(user.name as any) }}</span>
     </ListItem>
@@ -80,6 +73,7 @@
 <script setup lang="ts">
 import { duration } from 'moment'
 import { ethers } from 'ethers'
+import * as yup from 'yup'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import { IKillThemAll } from '~/types/typechain/contracts/game/KillThemAll'
@@ -90,20 +84,10 @@ const userWalletStore = useUserWalletStore()
 const { user } = storeToRefs(userGameStore)
 const timer = reactive<any>({ ...user.value.timer })
 const timers = Object.keys(user.value.timer).filter((item: any) => isNaN(item))
-const stringName = ref(ethers.utils.parseBytes32String(user.value.name as any))
-const nameError = ref('')
+const name = ref(ethers.utils.parseBytes32String(user.value.name as any))
 const reffererAddress = user.value.referrer as string
-
 const referrer = computed(() => middleCropping(reffererAddress))
-
-const maxString = () => {
-  try {
-    ethers.utils.formatBytes32String(stringName.value)
-    nameError.value = ''
-  } catch (error) {
-    nameError.value = 'Name must be less than 32 bytes'
-  }
-}
+const nameRules = yup.string().bytes32()
 
 const convert = (
   isConvert: boolean,
