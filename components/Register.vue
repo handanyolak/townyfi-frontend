@@ -14,9 +14,11 @@
     <ListItem class="w-full" input>
       <template #title> Referrer: </template>
       <template #item>
-        <input v-model="register.referrer" type="text" />
+        <VForm class="flex flex-col items-center">
+          <VField v-model="referrer" name="referrer" :rules="referrerRules" />
+          <VErrorMessage class="text-red-800" name="referrer" />
+        </VForm>
       </template>
-      <span>{{ register.referrer }}</span>
     </ListItem>
     <TownyButton
       v-if="ktaAllowance.lt(setting.price.register)"
@@ -48,14 +50,15 @@ const kta = userWalletStore.kta
 const name = ref('')
 const nameRules = yup.string().bytes32()
 
-const register = reactive({
-  referrer: '',
-})
+const referrer = ref('')
+const referrerRules = yup
+  .string()
+  .matches(/^0x[a-fA-F0-9]{40}$/, 'string must be wallet address')
 
 const userRegister = async () => {
   const tx = await kta.register(
     ethers.utils.formatBytes32String(name.value),
-    register.referrer === '' ? ethers.constants.AddressZero : register.referrer
+    referrer.value === '' ? ethers.constants.AddressZero : referrer.value
   )
 
   await tx.wait()
