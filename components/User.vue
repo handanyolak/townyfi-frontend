@@ -1,7 +1,7 @@
 <template>
   <div>
     <ListTitle>General</ListTitle>
-    <ListItem editable>
+    <ListItem editable tooltip>
       <template #title> Name: </template>
       <template #item>
         <VForm class="flex flex-col items-center">
@@ -10,62 +10,135 @@
         </VForm>
       </template>
       <span>{{ ethers.utils.parseBytes32String(user.name as any) }}</span>
+      <template #tooltip>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
+      </template>
     </ListItem>
-    <ListItem>
+    <ListItem tooltip>
       <template #title> Coordinate </template>
       <span>({{ user.coordinate._x.toString() }}</span>
       <span>,</span>
       <span>{{ user.coordinate._y.toString() }})</span>
+      <template #tooltip>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
+      </template>
     </ListItem>
-    <ListItem>
+    <ListItem tooltip>
       <template #title> Level: </template>
       <span>{{ user.levelId }}</span>
+      <template #tooltip>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
+      </template>
     </ListItem>
-    <ListItem>
+    <ListItem tooltip>
       <template #title> Exp: </template>
       <span>{{ user.exp }}</span>
+      <template #tooltip>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
+      </template>
     </ListItem>
-    <ListItem copiable :copy-value="reffererAddress">
+    <ListItem copiable tooltip :copy-value="reffererAddress">
       <template #title> Referrer: </template>
       <span>{{ referrer }}</span>
+      <template #tooltip>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
+      </template>
     </ListItem>
     <ListTitle>Stats</ListTitle>
-    <ListItem>
+    <ListItem tooltip>
       <template #title> Health: </template>
       <span>{{ user.health }}</span>
+      <template #tooltip>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
+      </template>
     </ListItem>
-    <ListItem>
+    <ListItem tooltip>
       <template #title> Mana: </template>
       <span>{{ user.mana }}</span>
+      <template #tooltip>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
+      </template>
     </ListItem>
-    <ListItem>
+    <ListItem tooltip>
       <template #title> Energy: </template>
       <span>{{ user.energy }}</span>
+      <template #tooltip>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
+      </template>
     </ListItem>
-    <ListItem>
+    <ListItem tooltip>
       <template #title> Armor: </template>
       <span>{{ user.armor }}</span>
+      <template #tooltip>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
+      </template>
     </ListItem>
     <ListTitle>Character Points</ListTitle>
-    <ListItem>
+    <ListItem tooltip>
       <template #title> Attack: </template>
       <span>{{ user.charPoint.attack }}</span>
+      <template #tooltip>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
+      </template>
     </ListItem>
-    <ListItem>
+    <ListItem tooltip>
       <template #title> Defend: </template>
       <span>{{ user.charPoint.defend }}</span>
+      <template #tooltip>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
+      </template>
     </ListItem>
     <ListTitle>Timers</ListTitle>
     <ListItem
       v-for="(item, index) in timers"
       :key="index"
       convertable
+      tooltip
       @convert="(isConvert) => convert(isConvert, item as any)"
     >
       <template #title> {{ toCapitalizedWords(item) }}: </template>
       <span>{{
         timer[item].toString() === '0' ? 'Available!' : timer[item].toString()
       }}</span>
+      <template #tooltip>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
+      </template>
     </ListItem>
   </div>
 </template>

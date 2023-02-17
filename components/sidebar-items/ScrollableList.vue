@@ -5,8 +5,15 @@
       :key="index"
       :copiable="copiable"
       :copy-value="copyValue[index]"
+      tooltip
     >
       <span>{{ item }}</span>
+      <template #tooltip>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
+      </template>
     </ListItem>
   </div>
 </template>
