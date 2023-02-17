@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="group my-2 flex items-center py-2 px-1 shadow-towni-300">
+    <div class="group my-2 flex items-start p-1 shadow-towni-300">
       <div class="flex items-center">
         <Tooltip>
           <template #tooltip-image>
@@ -18,7 +18,7 @@
           <slot name="title" />
         </span>
       </div>
-      <div class="flex flex-1 items-center justify-between">
+      <div class="flex flex-1 items-start justify-between">
         <div class="w-full">
           <div v-if="isEdit || input" class="mx-1">
             <slot name="item" />
@@ -97,7 +97,7 @@ const convert = () => {
 </script>
 
 <style scoped>
-:slotted(input) {
+:deep(input) {
   @apply w-full rounded-sm bg-towni-brown-dark-300 bg-opacity-20 px-1 text-towni-brown-dark-600 outline-none backdrop-blur;
 }
 </style>

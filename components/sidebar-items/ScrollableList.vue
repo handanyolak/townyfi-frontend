@@ -1,9 +1,8 @@
 <template>
-  <div class="h-24 overflow-y-auto overflow-x-hidden">
+  <div class="h-36 overflow-y-auto overflow-x-hidden">
     <ListItem
       v-for="(item, index) in items"
       :key="index"
-      class="h-5"
       :copiable="copiable"
       :copy-value="copyValue[index]"
     >
