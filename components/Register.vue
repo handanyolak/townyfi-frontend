@@ -5,9 +5,11 @@
     <ListItem class="w-full" input>
       <template #title> Name: </template>
       <template #item>
-        <input v-model="register.name" type="text" />
+        <VForm class="flex flex-col items-center">
+          <VField v-model="name" name="name" :rules="nameRules" />
+          <VErrorMessage class="text-red-800" name="name" />
+        </VForm>
       </template>
-      <span>{{ register.name }}</span>
     </ListItem>
     <ListItem class="w-full" input>
       <template #title> Referrer: </template>
@@ -30,8 +32,11 @@
 
 <script setup lang="ts">
 import { ethers } from 'ethers'
+import * as yup from 'yup'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
+
+const emit = defineEmits(['registerClosed'])
 
 const userWalletStore = useUserWalletStore()
 const userGameStore = useUserGameStore()
@@ -40,16 +45,16 @@ const { ktaAllowance } = storeToRefs(userWalletStore)
 const ktaToken = userWalletStore.ktaToken
 const kta = userWalletStore.kta
 
-const emit = defineEmits(['registerClosed'])
+const name = ref('')
+const nameRules = yup.string().bytes32()
 
 const register = reactive({
-  name: '',
   referrer: '',
 })
 
 const userRegister = async () => {
   const tx = await kta.register(
-    ethers.utils.formatBytes32String(register.name),
+    ethers.utils.formatBytes32String(name.value),
     register.referrer === '' ? ethers.constants.AddressZero : register.referrer
   )
 
