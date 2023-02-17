@@ -2,17 +2,14 @@
   <div>
     <div class="group my-2 flex items-start p-1 shadow-towni-300">
       <div class="flex items-center">
-        <Tooltip>
+        <Tooltip v-if="tooltip">
           <template #tooltip-image>
             <img
               class="mr-1 h-3 w-3 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
               src="@/assets/img/information.svg"
             />
           </template>
-          <span>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Tempore,
-            alias?
-          </span>
+          <slot name="tooltip" />
         </Tooltip>
         <span class="flex items-center text-towni-brown-dark-400">
           <slot name="title" />
@@ -67,8 +64,9 @@ interface ContentListItemProps {
   editable?: boolean
   copiable?: boolean
   convertable?: boolean
-  copyValue?: string
   input?: boolean
+  tooltip?: boolean
+  copyValue?: string
 }
 
 const props = defineProps<ContentListItemProps>()
