@@ -2,7 +2,21 @@
   <div>
     <Accordion>
       <template #title>
-        <div>Teleport</div>
+        <div class="group flex">
+          <Tooltip class="self-center">
+            <template #tooltip-image>
+              <img
+                class="mr-1 h-3 w-3 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
+                src="@/assets/img/information.svg"
+              />
+            </template>
+            <span
+              >Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              Aspernatur, deserunt!</span
+            >
+          </Tooltip>
+          <span class="m-auto">Teleport</span>
+        </div>
       </template>
       <div class="flex">
         <ListItem input>
@@ -33,6 +47,7 @@
 <script setup lang="ts">
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import { useUserGameStore } from '~/stores/userGame'
+import Tooltip from '~/components/Tooltip.vue'
 
 const kta = useKta()
 const userGameStore = useUserGameStore()
