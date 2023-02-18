@@ -1,7 +1,7 @@
 <template>
   <div class="mt-6">
     <ListTitle>General</ListTitle>
-    <ListItem editable tooltip>
+    <ListItem tooltip>
       <template #title> Name: </template>
       <template #item>
         <input v-model="userName" type="text" />
