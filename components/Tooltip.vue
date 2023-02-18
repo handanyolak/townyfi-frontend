@@ -1,5 +1,5 @@
 <template>
-  <span ref="tooltip" class="relative" @click="toggleTooltip()">
+  <span ref="tooltip" class="relative" @click.stop="toggleTooltip()">
     <slot name="tooltip-image" />
     <span
       :class="[
