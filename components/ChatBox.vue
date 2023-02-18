@@ -168,18 +168,3 @@ const toggleChat = () => {
 
 onClickOutside(chatBox, () => (isChat.value = false))
 </script>
-
-<style scoped>
-div::-webkit-scrollbar-thumb {
-  background-color: #c57b34;
-  border: 4px solid transparent;
-  border-radius: 8px;
-  background-clip: padding-box;
-}
-
-div::-webkit-scrollbar {
-  width: 12px;
-  background: transparent;
-  border-radius: 5px;
-}
-</style>
