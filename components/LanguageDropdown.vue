@@ -16,12 +16,12 @@
         />
       </button>
       <Transition name="dropdown">
-        <ul
+        <div
           v-show="showLanguageDropdown"
           class="absolute left-0 right-0 mb-4 h-20 overflow-auto bg-towni-brown-light-100 dark:bg-night-blue"
           :class="!showLanguageDropdown ? 'rounded-md' : 'rounded-b-md'"
         >
-          <li
+          <span
             v-for="(item, index) in languages"
             :key="index"
             class="flex h-10 cursor-pointer items-center border-t border-gray-300 p-2 duration-300 hover:bg-gray-200 dark:border-gray-700 dark:hover:bg-gray-800"
@@ -35,8 +35,8 @@
             >
               {{ item }}
             </p>
-          </li>
-        </ul>
+          </span>
+        </div>
       </Transition>
     </div>
   </div>
@@ -85,18 +85,5 @@ const toggleLanguage = () => {
 
 .ease-custom {
   transition-timing-function: cubic-bezier(0.61, -0.53, 0.43, 1.43);
-}
-
-ul::-webkit-scrollbar-thumb {
-  background-color: #999999;
-  border: 4px solid transparent;
-  border-radius: 8px;
-  background-clip: padding-box;
-}
-
-ul::-webkit-scrollbar {
-  width: 12px;
-  background: #e6e6e6;
-  border-radius: 5px;
 }
 </style>

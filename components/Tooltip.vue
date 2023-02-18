@@ -17,6 +17,7 @@
 
 <script setup lang="ts">
 import { onClickOutside } from '@vueuse/core'
+
 const isShowTooltip = ref(false)
 const tooltip = ref(null)
 
@@ -26,11 +27,13 @@ const props = defineProps({
     default: false,
   },
 })
-onClickOutside(tooltip, () => (isShowTooltip.value = false))
+
 const toggleTooltip = () => {
   isShowTooltip.value = !isShowTooltip.value
   if (props.autoClose) {
     setTimeout(() => (isShowTooltip.value = false), 1500)
   }
 }
+
+onClickOutside(tooltip, () => (isShowTooltip.value = false))
 </script>
