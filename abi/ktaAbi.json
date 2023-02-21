@@ -2278,6 +2278,17 @@
     "type": "function"
   },
   {
+    "type": "function",
+    "stateMutability": "view",
+    "outputs": [
+      { "type": "address[]", "name": "", "internalType": "address[]" }
+    ],
+    "name": "getCitizensByTownId",
+    "inputs": [
+      { "type": "uint256", "name": "townId", "internalType": "uint256" }
+    ]
+  },
+  {
     "inputs": [],
     "name": "voyageTown",
     "outputs": [],
