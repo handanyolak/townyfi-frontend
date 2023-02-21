@@ -86,13 +86,8 @@
 <script setup lang="ts">
 import { useUserGameStore } from '~/stores/userGame'
 import { CoordinateItem } from '~/types'
+import { Direction } from '~/constants'
 
-enum Direction {
-  Up,
-  Right,
-  Down,
-  Left,
-}
 interface CastleBoxProps {
   item: CoordinateItem
 }
