@@ -3,9 +3,6 @@
     <ListTitle>General</ListTitle>
     <ListItem tooltip>
       <template #title> Name: </template>
-      <template #item>
-        <input v-model="userName" type="text" />
-      </template>
       <span>{{ userName }}</span>
       <template #tooltip>
         <span
@@ -131,6 +128,7 @@
         >
       </template>
     </ListItem>
+    <OtherTown :id="user.townInfo.townId.toString()" />
   </div>
 </template>
 
@@ -146,6 +144,7 @@ import { toCapitalizedWords, middleCropping } from '~/utils'
 const kta = useKta()
 const userGameStore = useUserGameStore()
 const userWalletStore = useUserWalletStore()
+// TODO: Buraya bos deger koyunca template'de hata ciktigi icin burayi onmounted'ta eziyoruz.
 const user = ref(userGameStore.user)
 const timer = reactive<any>({ ...user.value.timer })
 const timers = Object.keys(user.value.timer).filter((item: any) => isNaN(item))
