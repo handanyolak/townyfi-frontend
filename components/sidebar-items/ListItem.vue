@@ -43,6 +43,7 @@
             <span> Copied! </span>
           </Tooltip>
         </div>
+        <slot name="action-icon" />
         <img
           v-if="convertable"
           class="h-3 w-3 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
@@ -67,8 +68,8 @@ interface ContentListItemProps {
   input?: boolean
   tooltip?: boolean
   copyValue?: string
+  item?: string
 }
-
 const props = defineProps<ContentListItemProps>()
 const emit = defineEmits(['convert'])
 
