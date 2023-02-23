@@ -1,5 +1,5 @@
 <template>
-  <div class="h-32 overflow-y-auto overflow-x-hidden">
+  <div class="max-h-32 overflow-y-auto overflow-x-hidden">
     <ListItem
       v-for="(item, index) in items"
       :key="index"
