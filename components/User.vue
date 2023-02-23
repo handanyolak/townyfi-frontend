@@ -125,6 +125,7 @@
     <ListItem
       v-for="(item, index) in timers"
       :key="index"
+      :item="item"
       convertable
       tooltip
       @convert="(isConvert) => convert(isConvert, item as any)"
@@ -138,6 +139,13 @@
           >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
           amet.</span
         >
+      </template>
+      <template #action-icon>
+        <img
+          v-if="getPointIcon(item)"
+          class="mr-1 h-5 w-5 animate-bounce cursor-pointer"
+          :src="getPointIcon(item)"
+        />
       </template>
     </ListItem>
   </div>
@@ -179,4 +187,10 @@ const convert = (
     timer[propertyName] = user.value.timer[propertyName].toString()
   }
 }
+// TODO: Backend'de get datalar ayrildiktan sonra duzenlenecek
+const getPointIcon = computed(() => (_getPoint: string) => {
+  const iconName = useSvg(_getPoint)
+
+  return iconName.includes('undefined') ? false : useSvg(_getPoint)
+})
 </script>
