@@ -27,7 +27,7 @@
         ></div>
         <div class="relative">
           <SidebarTab v-if="isGameInfo" :tabs="gameInfotabs" />
-          <SidebarTab v-if="isUserOptions" :tabs="userOptionstabs" />
+          <!-- <SidebarTab v-if="isUserOptions" :tabs="userOptionstabs" /> -->
         </div>
         <svg>
           <filter id="wavy">
@@ -68,14 +68,13 @@ const gameInfotabs: Tab[] = [
     name: 'Town',
     component: 'Town',
   },
-]
-
-const userOptionstabs: Tab[] = [
   {
-    name: 'Actions',
-    component: 'Actions',
+    name: 'Interactions',
+    component: 'Interactions',
   },
 ]
+
+// const userOptionstabs: Tab[] = []
 
 onClickOutside(sideBar, () => sideLeave())
 </script>
