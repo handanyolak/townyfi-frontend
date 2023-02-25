@@ -32,7 +32,7 @@
       </InformationModal>
     </div>
     <GameInfo v-else />
-    <HoverMenu v-if="onValidNetwork" />
+    <SidebarMenu v-if="onValidNetwork" />
     <ChatBox />
 
     <Transition name="loading-slide">

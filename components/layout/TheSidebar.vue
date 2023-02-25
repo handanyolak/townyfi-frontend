@@ -1,19 +1,19 @@
 <template>
   <Transition
-    :name="isGameInfo || isWeb3Info ? 'slide-left-fade' : 'slide-right-fade'"
+    :name="isGameInfo || isOptions ? 'slide-left-fade' : 'slide-right-fade'"
   >
     <div
       v-if="showSidebar"
       ref="sideBar"
       :class="[
         'fixed -top-3 z-50 min-h-screen w-96',
-        isGameInfo || isWeb3Info ? '-left-4' : '-right-4',
+        isGameInfo || isOptions ? '-left-4' : '-right-4',
       ]"
     >
       <img
         :class="[
           'absolute top-3  z-10 h-8 w-8 cursor-pointer',
-          isGameInfo || isWeb3Info ? '-right-1' : '-left-2',
+          isGameInfo || isOptions ? '-right-1' : '-left-2',
         ]"
         src="@/assets/img/exit.svg"
         @click="sideLeave()"
@@ -22,12 +22,12 @@
         <div
           :class="[
             'parchment absolute -top-3 w-full bg-white [filter:url(#wavy)]',
-            isUserOptions || isInteractions ? 'rotate-180 transform' : '',
+            isBlockchainInfo || isContractInfo ? 'rotate-180 transform' : '',
           ]"
         ></div>
         <div class="relative">
           <SidebarTab v-if="isGameInfo" :tabs="gameInfotabs" />
-          <!-- <SidebarTab v-if="isUserOptions" :tabs="userOptionstabs" /> -->
+          <!-- <SidebarTab v-if="isBlockchainInfo" :tabs="userOptionstabs" /> -->
         </div>
         <svg>
           <filter id="wavy">
@@ -53,7 +53,7 @@ import SidebarTab from '~/components/SidebarTab.vue'
 import { Tab } from '~/types'
 
 const appOptionStore = useAppOptionsStore()
-const { isGameInfo, isWeb3Info, isUserOptions, isInteractions, showSidebar } =
+const { isGameInfo, isContractInfo, isBlockchainInfo, isOptions, showSidebar } =
   storeToRefs(appOptionStore)
 const { sideLeave } = appOptionStore
 

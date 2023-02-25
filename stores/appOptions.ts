@@ -21,18 +21,18 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const initialized = ref(false)
   const showSidebar = ref(false)
   const isGameInfo = ref(false)
-  const isWeb3Info = ref(false)
-  const isUserOptions = ref(false)
-  const isInteractions = ref(false)
+  const isContractInfo = ref(false)
+  const isBlockchainInfo = ref(false)
+  const isOptions = ref(false)
 
   const sideLeave = () => {
     showSidebar.value = false
 
     requestAnimationFrame(() => {
       isGameInfo.value = false
-      isWeb3Info.value = false
-      isUserOptions.value = false
-      isInteractions.value = false
+      isContractInfo.value = false
+      isBlockchainInfo.value = false
+      isOptions.value = false
     })
   }
 
@@ -107,9 +107,9 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   return {
     showSidebar,
     isGameInfo,
-    isWeb3Info,
-    isUserOptions,
-    isInteractions,
+    isContractInfo,
+    isBlockchainInfo,
+    isOptions,
     sideLeave,
     initializeApp,
     setUserInfo,
