@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="group my-2 flex items-start p-1 shadow-towni-300">
+    <div class="group my-2 flex p-1 shadow-towni-300">
       <div class="flex items-center">
         <Tooltip v-if="tooltip">
           <template #tooltip-image>
@@ -16,7 +16,7 @@
         </span>
       </div>
       <div class="flex flex-1 items-start justify-between">
-        <div class="w-full">
+        <div class="flex w-full">
           <div v-if="isEdit || input" class="mx-1">
             <slot name="item" />
           </div>
