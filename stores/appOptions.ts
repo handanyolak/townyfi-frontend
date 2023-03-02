@@ -1,4 +1,5 @@
 import { Event, BigNumber } from 'ethers'
+import { useToggle, useStorage } from '@vueuse/core'
 
 export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const connectionStore = useConnectionStore()
@@ -24,6 +25,12 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const isContractInfo = ref(false)
   const isBlockchainInfo = ref(false)
   const isOptions = ref(false)
+
+  const audio = useStorage('audio', false)
+  const music = ref(false)
+  const mainThemeAudio = ref<HTMLAudioElement | null>(null)
+  const _toggleAudio = useToggle(audio)
+  const _toggleMusic = useToggle(music)
 
   const sideLeave = () => {
     showSidebar.value = false
@@ -104,14 +111,52 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     await setUserCoordinate()
   }
 
+  const toggleAudio = () => {
+    _toggleAudio()
+
+    if (!audio.value) {
+      pauseMusic()
+    }
+  }
+
+  const toggleMusic = () => {
+    _toggleMusic()
+
+    if (music.value && audio.value) {
+      playMusic()
+    } else {
+      pauseMusic()
+    }
+  }
+
+  const playMusic = async () => {
+    if (!mainThemeAudio.value) {
+      mainThemeAudio.value = new Audio(
+        (await import('~/assets/sound/in-dreams.mp3')).default
+      )
+      mainThemeAudio.value.loop = true
+    }
+
+    mainThemeAudio.value.play()
+  }
+
+  const pauseMusic = () => {
+    music.value = false
+    mainThemeAudio.value?.pause()
+  }
+
   return {
     showSidebar,
     isGameInfo,
     isContractInfo,
     isBlockchainInfo,
     isOptions,
+    audio,
+    music,
     sideLeave,
     initializeApp,
     setUserInfo,
+    toggleAudio,
+    toggleMusic,
   }
 })

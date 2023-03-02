@@ -61,13 +61,13 @@
         <img
           :src="audioIcon"
           class="h-7 w-7 cursor-pointer"
-          @click="toggleAudio()"
+          @click="appOptionStore.toggleAudio()"
         />
         <img
           v-if="audio"
           :src="musicIcon"
           class="h-5 w-5 cursor-pointer"
-          @click="toggleMusic()"
+          @click="appOptionStore.toggleMusic()"
         />
       </div>
     </div>
@@ -79,7 +79,7 @@
 </template>
 
 <script setup lang="ts">
-import { useDark, useToggle, useStorage } from '@vueuse/core'
+import { useDark, useToggle } from '@vueuse/core'
 import LanguageDropdown from '~/components/LanguageDropdown.vue'
 import InformationModal from '~/components/InformationModal.vue'
 import TownyButton from '~/components/TownyButton.vue'
@@ -91,58 +91,21 @@ const ethereum = connectionStore.ethereum
 const userWalletStore = useUserWalletStore()
 const userGameStore = useUserGameStore()
 const { connectWeb3, disconnectWeb3 } = userWalletStore
+const appOptionStore = useAppOptionsStore()
+const { audio, music } = storeToRefs(appOptionStore)
 const { isRegistered } = storeToRefs(userGameStore)
 const { onValidNetwork, isConnected } = storeToRefs(connectionStore)
 const showModal = ref(false)
-const audio = useStorage('audio', false)
-const music = ref(false)
 
 const isDark = useDark({
   storageKey: 'theme',
   valueDark: 'dark',
   valueLight: 'light',
 })
-const mainThemeAudio = ref<HTMLAudioElement | null>(null)
+
 const { ktaChainId } = useRuntimeConfig().public
 
 const toggleTheme = useToggle(isDark)
-const _toggleAudio = useToggle(audio)
-const _toggleMusic = useToggle(music)
-
-const toggleAudio = () => {
-  _toggleAudio()
-
-  if (!audio.value) {
-    pauseMusic()
-  }
-}
-
-const toggleMusic = () => {
-  _toggleMusic()
-
-  if (music.value && audio.value) {
-    playMusic()
-  } else {
-    pauseMusic()
-  }
-}
-
-const playMusic = async () => {
-  if (!mainThemeAudio.value) {
-    mainThemeAudio.value = new Audio(
-      // @ts-ignore
-      (await import('../../assets/sound/in-dreams.mp3')).default
-    )
-    mainThemeAudio.value.loop = true
-  }
-
-  mainThemeAudio.value.play()
-}
-
-const pauseMusic = () => {
-  music.value = false
-  mainThemeAudio.value?.pause()
-}
 
 const audioIcon = computed(() => useSvg(audio.value ? 'sound' : 'sound-mute'))
 
