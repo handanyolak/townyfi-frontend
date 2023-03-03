@@ -3,7 +3,7 @@
     <ListTitle>General</ListTitle>
     <ListItem>
       <template #title> Coordinate: </template>
-      <LanguageDropdown />
+      <Dropdown />
     </ListItem>
     <ListItem>
       <template #title> Theme: </template>
@@ -41,7 +41,7 @@
 import { useDark, useToggle } from '@vueuse/core'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
-import LanguageDropdown from '~/components/LanguageDropdown.vue'
+import Dropdown from '~~/components/Dropdown.vue'
 import Switch from '~/components/Switch.vue'
 
 const appOptionStore = useAppOptionsStore()

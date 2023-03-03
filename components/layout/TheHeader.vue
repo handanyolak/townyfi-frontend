@@ -52,7 +52,7 @@
         >
           Install Metamask
         </TownyButton>
-        <LanguageDropdown />
+        <Dropdown />
         <img
           :src="themeIcon"
           class="h-5 w-5 cursor-pointer"
@@ -80,7 +80,7 @@
 
 <script setup lang="ts">
 import { useDark, useToggle } from '@vueuse/core'
-import LanguageDropdown from '~/components/LanguageDropdown.vue'
+import Dropdown from '~~/components/Dropdown.vue'
 import InformationModal from '~/components/InformationModal.vue'
 import TownyButton from '~/components/TownyButton.vue'
 import { $t } from '~/composables/useLang'
