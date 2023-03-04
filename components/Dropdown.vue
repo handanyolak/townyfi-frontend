@@ -3,33 +3,36 @@
     <div class="relative z-40 w-16">
       <button
         class="flex items-center justify-between p-2 text-towni-brown-dark-600 outline-none dark:text-towni-brown-light-200"
-        :class="!showLanguageDropdown ? 'rounded-md' : 'rounded-t-md'"
-        @click="toggleLanguage()"
-        @blur="showLanguageDropdown = false"
+        :class="!showDropdown ? 'rounded-md' : 'rounded-t-md'"
+        @click="toggleDropdown()"
+        @blur="showDropdown = false"
       >
-        <img class="mr-1 h-4 w-4" :src="languageIcon()" />
-        <span class="text-sm capitalize">{{ language }}</span>
+        <img class="mr-1 h-4 w-4" :src="dropdownIcon()" />
+        <span class="text-sm capitalize">{{ select }}</span>
         <img
           class="block h-4 w-4 transform transition-transform duration-200 ease-in-out"
-          :class="showLanguageDropdown ? 'rotate-180' : 'rotate-0'"
+          :class="showDropdown ? 'rotate-180' : 'rotate-0'"
           src="@/assets/img/arrow-down.svg"
         />
       </button>
       <Transition name="dropdown">
         <div
-          v-show="showLanguageDropdown"
+          v-show="showDropdown"
           class="absolute left-0 right-0 mb-4 h-20 overflow-auto bg-towni-brown-light-100 dark:bg-night-blue"
-          :class="!showLanguageDropdown ? 'rounded-md' : 'rounded-b-md'"
+          :class="!showDropdown ? 'rounded-md' : 'rounded-b-md'"
         >
           <span
-            v-for="(item, index) in languages"
+            v-for="(item, index) in props.dropdownItems"
             :key="index"
             class="flex h-10 cursor-pointer items-center border-t border-gray-300 p-2 duration-300 hover:bg-gray-200 dark:border-gray-700 dark:hover:bg-gray-800"
-            @mousedown.prevent="
-              useUserOptions.setLanguage(item) && toggleLanguage()
-            "
+            @mousedown.prevent="selectItem(item)"
           >
-            <img class="mr-1 h-4 w-4" :src="languageIcon(item)" />
+            <img
+              v-if="iconNames"
+              class="mr-1 h-4 w-4"
+              :src="dropdownIcon(iconNames[index])"
+            />
+
             <p
               class="text-sm capitalize text-towni-brown-dark-600 dark:text-towni-brown-light-200"
             >
@@ -43,24 +46,33 @@
 </template>
 
 <script setup lang="ts">
-const showLanguageDropdown = ref(false)
-const useUserOptions = useUserOptionsStore()
-const { language } = storeToRefs(useUserOptions)
+const showDropdown = ref(false)
 
-const languages = computed(() => {
-  const allLanguages = ['en', 'tr', 'de']
+interface DropdownProps {
+  dropdownItems: string[]
+  iconNames?: string[]
+  select?: String
+}
 
-  return allLanguages.filter((item) => item !== language.value)
-})
+const props = defineProps<DropdownProps>()
 
-const languageIcon = computed(
+const emit = defineEmits(['selected'])
+
+const dropdownIcon = computed(
   () =>
-    (_language = language.value) =>
-      useSvg(_language)
+    (icon = props.select) =>
+      // @ts-ignore
+      useSvg(icon)
 )
 
-const toggleLanguage = () => {
-  showLanguageDropdown.value = !showLanguageDropdown.value
+const toggleDropdown = () => {
+  showDropdown.value = !showDropdown.value
+}
+
+const selectItem = (item: string) => {
+  emit('selected', item)
+
+  toggleDropdown()
 }
 </script>
 
