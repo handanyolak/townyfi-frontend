@@ -52,7 +52,12 @@
         >
           Install Metamask
         </TownyButton>
-        <Dropdown />
+        <Dropdown
+          :select="language"
+          :dropdown-items="languages"
+          :icon-names="languages"
+          @selected="(item) => selected(item)"
+        />
         <img
           :src="themeIcon"
           class="h-5 w-5 cursor-pointer"
@@ -95,6 +100,8 @@ const appOptionStore = useAppOptionsStore()
 const { audio, music } = storeToRefs(appOptionStore)
 const { isRegistered } = storeToRefs(userGameStore)
 const { onValidNetwork, isConnected } = storeToRefs(connectionStore)
+const useUserOptions = useUserOptionsStore()
+const { language } = storeToRefs(useUserOptions)
 const showModal = ref(false)
 
 const isDark = useDark({
@@ -135,6 +142,16 @@ const switchNetwork = async () => {
   } catch (error) {
     console.log(error)
   }
+}
+
+const languages = computed(() => {
+  const allLanguages = ['en', 'tr', 'de']
+
+  return allLanguages.filter((item) => item !== language.value)
+})
+
+const selected = (item: string) => {
+  useUserOptions.setLanguage(item)
 }
 
 const toggleModal = (modalValue: boolean) => (showModal.value = modalValue)
