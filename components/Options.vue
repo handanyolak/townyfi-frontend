@@ -3,7 +3,12 @@
     <ListTitle>General</ListTitle>
     <ListItem>
       <template #title> Coordinate: </template>
-      <Dropdown />
+      <SidebarDropdown
+        :select="language"
+        :dropdown-items="languages"
+        :icon-names="languages"
+        @selected="(item) => selected(item)"
+      />
     </ListItem>
     <ListItem>
       <template #title> Theme: </template>
@@ -41,9 +46,11 @@
 import { useDark, useToggle } from '@vueuse/core'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
-import Dropdown from '~~/components/Dropdown.vue'
+import SidebarDropdown from '~~/components/SidebarDropdown.vue'
 import Switch from '~/components/Switch.vue'
 
+const useUserOptions = useUserOptionsStore()
+const { language } = storeToRefs(useUserOptions)
 const appOptionStore = useAppOptionsStore()
 
 const isDark = useDark({
@@ -53,4 +60,14 @@ const isDark = useDark({
 })
 
 const toggleTheme = useToggle(isDark)
+
+const languages = computed(() => {
+  const allLanguages = ['en', 'tr', 'de']
+
+  return allLanguages.filter((item) => item !== language.value)
+})
+
+const selected = (item: string) => {
+  useUserOptions.setLanguage(item)
+}
 </script>
