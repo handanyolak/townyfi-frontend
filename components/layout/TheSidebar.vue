@@ -27,7 +27,8 @@
         ></div>
         <div class="relative">
           <SidebarTab v-if="isGameInfo" :tabs="gameInfotabs" />
-          <!-- <SidebarTab v-if="isBlockchainInfo" :tabs="userOptionstabs" /> -->
+          <SidebarTab v-if="isOptions" :tabs="userOptionstabs" />
+          <SidebarTab v-if="isBlockchainInfo" :tabs="BlockchainInfotabs" />
         </div>
         <svg>
           <filter id="wavy">
@@ -74,7 +75,19 @@ const gameInfotabs: Tab[] = [
   },
 ]
 
-// const userOptionstabs: Tab[] = []
+const userOptionstabs: Tab[] = [
+  {
+    name: 'Options',
+    component: 'Options',
+  },
+]
+
+const BlockchainInfotabs: Tab[] = [
+  {
+    name: 'Chain',
+    component: 'Chain',
+  },
+]
 
 onClickOutside(sideBar, () => sideLeave())
 </script>
