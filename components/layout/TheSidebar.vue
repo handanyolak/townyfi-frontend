@@ -87,6 +87,10 @@ const BlockchainInfotabs: Tab[] = [
     name: 'Chain',
     component: 'Chain',
   },
+  {
+    name: 'Wallet',
+    component: 'Wallet',
+  },
 ]
 
 onClickOutside(sideBar, () => sideLeave())
