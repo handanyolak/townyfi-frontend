@@ -1,4 +1,5 @@
 import { BigNumber } from 'ethers'
+import { useStorage } from '@vueuse/core'
 import { CoordinateItem } from '~/types'
 import { IKillThemAll } from '~/types/typechain/contracts/game/KillThemAll'
 
@@ -8,6 +9,7 @@ export const useUserGameStore = defineStore('userGameStore', () => {
   const addressesByCoordinate = ref([]) as CoordinateItem[]
   const isLoading = ref(false)
   const kta = useKta()
+  const nearLevel = useStorage('nearLevel', '1')
   const setting = ref<IKillThemAll.SettingStructOutput>(null)
 
   const setUser = (newUser: IKillThemAll.UserStruct) => {
@@ -29,13 +31,13 @@ export const useUserGameStore = defineStore('userGameStore', () => {
     isRegistered.value = newIsRegistered
   }
 
-  const setUserCoordinate = async (nearLevel = 1) => {
+  const setUserCoordinate = async () => {
     isLoading.value = true
     addressesByCoordinate.value = []
-    const minScanX = user.value.coordinate._x.sub(nearLevel)
-    const maxScanX = user.value.coordinate._x.add(nearLevel)
-    const minScanY = user.value.coordinate._y.sub(nearLevel)
-    const maxScanY = user.value.coordinate._y.add(nearLevel)
+    const minScanX = user.value.coordinate._x.sub(nearLevel.value)
+    const maxScanX = user.value.coordinate._x.add(nearLevel.value)
+    const minScanY = user.value.coordinate._y.sub(nearLevel.value)
+    const maxScanY = user.value.coordinate._y.add(nearLevel.value)
 
     for (let j: BigNumber = maxScanY; j.gte(minScanY); ) {
       for (let i: BigNumber = minScanX; i.lte(maxScanX); ) {
@@ -60,6 +62,7 @@ export const useUserGameStore = defineStore('userGameStore', () => {
     user,
     kta,
     isLoading,
+    nearLevel,
     setIsRegistered,
     setUserCoordinate,
     setUser,
