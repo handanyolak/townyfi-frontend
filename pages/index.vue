@@ -1,6 +1,14 @@
 <template>
   <div class="container">
-    <div v-if="hasMetamask && onValidNetwork" class="grid gap-6 md:grid-cols-3">
+    <div
+      v-if="hasMetamask && onValidNetwork"
+      class="grid gap-6"
+      :class="{
+        'md:grid-cols-3': (nearLevel === '1'),
+        'md:grid-cols-5': (nearLevel === '2'),
+        'md:grid-cols-7': (nearLevel === '3'),
+      }"
+    >
       <CastleBox
         v-for="(item, index) in addressesByCoordinate"
         :key="index"
@@ -54,7 +62,8 @@ const userGameStore = useUserGameStore()
 const { initializeApp } = appOptionsStore
 const { hasMetamask } = connectionStore
 const { onValidNetwork } = storeToRefs(connectionStore)
-const { addressesByCoordinate, isLoading } = storeToRefs(userGameStore)
+const { addressesByCoordinate, isLoading, nearLevel } =
+  storeToRefs(userGameStore)
 const showModal = ref(false)
 const currentItem = ref({
   x: BigNumber.from(0),
