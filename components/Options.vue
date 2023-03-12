@@ -7,7 +7,7 @@
         :select="language"
         :dropdown-items="languages"
         :icon-names="languages"
-        @selected="(item) => selected(item)"
+        @selected="(item) => selectLanguage(item)"
       />
     </ListItem>
     <ListItem>
@@ -34,10 +34,11 @@
     <ListTitle>Interface</ListTitle>
     <ListItem>
       <template #title> Near Level: </template>
-      <Switch>
-        <template #item-1>1</template>
-        <template #item-2>2</template>
-      </Switch>
+      <SidebarDropdown
+        :select="nearLevel"
+        :dropdown-items="nearLevels"
+        @selected="(item) => selectNearLevel(item)"
+      ></SidebarDropdown>
     </ListItem>
   </div>
 </template>
@@ -46,12 +47,16 @@
 import { useDark, useToggle } from '@vueuse/core'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
-import SidebarDropdown from '~~/components/SidebarDropdown.vue'
+import SidebarDropdown from '~/components/SidebarDropdown.vue'
 import Switch from '~/components/Switch.vue'
 
 const useUserOptions = useUserOptionsStore()
 const { language } = storeToRefs(useUserOptions)
 const appOptionStore = useAppOptionsStore()
+const userGameStore = useUserGameStore()
+const { nearLevel } = storeToRefs(userGameStore)
+
+const nearLevels = ['1', '2', '3']
 
 const isDark = useDark({
   storageKey: 'theme',
@@ -67,7 +72,12 @@ const languages = computed(() => {
   return allLanguages.filter((item) => item !== language.value)
 })
 
-const selected = (item: string) => {
+const selectLanguage = (item: string) => {
   useUserOptions.setLanguage(item)
+}
+
+const selectNearLevel = (item: string) => {
+  nearLevel.value = item
+  userGameStore.setUserCoordinate()
 }
 </script>
