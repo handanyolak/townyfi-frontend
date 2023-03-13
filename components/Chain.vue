@@ -36,7 +36,7 @@
     <ListTitle>Miscellaneous</ListTitle>
     <ListItem>
       <template #title> Current Block Number: </template>
-      <span>11109491</span>
+      <span>{{ currentBlockNumber }}</span>
     </ListItem>
   </div>
 </template>
@@ -45,4 +45,7 @@
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ScrollableList from '~/components/sidebar-items/ScrollableList.vue'
+
+const userWalletStore = useUserWalletStore()
+const { currentBlockNumber } = storeToRefs(userWalletStore)
 </script>
