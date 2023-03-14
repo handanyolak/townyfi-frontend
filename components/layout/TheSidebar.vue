@@ -26,9 +26,10 @@
           ]"
         ></div>
         <div class="relative">
-          <SidebarTab v-if="isGameInfo" :tabs="gameInfotabs" />
-          <SidebarTab v-if="isOptions" :tabs="userOptionstabs" />
-          <SidebarTab v-if="isBlockchainInfo" :tabs="BlockchainInfotabs" />
+          <SidebarTab v-if="isGameInfo" :tabs="gameInfoTabs" />
+          <SidebarTab v-if="isOptions" :tabs="userOptionsTabs" />
+          <SidebarTab v-if="isBlockchainInfo" :tabs="blockchainInfoTabs" />
+          <SidebarTab v-if="isContractInfo" :tabs="contractInfoTabs" />
         </div>
         <svg>
           <filter id="wavy">
@@ -60,7 +61,7 @@ const { sideLeave } = appOptionStore
 
 const sideBar = ref(null)
 
-const gameInfotabs: Tab[] = [
+const gameInfoTabs: Tab[] = [
   {
     name: 'User',
     component: 'User',
@@ -75,14 +76,14 @@ const gameInfotabs: Tab[] = [
   },
 ]
 
-const userOptionstabs: Tab[] = [
+const userOptionsTabs: Tab[] = [
   {
     name: 'Options',
     component: 'Options',
   },
 ]
 
-const BlockchainInfotabs: Tab[] = [
+const blockchainInfoTabs: Tab[] = [
   {
     name: 'Chain',
     component: 'Chain',
@@ -90,6 +91,13 @@ const BlockchainInfotabs: Tab[] = [
   {
     name: 'Wallet',
     component: 'Wallet',
+  },
+]
+
+const contractInfoTabs: Tab[] = [
+  {
+    name: 'Game',
+    component: 'Game',
   },
 ]
 
