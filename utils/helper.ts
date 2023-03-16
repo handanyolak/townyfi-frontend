@@ -19,3 +19,9 @@ export const numberToHex = (number: number) => {
 const capitalize = (word: string) => {
   return word.charAt(0).toUpperCase() + word.substring(1)
 }
+
+export const middleElement = (array: any[]) => {
+  const middleIndex = Math.floor(array.length / 2)
+
+  return array[middleIndex]
+}
