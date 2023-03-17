@@ -53,13 +53,13 @@ const kta = useKta()
 const userGameStore = useUserGameStore()
 const { user } = storeToRefs(userGameStore)
 
-const coordinateX = user.value?.coordinate._x
-const coordinateY = user.value?.coordinate._y
+const coordinateX = ref(user.value?.coordinate._x)
+const coordinateY = ref(user.value?.coordinate._y)
 
 const teleport = async () => {
   await kta.teleport({
-    _x: coordinateX,
-    _y: coordinateY,
+    _x: coordinateX.value,
+    _y: coordinateY.value,
   })
 }
 </script>
