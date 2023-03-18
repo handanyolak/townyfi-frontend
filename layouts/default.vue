@@ -1,6 +1,6 @@
 <template>
   <div
-    class="min-h-screen bg-towni-brown-light-100 transition-colors duration-300 dark:bg-[#040413]"
+    class="h-screen overflow-hidden bg-towni-brown-light-100 transition-colors duration-300 dark:bg-[#040413]"
   >
     <TheHeader />
     <TheSidebar />
