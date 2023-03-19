@@ -1,9 +1,12 @@
 import { BigNumber } from 'ethers'
 import { useStorage } from '@vueuse/core'
 import { CoordinateItem } from '~/types'
+import { middleElement } from '~/utils'
 import { IKillThemAll } from '~/types/typechain/contracts/game/KillThemAll'
 
 export const useUserGameStore = defineStore('userGameStore', () => {
+  const appOptionsStore = useAppOptionsStore()
+
   const user = ref<IKillThemAll.UserStruct>(null)
   const isRegistered = ref(true)
   const addressesByCoordinate = ref([]) as CoordinateItem[]
@@ -31,20 +34,19 @@ export const useUserGameStore = defineStore('userGameStore', () => {
     isRegistered.value = newIsRegistered
   }
 
-  const setUserCoordinate = async () => {
+  const setUserCoordinate = (x: BigNumber, y: BigNumber) => {
     isLoading.value = true
     addressesByCoordinate.value = []
-    const minScanX = user.value.coordinate._x.sub(nearLevel.value)
-    const maxScanX = user.value.coordinate._x.add(nearLevel.value)
-    const minScanY = user.value.coordinate._y.sub(nearLevel.value)
-    const maxScanY = user.value.coordinate._y.add(nearLevel.value)
+    const minScanX = x.sub(nearLevel.value)
+    const maxScanX = x.add(nearLevel.value)
+    const minScanY = y.sub(nearLevel.value)
+    const maxScanY = y.add(nearLevel.value)
 
     for (let j: BigNumber = maxScanY; j.gte(minScanY); ) {
       for (let i: BigNumber = minScanX; i.lte(maxScanX); ) {
         const coordinateItem: CoordinateItem = {
           x: i,
           y: j,
-          addresses: await kta.getAddressesByCoordinate([i, j]),
         }
 
         addressesByCoordinate.value.push(coordinateItem)
@@ -52,6 +54,9 @@ export const useUserGameStore = defineStore('userGameStore', () => {
       }
       j = j.sub(1)
     }
+
+    const middleItem = middleElement(addressesByCoordinate.value)
+    appOptionsStore.setOriginCoordinate(middleItem)
     isLoading.value = false
   }
 
