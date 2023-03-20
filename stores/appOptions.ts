@@ -25,6 +25,10 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const isContractInfo = ref(false)
   const isBlockchainInfo = ref(false)
   const isOptions = ref(false)
+  const originCoordinate: Ref<Coordinates.CoordinateStruct> = ref({
+    _x: 0,
+    _y: 0,
+  })
 
   const audio = useStorage('audio', false)
   const music = ref(false)
@@ -43,6 +47,12 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     })
   }
 
+  const setOriginCoordinate = (
+    newOriginCoordinate: Coordinates.CoordinateStruct
+  ) => {
+    originCoordinate.value = newOriginCoordinate
+  }
+
   const initializeApp = async () => {
     if (hasMetamask) {
       await connect()
@@ -50,7 +60,8 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
       if (onValidNetwork.value && !initialized.value) {
         initialized.value = true
 
-        await setUserInfo()
+        const userInfo = { ...(await kta.userByAddr(address.value)) }
+        await setUserInfo(userInfo)
 
         setKtaAllowance(await ktaToken.allowance(address.value, kta.address))
 
@@ -65,15 +76,18 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
         // TODO: startGameEvents fonksiyonunda eklenecek
         kta.on(
           kta.interface.getEvent('UserMoved').name,
-          (
+          async (
             user: string,
             _, // oldCoordinate: Coordinates.CoordinateStruct,
             newCoordinate: Coordinates.CoordinateStruct
           ) => {
             useTownyToast('info', `New Coordinate: ${newCoordinate}`)
-
             if (user === address.value) {
               setUserProperty('coordinate', newCoordinate)
+              await userGameStore.setUserCoordinate(
+                userInfo.coordinate._x,
+                userInfo.coordinate._y
+              )
             }
           }
         )
@@ -104,11 +118,10 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   }
 
   // TODO: anlam karisikligini gidermek icin setPlayerInfo olarak her yeri guncellemek ve contract tarafini da guncellemek istiyoruz
-  const setUserInfo = async () => {
+  const setUserInfo = async (userInfo) => {
     setIsRegistered(await kta.isRegistered(address.value))
-    const userInfo = { ...(await kta.userByAddr(address.value)) }
     setUser(userInfo)
-    await setUserCoordinate()
+    await setUserCoordinate(userInfo.coordinate._x, userInfo.coordinate._y)
   }
 
   const toggleAudio = () => {
@@ -153,10 +166,12 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     isOptions,
     audio,
     music,
+    originCoordinate,
     sideLeave,
     initializeApp,
     setUserInfo,
     toggleAudio,
     toggleMusic,
+    setOriginCoordinate,
   }
 })
