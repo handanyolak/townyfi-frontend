@@ -1,15 +1,19 @@
 <template>
   <div
-    class="relative rounded-xl bg-[#fffcf8] p-5 shadow-lg shadow-towni-brown-light-200 duration-300 dark:bg-night-blue dark:shadow-sky-900"
+    class="group relative border border-dashed border-towni-brown-light-500 p-3 dark:border-[#02024c]"
   >
-    <div class="absolute -top-5 flex w-full justify-between">
+    <div class="absolute -top-7 flex w-full justify-between">
       <div
-        class="flex items-center justify-center bg-gradient-to-b from-[#bf841a] via-[#bf841a] to-[#ffcd74] bg-clip-text text-sm text-transparent"
+        class="invisible z-50 flex items-center justify-center group-hover:visible"
       >
-        <div>
-          <span>({{ item.x.toString() }}</span>
-          <span>,</span>
-          <span>{{ item.y.toString() }})</span>
+        <div class="bg-towni-brown-light-100 font-bold dark:bg-[#040413]">
+          <div
+            class="bg-gradient-to-b from-[#bf841a] via-[#bf841a] to-[#ffcd74] bg-clip-text text-sm text-transparent"
+          >
+            <span>({{ item.x.toString() }}</span>
+            <span>,</span>
+            <span>{{ item.y.toString() }})</span>
+          </div>
         </div>
       </div>
 
@@ -18,17 +22,16 @@
       >
         <span
           :class="{
-            'bg-green-500': item.addresses.length <= 10,
-            'bg-yellow-500':
-              item.addresses.length > 10 && item.addresses.length < 1000,
-            'bg-red-500': item.addresses.length >= 1000,
+            'bg-green-500': addresses.length <= 10,
+            'bg-yellow-500': addresses.length > 10 && addresses.length < 1000,
+            'bg-red-500': addresses.length >= 1000,
           }"
           class="inline-block h-1 w-1 rounded-full p-1"
         >
         </span>
       </div>
     </div>
-    <div
+    <!-- <div
       v-if="
         item.x.toString() === userGameStore.user.coordinate._x.toString() &&
         item.y.toString() === userGameStore.user.coordinate._y.toString()
@@ -63,22 +66,19 @@
         ]"
         @click="userMove(Direction.Left)"
       ></div>
-    </div>
+    </div> -->
     <div
-      class="relative flex h-20v flex-col items-center bg-castle-light bg-contain bg-center bg-no-repeat dark:bg-castle-dark"
+      class="relative flex h-5v cursor-pointer flex-col items-center justify-center"
+      @click="toggleModal()"
     >
-      <button @click="toggleModal()">
-        <img
-          class="visible absolute bottom-[2%] h-10 w-10 dark:invisible"
-          src="@/assets/img/knight.svg"
-          alt="soldier"
-        />
-        <img
-          class="invisible absolute bottom-[2%] h-10 w-10 dark:visible"
-          src="@/assets/img/soldier.svg"
-          alt="soldier"
-        />
-      </button>
+      <img
+        src="@/assets/img/castle-dark.svg"
+        class="hidden h-10 w-10 dark:block"
+      />
+      <img
+        src="@/assets/img/castle-light.svg"
+        class="block h-10 w-10 dark:hidden"
+      />
     </div>
   </div>
 </template>
@@ -98,11 +98,12 @@ const emit = defineEmits(['modalOpened'])
 const toggleModal = () => {
   emit('modalOpened', props.item)
 }
+const addresses = ref<string[]>([])
+
 const userGameStore = useUserGameStore()
 const connectionStore = useConnectionStore()
 const kta = useKta()
 const isMove = ref(-1)
-
 const userMove = async (direction: Direction) => {
   isMove.value = direction
   try {
