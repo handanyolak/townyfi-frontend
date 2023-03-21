@@ -37,6 +37,7 @@ module.exports = {
         'night-blue': '#0a0a16',
       },
       height: {
+        '5v': '5vh',
         '10v': '10vh',
         '20v': '20vh',
         '30v': '30vh',
