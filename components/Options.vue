@@ -56,7 +56,7 @@ const appOptionStore = useAppOptionsStore()
 const userGameStore = useUserGameStore()
 const { nearLevel } = storeToRefs(userGameStore)
 
-const nearLevels = ['1', '2', '3']
+const nearLevels = ['1', '2', '3', '4', '5']
 
 const isDark = useDark({
   storageKey: 'theme',
