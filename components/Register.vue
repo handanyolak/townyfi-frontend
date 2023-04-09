@@ -1,7 +1,6 @@
 <template>
   <div class="flex flex-col items-center space-y-4 p-12">
     <ListTitle class="w-full">Register</ListTitle>
-
     <ListItem class="w-full" input>
       <template #title> Name: </template>
       <template #item>
@@ -37,6 +36,7 @@ import { encodeBytes32String, ZeroAddress, MaxUint256 } from 'ethers'
 import * as yup from 'yup'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
+import { stringToHex } from '~/utils'
 
 const emit = defineEmits(['registerClosed'])
 
@@ -45,22 +45,19 @@ const userWalletStore = useUserWalletStore()
 const userGameStore = useUserGameStore()
 const { setting } = storeToRefs(userGameStore)
 const { ktaAllowance } = storeToRefs(userWalletStore)
-const { signer, getKtaToken, getKta } = storeToRefs(connectionStore)
-const provider = useProvider()
+const { getKtaToken, getKta } = storeToRefs(connectionStore)
 const { ktaAddress } = useRuntimeConfig().public
 
 const name = ref('')
-const nameRules = yup.string().bytes32()
+const nameRules = yup.string().bytes32().required()
 
 const referrer = ref('')
-const referrerRules = yup
-  .string()
-  .matches(/^0x[a-fA-F0-9]{40}$/, 'string must be wallet address')
+const referrerRules = yup.string().ethereumAddress()
 
 const userRegister = async () => {
   const tx = await getKta.value.register(
     encodeBytes32String(name.value),
-    referrer.value === '' ? ZeroAddress : referrer.value
+    referrer.value === '' ? ZeroAddress : stringToHex(referrer.value)
   )
 
   await tx.wait()
