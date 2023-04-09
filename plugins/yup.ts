@@ -1,15 +1,25 @@
-import { toUtf8Bytes } from 'ethers'
-import * as yup from 'yup'
+import { toUtf8Bytes, isAddress } from 'ethers'
+import { addMethod, string, StringSchema } from 'yup'
 
 export default defineNuxtPlugin(() => {
-  yup.addMethod<yup.StringSchema>(
-    yup.string,
+  addMethod<StringSchema<string>>(
+    string,
     'bytes32',
     function (message = 'string must be less than 32 bytes') {
       return this.test('bytes32', message, (value) => {
         const bytes = toUtf8Bytes(value)
 
         return !(bytes.length > 31)
+      })
+    }
+  )
+
+  addMethod<StringSchema<string>>(
+    string,
+    'ethereumAddress',
+    function (message = 'this field must be an ethereum address') {
+      return this.test('ethereumAddress', message, (value) => {
+        return isAddress(value)
       })
     }
   )
