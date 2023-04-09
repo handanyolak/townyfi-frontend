@@ -16,7 +16,7 @@
     "pinia": "^2.0.28",
     "vee-validate": "^4.7.4",
     "vue-toastification": "^2.0.0-rc.5",
-    "yup": "^1.0.0"
+    "yup": "^1.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.21.4",
