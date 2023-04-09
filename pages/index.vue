@@ -218,14 +218,13 @@ const yakinlastir = ref(0)
 
 const { width } = useElementSize(containerElement)
 
-const dragHandler = ({ movement: [x, y], dragging }) => {
-  const _originCoordinate = { ...originCoordinate.value }
+const dragHandler = ({ movement: [x, y] }: { movement: [number, number] }) => {
+  const { _x, _y } = originCoordinate.value
 
-  // precision for dragging
-  _originCoordinate._y = _originCoordinate._y + BigInt(Math.trunc(y / 100))
-  _originCoordinate._x = _originCoordinate._x + BigInt(Math.trunc(-x / 100))
-
-  setUserCoordinate(_originCoordinate)
+  setUserCoordinate({
+    _x: _x + BigInt(Math.trunc(-x / 100)),
+    _y: _y + BigInt(Math.trunc(y / 100)),
+  })
 }
 
 useDrag(dragHandler, {

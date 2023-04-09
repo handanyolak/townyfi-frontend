@@ -145,7 +145,7 @@ export const useUserGameStore = defineStore('userGameStore', () => {
     // })
 
     // NOTE: use for execute all sequentially
-    promises.forEach(function (promiseFactory) {
+    promises.forEach((promiseFactory) => {
       promiseFactory.catch(() => {
         // do nothing
       })

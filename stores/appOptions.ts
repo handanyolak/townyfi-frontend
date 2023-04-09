@@ -28,7 +28,9 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const isBlockchainInfo = ref(false)
   const isOptions = ref(false)
 
-  const originCoordinate = ref<Coordinates.CoordinateStruct>({
+  const originCoordinate = ref<
+    Pick<Coordinates.CoordinateStructOutput, '_x' | '_y'>
+  >({
     _x: BigInt(0),
     _y: BigInt(0),
   })
