@@ -16,6 +16,10 @@ export const numberToHex = (number: number) => {
   return '0x' + number.toString(16)
 }
 
+export const stringToHex = (str: string) => {
+  return str.startsWith('0x') ? str : '0x' + str
+}
+
 const capitalize = (word: string) => {
   return word.charAt(0).toUpperCase() + word.substring(1)
 }
