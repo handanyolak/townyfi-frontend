@@ -1,11 +1,10 @@
-import { ethers } from 'ethers'
-import { KillThemAll } from '~/types'
+import { Contract } from 'ethers'
 import ktaAbi from '~/abi/ktaAbi.json'
 
-export const useKta = (): KillThemAll => {
-  return new ethers.Contract(
+export const useKta = () => {
+  return new Contract(
     useRuntimeConfig().public.ktaAddress,
     ktaAbi,
-    useProvider()?.getSigner()
+    useProvider()
   )
 }

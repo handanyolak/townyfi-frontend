@@ -1,11 +1,15 @@
-import { Event, BigNumber } from 'ethers'
+import { ContractEventPayload } from 'ethers'
 import { useToggle, useStorage } from '@vueuse/core'
+import { IKillThemAll, Coordinates } from '~/types/typechain/KillThemAll'
+import { KillThemAll__factory, KtaToken__factory } from '~/types/typechain'
 
 export const useAppOptionsStore = defineStore('appOptionsStore', () => {
+  const { ktaAddress, ktaTokenAddress } = useRuntimeConfig().public
   const connectionStore = useConnectionStore()
   const userGameStore = useUserGameStore()
   const userWalletStore = useUserWalletStore()
-  const { hasMetamask, provider } = connectionStore
+  const provider = useProvider()
+  const { hasMetamask, setKtaToken, setKta } = connectionStore
   const { onValidNetwork } = storeToRefs(connectionStore)
   const {
     setUser,
@@ -15,9 +19,8 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     setSetting,
   } = userGameStore
   const { setCurrentBlockNumber, connect, setKtaAllowance } = userWalletStore
-  const { address } = storeToRefs(userWalletStore)
+  const { address, getSigner } = storeToRefs(userWalletStore)
   const kta = useKta()
-  const ktaToken = useKtaToken()
 
   const initialized = ref(false)
   const showSidebar = ref(false)
@@ -25,9 +28,11 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const isContractInfo = ref(false)
   const isBlockchainInfo = ref(false)
   const isOptions = ref(false)
-  const originCoordinate: Ref<Coordinates.CoordinateStruct> = ref({
-    _x: 0,
-    _y: 0,
+
+  // TODO: is there a type bug? it seems "any" when getting other components
+  const originCoordinate = ref<Coordinates.CoordinateStruct>({
+    _x: BigInt(0),
+    _y: BigInt(0),
   })
 
   const audio = useStorage('audio', false)
@@ -60,19 +65,32 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
       if (onValidNetwork.value && !initialized.value) {
         initialized.value = true
 
-        const userInfo = { ...(await kta.userByAddr(address.value)) }
+        const ktaToken = KtaToken__factory.connect(
+          ktaTokenAddress,
+          getSigner.value
+        )
+
+        const kta = KillThemAll__factory.connect(ktaAddress, getSigner.value)
+
+        setKtaToken(ktaToken)
+        setKta(kta)
+
+        const userInfo = await kta.userByAddr(address.value)
         await setUserInfo(userInfo)
 
-        setKtaAllowance(await ktaToken.allowance(address.value, kta.address))
+        setOriginCoordinate(userInfo.coordinate)
+
+        setKtaAllowance(await ktaToken.allowance(address.value, ktaAddress))
 
         setSetting(await kta.settings())
 
-        setCurrentBlockNumber(await provider!!.getBlockNumber())
+        setCurrentBlockNumber(await provider.getBlockNumber())
 
         provider!!.on('block', (blockNumber: number) => {
           setCurrentBlockNumber(blockNumber)
         })
 
+        // TODO: Ethers eventler henuz calismiyor
         // TODO: startGameEvents fonksiyonunda eklenecek
         kta.on(
           kta.interface.getEvent('UserMoved').name,
@@ -84,10 +102,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
             useTownyToast('info', `New Coordinate: ${newCoordinate}`)
             if (user === address.value) {
               setUserProperty('coordinate', newCoordinate)
-              await userGameStore.setUserCoordinate(
-                userInfo.coordinate._x,
-                userInfo.coordinate._y
-              )
+              await userGameStore.setUserCoordinate(userInfo.coordinate)
             }
           }
         )
@@ -95,7 +110,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
         // TODO: bu bilgiyi transaction'dan almak yerine parametre olarak alacagiz cunku frontend'e yuk biniyor.
         kta.on(
           kta.interface.getEvent('UserRegistered').name,
-          async (event: Event) => {
+          async (event: ContractEventPayload) => {
             const tx = await event.getTransaction()
             const registeredAddress = tx.from
 
@@ -118,10 +133,10 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   }
 
   // TODO: anlam karisikligini gidermek icin setPlayerInfo olarak her yeri guncellemek ve contract tarafini da guncellemek istiyoruz
-  const setUserInfo = async (userInfo) => {
+  const setUserInfo = async (userInfo: IKillThemAll.UserStruct) => {
     setIsRegistered(await kta.isRegistered(address.value))
     setUser(userInfo)
-    await setUserCoordinate(userInfo.coordinate._x, userInfo.coordinate._y)
+    setUserCoordinate(userInfo.coordinate)
   }
 
   const toggleAudio = () => {

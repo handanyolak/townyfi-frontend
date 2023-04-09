@@ -87,7 +87,7 @@
 
 <script setup lang="ts">
 import { useDark, useToggle } from '@vueuse/core'
-import Dropdown from '~~/components/Dropdown.vue'
+import Dropdown from '~/components/Dropdown.vue'
 import InformationModal from '~/components/InformationModal.vue'
 import TownyButton from '~/components/TownyButton.vue'
 import { $t } from '~/composables/useLang'

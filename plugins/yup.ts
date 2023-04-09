@@ -1,4 +1,4 @@
-import { utils } from 'ethers'
+import { toUtf8Bytes } from 'ethers'
 import * as yup from 'yup'
 
 export default defineNuxtPlugin(() => {
@@ -7,7 +7,7 @@ export default defineNuxtPlugin(() => {
     'bytes32',
     function (message = 'string must be less than 32 bytes') {
       return this.test('bytes32', message, (value) => {
-        const bytes = utils.toUtf8Bytes(value)
+        const bytes = toUtf8Bytes(value)
 
         return !(bytes.length > 31)
       })

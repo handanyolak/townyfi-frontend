@@ -20,8 +20,33 @@ const capitalize = (word: string) => {
   return word.charAt(0).toUpperCase() + word.substring(1)
 }
 
-export const middleElement = (array: any[]) => {
+export const middleElement = <T>(array: T[]): T => {
   const middleIndex = Math.floor(array.length / 2)
 
   return array[middleIndex]
 }
+
+export const convertToInteger = (
+  variable: any,
+  defaultValue?: number,
+  error?: boolean
+) => {
+  let result =
+    typeof variable === 'boolean' ||
+    (typeof variable !== 'number' && !variable) ||
+    isNaN(variable)
+      ? undefined
+      : parseInt(variable)
+
+  if (!result && defaultValue) {
+    result = defaultValue
+  }
+
+  if (!result && error) {
+    throw new Error('Missing environment in your ".env" file.')
+  }
+
+  return result
+}
+
+// TODO: convertToString

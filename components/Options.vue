@@ -35,7 +35,7 @@
     <ListItem>
       <template #title> Near Level: </template>
       <SidebarDropdown
-        :select="nearLevel"
+        :select="nearLevel.toString()"
         :dropdown-items="nearLevels"
         @selected="(item) => selectNearLevel(item)"
       ></SidebarDropdown>
@@ -54,7 +54,9 @@ const useUserOptions = useUserOptionsStore()
 const { language } = storeToRefs(useUserOptions)
 const appOptionStore = useAppOptionsStore()
 const userGameStore = useUserGameStore()
+const { setNearLevelByCalculatingCoordinates } = userGameStore
 const { nearLevel } = storeToRefs(userGameStore)
+const { originCoordinate } = storeToRefs(appOptionStore)
 
 const nearLevels = ['1', '2', '3', '4', '5']
 
@@ -76,8 +78,7 @@ const selectLanguage = (item: string) => {
   useUserOptions.setLanguage(item)
 }
 
-const selectNearLevel = (item: string) => {
-  nearLevel.value = item
-  userGameStore.setUserCoordinate()
+const selectNearLevel = (item: any) => {
+  setNearLevelByCalculatingCoordinates(item)
 }
 </script>

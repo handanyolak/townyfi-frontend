@@ -1,9 +1,12 @@
 import { numberToHex } from '~/utils'
+import { KillThemAll, KtaToken, KtaToken__factory } from '~/types/typechain'
+import { Ref } from 'vue'
 
 export const useConnectionStore = defineStore('connectionStore', () => {
   const { ktaChainId } = useRuntimeConfig().public
+  const userWalletStore = useUserWalletStore()
   const provider = useProvider()
-  const signer = computed(() => provider.getSigner())
+  const signer = computed(async () => await provider.getSigner())
 
   const isConnected = ref(false)
   const hasMetamask = Boolean(window.ethereum)
@@ -11,6 +14,24 @@ export const useConnectionStore = defineStore('connectionStore', () => {
   const onValidNetwork = ref(
     hasMetamask && ethereum.chainId === numberToHex(ktaChainId)
   )
+
+  /**
+   * Burayi boyle yapmamizin sebebi ethers'in sabit kontrolleridir.
+   */
+  let ktaToken: KtaToken = {} as KtaToken
+  let kta: KillThemAll = {} as KillThemAll
+
+  const getKtaToken = computed(() => ktaToken)
+
+  const getKta = computed(() => kta)
+
+  const setKtaToken = (newValue: KtaToken) => {
+    ktaToken = newValue
+  }
+
+  const setKta = (newValue: KillThemAll) => {
+    kta = newValue
+  }
 
   const setOnValidNetwork = (newValue: boolean) => {
     onValidNetwork.value = hasMetamask && newValue
@@ -25,8 +46,11 @@ export const useConnectionStore = defineStore('connectionStore', () => {
     isConnected,
     hasMetamask,
     ethereum,
-    provider,
     signer,
+    getKtaToken,
+    getKta,
+    setKta,
+    setKtaToken,
     setOnValidNetwork,
     setIsConnected,
   }

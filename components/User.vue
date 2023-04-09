@@ -9,7 +9,7 @@
           <VErrorMessage class="text-red-800" name="name" />
         </VForm>
       </template>
-      <span>{{ ethers.utils.parseBytes32String(user.name as any) }}</span>
+      <span>{{ decodeBytes32String(user.name as any) }}</span>
       <template #tooltip>
         <span
           >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
@@ -153,11 +153,11 @@
 
 <script setup lang="ts">
 import { duration } from 'moment'
-import { ethers } from 'ethers'
+import { decodeBytes32String } from 'ethers'
 import * as yup from 'yup'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
-import { IKillThemAll } from '~/types/typechain/contracts/game/KillThemAll'
+import { IKillThemAll } from '~/types/typechain/KillThemAll'
 import { toCapitalizedWords, middleCropping } from '~/utils'
 
 const userGameStore = useUserGameStore()
@@ -165,7 +165,7 @@ const userWalletStore = useUserWalletStore()
 const { user } = storeToRefs(userGameStore)
 const timer = reactive<any>({ ...user.value.timer })
 const timers = Object.keys(user.value.timer).filter((item: any) => isNaN(item))
-const name = ref(ethers.utils.parseBytes32String(user.value.name as any))
+const name = ref(decodeBytes32String(user.value.name as any))
 const reffererAddress = user.value.referrer as string
 const referrer = computed(() => middleCropping(reffererAddress))
 const nameRules = yup.string().bytes32()

@@ -10,3 +10,9 @@ declare module 'yup' {
     bytes32(message?: yup.Message<any>): this
   }
 }
+
+declare global {
+  interface Window {
+    ethereum?: any
+  }
+}

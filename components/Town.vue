@@ -9,7 +9,7 @@
           <VErrorMessage class="text-red-800" name="name" />
         </VForm>
       </template>
-      <span>{{ ethers.utils.parseBytes32String(townInfo.name as any) }}</span>
+      <span>{{ decodeBytes32String(townInfo.name as any) }}</span>
       <template #tooltip>
         <span
           >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
@@ -131,7 +131,7 @@
 </template>
 
 <script setup lang="ts">
-import { ethers } from 'ethers'
+import { decodeBytes32String } from 'ethers'
 import * as yup from 'yup'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
@@ -145,7 +145,7 @@ const kta = useKta()
 const townInfo = {
   ...(await kta.townById(user.value.townInfo.townId.toString())),
 }
-const townName = ref(ethers.utils.parseBytes32String(townInfo.name))
+const townName = ref(decodeBytes32String(townInfo.name))
 
 const addresses = await kta.getCitizensByTownId(
   user.value.townInfo.townId.toString()

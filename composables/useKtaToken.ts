@@ -1,11 +1,9 @@
-import { ethers } from 'ethers'
-import { KtaToken } from '~/types'
-import ktaTokenAbi from '~/abi/ktaTokenAbi.json'
+import { JsonRpcSigner } from 'ethers'
+import { KtaToken__factory } from '~/types/typechain'
 
-export const useKtaToken = (): KtaToken => {
-  return new ethers.Contract(
+export const useKtaToken = () => {
+  return KtaToken__factory.connect(
     useRuntimeConfig().public.ktaTokenAddress,
-    ktaTokenAbi,
-    useProvider()?.getSigner()
+    new JsonRpcSigner(useProvider(), window.ethereum.selectedAddress)
   )
 }

@@ -3,7 +3,7 @@
     <div
       class="round-parchment h-20 scale-105 transform rounded-xl bg-white py-3 text-center text-5xl font-bold text-towni-brown-dark-400"
     >
-      <slot name="parchment-title" />
+      <slot name="parchment-header" />
     </div>
     <div
       class="parchment overflow-auto bg-white py-8 px-2 text-towni-brown-dark-600"
@@ -12,9 +12,9 @@
         <slot />
       </div>
     </div>
-    <div
-      class="round-parchment h-20 -scale-105 transform rounded-xl bg-white"
-    ></div>
+    <div class="round-parchment h-20 scale-105 transform rounded-xl bg-white">
+      <slot name="parchment-footer" />
+    </div>
   </div>
 </template>
 

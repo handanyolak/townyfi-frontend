@@ -61,8 +61,7 @@ module.exports = {
         '70%': '70%',
       },
       backgroundImage: {
-        'castle-light': "url('@/assets/img/castle-light.svg')",
-        'castle-dark': "url('@/assets/img/castle-dark.svg')",
+        map: "url('@/assets/img/map.png')",
       },
       keyframes: {
         fadein: {

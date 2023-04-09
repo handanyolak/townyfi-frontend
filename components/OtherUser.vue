@@ -134,11 +134,11 @@
 
 <script setup lang="ts">
 import { duration } from 'moment'
-import { ethers } from 'ethers'
+import { decodeBytes32String } from 'ethers'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import { useKta } from '~/composables/useKta'
-import { IKillThemAll } from '~/types/typechain/contracts/game/KillThemAll'
+import { IKillThemAll } from '~/types/typechain/KillThemAll'
 import { toCapitalizedWords, middleCropping } from '~/utils'
 
 const kta = useKta()
@@ -158,9 +158,7 @@ onMounted(async () => {
   user.value = { ...(await kta.userByAddr(props.address)) }
 })
 
-const userName = computed(() =>
-  ethers.utils.parseBytes32String(user.value.name as any)
-)
+const userName = computed(() => decodeBytes32String(user.value.name as any))
 
 const reffererAddress = user.value.referrer as string
 const referrer = computed(() => middleCropping(reffererAddress))

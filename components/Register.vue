@@ -21,7 +21,7 @@
       </template>
     </ListItem>
     <TownyButton
-      v-if="ktaAllowance.lt(setting.price.register)"
+      v-if="ktaAllowance <= setting.price.register"
       class="my-3"
       @click="userApprove()"
       >Approve</TownyButton
@@ -33,19 +33,21 @@
 </template>
 
 <script setup lang="ts">
-import { ethers } from 'ethers'
+import { encodeBytes32String, ZeroAddress, MaxUint256 } from 'ethers'
 import * as yup from 'yup'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 
 const emit = defineEmits(['registerClosed'])
 
+const connectionStore = useConnectionStore()
 const userWalletStore = useUserWalletStore()
 const userGameStore = useUserGameStore()
 const { setting } = storeToRefs(userGameStore)
 const { ktaAllowance } = storeToRefs(userWalletStore)
-const ktaToken = userWalletStore.ktaToken
-const kta = userWalletStore.kta
+const { signer, getKtaToken, getKta } = storeToRefs(connectionStore)
+const provider = useProvider()
+const { ktaAddress } = useRuntimeConfig().public
 
 const name = ref('')
 const nameRules = yup.string().bytes32()
@@ -56,9 +58,9 @@ const referrerRules = yup
   .matches(/^0x[a-fA-F0-9]{40}$/, 'string must be wallet address')
 
 const userRegister = async () => {
-  const tx = await kta.register(
-    ethers.utils.formatBytes32String(name.value),
-    referrer.value === '' ? ethers.constants.AddressZero : referrer.value
+  const tx = await getKta.value.register(
+    encodeBytes32String(name.value),
+    referrer.value === '' ? ZeroAddress : referrer.value
   )
 
   await tx.wait()
@@ -67,6 +69,6 @@ const userRegister = async () => {
 }
 
 const userApprove = async () => {
-  await ktaToken.approve(kta.address, ethers.constants.MaxUint256)
+  await getKtaToken.value.approve(ktaAddress, MaxUint256)
 }
 </script>

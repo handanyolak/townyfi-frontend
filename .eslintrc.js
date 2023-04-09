@@ -15,4 +15,10 @@ module.exports = {
     'vue/multi-word-component-names': 0,
     'no-console': 'off',
   },
+  overrides: {
+    files: ['./composables/useKta.ts'],
+    rules: {
+      camelcase: 'off',
+    },
+  },
 }

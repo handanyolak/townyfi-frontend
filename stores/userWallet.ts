@@ -1,22 +1,20 @@
-import { ethers, constants, BigNumber } from 'ethers'
+import { formatEther, JsonRpcSigner, ZeroAddress } from 'ethers'
 import { useTownyToast } from '~/composables/useTownyToast'
 import { $t } from '~/composables/useLang'
 
 export const useUserWalletStore = defineStore('userWalletStore', () => {
   const connectionStore = useConnectionStore()
-  const kta = useKta()
-  const ktaToken = useKtaToken()
   const provider = useProvider()
   const ethereum = computed(() => connectionStore.ethereum)
 
-  const address = ref(constants.AddressZero)
+  const address = ref(ZeroAddress)
   const balance = ref('')
-  const ktaAllowance = ref<BigNumber>('')
+  const ktaAllowance = ref<bigint>(0n)
   const currentBlockNumber = ref(0)
 
-  const setUser = (newUserInfo: any) => {
-    user.value = newUserInfo
-  }
+  const getSigner = computed(
+    () => new JsonRpcSigner(useProvider(), address.value)
+  )
 
   const setAddress = (newAddress: string) => {
     address.value = newAddress
@@ -30,7 +28,7 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
     currentBlockNumber.value = newBlockNumber
   }
 
-  const setKtaAllowance = (newKtaAllowance: BigNumber) => {
+  const setKtaAllowance = (newKtaAllowance: bigint) => {
     ktaAllowance.value = newKtaAllowance
   }
 
@@ -48,13 +46,13 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
   }
 
   const updateUserAddress = async (_address = null) => {
-    setAddress(_address || (await provider.listAccounts())[0])
+    setAddress(
+      _address || (await (await provider.listAccounts())[0].getAddress())
+    )
   }
 
   const updateUserBalance = async () => {
-    setBalance(
-      ethers.utils.formatEther(await provider.getBalance(address.value))
-    )
+    setBalance(formatEther(await provider.getBalance(address.value)))
   }
 
   const startEthEvents = () => {
@@ -75,8 +73,8 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
     connectionStore.setIsConnected(false)
   }
 
-  const disconnectWeb3 = async () => {
-    await handleAccountsChanged([ethers.constants.AddressZero])
+  const disconnectWeb3 = () => {
+    handleAccountsChanged()
     connectionStore.setIsConnected(false)
     useTownyToast('success', $t('disconnected'))
   }
@@ -84,8 +82,7 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
   const connectWeb3 = async () => {
     try {
       await provider!!.send('eth_requestAccounts', [])
-      const accounts = await provider!!.listAccounts()
-      await handleAccountsChanged(accounts)
+      handleAccountsChanged()
       await connect()
     } catch (error) {
       console.log(error)
@@ -97,13 +94,11 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
     balance,
     provider,
     ethereum,
-    kta,
-    ktaToken,
     currentBlockNumber,
     ktaAllowance,
+    getSigner,
     setAddress,
     setBalance,
-    setUser,
     connect,
     updateUserWalletInfo,
     updateUserAddress,

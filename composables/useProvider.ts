@@ -1,7 +1,6 @@
-import { providers } from 'ethers'
+import { BrowserProvider } from 'ethers'
 
+// TODO: solve metamask logic here
 export const useProvider = () => {
-  if (window.ethereum) {
-    return new providers.Web3Provider(window.ethereum, 'any')
-  }
+  return new BrowserProvider(window.ethereum)
 }

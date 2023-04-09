@@ -1,2281 +1,872 @@
 [
   {
+    "type": "constructor",
+    "stateMutability": "nonpayable",
     "inputs": [
       {
-        "internalType": "contract KtaToken",
+        "type": "address",
         "name": "ktaToken_",
-        "type": "address"
+        "internalType": "contract KtaToken"
       },
       {
-        "internalType": "contract KtaGamePassNft",
+        "type": "address",
         "name": "ktaGamePassNft_",
-        "type": "address"
+        "internalType": "contract KtaGamePassNft"
       },
       {
-        "internalType": "address",
+        "type": "address",
         "name": "rngListenerAddr_",
-        "type": "address"
+        "internalType": "address"
       },
       {
-        "components": [
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "health",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "mana",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "energy",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "armor",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "teleportDistance",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "killArmorRewardLimit",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "safeTownDistance",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "safeTownDifference",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "safeZoneDistance",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "safeZoneDifference",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "attackDistance",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "levelDifference",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct IKillThemAll.MaxSetting",
-            "name": "max",
-            "type": "tuple"
-          },
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "health",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "mana",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "energy",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "armor",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "revive",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "register",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "teleport",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "createTown",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "settleTown",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "teleportToTown",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "prepareAttack",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "prepareDefend",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct IKillThemAll.PriceSetting",
-            "name": "price",
-            "type": "tuple"
-          },
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "getHealth",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "getMana",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "getEnergy",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "registerReferralReward",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "armorAbsorption",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "attack",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "movement",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct IKillThemAll.RateSetting",
-            "name": "rate",
-            "type": "tuple"
-          },
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "revive",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "teleport",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "teleportToTown",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "attackableAt",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "warExpiredAt",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "protectionAt",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "prepareToAttack",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct IKillThemAll.TimeSetting",
-            "name": "time",
-            "type": "tuple"
-          },
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "levelToCreateTown",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "townAreaRadius",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct IKillThemAll.MinSetting",
-            "name": "min",
-            "type": "tuple"
-          },
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "kill",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "referrerKill",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct IKillThemAll.ExpSetting",
-            "name": "exp",
-            "type": "tuple"
-          },
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "attack",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "resistance",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct IKillThemAll.MultiplierSetting",
-            "name": "multiplier",
-            "type": "tuple"
-          },
-          {
-            "internalType": "uint256",
-            "name": "numberDigits",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct IKillThemAll.Setting",
+        "type": "tuple",
         "name": "settings_",
-        "type": "tuple"
-      },
-      {
+        "internalType": "struct IKillThemAll.Setting",
         "components": [
           {
-            "internalType": "uint256",
-            "name": "min",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
+            "type": "tuple",
             "name": "max",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct IKillThemAll.UserLevel[]",
-        "name": "userLevels_",
-        "type": "tuple[]"
-      },
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "maxUser",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct IKillThemAll.TownLevel[]",
-        "name": "townLevels_",
-        "type": "tuple[]"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
-  },
-  {
-    "inputs": [],
-    "name": "AlreadyAtWarPeriod",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "AlreadyHasActiveGamePass",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "InsufficientLevel",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "LimitExceeded",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "value",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "lessThan",
-        "type": "uint256"
-      }
-    ],
-    "name": "MustLessThan",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "value",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "lessThanOrEqual",
-        "type": "uint256"
-      }
-    ],
-    "name": "MustLessThanOrEqual",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "MustPositiveValue",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "NotAuthorized",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "SafeZone",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "TargetTooFar",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "TargetTownHasProtectionTime",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "townId",
-        "type": "uint256"
-      }
-    ],
-    "name": "TownMustNotSettled",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "townId",
-        "type": "uint256"
-      }
-    ],
-    "name": "TownMustSettled",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "UserAlreadyRegistered",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "UserCannotDoThisToYourself",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "UserCannotDoThisYet",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      }
-    ],
-    "name": "UserMustAlive",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      }
-    ],
-    "name": "UserMustCitizen",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      }
-    ],
-    "name": "UserMustLeader",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      }
-    ],
-    "name": "UserMustNotCitizen",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      }
-    ],
-    "name": "UserMustNotLeader",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      }
-    ],
-    "name": "UserMustRegistered",
-    "type": "error"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      }
-    ],
-    "name": "LevelUp",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "previousOwner",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "OwnershipTransferred",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [],
-    "name": "TownCreated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "townId",
-        "type": "uint256"
-      }
-    ],
-    "name": "TownDisbanded",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [],
-    "name": "TownRecruitmentUpdated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [],
-    "name": "TownSettled",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [],
-    "name": "TownVoyaged",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [],
-    "name": "UserArmorBroken",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "defender",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "healthDamage",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "armorDamage",
-        "type": "uint256"
-      }
-    ],
-    "name": "UserAttacked",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "enum IKillThemAll.Buy",
-        "name": "something",
-        "type": "uint8"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "to",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "buyer",
-        "type": "address"
-      }
-    ],
-    "name": "UserBought",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "gamePassId",
-        "type": "uint256"
-      }
-    ],
-    "name": "UserBoughtGamePass",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "gamePassId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "gamePassPhase",
-        "type": "uint256"
-      }
-    ],
-    "name": "UserClaimedGamePassPhase",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      }
-    ],
-    "name": "UserExitFromTown",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "enum IKillThemAll.Get",
-        "name": "something",
-        "type": "uint8"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "UserGot",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [],
-    "name": "UserJoinedTown",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      }
-    ],
-    "name": "UserKilled",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [],
-    "name": "UserMissed",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "components": [
-          {
-            "internalType": "int64",
-            "name": "_x",
-            "type": "int64"
-          },
-          {
-            "internalType": "int64",
-            "name": "_y",
-            "type": "int64"
-          }
-        ],
-        "indexed": false,
-        "internalType": "struct Coordinates.Coordinate",
-        "name": "oldCoordinate",
-        "type": "tuple"
-      },
-      {
-        "components": [
-          {
-            "internalType": "int64",
-            "name": "_x",
-            "type": "int64"
-          },
-          {
-            "internalType": "int64",
-            "name": "_y",
-            "type": "int64"
-          }
-        ],
-        "indexed": false,
-        "internalType": "struct Coordinates.Coordinate",
-        "name": "newCoordinate",
-        "type": "tuple"
-      }
-    ],
-    "name": "UserMoved",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "enum IKillThemAll.Prepare",
-        "name": "to",
-        "type": "uint8"
-      },
-      {
-        "indexed": false,
-        "internalType": "bytes32",
-        "name": "addressesHash",
-        "type": "bytes32"
-      }
-    ],
-    "name": "UserPrepared",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [],
-    "name": "UserRegistered",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "attackerTownId",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "defenderTownId",
-            "type": "uint256"
-          },
-          {
+            "internalType": "struct IKillThemAll.MaxSetting",
             "components": [
               {
-                "internalType": "uint256",
-                "name": "_at",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct Timers.BlockNumber",
-            "name": "attackableAt",
-            "type": "tuple"
-          },
-          {
-            "components": [
+                "type": "uint256",
+                "name": "health",
+                "internalType": "uint256"
+              },
+              { "type": "uint256", "name": "mana", "internalType": "uint256" },
               {
-                "internalType": "uint256",
-                "name": "_at",
-                "type": "uint256"
+                "type": "uint256",
+                "name": "energy",
+                "internalType": "uint256"
+              },
+              { "type": "uint256", "name": "armor", "internalType": "uint256" },
+              {
+                "type": "uint256",
+                "name": "teleportDistance",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "killArmorRewardLimit",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "safeTownDistance",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "safeTownDifference",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "safeZoneDistance",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "safeZoneDifference",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "attackDistance",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "levelDifference",
+                "internalType": "uint256"
               }
-            ],
-            "internalType": "struct Timers.BlockNumber",
-            "name": "expiredAt",
-            "type": "tuple"
-          }
-        ],
-        "indexed": false,
-        "internalType": "struct IKillThemAll.War",
-        "name": "war",
-        "type": "tuple"
-      }
-    ],
-    "name": "WarDeclared",
-    "type": "event"
-  },
-  {
-    "inputs": [
-      {
-        "components": [
-          {
-            "internalType": "contract IKtaGamePass",
-            "name": "pass",
-            "type": "address"
+            ]
           },
           {
-            "internalType": "uint256",
+            "type": "tuple",
             "name": "price",
-            "type": "uint256"
+            "internalType": "struct IKillThemAll.PriceSetting",
+            "components": [
+              {
+                "type": "uint256",
+                "name": "health",
+                "internalType": "uint256"
+              },
+              { "type": "uint256", "name": "mana", "internalType": "uint256" },
+              {
+                "type": "uint256",
+                "name": "energy",
+                "internalType": "uint256"
+              },
+              { "type": "uint256", "name": "armor", "internalType": "uint256" },
+              {
+                "type": "uint256",
+                "name": "revive",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "register",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "teleport",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "createTown",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "settleTown",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "teleportToTown",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "prepareAttack",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "prepareDefend",
+                "internalType": "uint256"
+              }
+            ]
           },
           {
-            "internalType": "uint256",
-            "name": "startBlock",
-            "type": "uint256"
+            "type": "tuple",
+            "name": "rate",
+            "internalType": "struct IKillThemAll.RateSetting",
+            "components": [
+              {
+                "type": "uint256",
+                "name": "getHealth",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "getMana",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "getEnergy",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "registerReferralReward",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "armorAbsorption",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "attack",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "movement",
+                "internalType": "uint256"
+              }
+            ]
           },
           {
-            "internalType": "uint256",
-            "name": "endBlock",
-            "type": "uint256"
+            "type": "tuple",
+            "name": "time",
+            "internalType": "struct IKillThemAll.TimeSetting",
+            "components": [
+              {
+                "type": "uint256",
+                "name": "revive",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "teleport",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "teleportToTown",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "attackableAt",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "warExpiredAt",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "protectionAt",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "prepareToAttack",
+                "internalType": "uint256"
+              }
+            ]
           },
           {
-            "internalType": "uint256[]",
-            "name": "phaseLimits",
-            "type": "uint256[]"
-          }
-        ],
-        "internalType": "struct IKillThemAll.GamePass",
-        "name": "gamePass",
-        "type": "tuple"
-      }
-    ],
-    "name": "addGamePass",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "target",
-        "type": "address"
-      }
-    ],
-    "name": "attack",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "enum IKillThemAll.Buy",
-        "name": "buy_",
-        "type": "uint8"
-      },
-      {
-        "internalType": "address",
-        "name": "to",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "buy",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "buyGamePass",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "changeTownRecruitment",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "phase",
-        "type": "uint256"
-      }
-    ],
-    "name": "claimGamePassReward",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "name",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "uint256",
-        "name": "price",
-        "type": "uint256"
-      }
-    ],
-    "name": "createTown",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "maxUser",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct IKillThemAll.TownLevel",
-        "name": "townLevel",
-        "type": "tuple"
-      }
-    ],
-    "name": "createTownLevel",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "components": [
-          {
-            "internalType": "uint256",
+            "type": "tuple",
             "name": "min",
-            "type": "uint256"
+            "internalType": "struct IKillThemAll.MinSetting",
+            "components": [
+              {
+                "type": "uint256",
+                "name": "levelToCreateTown",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "townAreaRadius",
+                "internalType": "uint256"
+              }
+            ]
           },
           {
-            "internalType": "uint256",
-            "name": "max",
-            "type": "uint256"
+            "type": "tuple",
+            "name": "exp",
+            "internalType": "struct IKillThemAll.ExpSetting",
+            "components": [
+              { "type": "uint256", "name": "kill", "internalType": "uint256" },
+              {
+                "type": "uint256",
+                "name": "referrerKill",
+                "internalType": "uint256"
+              }
+            ]
+          },
+          {
+            "type": "tuple",
+            "name": "multiplier",
+            "internalType": "struct IKillThemAll.MultiplierSetting",
+            "components": [
+              {
+                "type": "uint256",
+                "name": "attack",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "resistance",
+                "internalType": "uint256"
+              }
+            ]
+          },
+          {
+            "type": "uint256",
+            "name": "numberDigits",
+            "internalType": "uint256"
           }
-        ],
-        "internalType": "struct IKillThemAll.UserLevel",
-        "name": "userLevel",
-        "type": "tuple"
+        ]
+      },
+      {
+        "type": "tuple[]",
+        "name": "userLevels_",
+        "internalType": "struct IKillThemAll.UserLevel[]",
+        "components": [
+          { "type": "uint256", "name": "min", "internalType": "uint256" },
+          { "type": "uint256", "name": "max", "internalType": "uint256" }
+        ]
+      },
+      {
+        "type": "tuple[]",
+        "name": "townLevels_",
+        "internalType": "struct IKillThemAll.TownLevel[]",
+        "components": [
+          { "type": "uint256", "name": "maxUser", "internalType": "uint256" }
+        ]
       }
-    ],
-    "name": "createUserLevel",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    ]
+  },
+  { "type": "error", "name": "AlreadyAtWarPeriod", "inputs": [] },
+  { "type": "error", "name": "AlreadyHasActiveGamePass", "inputs": [] },
+  { "type": "error", "name": "InsufficientLevel", "inputs": [] },
+  { "type": "error", "name": "LimitExceeded", "inputs": [] },
+  {
+    "type": "error",
+    "name": "MustLessThan",
+    "inputs": [
+      { "type": "uint256", "name": "value", "internalType": "uint256" },
+      { "type": "uint256", "name": "lessThan", "internalType": "uint256" }
+    ]
   },
   {
+    "type": "error",
+    "name": "MustLessThanOrEqual",
     "inputs": [
+      { "type": "uint256", "name": "value", "internalType": "uint256" },
       {
-        "internalType": "uint256",
-        "name": "townId",
-        "type": "uint256"
+        "type": "uint256",
+        "name": "lessThanOrEqual",
+        "internalType": "uint256"
       }
-    ],
-    "name": "declareWar",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    ]
+  },
+  { "type": "error", "name": "MustPositiveValue", "inputs": [] },
+  { "type": "error", "name": "NotAuthorized", "inputs": [] },
+  { "type": "error", "name": "SafeZone", "inputs": [] },
+  { "type": "error", "name": "TargetTooFar", "inputs": [] },
+  { "type": "error", "name": "TargetTownHasProtectionTime", "inputs": [] },
+  {
+    "type": "error",
+    "name": "TownMustNotSettled",
+    "inputs": [
+      { "type": "uint256", "name": "townId", "internalType": "uint256" }
+    ]
   },
   {
+    "type": "error",
+    "name": "TownMustSettled",
+    "inputs": [
+      { "type": "uint256", "name": "townId", "internalType": "uint256" }
+    ]
+  },
+  { "type": "error", "name": "UserAlreadyRegistered", "inputs": [] },
+  { "type": "error", "name": "UserCannotDoThisToYourself", "inputs": [] },
+  { "type": "error", "name": "UserCannotDoThisYet", "inputs": [] },
+  {
+    "type": "error",
+    "name": "UserMustAlive",
+    "inputs": [{ "type": "address", "name": "user", "internalType": "address" }]
+  },
+  {
+    "type": "error",
+    "name": "UserMustCitizen",
+    "inputs": [{ "type": "address", "name": "user", "internalType": "address" }]
+  },
+  {
+    "type": "error",
+    "name": "UserMustLeader",
+    "inputs": [{ "type": "address", "name": "user", "internalType": "address" }]
+  },
+  {
+    "type": "error",
+    "name": "UserMustNotCitizen",
+    "inputs": [{ "type": "address", "name": "user", "internalType": "address" }]
+  },
+  {
+    "type": "error",
+    "name": "UserMustNotLeader",
+    "inputs": [{ "type": "address", "name": "user", "internalType": "address" }]
+  },
+  {
+    "type": "error",
+    "name": "UserMustRegistered",
+    "inputs": [{ "type": "address", "name": "user", "internalType": "address" }]
+  },
+  {
+    "type": "event",
+    "name": "LevelUp",
     "inputs": [
       {
+        "type": "address",
+        "name": "user",
         "internalType": "address",
-        "name": "citizen",
-        "type": "address"
+        "indexed": false
       }
     ],
-    "name": "exileCitizen",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "anonymous": false
   },
   {
+    "type": "event",
+    "name": "OwnershipTransferred",
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
+        "type": "address",
+        "name": "previousOwner",
+        "internalType": "address",
+        "indexed": true
+      },
+      {
+        "type": "address",
+        "name": "newOwner",
+        "internalType": "address",
+        "indexed": true
       }
+    ],
+    "anonymous": false
+  },
+  { "type": "event", "name": "TownCreated", "inputs": [], "anonymous": false },
+  {
+    "type": "event",
+    "name": "TownDisbanded",
+    "inputs": [
+      {
+        "type": "uint256",
+        "name": "townId",
+        "internalType": "uint256",
+        "indexed": false
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "TownRecruitmentUpdated",
+    "inputs": [],
+    "anonymous": false
+  },
+  { "type": "event", "name": "TownSettled", "inputs": [], "anonymous": false },
+  { "type": "event", "name": "TownVoyaged", "inputs": [], "anonymous": false },
+  {
+    "type": "event",
+    "name": "UserArmorBroken",
+    "inputs": [],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "UserAttacked",
+    "inputs": [
+      {
+        "type": "address",
+        "name": "defender",
+        "internalType": "address",
+        "indexed": false
+      },
+      {
+        "type": "uint256",
+        "name": "healthDamage",
+        "internalType": "uint256",
+        "indexed": false
+      },
+      {
+        "type": "uint256",
+        "name": "armorDamage",
+        "internalType": "uint256",
+        "indexed": false
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "UserBought",
+    "inputs": [
+      {
+        "type": "uint8",
+        "name": "something",
+        "internalType": "enum IKillThemAll.Buy",
+        "indexed": false
+      },
+      {
+        "type": "address",
+        "name": "to",
+        "internalType": "address",
+        "indexed": false
+      },
+      {
+        "type": "uint256",
+        "name": "amount",
+        "internalType": "uint256",
+        "indexed": false
+      },
+      {
+        "type": "address",
+        "name": "buyer",
+        "internalType": "address",
+        "indexed": false
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "UserBoughtGamePass",
+    "inputs": [
+      {
+        "type": "uint256",
+        "name": "gamePassId",
+        "internalType": "uint256",
+        "indexed": false
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "UserClaimedGamePassPhase",
+    "inputs": [
+      {
+        "type": "uint256",
+        "name": "gamePassId",
+        "internalType": "uint256",
+        "indexed": false
+      },
+      {
+        "type": "uint256",
+        "name": "gamePassPhase",
+        "internalType": "uint256",
+        "indexed": false
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "UserExitFromTown",
+    "inputs": [
+      {
+        "type": "address",
+        "name": "user",
+        "internalType": "address",
+        "indexed": false
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "UserGot",
+    "inputs": [
+      {
+        "type": "uint8",
+        "name": "something",
+        "internalType": "enum IKillThemAll.Get",
+        "indexed": false
+      },
+      {
+        "type": "uint256",
+        "name": "amount",
+        "internalType": "uint256",
+        "indexed": false
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "UserJoinedTown",
+    "inputs": [],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "UserKilled",
+    "inputs": [
+      {
+        "type": "address",
+        "name": "user",
+        "internalType": "address",
+        "indexed": false
+      }
+    ],
+    "anonymous": false
+  },
+  { "type": "event", "name": "UserMissed", "inputs": [], "anonymous": false },
+  {
+    "type": "event",
+    "name": "UserMoved",
+    "inputs": [
+      {
+        "type": "address",
+        "name": "user",
+        "internalType": "address",
+        "indexed": false
+      },
+      {
+        "type": "tuple",
+        "name": "oldCoordinate",
+        "internalType": "struct Coordinates.Coordinate",
+        "indexed": false,
+        "components": [
+          { "type": "int64", "name": "_x", "internalType": "int64" },
+          { "type": "int64", "name": "_y", "internalType": "int64" }
+        ]
+      },
+      {
+        "type": "tuple",
+        "name": "newCoordinate",
+        "internalType": "struct Coordinates.Coordinate",
+        "indexed": false,
+        "components": [
+          { "type": "int64", "name": "_x", "internalType": "int64" },
+          { "type": "int64", "name": "_y", "internalType": "int64" }
+        ]
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "UserPrepared",
+    "inputs": [
+      {
+        "type": "uint8",
+        "name": "to",
+        "internalType": "enum IKillThemAll.Prepare",
+        "indexed": false
+      },
+      {
+        "type": "bytes32",
+        "name": "addressesHash",
+        "internalType": "bytes32",
+        "indexed": false
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "UserRegistered",
+    "inputs": [],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "WarDeclared",
+    "inputs": [
+      {
+        "type": "tuple",
+        "name": "war",
+        "internalType": "struct IKillThemAll.War",
+        "indexed": false,
+        "components": [
+          {
+            "type": "uint256",
+            "name": "attackerTownId",
+            "internalType": "uint256"
+          },
+          {
+            "type": "uint256",
+            "name": "defenderTownId",
+            "internalType": "uint256"
+          },
+          {
+            "type": "tuple",
+            "name": "attackableAt",
+            "internalType": "struct Timers.BlockNumber",
+            "components": [
+              { "type": "uint256", "name": "_at", "internalType": "uint256" }
+            ]
+          },
+          {
+            "type": "tuple",
+            "name": "expiredAt",
+            "internalType": "struct Timers.BlockNumber",
+            "components": [
+              { "type": "uint256", "name": "_at", "internalType": "uint256" }
+            ]
+          }
+        ]
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "addGamePass",
+    "inputs": [
+      {
+        "type": "tuple",
+        "name": "gamePass",
+        "internalType": "struct IKillThemAll.GamePass",
+        "components": [
+          {
+            "type": "address",
+            "name": "pass",
+            "internalType": "contract IKtaGamePass"
+          },
+          { "type": "uint256", "name": "price", "internalType": "uint256" },
+          {
+            "type": "uint256",
+            "name": "startBlock",
+            "internalType": "uint256"
+          },
+          { "type": "uint256", "name": "endBlock", "internalType": "uint256" },
+          {
+            "type": "uint256[]",
+            "name": "phaseLimits",
+            "internalType": "uint256[]"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "attack",
+    "inputs": [
+      { "type": "address", "name": "target", "internalType": "address" }
+    ]
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "buy",
+    "inputs": [
+      {
+        "type": "uint8",
+        "name": "buy_",
+        "internalType": "enum IKillThemAll.Buy"
+      },
+      { "type": "address", "name": "to", "internalType": "address" },
+      { "type": "uint256", "name": "amount", "internalType": "uint256" }
+    ]
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "buyGamePass",
+    "inputs": []
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "changeName",
+    "inputs": [{ "type": "bytes32", "name": "name", "internalType": "bytes32" }]
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "changeTownRecruitment",
+    "inputs": []
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "claimGamePassReward",
+    "inputs": [
+      { "type": "uint256", "name": "phase", "internalType": "uint256" }
+    ]
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "createTown",
+    "inputs": [
+      { "type": "bytes32", "name": "name", "internalType": "bytes32" },
+      { "type": "uint256", "name": "price", "internalType": "uint256" }
+    ]
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "createTownLevel",
+    "inputs": [
+      {
+        "type": "tuple",
+        "name": "townLevel",
+        "internalType": "struct IKillThemAll.TownLevel",
+        "components": [
+          { "type": "uint256", "name": "maxUser", "internalType": "uint256" }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "createUserLevel",
+    "inputs": [
+      {
+        "type": "tuple",
+        "name": "userLevel",
+        "internalType": "struct IKillThemAll.UserLevel",
+        "components": [
+          { "type": "uint256", "name": "min", "internalType": "uint256" },
+          { "type": "uint256", "name": "max", "internalType": "uint256" }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "declareWar",
+    "inputs": [
+      { "type": "uint256", "name": "townId", "internalType": "uint256" }
+    ]
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "exileCitizen",
+    "inputs": [
+      { "type": "address", "name": "citizen", "internalType": "address" }
+    ]
+  },
+  {
+    "type": "function",
+    "stateMutability": "view",
+    "outputs": [
+      {
+        "type": "address",
+        "name": "pass",
+        "internalType": "contract IKtaGamePass"
+      },
+      { "type": "uint256", "name": "price", "internalType": "uint256" },
+      { "type": "uint256", "name": "startBlock", "internalType": "uint256" },
+      { "type": "uint256", "name": "endBlock", "internalType": "uint256" }
     ],
     "name": "gamePasses",
-    "outputs": [
-      {
-        "internalType": "contract IKtaGamePass",
-        "name": "pass",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "price",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "startBlock",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "endBlock",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+    "inputs": [{ "type": "uint256", "name": "", "internalType": "uint256" }]
   },
   {
-    "inputs": [
-      {
-        "internalType": "enum IKillThemAll.Get",
-        "name": "get_",
-        "type": "uint8"
-      }
-    ],
-    "name": "get",
-    "outputs": [],
+    "type": "function",
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
+    "outputs": [],
+    "name": "get",
     "inputs": [
       {
-        "components": [
-          {
-            "internalType": "int64",
-            "name": "_x",
-            "type": "int64"
-          },
-          {
-            "internalType": "int64",
-            "name": "_y",
-            "type": "int64"
-          }
-        ],
-        "internalType": "struct Coordinates.Coordinate",
-        "name": "coordinate",
-        "type": "tuple"
+        "type": "uint8",
+        "name": "get_",
+        "internalType": "enum IKillThemAll.Get"
       }
+    ]
+  },
+  {
+    "type": "function",
+    "stateMutability": "view",
+    "outputs": [
+      { "type": "address[]", "name": "", "internalType": "address[]" }
     ],
     "name": "getAddressesByCoordinate",
-    "outputs": [
-      {
-        "internalType": "address[]",
-        "name": "",
-        "type": "address[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
-        "components": [
-          {
-            "internalType": "int64",
-            "name": "_x",
-            "type": "int64"
-          },
-          {
-            "internalType": "int64",
-            "name": "_y",
-            "type": "int64"
-          }
-        ],
-        "internalType": "struct Coordinates.Coordinate",
+        "type": "tuple",
         "name": "coordinate",
-        "type": "tuple"
-      },
-      {
-        "internalType": "uint256",
-        "name": "nearLevel",
-        "type": "uint256"
-      }
-    ],
-    "name": "getNearAddressesByCoordinate",
-    "outputs": [
-      {
-        "internalType": "address[][]",
-        "name": "addresses",
-        "type": "address[][]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      }
-    ],
-    "name": "isRegistered",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "isUserClaimedGamePassPhase",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "townId",
-        "type": "uint256"
-      }
-    ],
-    "name": "joinTown",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "leaveTown",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "enum Coordinates.Direction",
-        "name": "direction",
-        "type": "uint8"
-      }
-    ],
-    "name": "move",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "owner",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "enum IKillThemAll.Prepare",
-        "name": "to",
-        "type": "uint8"
-      },
-      {
-        "internalType": "address",
-        "name": "target",
-        "type": "address"
-      }
-    ],
-    "name": "prepareToConditionBonus",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "name",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "address",
-        "name": "referrer",
-        "type": "address"
-      }
-    ],
-    "name": "register",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "renounceOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "revive",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "enum IKillThemAll.Prepare",
-        "name": "to",
-        "type": "uint8"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "addressesHash",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "uint256",
-        "name": "random",
-        "type": "uint256"
-      }
-    ],
-    "name": "setConditionBonus",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "settings",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "health",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "mana",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "energy",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "armor",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "teleportDistance",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "killArmorRewardLimit",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "safeTownDistance",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "safeTownDifference",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "safeZoneDistance",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "safeZoneDifference",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "attackDistance",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "levelDifference",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct IKillThemAll.MaxSetting",
-        "name": "max",
-        "type": "tuple"
-      },
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "health",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "mana",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "energy",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "armor",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "revive",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "register",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "teleport",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "createTown",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "settleTown",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "teleportToTown",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "prepareAttack",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "prepareDefend",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct IKillThemAll.PriceSetting",
-        "name": "price",
-        "type": "tuple"
-      },
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "getHealth",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "getMana",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "getEnergy",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "registerReferralReward",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "armorAbsorption",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "attack",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "movement",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct IKillThemAll.RateSetting",
-        "name": "rate",
-        "type": "tuple"
-      },
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "revive",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "teleport",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "teleportToTown",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "attackableAt",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "warExpiredAt",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "protectionAt",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "prepareToAttack",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct IKillThemAll.TimeSetting",
-        "name": "time",
-        "type": "tuple"
-      },
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "levelToCreateTown",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "townAreaRadius",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct IKillThemAll.MinSetting",
-        "name": "min",
-        "type": "tuple"
-      },
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "kill",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "referrerKill",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct IKillThemAll.ExpSetting",
-        "name": "exp",
-        "type": "tuple"
-      },
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "attack",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "resistance",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct IKillThemAll.MultiplierSetting",
-        "name": "multiplier",
-        "type": "tuple"
-      },
-      {
-        "internalType": "uint256",
-        "name": "numberDigits",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "settleTown",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "components": [
-          {
-            "internalType": "int64",
-            "name": "_x",
-            "type": "int64"
-          },
-          {
-            "internalType": "int64",
-            "name": "_y",
-            "type": "int64"
-          }
-        ],
         "internalType": "struct Coordinates.Coordinate",
-        "name": "coordinate",
-        "type": "tuple"
-      }
-    ],
-    "name": "teleport",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "teleportToTown",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "townById",
-    "outputs": [
-      {
         "components": [
-          {
-            "internalType": "int64",
-            "name": "_x",
-            "type": "int64"
-          },
-          {
-            "internalType": "int64",
-            "name": "_y",
-            "type": "int64"
-          }
-        ],
-        "internalType": "struct Coordinates.Coordinate",
-        "name": "coordinate",
-        "type": "tuple"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "name",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "address",
-        "name": "leader",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "exp",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "levelId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "price",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bool",
-        "name": "recruitment",
-        "type": "bool"
-      },
-      {
-        "internalType": "enum IKillThemAll.TownStatus",
-        "name": "status",
-        "type": "uint8"
-      },
-      {
-        "internalType": "enum IKillThemAll.TownMode",
-        "name": "mode",
-        "type": "uint8"
-      },
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "_at",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct Timers.BlockNumber",
-        "name": "protectionAt",
-        "type": "tuple"
+          { "type": "int64", "name": "_x", "internalType": "int64" },
+          { "type": "int64", "name": "_y", "internalType": "int64" }
+        ]
       }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "int256",
-        "name": "",
-        "type": "int256"
-      },
-      {
-        "internalType": "int256",
-        "name": "",
-        "type": "int256"
-      }
-    ],
-    "name": "townIdByCoordinate",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "townWar",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "transferOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "components": [
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "health",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "mana",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "energy",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "armor",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "teleportDistance",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "killArmorRewardLimit",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "safeTownDistance",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "safeTownDifference",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "safeZoneDistance",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "safeZoneDifference",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "attackDistance",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "levelDifference",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct IKillThemAll.MaxSetting",
-            "name": "max",
-            "type": "tuple"
-          },
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "health",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "mana",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "energy",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "armor",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "revive",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "register",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "teleport",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "createTown",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "settleTown",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "teleportToTown",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "prepareAttack",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "prepareDefend",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct IKillThemAll.PriceSetting",
-            "name": "price",
-            "type": "tuple"
-          },
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "getHealth",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "getMana",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "getEnergy",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "registerReferralReward",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "armorAbsorption",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "attack",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "movement",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct IKillThemAll.RateSetting",
-            "name": "rate",
-            "type": "tuple"
-          },
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "revive",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "teleport",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "teleportToTown",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "attackableAt",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "warExpiredAt",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "protectionAt",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "prepareToAttack",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct IKillThemAll.TimeSetting",
-            "name": "time",
-            "type": "tuple"
-          },
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "levelToCreateTown",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "townAreaRadius",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct IKillThemAll.MinSetting",
-            "name": "min",
-            "type": "tuple"
-          },
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "kill",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "referrerKill",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct IKillThemAll.ExpSetting",
-            "name": "exp",
-            "type": "tuple"
-          },
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "attack",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "resistance",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct IKillThemAll.MultiplierSetting",
-            "name": "multiplier",
-            "type": "tuple"
-          },
-          {
-            "internalType": "uint256",
-            "name": "numberDigits",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct IKillThemAll.Setting",
-        "name": "settings_",
-        "type": "tuple"
-      }
-    ],
-    "name": "updateSettings",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "enum IKillThemAll.CharacterInfo",
-        "name": "charInfo",
-        "type": "uint8"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "upgradeCharacter",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "userByAddr",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "health",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "mana",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "energy",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "armor",
-        "type": "uint256"
-      },
-      {
-        "components": [
-          {
-            "internalType": "int64",
-            "name": "_x",
-            "type": "int64"
-          },
-          {
-            "internalType": "int64",
-            "name": "_y",
-            "type": "int64"
-          }
-        ],
-        "internalType": "struct Coordinates.Coordinate",
-        "name": "coordinate",
-        "type": "tuple"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "name",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "uint256",
-        "name": "exp",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "levelId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "referrer",
-        "type": "address"
-      },
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "townId",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "joinBlock",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct IKillThemAll.UserTownInfo",
-        "name": "townInfo",
-        "type": "tuple"
-      },
-      {
-        "components": [
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "_at",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct Timers.BlockNumber",
-            "name": "getHealth",
-            "type": "tuple"
-          },
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "_at",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct Timers.BlockNumber",
-            "name": "getMana",
-            "type": "tuple"
-          },
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "_at",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct Timers.BlockNumber",
-            "name": "getEnergy",
-            "type": "tuple"
-          },
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "_at",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct Timers.BlockNumber",
-            "name": "revive",
-            "type": "tuple"
-          },
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "_at",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct Timers.BlockNumber",
-            "name": "teleport",
-            "type": "tuple"
-          },
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "_at",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct Timers.BlockNumber",
-            "name": "teleportToTown",
-            "type": "tuple"
-          },
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "_at",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct Timers.BlockNumber",
-            "name": "prepareToAttack",
-            "type": "tuple"
-          }
-        ],
-        "internalType": "struct IKillThemAll.UserTimer",
-        "name": "timer",
-        "type": "tuple"
-      },
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "attack",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "defend",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct IKillThemAll.UserCharPoint",
-        "name": "charPoint",
-        "type": "tuple"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+    ]
   },
   {
     "type": "function",
@@ -2289,10 +880,1004 @@
     ]
   },
   {
-    "inputs": [],
-    "name": "voyageTown",
-    "outputs": [],
+    "type": "function",
+    "stateMutability": "view",
+    "outputs": [{ "type": "bool", "name": "", "internalType": "bool" }],
+    "name": "isRegistered",
+    "inputs": [{ "type": "address", "name": "user", "internalType": "address" }]
+  },
+  {
+    "type": "function",
+    "stateMutability": "view",
+    "outputs": [{ "type": "bool", "name": "", "internalType": "bool" }],
+    "name": "isUserClaimedGamePassPhase",
+    "inputs": [
+      { "type": "address", "name": "", "internalType": "address" },
+      { "type": "uint256", "name": "", "internalType": "uint256" },
+      { "type": "uint256", "name": "", "internalType": "uint256" }
+    ]
+  },
+  {
+    "type": "function",
     "stateMutability": "nonpayable",
-    "type": "function"
+    "outputs": [],
+    "name": "joinTown",
+    "inputs": [
+      { "type": "uint256", "name": "townId", "internalType": "uint256" }
+    ]
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "leaveTown",
+    "inputs": []
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "move",
+    "inputs": [
+      {
+        "type": "uint8",
+        "name": "direction",
+        "internalType": "enum Coordinates.Direction"
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "stateMutability": "view",
+    "outputs": [{ "type": "address", "name": "", "internalType": "address" }],
+    "name": "owner",
+    "inputs": []
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "prepareToConditionBonus",
+    "inputs": [
+      {
+        "type": "uint8",
+        "name": "to",
+        "internalType": "enum IKillThemAll.Prepare"
+      },
+      { "type": "address", "name": "target", "internalType": "address" }
+    ]
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "register",
+    "inputs": [
+      { "type": "bytes32", "name": "name", "internalType": "bytes32" },
+      { "type": "address", "name": "referrer", "internalType": "address" }
+    ]
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "renounceOwnership",
+    "inputs": []
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "revive",
+    "inputs": []
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "setConditionBonus",
+    "inputs": [
+      {
+        "type": "uint8",
+        "name": "to",
+        "internalType": "enum IKillThemAll.Prepare"
+      },
+      { "type": "bytes32", "name": "addressesHash", "internalType": "bytes32" },
+      { "type": "uint256", "name": "random", "internalType": "uint256" }
+    ]
+  },
+  {
+    "type": "function",
+    "stateMutability": "view",
+    "outputs": [
+      {
+        "type": "tuple",
+        "name": "max",
+        "internalType": "struct IKillThemAll.MaxSetting",
+        "components": [
+          { "type": "uint256", "name": "health", "internalType": "uint256" },
+          { "type": "uint256", "name": "mana", "internalType": "uint256" },
+          { "type": "uint256", "name": "energy", "internalType": "uint256" },
+          { "type": "uint256", "name": "armor", "internalType": "uint256" },
+          {
+            "type": "uint256",
+            "name": "teleportDistance",
+            "internalType": "uint256"
+          },
+          {
+            "type": "uint256",
+            "name": "killArmorRewardLimit",
+            "internalType": "uint256"
+          },
+          {
+            "type": "uint256",
+            "name": "safeTownDistance",
+            "internalType": "uint256"
+          },
+          {
+            "type": "uint256",
+            "name": "safeTownDifference",
+            "internalType": "uint256"
+          },
+          {
+            "type": "uint256",
+            "name": "safeZoneDistance",
+            "internalType": "uint256"
+          },
+          {
+            "type": "uint256",
+            "name": "safeZoneDifference",
+            "internalType": "uint256"
+          },
+          {
+            "type": "uint256",
+            "name": "attackDistance",
+            "internalType": "uint256"
+          },
+          {
+            "type": "uint256",
+            "name": "levelDifference",
+            "internalType": "uint256"
+          }
+        ]
+      },
+      {
+        "type": "tuple",
+        "name": "price",
+        "internalType": "struct IKillThemAll.PriceSetting",
+        "components": [
+          { "type": "uint256", "name": "health", "internalType": "uint256" },
+          { "type": "uint256", "name": "mana", "internalType": "uint256" },
+          { "type": "uint256", "name": "energy", "internalType": "uint256" },
+          { "type": "uint256", "name": "armor", "internalType": "uint256" },
+          { "type": "uint256", "name": "revive", "internalType": "uint256" },
+          { "type": "uint256", "name": "register", "internalType": "uint256" },
+          { "type": "uint256", "name": "teleport", "internalType": "uint256" },
+          {
+            "type": "uint256",
+            "name": "createTown",
+            "internalType": "uint256"
+          },
+          {
+            "type": "uint256",
+            "name": "settleTown",
+            "internalType": "uint256"
+          },
+          {
+            "type": "uint256",
+            "name": "teleportToTown",
+            "internalType": "uint256"
+          },
+          {
+            "type": "uint256",
+            "name": "prepareAttack",
+            "internalType": "uint256"
+          },
+          {
+            "type": "uint256",
+            "name": "prepareDefend",
+            "internalType": "uint256"
+          }
+        ]
+      },
+      {
+        "type": "tuple",
+        "name": "rate",
+        "internalType": "struct IKillThemAll.RateSetting",
+        "components": [
+          { "type": "uint256", "name": "getHealth", "internalType": "uint256" },
+          { "type": "uint256", "name": "getMana", "internalType": "uint256" },
+          { "type": "uint256", "name": "getEnergy", "internalType": "uint256" },
+          {
+            "type": "uint256",
+            "name": "registerReferralReward",
+            "internalType": "uint256"
+          },
+          {
+            "type": "uint256",
+            "name": "armorAbsorption",
+            "internalType": "uint256"
+          },
+          { "type": "uint256", "name": "attack", "internalType": "uint256" },
+          { "type": "uint256", "name": "movement", "internalType": "uint256" }
+        ]
+      },
+      {
+        "type": "tuple",
+        "name": "time",
+        "internalType": "struct IKillThemAll.TimeSetting",
+        "components": [
+          { "type": "uint256", "name": "revive", "internalType": "uint256" },
+          { "type": "uint256", "name": "teleport", "internalType": "uint256" },
+          {
+            "type": "uint256",
+            "name": "teleportToTown",
+            "internalType": "uint256"
+          },
+          {
+            "type": "uint256",
+            "name": "attackableAt",
+            "internalType": "uint256"
+          },
+          {
+            "type": "uint256",
+            "name": "warExpiredAt",
+            "internalType": "uint256"
+          },
+          {
+            "type": "uint256",
+            "name": "protectionAt",
+            "internalType": "uint256"
+          },
+          {
+            "type": "uint256",
+            "name": "prepareToAttack",
+            "internalType": "uint256"
+          }
+        ]
+      },
+      {
+        "type": "tuple",
+        "name": "min",
+        "internalType": "struct IKillThemAll.MinSetting",
+        "components": [
+          {
+            "type": "uint256",
+            "name": "levelToCreateTown",
+            "internalType": "uint256"
+          },
+          {
+            "type": "uint256",
+            "name": "townAreaRadius",
+            "internalType": "uint256"
+          }
+        ]
+      },
+      {
+        "type": "tuple",
+        "name": "exp",
+        "internalType": "struct IKillThemAll.ExpSetting",
+        "components": [
+          { "type": "uint256", "name": "kill", "internalType": "uint256" },
+          {
+            "type": "uint256",
+            "name": "referrerKill",
+            "internalType": "uint256"
+          }
+        ]
+      },
+      {
+        "type": "tuple",
+        "name": "multiplier",
+        "internalType": "struct IKillThemAll.MultiplierSetting",
+        "components": [
+          { "type": "uint256", "name": "attack", "internalType": "uint256" },
+          { "type": "uint256", "name": "resistance", "internalType": "uint256" }
+        ]
+      },
+      { "type": "uint256", "name": "numberDigits", "internalType": "uint256" }
+    ],
+    "name": "settings",
+    "inputs": []
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "settleTown",
+    "inputs": []
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "teleport",
+    "inputs": [
+      {
+        "type": "tuple",
+        "name": "coordinate",
+        "internalType": "struct Coordinates.Coordinate",
+        "components": [
+          { "type": "int64", "name": "_x", "internalType": "int64" },
+          { "type": "int64", "name": "_y", "internalType": "int64" }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "teleportToTown",
+    "inputs": []
+  },
+  {
+    "type": "function",
+    "stateMutability": "view",
+    "outputs": [
+      {
+        "type": "tuple",
+        "name": "coordinate",
+        "internalType": "struct Coordinates.Coordinate",
+        "components": [
+          { "type": "int64", "name": "_x", "internalType": "int64" },
+          { "type": "int64", "name": "_y", "internalType": "int64" }
+        ]
+      },
+      { "type": "bytes32", "name": "name", "internalType": "bytes32" },
+      { "type": "address", "name": "leader", "internalType": "address" },
+      { "type": "uint256", "name": "exp", "internalType": "uint256" },
+      { "type": "uint256", "name": "levelId", "internalType": "uint256" },
+      { "type": "uint256", "name": "price", "internalType": "uint256" },
+      { "type": "bool", "name": "recruitment", "internalType": "bool" },
+      {
+        "type": "uint8",
+        "name": "status",
+        "internalType": "enum IKillThemAll.TownStatus"
+      },
+      {
+        "type": "uint8",
+        "name": "mode",
+        "internalType": "enum IKillThemAll.TownMode"
+      },
+      {
+        "type": "tuple",
+        "name": "protectionAt",
+        "internalType": "struct Timers.BlockNumber",
+        "components": [
+          { "type": "uint256", "name": "_at", "internalType": "uint256" }
+        ]
+      }
+    ],
+    "name": "townById",
+    "inputs": [{ "type": "uint256", "name": "", "internalType": "uint256" }]
+  },
+  {
+    "type": "function",
+    "stateMutability": "view",
+    "outputs": [{ "type": "uint256", "name": "", "internalType": "uint256" }],
+    "name": "townIdByCoordinate",
+    "inputs": [
+      { "type": "int256", "name": "", "internalType": "int256" },
+      { "type": "int256", "name": "", "internalType": "int256" }
+    ]
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "townWar",
+    "inputs": []
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "transferOwnership",
+    "inputs": [
+      { "type": "address", "name": "newOwner", "internalType": "address" }
+    ]
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "typechainGenerateTown",
+    "inputs": [
+      {
+        "type": "tuple",
+        "name": "town",
+        "internalType": "struct IKillThemAll.Town",
+        "components": [
+          {
+            "type": "tuple",
+            "name": "coordinate",
+            "internalType": "struct Coordinates.Coordinate",
+            "components": [
+              { "type": "int64", "name": "_x", "internalType": "int64" },
+              { "type": "int64", "name": "_y", "internalType": "int64" }
+            ]
+          },
+          { "type": "bytes32", "name": "name", "internalType": "bytes32" },
+          { "type": "address", "name": "leader", "internalType": "address" },
+          {
+            "type": "address[]",
+            "name": "citizens",
+            "internalType": "address[]"
+          },
+          { "type": "uint256", "name": "exp", "internalType": "uint256" },
+          { "type": "uint256", "name": "levelId", "internalType": "uint256" },
+          { "type": "uint256", "name": "price", "internalType": "uint256" },
+          { "type": "bool", "name": "recruitment", "internalType": "bool" },
+          {
+            "type": "uint8",
+            "name": "status",
+            "internalType": "enum IKillThemAll.TownStatus"
+          },
+          {
+            "type": "uint8",
+            "name": "mode",
+            "internalType": "enum IKillThemAll.TownMode"
+          },
+          {
+            "type": "tuple",
+            "name": "protectionAt",
+            "internalType": "struct Timers.BlockNumber",
+            "components": [
+              { "type": "uint256", "name": "_at", "internalType": "uint256" }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "typechainGenerateUser",
+    "inputs": [
+      {
+        "type": "tuple",
+        "name": "user",
+        "internalType": "struct IKillThemAll.User",
+        "components": [
+          { "type": "uint256", "name": "health", "internalType": "uint256" },
+          { "type": "uint256", "name": "mana", "internalType": "uint256" },
+          { "type": "uint256", "name": "energy", "internalType": "uint256" },
+          { "type": "uint256", "name": "armor", "internalType": "uint256" },
+          {
+            "type": "tuple",
+            "name": "coordinate",
+            "internalType": "struct Coordinates.Coordinate",
+            "components": [
+              { "type": "int64", "name": "_x", "internalType": "int64" },
+              { "type": "int64", "name": "_y", "internalType": "int64" }
+            ]
+          },
+          { "type": "bytes32", "name": "name", "internalType": "bytes32" },
+          { "type": "uint256", "name": "exp", "internalType": "uint256" },
+          { "type": "uint256", "name": "levelId", "internalType": "uint256" },
+          { "type": "address", "name": "referrer", "internalType": "address" },
+          {
+            "type": "tuple",
+            "name": "townInfo",
+            "internalType": "struct IKillThemAll.UserTownInfo",
+            "components": [
+              {
+                "type": "uint256",
+                "name": "townId",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "joinBlock",
+                "internalType": "uint256"
+              }
+            ]
+          },
+          {
+            "type": "tuple",
+            "name": "timer",
+            "internalType": "struct IKillThemAll.UserTimer",
+            "components": [
+              {
+                "type": "tuple",
+                "name": "getHealth",
+                "internalType": "struct Timers.BlockNumber",
+                "components": [
+                  {
+                    "type": "uint256",
+                    "name": "_at",
+                    "internalType": "uint256"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "name": "getMana",
+                "internalType": "struct Timers.BlockNumber",
+                "components": [
+                  {
+                    "type": "uint256",
+                    "name": "_at",
+                    "internalType": "uint256"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "name": "getEnergy",
+                "internalType": "struct Timers.BlockNumber",
+                "components": [
+                  {
+                    "type": "uint256",
+                    "name": "_at",
+                    "internalType": "uint256"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "name": "revive",
+                "internalType": "struct Timers.BlockNumber",
+                "components": [
+                  {
+                    "type": "uint256",
+                    "name": "_at",
+                    "internalType": "uint256"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "name": "teleport",
+                "internalType": "struct Timers.BlockNumber",
+                "components": [
+                  {
+                    "type": "uint256",
+                    "name": "_at",
+                    "internalType": "uint256"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "name": "teleportToTown",
+                "internalType": "struct Timers.BlockNumber",
+                "components": [
+                  {
+                    "type": "uint256",
+                    "name": "_at",
+                    "internalType": "uint256"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "name": "prepareToAttack",
+                "internalType": "struct Timers.BlockNumber",
+                "components": [
+                  {
+                    "type": "uint256",
+                    "name": "_at",
+                    "internalType": "uint256"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "tuple",
+            "name": "charPoint",
+            "internalType": "struct IKillThemAll.UserCharPoint",
+            "components": [
+              {
+                "type": "uint256",
+                "name": "attack",
+                "internalType": "uint256"
+              },
+              { "type": "uint256", "name": "defend", "internalType": "uint256" }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "updateSettings",
+    "inputs": [
+      {
+        "type": "tuple",
+        "name": "settings_",
+        "internalType": "struct IKillThemAll.Setting",
+        "components": [
+          {
+            "type": "tuple",
+            "name": "max",
+            "internalType": "struct IKillThemAll.MaxSetting",
+            "components": [
+              {
+                "type": "uint256",
+                "name": "health",
+                "internalType": "uint256"
+              },
+              { "type": "uint256", "name": "mana", "internalType": "uint256" },
+              {
+                "type": "uint256",
+                "name": "energy",
+                "internalType": "uint256"
+              },
+              { "type": "uint256", "name": "armor", "internalType": "uint256" },
+              {
+                "type": "uint256",
+                "name": "teleportDistance",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "killArmorRewardLimit",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "safeTownDistance",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "safeTownDifference",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "safeZoneDistance",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "safeZoneDifference",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "attackDistance",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "levelDifference",
+                "internalType": "uint256"
+              }
+            ]
+          },
+          {
+            "type": "tuple",
+            "name": "price",
+            "internalType": "struct IKillThemAll.PriceSetting",
+            "components": [
+              {
+                "type": "uint256",
+                "name": "health",
+                "internalType": "uint256"
+              },
+              { "type": "uint256", "name": "mana", "internalType": "uint256" },
+              {
+                "type": "uint256",
+                "name": "energy",
+                "internalType": "uint256"
+              },
+              { "type": "uint256", "name": "armor", "internalType": "uint256" },
+              {
+                "type": "uint256",
+                "name": "revive",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "register",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "teleport",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "createTown",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "settleTown",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "teleportToTown",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "prepareAttack",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "prepareDefend",
+                "internalType": "uint256"
+              }
+            ]
+          },
+          {
+            "type": "tuple",
+            "name": "rate",
+            "internalType": "struct IKillThemAll.RateSetting",
+            "components": [
+              {
+                "type": "uint256",
+                "name": "getHealth",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "getMana",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "getEnergy",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "registerReferralReward",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "armorAbsorption",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "attack",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "movement",
+                "internalType": "uint256"
+              }
+            ]
+          },
+          {
+            "type": "tuple",
+            "name": "time",
+            "internalType": "struct IKillThemAll.TimeSetting",
+            "components": [
+              {
+                "type": "uint256",
+                "name": "revive",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "teleport",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "teleportToTown",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "attackableAt",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "warExpiredAt",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "protectionAt",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "prepareToAttack",
+                "internalType": "uint256"
+              }
+            ]
+          },
+          {
+            "type": "tuple",
+            "name": "min",
+            "internalType": "struct IKillThemAll.MinSetting",
+            "components": [
+              {
+                "type": "uint256",
+                "name": "levelToCreateTown",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "townAreaRadius",
+                "internalType": "uint256"
+              }
+            ]
+          },
+          {
+            "type": "tuple",
+            "name": "exp",
+            "internalType": "struct IKillThemAll.ExpSetting",
+            "components": [
+              { "type": "uint256", "name": "kill", "internalType": "uint256" },
+              {
+                "type": "uint256",
+                "name": "referrerKill",
+                "internalType": "uint256"
+              }
+            ]
+          },
+          {
+            "type": "tuple",
+            "name": "multiplier",
+            "internalType": "struct IKillThemAll.MultiplierSetting",
+            "components": [
+              {
+                "type": "uint256",
+                "name": "attack",
+                "internalType": "uint256"
+              },
+              {
+                "type": "uint256",
+                "name": "resistance",
+                "internalType": "uint256"
+              }
+            ]
+          },
+          {
+            "type": "uint256",
+            "name": "numberDigits",
+            "internalType": "uint256"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "upgradeCharacter",
+    "inputs": [
+      {
+        "type": "uint8",
+        "name": "charInfo",
+        "internalType": "enum IKillThemAll.CharacterInfo"
+      },
+      { "type": "uint256", "name": "amount", "internalType": "uint256" }
+    ]
+  },
+  {
+    "type": "function",
+    "stateMutability": "view",
+    "outputs": [
+      { "type": "uint256", "name": "health", "internalType": "uint256" },
+      { "type": "uint256", "name": "mana", "internalType": "uint256" },
+      { "type": "uint256", "name": "energy", "internalType": "uint256" },
+      { "type": "uint256", "name": "armor", "internalType": "uint256" },
+      {
+        "type": "tuple",
+        "name": "coordinate",
+        "internalType": "struct Coordinates.Coordinate",
+        "components": [
+          { "type": "int64", "name": "_x", "internalType": "int64" },
+          { "type": "int64", "name": "_y", "internalType": "int64" }
+        ]
+      },
+      { "type": "bytes32", "name": "name", "internalType": "bytes32" },
+      { "type": "uint256", "name": "exp", "internalType": "uint256" },
+      { "type": "uint256", "name": "levelId", "internalType": "uint256" },
+      { "type": "address", "name": "referrer", "internalType": "address" },
+      {
+        "type": "tuple",
+        "name": "townInfo",
+        "internalType": "struct IKillThemAll.UserTownInfo",
+        "components": [
+          { "type": "uint256", "name": "townId", "internalType": "uint256" },
+          { "type": "uint256", "name": "joinBlock", "internalType": "uint256" }
+        ]
+      },
+      {
+        "type": "tuple",
+        "name": "timer",
+        "internalType": "struct IKillThemAll.UserTimer",
+        "components": [
+          {
+            "type": "tuple",
+            "name": "getHealth",
+            "internalType": "struct Timers.BlockNumber",
+            "components": [
+              { "type": "uint256", "name": "_at", "internalType": "uint256" }
+            ]
+          },
+          {
+            "type": "tuple",
+            "name": "getMana",
+            "internalType": "struct Timers.BlockNumber",
+            "components": [
+              { "type": "uint256", "name": "_at", "internalType": "uint256" }
+            ]
+          },
+          {
+            "type": "tuple",
+            "name": "getEnergy",
+            "internalType": "struct Timers.BlockNumber",
+            "components": [
+              { "type": "uint256", "name": "_at", "internalType": "uint256" }
+            ]
+          },
+          {
+            "type": "tuple",
+            "name": "revive",
+            "internalType": "struct Timers.BlockNumber",
+            "components": [
+              { "type": "uint256", "name": "_at", "internalType": "uint256" }
+            ]
+          },
+          {
+            "type": "tuple",
+            "name": "teleport",
+            "internalType": "struct Timers.BlockNumber",
+            "components": [
+              { "type": "uint256", "name": "_at", "internalType": "uint256" }
+            ]
+          },
+          {
+            "type": "tuple",
+            "name": "teleportToTown",
+            "internalType": "struct Timers.BlockNumber",
+            "components": [
+              { "type": "uint256", "name": "_at", "internalType": "uint256" }
+            ]
+          },
+          {
+            "type": "tuple",
+            "name": "prepareToAttack",
+            "internalType": "struct Timers.BlockNumber",
+            "components": [
+              { "type": "uint256", "name": "_at", "internalType": "uint256" }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "tuple",
+        "name": "charPoint",
+        "internalType": "struct IKillThemAll.UserCharPoint",
+        "components": [
+          { "type": "uint256", "name": "attack", "internalType": "uint256" },
+          { "type": "uint256", "name": "defend", "internalType": "uint256" }
+        ]
+      }
+    ],
+    "name": "userByAddr",
+    "inputs": [{ "type": "address", "name": "", "internalType": "address" }]
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "voyageTown",
+    "inputs": []
   }
 ]

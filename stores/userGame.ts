@@ -1,19 +1,39 @@
-import { BigNumber } from 'ethers'
-import { useStorage } from '@vueuse/core'
+import { StorageSerializers, useStorage } from '@vueuse/core'
+import { Ref } from 'vue'
 import { CoordinateItem } from '~/types'
 import { middleElement } from '~/utils'
-import { IKillThemAll } from '~/types/typechain/contracts/game/KillThemAll'
+import {
+  getAddressesLengthByCoordinateSlot,
+  getTownIdByCoordinateSlot,
+} from '~/composables/useContractReader'
+import { IKillThemAll, Coordinates } from '~/types/typechain/KillThemAll'
 
 export const useUserGameStore = defineStore('userGameStore', () => {
+  const { minNearLevel, maxNearLevel, ktaAddress } = useRuntimeConfig().public
   const appOptionsStore = useAppOptionsStore()
 
-  const user = ref<IKillThemAll.UserStruct>(null)
+  const user = ref<IKillThemAll.UserStruct>(
+    null as unknown as IKillThemAll.UserStruct
+  )
   const isRegistered = ref(true)
-  const addressesByCoordinate = ref([]) as CoordinateItem[]
+  const addressesByCoordinate = ref([]) as Ref<CoordinateItem[]>
   const isLoading = ref(false)
-  const kta = useKta()
-  const nearLevel = useStorage('nearLevel', '1')
-  const setting = ref<IKillThemAll.SettingStructOutput>(null)
+
+  const provider = useProvider()
+  // TODO: move to app options store
+  const nearLevel = useStorage<number>('nearLevel', 2, undefined, {
+    serializer: StorageSerializers.number,
+  })
+
+  const userCountByCoordinate = ref(new Map<string, number>())
+  const hasTownByCoordinate = ref(new Map<string, boolean>())
+
+  const getUserCountByCoordinate = computed(() => userCountByCoordinate.value)
+  const getHasTownByCoordinate = computed(() => hasTownByCoordinate.value)
+
+  const setting = ref<IKillThemAll.SettingStructOutput>(
+    null as unknown as IKillThemAll.SettingStructOutput
+  )
 
   const setUser = (newUser: IKillThemAll.UserStruct) => {
     user.value = newUser
@@ -21,6 +41,21 @@ export const useUserGameStore = defineStore('userGameStore', () => {
 
   const setSetting = (newSetting: IKillThemAll.SettingStructOutput) => {
     setting.value = newSetting
+  }
+
+  const setNearLevel = (newNearLevel: number) => {
+    if (newNearLevel > maxNearLevel || newNearLevel < minNearLevel) {
+      return
+    }
+
+    nearLevel.value = newNearLevel
+  }
+
+  const setNearLevelByCalculatingCoordinates = (newNearLevel: number) => {
+    const { originCoordinate } = appOptionsStore
+
+    setNearLevel(newNearLevel)
+    setUserCoordinate(originCoordinate)
   }
 
   const setUserProperty = <T extends keyof IKillThemAll.UserStruct>(
@@ -34,29 +69,96 @@ export const useUserGameStore = defineStore('userGameStore', () => {
     isRegistered.value = newIsRegistered
   }
 
-  const setUserCoordinate = (x: BigNumber, y: BigNumber) => {
+  const setUserCoordinate = (coordinates: Coordinates.CoordinateStruct) => {
+    const promises = []
+    const x = BigInt(coordinates._x)
+    const y = BigInt(coordinates._y)
+
     isLoading.value = true
     addressesByCoordinate.value = []
-    const minScanX = x.sub(nearLevel.value)
-    const maxScanX = x.add(nearLevel.value)
-    const minScanY = y.sub(nearLevel.value)
-    const maxScanY = y.add(nearLevel.value)
+    const minScanX = x - BigInt(nearLevel.value)
+    const maxScanX = x + BigInt(nearLevel.value)
+    const minScanY = y - BigInt(nearLevel.value)
+    const maxScanY = y + BigInt(nearLevel.value)
 
-    for (let j: BigNumber = maxScanY; j.gte(minScanY); ) {
-      for (let i: BigNumber = minScanX; i.lte(maxScanX); ) {
+    for (let j: bigint = maxScanY; j >= minScanY; ) {
+      for (let i: bigint = minScanX; i <= maxScanX; ) {
         const coordinateItem: CoordinateItem = {
-          x: i,
-          y: j,
+          _x: i,
+          _y: j,
+        }
+
+        // kta.getAddressesByCoordinate(coordinateItem).then((addresses) => {
+        //   userCountByCoordinate.value.set(mapKey, addresses.length)
+        //   console.log(
+        //     `${mapKey} icin getAddressesByCoordinate datasi aliniyor`
+        //   )
+        // })
+
+        // kta
+        //   .townIdByCoordinate(coordinateItem._x, coordinateItem._y)
+        //   .then((townId) => {
+        //     hasTownByCoordinate.value.set(mapKey, !townId.isZero())
+        //   })
+
+        const mapKey = `${coordinateItem._x.toString()},${coordinateItem._y.toString()}`
+        if (!userCountByCoordinate.value.has(mapKey)) {
+          userCountByCoordinate.value.set(mapKey, 0)
+
+          const slot = getAddressesLengthByCoordinateSlot(
+            coordinateItem._x,
+            coordinateItem._y
+          )
+
+          promises.push(
+            provider.getStorage(ktaAddress, slot).then((addressesLength) => {
+              // TODO: use bignumber for this
+              userCountByCoordinate.value.set(mapKey, Number(addressesLength))
+            })
+          )
+        }
+
+        if (!hasTownByCoordinate.value.has(mapKey)) {
+          hasTownByCoordinate.value.set(mapKey, false)
+
+          const slot = getTownIdByCoordinateSlot(
+            coordinateItem._x,
+            coordinateItem._y
+          )
+
+          promises.push(
+            provider.getStorage(ktaAddress, slot).then((townId) => {
+              // TODO: use bignumber for this
+              hasTownByCoordinate.value.set(mapKey, Boolean(Number(townId)))
+            })
+          )
         }
 
         addressesByCoordinate.value.push(coordinateItem)
-        i = i.add(1)
+        // TODO:Ethers try ++
+        i += BigInt(1)
       }
-      j = j.sub(1)
+      j -= BigInt(1)
     }
 
-    const middleItem = middleElement(addressesByCoordinate.value)
-    appOptionsStore.setOriginCoordinate(middleItem)
+    // NOTE: use for execute all async
+    // Promise.all(promises).catch(() => {
+    //   // do nothing
+    // })
+
+    // NOTE: use for execute all sequentially
+    promises.forEach(function (promiseFactory) {
+      promiseFactory.catch(() => {
+        // do nothing
+      })
+    })
+
+    const middleCoordinate = middleElement<CoordinateItem>(
+      addressesByCoordinate.value
+    )
+
+    appOptionsStore.setOriginCoordinate(middleCoordinate)
+
     isLoading.value = false
   }
 
@@ -65,9 +167,14 @@ export const useUserGameStore = defineStore('userGameStore', () => {
     isRegistered,
     setting,
     user,
-    kta,
     isLoading,
     nearLevel,
+    userCountByCoordinate,
+    hasTownByCoordinate,
+    getUserCountByCoordinate,
+    getHasTownByCoordinate,
+    setNearLevel,
+    setNearLevelByCalculatingCoordinates,
     setIsRegistered,
     setUserCoordinate,
     setUser,
