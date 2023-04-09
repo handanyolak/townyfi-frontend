@@ -20,7 +20,6 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   } = userGameStore
   const { setCurrentBlockNumber, connect, setKtaAllowance } = userWalletStore
   const { address, getSigner } = storeToRefs(userWalletStore)
-  const kta = useKta()
 
   const initialized = ref(false)
   const showSidebar = ref(false)
@@ -29,7 +28,6 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const isBlockchainInfo = ref(false)
   const isOptions = ref(false)
 
-  // TODO: is there a type bug? it seems "any" when getting other components
   const originCoordinate = ref<Coordinates.CoordinateStruct>({
     _x: BigInt(0),
     _y: BigInt(0),
@@ -90,7 +88,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
           setCurrentBlockNumber(blockNumber)
         })
 
-        // TODO: Ethers eventler henuz calismiyor
+        // TODO: Ethers v6 events not working yet
         // TODO: startGameEvents fonksiyonunda eklenecek
         kta.on(
           kta.interface.getEvent('UserMoved').name,

@@ -1,6 +1,5 @@
 import { numberToHex } from '~/utils'
-import { KillThemAll, KtaToken, KtaToken__factory } from '~/types/typechain'
-import { Ref } from 'vue'
+import { KillThemAll, KtaToken } from '~/types/typechain'
 
 export const useConnectionStore = defineStore('connectionStore', () => {
   const { ktaChainId } = useRuntimeConfig().public
@@ -15,9 +14,7 @@ export const useConnectionStore = defineStore('connectionStore', () => {
     hasMetamask && ethereum.chainId === numberToHex(ktaChainId)
   )
 
-  /**
-   * Burayi boyle yapmamizin sebebi ethers'in sabit kontrolleridir.
-   */
+  // NOTE: Burayi boyle yapmamizin sebebi ethers'in sabit kontrolleridir.
   let ktaToken: KtaToken = {} as KtaToken
   let kta: KillThemAll = {} as KillThemAll
 

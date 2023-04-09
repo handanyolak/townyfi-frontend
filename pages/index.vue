@@ -52,7 +52,7 @@
             class="select-none"
             @modalOpened="openModal(item)"
           />
-          <!-- TODO: CastleBoxModal -->
+          <!-- TODO: TownBoxModal -->
           <!-- <InformationModal
             v-if="showModal"
             :content-classes="'min-h-[50%] w-1/3 bg-transparent'"
@@ -197,7 +197,7 @@ const userGameStore = useUserGameStore()
 const { initializeApp } = appOptionsStore
 const { originCoordinate } = storeToRefs(appOptionsStore)
 const { hasMetamask } = connectionStore
-const { onValidNetwork } = storeToRefs(connectionStore)
+const { onValidNetwork, getKta } = storeToRefs(connectionStore)
 const { addressesByCoordinate, isLoading, nearLevel } =
   storeToRefs(userGameStore)
 const { setUserCoordinate, setNearLevelByCalculatingCoordinates } =
@@ -209,7 +209,6 @@ const currentItem = ref<CoordinateItem>({
 })
 const { maxNearLevel } = useRuntimeConfig().public
 
-const { getAddressesByCoordinate } = useKta()
 const addresses = ref<string[]>([])
 const clickedAddress = ref('')
 const containerElement = ref(null)
@@ -268,7 +267,9 @@ const onWheel = (event: WheelEvent) => {
 const openModal = async (item: CoordinateItem) => {
   currentItem.value = item
   showModal.value = true
-  addresses.value = await getAddressesByCoordinate(currentItem.value)
+  addresses.value = await getKta.value.getAddressesByCoordinate(
+    currentItem.value
+  )
 }
 
 const closeModal = () => (showModal.value = false)

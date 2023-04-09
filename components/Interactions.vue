@@ -49,7 +49,9 @@ import ListItem from '~/components/sidebar-items/ListItem.vue'
 import { useUserGameStore } from '~/stores/userGame'
 import Tooltip from '~/components/Tooltip.vue'
 
-const kta = useKta()
+const connectionStore = useConnectionStore()
+const { getKta } = storeToRefs(connectionStore)
+
 const userGameStore = useUserGameStore()
 const { user } = storeToRefs(userGameStore)
 
@@ -57,7 +59,7 @@ const coordinateX = ref(user.value?.coordinate._x)
 const coordinateY = ref(user.value?.coordinate._y)
 
 const teleport = async () => {
-  await kta.teleport({
+  await getKta.value.teleport({
     _x: coordinateX.value,
     _y: coordinateY.value,
   })

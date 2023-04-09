@@ -137,11 +137,12 @@ import { duration } from 'moment'
 import { decodeBytes32String } from 'ethers'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
-import { useKta } from '~/composables/useKta'
 import { IKillThemAll } from '~/types/typechain/KillThemAll'
 import { toCapitalizedWords, middleCropping } from '~/utils'
 
-const kta = useKta()
+const connectionStore = useConnectionStore()
+const { getKta } = storeToRefs(connectionStore)
+
 const userGameStore = useUserGameStore()
 const userWalletStore = useUserWalletStore()
 // TODO: Buraya bos deger koyunca template'de hata ciktigi icin burayi onmounted'ta eziyoruz.
@@ -155,7 +156,7 @@ interface UserProps {
 const props = defineProps<UserProps>()
 
 onMounted(async () => {
-  user.value = { ...(await kta.userByAddr(props.address)) }
+  user.value = { ...(await getKta.value.userByAddr(props.address)) }
 })
 
 const userName = computed(() => decodeBytes32String(user.value.name as any))

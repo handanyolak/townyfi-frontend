@@ -25,10 +25,9 @@
         <svg class="mr-3 h-5 w-5 animate-spin" viewBox="0 0 24 24"></svg>
         <span
           :class="{
-            
             'animate-ping bg-gray-500': getUserCountByCoordinate.get(getMapKey) === undefined,
             'bg-zinc-50': getUserCountByCoordinate.get(getMapKey) === 0, // TODO: remove this
-            'bg-green-500': getUserCountByCoordinate.get(getMapKey) === 1, // TODO: use <= instead of ===
+            'bg-green-500': getUserCountByCoordinate.get(getMapKey) === 1, // TODO: use <=
             'bg-yellow-500':
             getUserCountByCoordinate.get(getMapKey)!! > 2 && getUserCountByCoordinate.get(getMapKey)!! < 3,
             'animate-ping bg-red-500': getUserCountByCoordinate.get(getMapKey)!! >= 4,
@@ -55,20 +54,26 @@
 import { CoordinateItem } from '~/types'
 import { useUserGameStore } from '~/stores/userGame'
 
-const userGameStore = useUserGameStore()
-const { user, getUserCountByCoordinate, getHasTownByCoordinate } =
-  storeToRefs(userGameStore)
+/**
+ * Props & Emits
+ */
 interface CastleBoxProps {
   item: CoordinateItem
 }
-const props = defineProps<CastleBoxProps>()
 
+const props = defineProps<CastleBoxProps>()
 const emit = defineEmits(['modalOpened'])
 
-const toggleModal = () => {
-  emit('modalOpened', props.item)
-}
+/**
+ * Stores
+ */
+const userGameStore = useUserGameStore()
+const { user, getUserCountByCoordinate, getHasTownByCoordinate } =
+  storeToRefs(userGameStore)
 
+/**
+ * Computeds
+ */
 const isCoordinateOfUser = computed(
   () =>
     props.item._x.toString() === user.value.coordinate._x.toString() &&
@@ -78,6 +83,14 @@ const isCoordinateOfUser = computed(
 const getMapKey = computed(
   () => `${props.item._x.toString()},${props.item._y.toString()}`
 )
+
+/**
+ * Bu fonksiyon Parent'a model acildi bilgisini verecek event'i yayinlayan fonksiyondur.
+ * @Component CastleBox
+ */
+const toggleModal = () => {
+  emit('modalOpened', props.item)
+}
 </script>
 
 <style>

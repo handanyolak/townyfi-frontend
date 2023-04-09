@@ -138,13 +138,14 @@ interface OtherTownProps {
 const props = defineProps<OtherTownProps>()
 
 const nameRules = yup.string().bytes32()
-const kta = useKta()
+const connectionStore = useConnectionStore()
+const { getKta } = storeToRefs(connectionStore)
 const townInfo = {
-  ...(await kta.townById(props.id)),
+  ...(await getKta.value.townById(props.id)),
 }
 const townName = ref(decodeBytes32String(townInfo.name))
 
-const addresses = await kta.getCitizensByTownId(props.id)
+const addresses = await getKta.value.getCitizensByTownId(props.id)
 
 const attacker = ref(1)
 const defender = ref(2)
