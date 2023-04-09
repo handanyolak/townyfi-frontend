@@ -112,7 +112,7 @@ export const useUserGameStore = defineStore('userGameStore', () => {
 
           promises.push(
             provider.getStorage(ktaAddress, slot).then((addressesLength) => {
-              // TODO: use bignumber for this
+              // TODO: use bigint for this
               userCountByCoordinate.value.set(mapKey, Number(addressesLength))
             })
           )
@@ -128,7 +128,7 @@ export const useUserGameStore = defineStore('userGameStore', () => {
 
           promises.push(
             provider.getStorage(ktaAddress, slot).then((townId) => {
-              // TODO: use bignumber for this
+              // TODO: use bigint for this
               hasTownByCoordinate.value.set(mapKey, Boolean(Number(townId)))
             })
           )

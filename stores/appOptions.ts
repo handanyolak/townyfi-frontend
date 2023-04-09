@@ -10,7 +10,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const userWalletStore = useUserWalletStore()
   const provider = useProvider()
   const { hasMetamask, setKtaToken, setKta } = connectionStore
-  const { onValidNetwork } = storeToRefs(connectionStore)
+  const { onValidNetwork, getKta } = storeToRefs(connectionStore)
   const {
     setUser,
     setUserCoordinate,
@@ -120,8 +120,8 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
 
         ktaToken.on(
           ktaToken.interface.getEvent('Approval').name,
-          (owner: string, spender: string, value: BigNumber) => {
-            if (owner === address.value && spender === kta.address) {
+          (owner: string, spender: string, value: bigint) => {
+            if (owner === address.value && spender === ktaAddress) {
               setKtaAllowance(value)
             }
           }
@@ -132,7 +132,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
 
   // TODO: anlam karisikligini gidermek icin setPlayerInfo olarak her yeri guncellemek ve contract tarafini da guncellemek istiyoruz
   const setUserInfo = async (userInfo: IKillThemAll.UserStruct) => {
-    setIsRegistered(await kta.isRegistered(address.value))
+    setIsRegistered(await getKta.value.isRegistered(address.value))
     setUser(userInfo)
     setUserCoordinate(userInfo.coordinate)
   }
