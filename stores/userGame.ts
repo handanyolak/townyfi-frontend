@@ -31,9 +31,7 @@ export const useUserGameStore = defineStore('userGameStore', () => {
   const getUserCountByCoordinate = computed(() => userCountByCoordinate.value)
   const getHasTownByCoordinate = computed(() => hasTownByCoordinate.value)
 
-  const setting = ref<IKillThemAll.SettingStructOutput>(
-    null as unknown as IKillThemAll.SettingStructOutput
-  )
+  const setting = ref<IKillThemAll.SettingStructOutput | null>(null)
 
   const setUser = (newUser: IKillThemAll.UserStruct) => {
     user.value = newUser

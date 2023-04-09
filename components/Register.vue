@@ -20,7 +20,7 @@
       </template>
     </ListItem>
     <TownyButton
-      v-if="ktaAllowance <= setting.price.register"
+      v-if="ktaAllowance <= setting?.price.register!!"
       class="my-3"
       @click="userApprove()"
       >Approve</TownyButton
