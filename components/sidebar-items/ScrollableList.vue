@@ -27,5 +27,7 @@ interface ScrollableListProps {
   copiable?: boolean
 }
 
-defineProps<ScrollableListProps>()
+withDefaults(defineProps<ScrollableListProps>(), {
+  copyValue: '',
+})
 </script>
