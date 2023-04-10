@@ -23,6 +23,7 @@
     "@babel/eslint-parser": "^7.21.3",
     "@nuxtjs/eslint-config-typescript": "^8.0.0",
     "@pinia/nuxt": "^0.4.6",
+    "@types/lodash": "^4.14.192",
     "@vue/test-utils": "^2.2.6",
     "@vueuse/core": "^9.3.1",
     "@vueuse/nuxt": "^9.3.1",
