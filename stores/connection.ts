@@ -3,28 +3,36 @@ import { KillThemAll, KtaToken } from '~/types/typechain'
 import { BrowserProvider } from 'ethers'
 
 export const useConnectionStore = defineStore('connectionStore', () => {
+  /**
+   * Nuxt Imports
+   */
   const { ktaChainId } = useRuntimeConfig().public
 
+  /**
+   * States
+   */
   const ethereum = window.ethereum
   const provider = new BrowserProvider(ethereum)
-  const signer = computed(async () => await getProvider.value.getSigner())
-
-  const isConnected = ref(false)
   const hasMetamask = Boolean(ethereum)
+  const isConnected = ref(false)
   const onValidNetwork = ref(
     hasMetamask && ethereum.chainId === numberToHex(ktaChainId)
   )
-
-  // NOTE: Burayi boyle yapmamizin sebebi ethers'in sabit kontrolleridir.
+  // NOTE: The reason for doing it this way is due to the bugs in the "ethers" library.
   let ktaToken: KtaToken = {} as KtaToken
   let kta: KillThemAll = {} as KillThemAll
 
+  /**
+   * Getters
+   */
+  const getProvider = computed(() => provider)
+  const signer = computed(async () => await getProvider.value.getSigner())
   const getKtaToken = computed(() => ktaToken)
-
   const getKta = computed(() => kta)
 
-  const getProvider = computed(() => provider)
-
+  /**
+   * Actions
+   */
   const setKtaToken = (newValue: KtaToken) => {
     ktaToken = newValue
   }
