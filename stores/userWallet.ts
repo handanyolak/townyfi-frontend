@@ -4,8 +4,7 @@ import { $t } from '~/composables/useLang'
 
 export const useUserWalletStore = defineStore('userWalletStore', () => {
   const connectionStore = useConnectionStore()
-  const provider = useProvider()
-  const ethereum = computed(() => connectionStore.ethereum)
+  const { getProvider } = storeToRefs(connectionStore)
 
   const address = ref(ZeroAddress)
   const balance = ref('')
@@ -13,7 +12,7 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
   const currentBlockNumber = ref(0)
 
   const getSigner = computed(
-    () => new JsonRpcSigner(useProvider(), address.value)
+    () => new JsonRpcSigner(getProvider.value, address.value)
   )
 
   const setAddress = (newAddress: string) => {
@@ -33,7 +32,7 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
   }
 
   const connect = async () => {
-    const accounts = await provider.listAccounts()
+    const accounts = await getProvider.value.listAccounts()
     const isConnected = accounts.length > 0
     connectionStore.setIsConnected(isConnected)
     // TODO: buraya gerek var mi arastiralim
@@ -47,18 +46,19 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
 
   const updateUserAddress = async (_address = null) => {
     setAddress(
-      _address || (await (await provider.listAccounts())[0].getAddress())
+      _address ||
+        (await (await getProvider.value.listAccounts())[0].getAddress())
     )
   }
 
   const updateUserBalance = async () => {
-    setBalance(formatEther(await provider.getBalance(address.value)))
+    setBalance(formatEther(await getProvider.value.getBalance(address.value)))
   }
 
   const startEthEvents = () => {
-    ethereum.value.on('chainChanged', handleChainChanged)
-    ethereum.value.on('accountsChanged', handleAccountsChanged)
-    ethereum.value.on('disconnect', handleDisconnect)
+    window.ethereum.on('chainChanged', handleChainChanged)
+    window.ethereum.on('accountsChanged', handleAccountsChanged)
+    window.ethereum.on('disconnect', handleDisconnect)
   }
 
   const handleChainChanged = () => {
@@ -81,7 +81,7 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
 
   const connectWeb3 = async () => {
     try {
-      await provider!!.send('eth_requestAccounts', [])
+      await getProvider.value.send('eth_requestAccounts', [])
       handleAccountsChanged()
       await connect()
     } catch (error) {
@@ -92,8 +92,6 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
   return {
     address,
     balance,
-    provider,
-    ethereum,
     currentBlockNumber,
     ktaAllowance,
     getSigner,

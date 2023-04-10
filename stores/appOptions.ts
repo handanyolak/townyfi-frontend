@@ -8,9 +8,8 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const connectionStore = useConnectionStore()
   const userGameStore = useUserGameStore()
   const userWalletStore = useUserWalletStore()
-  const provider = useProvider()
   const { hasMetamask, setKtaToken, setKta } = connectionStore
-  const { onValidNetwork, getKta } = storeToRefs(connectionStore)
+  const { onValidNetwork, getKta, getProvider } = storeToRefs(connectionStore)
   const {
     setUser,
     setUserCoordinate,
@@ -84,9 +83,9 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
 
         setSetting(await kta.settings())
 
-        setCurrentBlockNumber(await provider.getBlockNumber())
+        setCurrentBlockNumber(await getProvider.value.getBlockNumber())
 
-        provider!!.on('block', (blockNumber: number) => {
+        getProvider.value.on('block', (blockNumber: number) => {
           setCurrentBlockNumber(blockNumber)
         })
 

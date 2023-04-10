@@ -10,6 +10,8 @@ import { IKillThemAll, Coordinates } from '~/types/typechain/KillThemAll'
 export const useUserGameStore = defineStore('userGameStore', () => {
   const { minNearLevel, maxNearLevel, ktaAddress } = useRuntimeConfig().public
   const appOptionsStore = useAppOptionsStore()
+  const connectionStore = useConnectionStore()
+  const { getProvider } = storeToRefs(connectionStore)
 
   // TODO: solve this
   const user = ref<IKillThemAll.UserStruct>(
@@ -19,7 +21,6 @@ export const useUserGameStore = defineStore('userGameStore', () => {
   const addressesByCoordinate = ref<CoordinateItem[]>([])
   const isLoading = ref(false)
 
-  const provider = useProvider()
   // TODO: move to app options store
   const nearLevel = useStorage<number>('nearLevel', 2, undefined, {
     serializer: StorageSerializers.number,
@@ -109,10 +110,12 @@ export const useUserGameStore = defineStore('userGameStore', () => {
           )
 
           promises.push(
-            provider.getStorage(ktaAddress, slot).then((addressesLength) => {
-              // TODO: use bigint for this
-              userCountByCoordinate.value.set(mapKey, Number(addressesLength))
-            })
+            getProvider.value
+              .getStorage(ktaAddress, slot)
+              .then((addressesLength) => {
+                // TODO: use bigint for this
+                userCountByCoordinate.value.set(mapKey, Number(addressesLength))
+              })
           )
         }
 
@@ -125,7 +128,7 @@ export const useUserGameStore = defineStore('userGameStore', () => {
           )
 
           promises.push(
-            provider.getStorage(ktaAddress, slot).then((townId) => {
+            getProvider.value.getStorage(ktaAddress, slot).then((townId) => {
               // TODO: use bigint for this
               hasTownByCoordinate.value.set(mapKey, Boolean(Number(townId)))
             })

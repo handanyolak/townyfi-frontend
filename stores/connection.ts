@@ -1,15 +1,16 @@
 import { numberToHex } from '~/utils'
 import { KillThemAll, KtaToken } from '~/types/typechain'
+import { BrowserProvider } from 'ethers'
 
 export const useConnectionStore = defineStore('connectionStore', () => {
   const { ktaChainId } = useRuntimeConfig().public
-  const userWalletStore = useUserWalletStore()
-  const provider = useProvider()
-  const signer = computed(async () => await provider.getSigner())
+
+  const ethereum = window.ethereum
+  const provider = new BrowserProvider(ethereum)
+  const signer = computed(async () => await getProvider.value.getSigner())
 
   const isConnected = ref(false)
-  const hasMetamask = Boolean(window.ethereum)
-  const ethereum = window.ethereum
+  const hasMetamask = Boolean(ethereum)
   const onValidNetwork = ref(
     hasMetamask && ethereum.chainId === numberToHex(ktaChainId)
   )
@@ -21,6 +22,8 @@ export const useConnectionStore = defineStore('connectionStore', () => {
   const getKtaToken = computed(() => ktaToken)
 
   const getKta = computed(() => kta)
+
+  const getProvider = computed(() => provider)
 
   const setKtaToken = (newValue: KtaToken) => {
     ktaToken = newValue
@@ -39,10 +42,10 @@ export const useConnectionStore = defineStore('connectionStore', () => {
   }
 
   return {
+    getProvider,
     onValidNetwork,
     isConnected,
     hasMetamask,
-    ethereum,
     signer,
     getKtaToken,
     getKta,

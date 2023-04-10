@@ -91,10 +91,10 @@ import Dropdown from '~/components/Dropdown.vue'
 import InformationModal from '~/components/InformationModal.vue'
 import TownyButton from '~/components/TownyButton.vue'
 import { $t } from '~/composables/useLang'
+import { numberToHex } from '~/utils'
 
 const connectionStore = useConnectionStore()
 const hasMetamask = connectionStore.hasMetamask
-const ethereum = connectionStore.ethereum
 const userWalletStore = useUserWalletStore()
 const userGameStore = useUserGameStore()
 const { connectWeb3, disconnectWeb3 } = userWalletStore
@@ -133,11 +133,11 @@ onMounted(() => {
 
 const switchNetwork = async () => {
   try {
-    await ethereum.request({
+    await window.ethereum.request({
       method: 'wallet_switchEthereumChain',
       params: [
         {
-          chainId: '0x' + ktaChainId.toString(16),
+          chainId: numberToHex(ktaChainId),
         },
       ],
     })
