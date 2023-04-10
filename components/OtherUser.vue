@@ -128,7 +128,7 @@
         >
       </template>
     </ListItem>
-    <OtherTown :id="user.townInfo.townId.toString()" />
+    <OtherTown v-if="user.townInfo.townId" :id="user.townInfo.townId" />
   </div>
 </template>
 

@@ -184,7 +184,7 @@
 
 <script setup lang="ts">
 import { useDrag } from '@vueuse/gesture'
-import { Direction } from '~/constants'
+import { Direction } from '~/enums'
 import { CoordinateItem } from '~/types'
 import OtherUser from '~/components/OtherUser.vue'
 import Accordion from '~/components/Accordion.vue'

@@ -55,7 +55,7 @@
     </ListItem>
     <ListItem tooltip>
       <template #title> Status: </template>
-      <span>{{ TownStatus[townInfo.status] }}</span>
+      <span>{{ TownStatus[Number(townInfo.status)] }}</span>
       <template #tooltip>
         <span
           >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
@@ -130,10 +130,10 @@ import * as yup from 'yup'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ScrollableList from '~/components/sidebar-items/ScrollableList.vue'
-import { TownStatus } from '~/constants'
+import { TownStatus } from '~/enums'
 
 interface OtherTownProps {
-  id: string
+  id: bigint
 }
 const props = defineProps<OtherTownProps>()
 
