@@ -8,32 +8,45 @@ import {
 import { IKillThemAll, Coordinates } from '~/types/typechain/KillThemAll'
 
 export const useUserGameStore = defineStore('userGameStore', () => {
+  /**
+   * Nuxt Imports
+   */
   const { minNearLevel, maxNearLevel, ktaAddress } = useRuntimeConfig().public
+
+  /**
+   * Stores Imports
+   */
   const appOptionsStore = useAppOptionsStore()
   const connectionStore = useConnectionStore()
   const { getProvider } = storeToRefs(connectionStore)
 
+  /**
+   * States
+   */
+  const isRegistered = ref(false)
+  const isLoading = ref(false)
   // TODO: solve this
   const user = ref<IKillThemAll.UserStruct>(
     null as unknown as IKillThemAll.UserStruct
   )
-  const isRegistered = ref(false)
-  const addressesByCoordinate = ref<CoordinateItem[]>([])
-  const isLoading = ref(false)
-
   // TODO: move to app options store
   const nearLevel = useStorage<number>('nearLevel', 2, undefined, {
     serializer: StorageSerializers.number,
   })
-
+  const setting = ref<IKillThemAll.SettingStructOutput | null>(null)
   const userCountByCoordinate = ref(new Map<string, number>())
   const hasTownByCoordinate = ref(new Map<string, boolean>())
+  const addressesByCoordinate = ref<CoordinateItem[]>([])
 
+  /**
+   * Getters
+   */
   const getUserCountByCoordinate = computed(() => userCountByCoordinate.value)
   const getHasTownByCoordinate = computed(() => hasTownByCoordinate.value)
 
-  const setting = ref<IKillThemAll.SettingStructOutput | null>(null)
-
+  /**
+   * Actions
+   */
   const setUser = (newUser: IKillThemAll.UserStruct) => {
     user.value = newUser
   }
@@ -164,22 +177,22 @@ export const useUserGameStore = defineStore('userGameStore', () => {
   }
 
   return {
-    addressesByCoordinate,
-    isRegistered,
-    setting,
     user,
-    isLoading,
+    setting,
     nearLevel,
-    userCountByCoordinate,
+    isLoading,
+    isRegistered,
     hasTownByCoordinate,
-    getUserCountByCoordinate,
+    addressesByCoordinate,
+    userCountByCoordinate,
     getHasTownByCoordinate,
-    setNearLevel,
-    setNearLevelByCalculatingCoordinates,
-    setIsRegistered,
-    setUserCoordinate,
+    getUserCountByCoordinate,
     setUser,
-    setUserProperty,
     setSetting,
+    setNearLevel,
+    setIsRegistered,
+    setUserProperty,
+    setUserCoordinate,
+    setNearLevelByCalculatingCoordinates,
   }
 })

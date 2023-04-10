@@ -1,6 +1,6 @@
-import { numberToHex } from '~/utils'
 import { KillThemAll, KtaToken } from '~/types/typechain'
 import { BrowserProvider } from 'ethers'
+import { numberToHex } from '~/utils'
 
 export const useConnectionStore = defineStore('connectionStore', () => {
   /**
@@ -25,8 +25,8 @@ export const useConnectionStore = defineStore('connectionStore', () => {
   /**
    * Getters
    */
-  const getProvider = computed(() => provider)
   const signer = computed(async () => await getProvider.value.getSigner())
+  const getProvider = computed(() => provider)
   const getKtaToken = computed(() => ktaToken)
   const getKta = computed(() => kta)
 
@@ -50,16 +50,16 @@ export const useConnectionStore = defineStore('connectionStore', () => {
   }
 
   return {
-    getProvider,
-    onValidNetwork,
-    isConnected,
-    hasMetamask,
     signer,
-    getKtaToken,
     getKta,
+    getProvider,
+    isConnected,
+    getKtaToken,
+    hasMetamask,
+    onValidNetwork,
     setKta,
     setKtaToken,
-    setOnValidNetwork,
     setIsConnected,
+    setOnValidNetwork,
   }
 })

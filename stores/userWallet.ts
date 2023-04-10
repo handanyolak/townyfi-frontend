@@ -3,18 +3,30 @@ import { useTownyToast } from '~/composables/useTownyToast'
 import { $t } from '~/composables/useLang'
 
 export const useUserWalletStore = defineStore('userWalletStore', () => {
+  /**
+   * Stores Imports
+   */
   const connectionStore = useConnectionStore()
   const { getProvider } = storeToRefs(connectionStore)
 
+  /**
+   * States
+   */
   const address = ref(ZeroAddress)
-  const balance = ref('')
   const ktaAllowance = ref<bigint>(0n)
   const currentBlockNumber = ref(0)
+  const balance = ref('')
 
+  /**
+   * Getters
+   */
   const getSigner = computed(
     () => new JsonRpcSigner(getProvider.value, address.value)
   )
 
+  /**
+   * Actions
+   */
   const setAddress = (newAddress: string) => {
     address.value = newAddress
   }
@@ -35,7 +47,7 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
     const accounts = await getProvider.value.listAccounts()
     const isConnected = accounts.length > 0
     connectionStore.setIsConnected(isConnected)
-    // TODO: buraya gerek var mi arastiralim
+    // TODO: Is this code block necessary?
     if (isConnected) await updateUserWalletInfo()
   }
 
@@ -92,22 +104,22 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
   return {
     address,
     balance,
-    currentBlockNumber,
-    ktaAllowance,
     getSigner,
+    ktaAllowance,
+    currentBlockNumber,
+    connect,
     setAddress,
     setBalance,
-    connect,
-    updateUserWalletInfo,
-    updateUserAddress,
-    updateUserBalance,
-    startEthEvents,
-    handleChainChanged,
-    handleAccountsChanged,
-    handleDisconnect,
-    disconnectWeb3,
     connectWeb3,
-    setCurrentBlockNumber,
+    startEthEvents,
+    disconnectWeb3,
     setKtaAllowance,
+    handleDisconnect,
+    updateUserBalance,
+    updateUserAddress,
+    handleChainChanged,
+    updateUserWalletInfo,
+    handleAccountsChanged,
+    setCurrentBlockNumber,
   }
 })

@@ -4,40 +4,51 @@ import { IKillThemAll, Coordinates } from '~/types/typechain/KillThemAll'
 import { KillThemAll__factory, KtaToken__factory } from '~/types/typechain'
 
 export const useAppOptionsStore = defineStore('appOptionsStore', () => {
+  /**
+   * Nuxt Imports
+   */
   const { ktaAddress, ktaTokenAddress } = useRuntimeConfig().public
-  const connectionStore = useConnectionStore()
-  const userGameStore = useUserGameStore()
+
+  /**
+   * Stores
+   */
   const userWalletStore = useUserWalletStore()
+  const { address, getSigner } = storeToRefs(userWalletStore)
+  const { setCurrentBlockNumber, connect, setKtaAllowance } = userWalletStore
+  const connectionStore = useConnectionStore()
   const { hasMetamask, setKtaToken, setKta } = connectionStore
   const { onValidNetwork, getKta, getProvider } = storeToRefs(connectionStore)
+  const userGameStore = useUserGameStore()
   const {
     setUser,
-    setUserCoordinate,
+    setSetting,
     setUserProperty,
     setIsRegistered,
-    setSetting,
+    setUserCoordinate,
   } = userGameStore
-  const { setCurrentBlockNumber, connect, setKtaAllowance } = userWalletStore
-  const { address, getSigner } = storeToRefs(userWalletStore)
 
+  /**
+   * States
+   */
+  const isBlockchainInfo = ref(false)
+  const isContractInfo = ref(false)
   const initialized = ref(false)
   const showSidebar = ref(false)
   const isGameInfo = ref(false)
-  const isContractInfo = ref(false)
-  const isBlockchainInfo = ref(false)
   const isOptions = ref(false)
-
+  const music = ref(false)
   const originCoordinate = ref<Coordinates.CoordinateStruct>({
     _x: BigInt(0),
     _y: BigInt(0),
   })
-
-  const audio = useStorage('audio', false)
-  const music = ref(false)
   const mainThemeAudio = ref<HTMLAudioElement | null>(null)
+  const audio = useStorage('audio', false)
   const _toggleAudio = useToggle(audio)
   const _toggleMusic = useToggle(music)
 
+  /**
+   * Actions
+   */
   const sideLeave = () => {
     showSidebar.value = false
 
@@ -90,37 +101,34 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
         // TODO: Ethers v6 events not working yet
         // TODO: startGameEvents fonksiyonunda eklenecek
         kta.on(
-          kta.interface.getEvent('UserMoved').name,
+          kta.filters.UserMoved,
           async (
-            user: string,
+            user,
             _, // oldCoordinate: Coordinates.CoordinateStruct,
-            newCoordinate: Coordinates.CoordinateStruct
+            newCoordinate
           ) => {
             useTownyToast('info', `New Coordinate: ${newCoordinate}`)
             if (user === address.value) {
               setUserProperty('coordinate', newCoordinate)
-              await userGameStore.setUserCoordinate(userInfo.coordinate)
+              userGameStore.setUserCoordinate(userInfo.coordinate)
             }
           }
         )
 
         // TODO: bu bilgiyi transaction'dan almak yerine parametre olarak alacagiz cunku frontend'e yuk biniyor.
-        kta.on(
-          kta.interface.getEvent('UserRegistered').name,
-          async (event: ContractEventPayload) => {
-            const tx = await event.getTransaction()
-            const registeredAddress = tx.from
+        // kta.on(kta.filters.UserRegistered, async (event) => {
+        //   const tx = await event.getTransaction()
+        //   const registeredAddress = tx.from
 
-            if (registeredAddress === address.value) {
-              const userInfo = await kta.userByAddr(address.value)
-              await setUserInfo(userInfo)
-            }
-          }
-        )
+        //   if (registeredAddress === address.value) {
+        //     const userInfo = await kta.userByAddr(address.value)
+        //     await setUserInfo(userInfo)
+        //   }
+        // })
 
-        ktaToken.on(
-          ktaToken.interface.getEvent('Approval').name,
-          (owner: string, spender: string, value: bigint) => {
+        await ktaToken.on(
+          ktaToken.filters.Approval,
+          (owner, spender, value) => {
             if (owner === address.value && spender === ktaAddress) {
               setKtaAllowance(value)
             }
@@ -172,19 +180,19 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   }
 
   return {
-    showSidebar,
-    isGameInfo,
-    isContractInfo,
-    isBlockchainInfo,
-    isOptions,
     audio,
     music,
+    isOptions,
+    isGameInfo,
+    showSidebar,
+    isContractInfo,
+    isBlockchainInfo,
     originCoordinate,
     sideLeave,
-    initializeApp,
+    toggleMusic,
     setUserInfo,
     toggleAudio,
-    toggleMusic,
+    initializeApp,
     setOriginCoordinate,
   }
 })
