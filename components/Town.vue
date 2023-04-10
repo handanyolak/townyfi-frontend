@@ -137,7 +137,7 @@ import * as yup from 'yup'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ScrollableList from '~/components/sidebar-items/ScrollableList.vue'
-import { TownStatus } from '~/constants'
+import { TownStatus } from '~/enums'
 
 const userGameStore = useUserGameStore()
 const { user } = storeToRefs(userGameStore)
