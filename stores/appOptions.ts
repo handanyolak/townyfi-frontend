@@ -27,9 +27,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const isBlockchainInfo = ref(false)
   const isOptions = ref(false)
 
-  const originCoordinate = ref<
-    Pick<Coordinates.CoordinateStructOutput, '_x' | '_y'>
-  >({
+  const originCoordinate = ref<Coordinates.CoordinateStruct>({
     _x: BigInt(0),
     _y: BigInt(0),
   })
@@ -114,7 +112,8 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
             const registeredAddress = tx.from
 
             if (registeredAddress === address.value) {
-              await setUserInfo()
+              const userInfo = await kta.userByAddr(address.value)
+              await setUserInfo(userInfo)
             }
           }
         )
@@ -131,7 +130,6 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     }
   }
 
-  // TODO: anlam karisikligini gidermek icin setPlayerInfo olarak her yeri guncellemek ve contract tarafini da guncellemek istiyoruz
   const setUserInfo = async (userInfo: IKillThemAll.UserStruct) => {
     setIsRegistered(await getKta.value.isRegistered(address.value))
     setUser(userInfo)
@@ -159,6 +157,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const playMusic = async () => {
     if (!mainThemeAudio.value) {
       mainThemeAudio.value = new Audio(
+        // @ts-ignore
         (await import('~/assets/sound/in-dreams.mp3')).default
       )
       mainThemeAudio.value.loop = true
