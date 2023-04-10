@@ -24,11 +24,17 @@
 
 <script setup lang="ts">
 import { onClickOutside } from '@vueuse/core'
-import ListTitle from './sidebar-items/ListTitle.vue'
+import ListTitle from '~/sidebar-items/ListTitle.vue'
 
+/**
+ * Data
+ */
 const isOpen = ref(false)
 const accordion = ref(null)
 
+/**
+ * Methods
+ */
 const toggleAccordion = () => {
   isOpen.value = !isOpen.value
 }
