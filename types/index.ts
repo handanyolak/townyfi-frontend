@@ -20,4 +20,5 @@ declare global {
 
 declare module 'ethers' {
   export type BigNumberish = bigint
+  export type AddressLike = string
 }

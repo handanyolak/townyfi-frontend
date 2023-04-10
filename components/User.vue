@@ -122,6 +122,7 @@
       </template>
     </ListItem>
     <ListTitle>Timers</ListTitle>
+    <!-- TODO: don't use for here -->
     <ListItem
       v-for="(item, index) in timers"
       :key="index"
@@ -165,8 +166,8 @@ const userWalletStore = useUserWalletStore()
 const { user } = storeToRefs(userGameStore)
 const timer = reactive<any>({ ...user.value.timer })
 const timers = Object.keys(user.value.timer).filter((item: any) => isNaN(item))
-const name = ref(decodeBytes32String(user.value.name as any))
-const reffererAddress = user.value.referrer as string
+const name = ref(decodeBytes32String(user.value.name))
+const reffererAddress = user.value.referrer
 const referrer = computed(() => middleCropping(reffererAddress))
 const nameRules = yup.string().bytes32()
 
@@ -191,6 +192,6 @@ const convert = (
 const getPointIcon = computed(() => (_getPoint: string) => {
   const iconName = useSvg(_getPoint)
 
-  return iconName.includes('undefined') ? false : useSvg(_getPoint)
+  return iconName.includes('undefined') ? undefined : useSvg(_getPoint)
 })
 </script>
