@@ -57,27 +57,43 @@
 
 <script setup lang="ts">
 import Tooltip from '~/components/Tooltip.vue'
+
+/**
+ * Props & Emits
+ */
+interface ContentListItemProps {
+  item?: string
+  input?: boolean
+  tooltip?: boolean
+  editable?: boolean
+  copiable?: boolean
+  copyValue?: string
+  convertable?: boolean
+}
+
+const props = withDefaults(defineProps<ContentListItemProps>(), {
+  copyValue: '',
+})
+const emit = defineEmits(['convert'])
+
+/**
+ * Data
+ */
 const isEdit = ref(false)
 const isCopy = ref(false)
 const isConvert = ref(false)
 
-interface ContentListItemProps {
-  editable?: boolean
-  copiable?: boolean
-  convertable?: boolean
-  input?: boolean
-  tooltip?: boolean
-  copyValue?: string
-  item?: string
-}
-const props = defineProps<ContentListItemProps>()
-const emit = defineEmits(['convert'])
+/**
+ * Computed
+ */
+const languageIcon = computed(() => (_language: string) => useSvg(_language))
 
+/**
+ * Methods
+ */
 const edit = () => {
   isEdit.value = true
 }
-
-const languageIcon = computed(() => (_language: string) => useSvg(_language))
 
 const save = () => {
   isEdit.value = false
