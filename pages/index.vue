@@ -37,11 +37,13 @@
             :style="`transform: scale(${
               100 + (maxNearLevel - nearLevel) * 10
             }%); background-position: ${
-              -BigInt(originCoordinate._x) *
-              BigInt(Math.round(width / (nearLevel * 2 + 1)))
+              (-BigInt(originCoordinate._x) *
+                BigInt(Math.round(width / (nearLevel * 2 + 1)))) %
+              BigInt(MAX_PIXEL_VALUE)
             }px ${
-              BigInt(originCoordinate._y) *
-              BigInt(Math.round(width / (nearLevel * 2 + 1)))
+              (BigInt(originCoordinate._y) *
+                BigInt(Math.round(width / (nearLevel * 2 + 1)))) %
+              BigInt(MAX_PIXEL_VALUE)
             }px`"
           />
           <CastleBox
@@ -185,6 +187,7 @@
 <script setup lang="ts">
 import { useDrag } from '@vueuse/gesture'
 import { Direction } from '~/enums'
+import { MAX_PIXEL_VALUE } from '~/constants'
 import { CoordinateItem } from '~/types'
 import OtherUser from '~/components/OtherUser.vue'
 import Accordion from '~/components/Accordion.vue'
