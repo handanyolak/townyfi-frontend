@@ -1,5 +1,4 @@
 import { StorageSerializers, useStorage } from '@vueuse/core'
-import { Ref } from 'vue'
 import { CoordinateItem } from '~/types'
 import { middleElement } from '~/utils'
 import {
@@ -12,11 +11,12 @@ export const useUserGameStore = defineStore('userGameStore', () => {
   const { minNearLevel, maxNearLevel, ktaAddress } = useRuntimeConfig().public
   const appOptionsStore = useAppOptionsStore()
 
+  // TODO: solve this
   const user = ref<IKillThemAll.UserStruct>(
     null as unknown as IKillThemAll.UserStruct
   )
-  const isRegistered = ref(true)
-  const addressesByCoordinate = ref([]) as Ref<CoordinateItem[]>
+  const isRegistered = ref(false)
+  const addressesByCoordinate = ref<CoordinateItem[]>([])
   const isLoading = ref(false)
 
   const provider = useProvider()

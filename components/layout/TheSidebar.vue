@@ -26,7 +26,11 @@
           ]"
         ></div>
         <div class="relative">
-          <SidebarTab v-if="isGameInfo" :tabs="gameInfoTabs" />
+          <SidebarTab v-if="isGameInfo && isRegistered" :tabs="gameInfoTabs" />
+          <SidebarTab
+            v-else-if="isGameInfo && !isRegistered"
+            :tabs="gameinfoFallbackTabs"
+          />
           <SidebarTab v-if="isOptions" :tabs="userOptionsTabs" />
           <SidebarTab v-if="isBlockchainInfo" :tabs="blockchainInfoTabs" />
           <SidebarTab v-if="isContractInfo" :tabs="contractInfoTabs" />
@@ -54,9 +58,11 @@ import { onClickOutside } from '@vueuse/core'
 import SidebarTab from '~/components/SidebarTab.vue'
 import { Tab } from '~/types'
 
+const userGameStore = useUserGameStore()
 const appOptionStore = useAppOptionsStore()
 const { isGameInfo, isContractInfo, isBlockchainInfo, isOptions, showSidebar } =
   storeToRefs(appOptionStore)
+const { isRegistered } = storeToRefs(userGameStore)
 const { sideLeave } = appOptionStore
 
 const sideBar = ref(null)
@@ -98,6 +104,13 @@ const contractInfoTabs: Tab[] = [
   {
     name: 'Game',
     component: 'Game',
+  },
+]
+
+const gameinfoFallbackTabs: Tab[] = [
+  {
+    name: 'Unregistered',
+    component: 'Unregistered',
   },
 ]
 

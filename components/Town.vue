@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="user.townInfo.townId">
     <ListTitle>General</ListTitle>
     <ListItem editable tooltip>
       <template #title> Name: </template>
@@ -61,7 +61,7 @@
     </ListItem>
     <ListItem tooltip>
       <template #title> Status: </template>
-      <span>{{ TownStatus[townInfo.status] }}</span>
+      <span>{{ TownStatus[Number(townInfo.status)] }}</span>
       <template #tooltip>
         <span
           >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
@@ -128,6 +128,7 @@
       </template>
     </ListItem>
   </div>
+  <div v-else>Create a new town or Search a town</div>
 </template>
 
 <script setup lang="ts">
@@ -143,13 +144,12 @@ const { user } = storeToRefs(userGameStore)
 const nameRules = yup.string().bytes32()
 const connectionStore = useConnectionStore()
 const { getKta } = storeToRefs(connectionStore)
-const townInfo = {
-  ...(await getKta.value.townById(user.value.townInfo.townId.toString())),
-}
+const townInfo = await getKta.value.townById(user.value.townInfo.townId)
+
 const townName = ref(decodeBytes32String(townInfo.name))
 
 const addresses = await getKta.value.getCitizensByTownId(
-  user.value.townInfo.townId.toString()
+  user.value.townInfo.townId
 )
 
 const attacker = ref(1)
