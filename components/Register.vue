@@ -64,7 +64,7 @@ const { ktaAddress } = useRuntimeConfig().public
 const name = ref('')
 const referrer = ref('')
 const nameRules = yup.string().bytes32().required()
-const referrerRules = yup.string().ethereumAddress()
+const referrerRules = yup.string().ethereumAddress().optional()
 
 /**
  * Methods
