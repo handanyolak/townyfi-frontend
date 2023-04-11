@@ -93,44 +93,58 @@ import TownyButton from '~/components/TownyButton.vue'
 import { $t } from '~/composables/useLang'
 import { numberToHex } from '~/utils'
 
+//--------[ Nuxt ]--------//
+const { ktaChainId } = useRuntimeConfig().public
+
+//--------[ Stores ]--------//
 const connectionStore = useConnectionStore()
-const hasMetamask = connectionStore.hasMetamask
 const userWalletStore = useUserWalletStore()
 const userGameStore = useUserGameStore()
-const { connectWeb3, disconnectWeb3 } = userWalletStore
 const appOptionStore = useAppOptionsStore()
-const { audio, music } = storeToRefs(appOptionStore)
-const { isRegistered } = storeToRefs(userGameStore)
-const { onValidNetwork, isConnected } = storeToRefs(connectionStore)
 const useUserOptions = useUserOptionsStore()
-const { language } = storeToRefs(useUserOptions)
-const showModal = ref(false)
 
+const { hasMetamask } = connectionStore
+const { startEthEvents } = userWalletStore
+const { setLanguage } = useUserOptions
+
+const { onValidNetwork, isConnected } = storeToRefs(connectionStore)
+const { connectWeb3, disconnectWeb3 } = userWalletStore
+const { isRegistered } = storeToRefs(userGameStore)
+const { audio, music } = storeToRefs(appOptionStore)
+const { language } = storeToRefs(useUserOptions)
+
+//--------[ Composables ]--------//
 const isDark = useDark({
   storageKey: 'theme',
   valueDark: 'dark',
   valueLight: 'light',
 })
 
-const { ktaChainId } = useRuntimeConfig().public
-
 const toggleTheme = useToggle(isDark)
 
-const audioIcon = computed(() => useSvg(audio.value ? 'sound' : 'sound-mute'))
+//--------[ Data ]--------//
+const showModal = ref(false)
 
+//--------[ Computed ]--------//
+const audioIcon = computed(() => useSvg(audio.value ? 'sound' : 'sound-mute'))
 const musicIcon = computed(() => useSvg(music.value ? 'pause' : 'music'))
 
 const themeIcon = computed(() =>
   useSvg(isDark.value ? 'dark-mode' : 'light-mode')
 )
 
+const languages = computed(() =>
+  ['en', 'tr', 'de'].filter((item) => item !== language.value)
+)
+
+//--------[ Hooks ]--------//
 onMounted(() => {
   if (hasMetamask) {
-    /* await userWalletStore.connect() */
-    userWalletStore.startEthEvents()
+    startEthEvents()
   }
 })
 
+//--------[ Methods ]--------//
 const switchNetwork = async () => {
   try {
     await window.ethereum.request({
@@ -142,24 +156,20 @@ const switchNetwork = async () => {
       ],
     })
   } catch (error) {
+    // TODO: do something
     console.log(error)
   }
 }
 
-const languages = computed(() => {
-  const allLanguages = ['en', 'tr', 'de']
-
-  return allLanguages.filter((item) => item !== language.value)
-})
-
 const selected = (item: string) => {
-  useUserOptions.setLanguage(item)
+  setLanguage(item)
 }
 
 const toggleModal = (modalValue: boolean) => (showModal.value = modalValue)
 </script>
 
 <style scoped>
+/* TODO: temporarily font */
 @import url('https://fonts.googleapis.com/css?family=Pirata+One|Bilbo+Swash+Caps&display=swap');
 
 @font-face {
