@@ -67,13 +67,13 @@
           <img
             :src="audioIcon"
             class="h-7 w-7 cursor-pointer"
-            @click="appOptionStore.toggleAudio()"
+            @click="toggleAudio()"
           />
           <img
             v-if="audio"
             :src="musicIcon"
             class="h-5 w-5 cursor-pointer"
-            @click="appOptionStore.toggleMusic()"
+            @click="toggleMusic()"
           />
         </div>
       </div>
@@ -105,6 +105,7 @@ const useUserOptions = useUserOptionsStore()
 
 const { hasMetamask } = connectionStore
 const { startEthEvents } = userWalletStore
+const { toggleMusic, toggleAudio } = appOptionStore
 const { setLanguage } = useUserOptions
 
 const { onValidNetwork, isConnected } = storeToRefs(connectionStore)
