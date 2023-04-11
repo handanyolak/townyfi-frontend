@@ -25,6 +25,7 @@
 <script setup lang="ts">
 import { Tab } from '~/types'
 
+// TODO: change name to file name (SidebarTabItemProps)
 interface ContentListItemProps {
   tabs: Tab[]
 }

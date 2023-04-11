@@ -58,9 +58,8 @@
 <script setup lang="ts">
 import Tooltip from '~/components/Tooltip.vue'
 
-/**
- * Props & Emits
- */
+//--------[ Props & Emits ]--------//
+// TODO: change name to file name (ListItemProps)
 interface ContentListItemProps {
   item?: string
   input?: boolean
@@ -74,23 +73,20 @@ interface ContentListItemProps {
 const props = withDefaults(defineProps<ContentListItemProps>(), {
   copyValue: '',
 })
-const emit = defineEmits(['convert'])
 
-/**
- * Data
- */
+const emit = defineEmits<{
+  (event: 'convert', isConvert: boolean): void
+}>()
+
+//--------[ Data ]--------//
 const isEdit = ref(false)
 const isCopy = ref(false)
 const isConvert = ref(false)
 
-/**
- * Computed
- */
+//--------[ Computed ]--------//
 const languageIcon = computed(() => (_language: string) => useSvg(_language))
 
-/**
- * Methods
- */
+//--------[ Methods ]--------//
 const edit = () => {
   isEdit.value = true
 }
@@ -106,8 +102,7 @@ const copy = () => {
 }
 
 const convert = () => {
-  isConvert.value = !isConvert.value
-  emit('convert', isConvert.value)
+  emit('convert', (isConvert.value = !isConvert.value))
 }
 </script>
 
