@@ -64,7 +64,7 @@
                     type="text"
                     placeholder="Aa"
                     autofocus
-                    @keyup.enter="sendMessage('out')"
+                    @keyup.enter="sendMessage()"
                   />
                 </div>
 
@@ -72,7 +72,7 @@
                   <button
                     class="inline-flex rounded-full p-1 outline-none hover:bg-towni-brown-light-400"
                     type="button"
-                    @click="sendMessage('out')"
+                    @click="sendMessage()"
                   >
                     <img class="h-5 w-7" src="@/assets/img/send-alt.svg" />
                   </button>
@@ -104,11 +104,14 @@
 <script setup lang="ts">
 import { onClickOutside } from '@vueuse/core'
 
-const bobMessage = ref('')
+/**
+ * Data
+ */
 const youMessage = ref('')
 const isChat = ref(false)
 const chatBox = ref(null)
-
+const openChatTab = ref(1)
+const chatArea = ref<HTMLInputElement | null>(null)
 const messages: any = [
   {
     body: "Welcome to the chat, I'm Bob!",
@@ -123,10 +126,10 @@ const messages: any = [
     author: 'bob',
   },
 ]
-const chatArea = ref(null)
 
-const openChatTab = ref(1)
-
+/**
+ * Methods
+ */
 const toggleChatTabs = (tabNumber: number) => {
   if (!isChat.value) {
     toggleChat()
@@ -134,34 +137,20 @@ const toggleChatTabs = (tabNumber: number) => {
     toggleChat()
   }
   openChatTab.value = tabNumber
-  // TODO: loglara gore nextTick eklenecek
+  // TODO: NextTick will be added based on the logs
 }
 
-const sendMessage = (direction) => {
-  if (!youMessage.value && !bobMessage.value) {
-    return
-  }
-
-  if (direction === 'out') {
-    messages.push({ body: youMessage.value, author: 'you' })
-    youMessage.value = ''
-  } else if (direction === 'in') {
-    messages.push({ body: bobMessage.value, author: 'bob' })
-    bobMessage.value = ''
-  } else {
-    alert('something went wrong')
-  }
+const sendMessage = () => {
+  messages.push({ body: youMessage.value, author: 'you' })
+  youMessage.value = ''
   nextTick(() => {
-    chatArea.value.scrollTo({
+    chatArea.value?.scrollTo({
       top: chatArea.value.scrollHeight,
       behavior: 'smooth',
     })
   })
 }
 
-/* const clearAllMessages = () => {
-  messages = []
-} */
 const toggleChat = () => {
   isChat.value = !isChat.value
 }
