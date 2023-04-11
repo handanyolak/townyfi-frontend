@@ -3,6 +3,7 @@
     <ListTitle>General</ListTitle>
     <ListItem>
       <template #title> Name: </template>
+      <!-- TODO: get these data from env -->
       <span>xxx network</span>
     </ListItem>
     <ListItem>
@@ -46,6 +47,8 @@ import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ScrollableList from '~/components/sidebar-items/ScrollableList.vue'
 
+//--------[ Stores ]--------//
 const userWalletStore = useUserWalletStore()
+
 const { currentBlockNumber } = storeToRefs(userWalletStore)
 </script>
