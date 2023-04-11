@@ -9,6 +9,7 @@
     >
       <span>{{ item }}</span>
       <template #tooltip>
+        <!-- TODO: change here -->
         <span
           >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
           amet.</span
@@ -21,6 +22,7 @@
 <script setup lang="ts">
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 
+//--------[ Props & Emits ]--------//
 interface ScrollableListProps {
   items?: string[]
   copyValue?: string | string[]
