@@ -57,11 +57,11 @@ import { useUserGameStore } from '~/stores/userGame'
 /**
  * Props & Emits
  */
-interface CastleBoxProps {
+interface MapboxProps {
   item: CoordinateItem
 }
 
-const props = defineProps<CastleBoxProps>()
+const props = defineProps<MapboxProps>()
 const emit = defineEmits(['modalOpened'])
 
 /**
@@ -86,7 +86,7 @@ const getMapKey = computed(
 
 /**
  * Bu fonksiyon Parent'a model acildi bilgisini verecek event'i yayinlayan fonksiyondur.
- * @Component CastleBox
+ * @Component Mapbox
  */
 const toggleModal = () => {
   emit('modalOpened', props.item)

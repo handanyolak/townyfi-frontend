@@ -46,7 +46,7 @@
               BigInt(MAX_PIXEL_VALUE)
             }px`"
           />
-          <CastleBox
+          <Mapbox
             v-for="(item, index) in addressesByCoordinate"
             :key="index"
             :item="item"
@@ -192,6 +192,7 @@ import { CoordinateItem } from '~/types'
 import OtherUser from '~/components/OtherUser.vue'
 import Accordion from '~/components/Accordion.vue'
 import TheLoading from '~/components/TheLoading.vue'
+import Mapbox from '~/components/Mapbox.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 
 const appOptionsStore = useAppOptionsStore()
