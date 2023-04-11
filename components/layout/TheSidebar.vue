@@ -26,14 +26,14 @@
           ]"
         ></div>
         <div class="relative">
-          <SidebarTab v-if="isGameInfo && isRegistered" :tabs="gameInfoTabs" />
+          <SidebarTab v-if="isGameInfo && isRegistered" :tabs="TABS.gameInfo" />
           <SidebarTab
             v-else-if="isGameInfo && !isRegistered"
-            :tabs="gameinfoFallbackTabs"
+            :tabs="TABS.gameinfoFallback"
           />
-          <SidebarTab v-if="isOptions" :tabs="userOptionsTabs" />
-          <SidebarTab v-if="isBlockchainInfo" :tabs="blockchainInfoTabs" />
-          <SidebarTab v-if="isContractInfo" :tabs="contractInfoTabs" />
+          <SidebarTab v-if="isOptions" :tabs="TABS.userOptions" />
+          <SidebarTab v-if="isBlockchainInfo" :tabs="TABS.blockchainInfo" />
+          <SidebarTab v-if="isContractInfo" :tabs="TABS.contractInfo" />
         </div>
         <svg>
           <filter id="wavy">
@@ -54,66 +54,23 @@
 
 <script setup lang="ts">
 import { onClickOutside } from '@vueuse/core'
-
 import SidebarTab from '~/components/SidebarTab.vue'
-import { Tab } from '~/types'
+import { TABS } from '~/constants'
 
-const userGameStore = useUserGameStore()
+//--------[ Stores ]--------//
 const appOptionStore = useAppOptionsStore()
+const userGameStore = useUserGameStore()
+
+const { sideLeave } = appOptionStore
+
 const { isGameInfo, isContractInfo, isBlockchainInfo, isOptions, showSidebar } =
   storeToRefs(appOptionStore)
 const { isRegistered } = storeToRefs(userGameStore)
-const { sideLeave } = appOptionStore
 
+//--------[ Data ]--------//
 const sideBar = ref(null)
 
-const gameInfoTabs: Tab[] = [
-  {
-    name: 'User',
-    component: 'User',
-  },
-  {
-    name: 'Town',
-    component: 'Town',
-  },
-  {
-    name: 'Interactions',
-    component: 'Interactions',
-  },
-]
-
-const userOptionsTabs: Tab[] = [
-  {
-    name: 'Options',
-    component: 'Options',
-  },
-]
-
-const blockchainInfoTabs: Tab[] = [
-  {
-    name: 'Chain',
-    component: 'Chain',
-  },
-  {
-    name: 'Wallet',
-    component: 'Wallet',
-  },
-]
-
-const contractInfoTabs: Tab[] = [
-  {
-    name: 'Game',
-    component: 'Game',
-  },
-]
-
-const gameinfoFallbackTabs: Tab[] = [
-  {
-    name: 'Unregistered',
-    component: 'Unregistered',
-  },
-]
-
+//--------[ Methods ]--------//
 onClickOutside(sideBar, () => sideLeave())
 </script>
 
