@@ -61,7 +61,7 @@ module.exports = {
         '70%': '70%',
       },
       backgroundImage: {
-        map: "url('@/assets/img/map.png')",
+        map: "url('@/assets/img/map3.jpeg')",
       },
       keyframes: {
         fadein: {
