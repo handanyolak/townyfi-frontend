@@ -4,21 +4,16 @@ import { IKillThemAll, Coordinates } from '~/types/typechain/KillThemAll'
 import { KillThemAll__factory, KtaToken__factory } from '~/types/typechain'
 
 export const useAppOptionsStore = defineStore('appOptionsStore', () => {
-  /**
-   * Nuxt Imports
-   */
+  //--------[ Nuxt Imports ]--------//
   const { ktaAddress, ktaTokenAddress } = useRuntimeConfig().public
 
-  /**
-   * Stores
-   */
+  //--------[ Stores ]--------//
   const userWalletStore = useUserWalletStore()
-  const { address, getSigner } = storeToRefs(userWalletStore)
-  const { setCurrentBlockNumber, connect, setKtaAllowance } = userWalletStore
-  const connectionStore = useConnectionStore()
-  const { hasMetamask, setKtaToken, setKta } = connectionStore
-  const { onValidNetwork, getKta, getProvider } = storeToRefs(connectionStore)
   const userGameStore = useUserGameStore()
+  const connectionStore = useConnectionStore()
+
+  const { setCurrentBlockNumber, connect, setKtaAllowance } = userWalletStore
+  const { hasMetamask, setKtaToken, setKta } = connectionStore
   const {
     setUser,
     setSetting,
@@ -27,9 +22,10 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     setUserCoordinate,
   } = userGameStore
 
-  /**
-   * States
-   */
+  const { onValidNetwork, getKta, getProvider } = storeToRefs(connectionStore)
+  const { address, getSigner } = storeToRefs(userWalletStore)
+
+  //--------[ States ]--------//
   const isBlockchainInfo = ref(false)
   const isContractInfo = ref(false)
   const initialized = ref(false)
@@ -46,9 +42,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const _toggleAudio = useToggle(audio)
   const _toggleMusic = useToggle(music)
 
-  /**
-   * Actions
-   */
+  //--------[ Actions ]--------//
   const sideLeave = () => {
     showSidebar.value = false
 
@@ -116,15 +110,15 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
         )
 
         // TODO: bu bilgiyi transaction'dan almak yerine parametre olarak alacagiz cunku frontend'e yuk biniyor.
-        // kta.on(kta.filters.UserRegistered, async (event) => {
-        //   const tx = await event.getTransaction()
-        //   const registeredAddress = tx.from
+        kta.on(kta.filters.UserRegistered, async (event) => {
+          const tx = await event.getTransaction()
+          const registeredAddress = tx.from
 
-        //   if (registeredAddress === address.value) {
-        //     const userInfo = await kta.userByAddr(address.value)
-        //     await setUserInfo(userInfo)
-        //   }
-        // })
+          if (registeredAddress === address.value) {
+            const userInfo = await kta.userByAddr(address.value)
+            await setUserInfo(userInfo)
+          }
+        })
 
         await ktaToken.on(
           ktaToken.filters.Approval,
