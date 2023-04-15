@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <div class="fixed inset-0 z-50 h-full w-full bg-black bg-opacity-20">
+    <div class="fixed inset-0 z-50 h-full w-full bg-[#362419] bg-opacity-40">
       <div class="flex h-screen items-center justify-center">
         <div
           ref="modal"

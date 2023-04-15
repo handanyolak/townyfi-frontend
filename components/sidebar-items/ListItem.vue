@@ -1,56 +1,54 @@
 <template>
-  <div>
-    <div class="group my-2 flex p-1 shadow-towni-300">
-      <div class="flex items-center">
-        <Tooltip v-if="tooltip">
-          <template #tooltip-image>
-            <img
-              class="mr-1 h-3 w-3 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
-              src="@/assets/img/information.svg"
-            />
-          </template>
-          <slot name="tooltip" />
-        </Tooltip>
-        <span class="flex items-center text-towni-brown-dark-400">
-          <slot name="title" />
+  <div class="group my-2 flex p-1 shadow-towni-300">
+    <div class="flex items-center">
+      <Tooltip v-if="tooltip">
+        <template #tooltip-image>
+          <img
+            class="mr-1 h-3 w-3 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
+            src="@/assets/img/information.svg"
+          />
+        </template>
+        <slot name="tooltip" />
+      </Tooltip>
+      <span class="flex items-center text-towni-brown-dark-400">
+        <slot name="title" />
+      </span>
+    </div>
+    <div class="flex flex-1 items-start justify-between">
+      <div class="flex w-full">
+        <div v-if="isEdit || input" class="mx-1">
+          <slot name="item" />
+        </div>
+        <span v-else class="mx-1 px-1 text-towni-brown-dark-600">
+          <slot />
         </span>
       </div>
-      <div class="flex flex-1 items-start justify-between">
-        <div class="flex w-full">
-          <div v-if="isEdit || input" class="mx-1">
-            <slot name="item" />
-          </div>
-          <span v-else class="mx-1 px-1 text-towni-brown-dark-600">
-            <slot />
-          </span>
-        </div>
-        <div v-if="editable">
-          <img
-            class="h-4 w-4 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
-            :src="isEdit ? languageIcon('check') : languageIcon('edit')"
-            @click="isEdit ? save() : edit()"
-          />
-        </div>
-        <div v-if="copiable">
-          <Tooltip auto-close>
-            <template #tooltip-image>
-              <img
-                class="h-4 w-4 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
-                :src="isCopy ? languageIcon('check') : languageIcon('copy')"
-                @click="isCopy || copy()"
-              />
-            </template>
-            <span> Copied! </span>
-          </Tooltip>
-        </div>
-        <slot name="action-icon" />
+      <div v-if="editable">
         <img
-          v-if="convertable"
-          class="h-3 w-3 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
-          src="@/assets/img/convert.svg"
-          @click="convert()"
+          class="h-4 w-4 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
+          :src="isEdit ? languageIcon('check') : languageIcon('edit')"
+          @click="isEdit ? save() : edit()"
         />
       </div>
+      <div v-if="copiable">
+        <Tooltip auto-close>
+          <template #tooltip-image>
+            <img
+              class="h-4 w-4 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
+              :src="isCopy ? languageIcon('check') : languageIcon('copy')"
+              @click="isCopy || copy()"
+            />
+          </template>
+          <span> Copied! </span>
+        </Tooltip>
+      </div>
+      <slot name="action-icon" />
+      <img
+        v-if="convertable"
+        class="h-3 w-3 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
+        src="@/assets/img/convert.svg"
+        @click="convert()"
+      />
     </div>
   </div>
 </template>
