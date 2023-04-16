@@ -104,9 +104,7 @@
 <script setup lang="ts">
 import { onClickOutside } from '@vueuse/core'
 
-/**
- * Data
- */
+//--------[ Data ]--------//
 const youMessage = ref('')
 const isChat = ref(false)
 const chatBox = ref(null)
@@ -127,9 +125,7 @@ const messages: any = [
   },
 ]
 
-/**
- * Methods
- */
+//--------[ Methods ]--------//
 const toggleChatTabs = (tabNumber: number) => {
   if (!isChat.value) {
     toggleChat()

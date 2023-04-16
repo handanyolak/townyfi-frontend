@@ -132,26 +132,30 @@ import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ScrollableList from '~/components/sidebar-items/ScrollableList.vue'
 import { TownStatus } from '~/enums'
 
+//--------[ Props & Emits ]--------//
 interface OtherTownProps {
   id: bigint
 }
 const props = defineProps<OtherTownProps>()
 
-const nameRules = yup.string().bytes32()
+//--------[ Stores ]--------//
 const connectionStore = useConnectionStore()
+
 const { getKta } = storeToRefs(connectionStore)
+
+//--------[ Data ]--------//
 const townInfo = {
   ...(await getKta.value.townById(props.id)),
 }
 const townName = ref(decodeBytes32String(townInfo.name))
-
+const nameRules = yup.string().bytes32()
 const addresses = await getKta.value.getCitizensByTownId(props.id)
-
 const attacker = ref(1)
 const defender = ref(2)
 const attackable = ref(3743879)
 const expired = ref(3743879)
 
+//--------[ Computed ]--------//
 const leader = computed(() => middleCropping(townInfo.leader))
 
 const citizenAddresses = computed(() =>

@@ -139,24 +139,26 @@ import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ScrollableList from '~/components/sidebar-items/ScrollableList.vue'
 import { TownStatus } from '~/enums'
 
+//--------[ Stores ]--------//
 const userGameStore = useUserGameStore()
-const { user } = storeToRefs(userGameStore)
-const nameRules = yup.string().bytes32()
 const connectionStore = useConnectionStore()
+
+const { user } = storeToRefs(userGameStore)
 const { getKta } = storeToRefs(connectionStore)
+
+//--------[ Data ]--------//
+const nameRules = yup.string().bytes32()
 const townInfo = await getKta.value.townById(user.value.townInfo.townId)
-
 const townName = ref(decodeBytes32String(townInfo.name))
-
 const addresses = await getKta.value.getCitizensByTownId(
   user.value.townInfo.townId
 )
-
 const attacker = ref(1)
 const defender = ref(2)
 const attackable = ref(3743879)
 const expired = ref(3743879)
 
+//--------[ Computed ]--------//
 const leader = computed(() => middleCropping(townInfo.leader))
 
 const citizenAddresses = computed(() =>

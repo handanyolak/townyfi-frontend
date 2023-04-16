@@ -27,9 +27,13 @@
 </template>
 
 <script setup lang="ts">
-const isToggle = ref(false)
+//--------[ Props & Emits ]--------//
 const emit = defineEmits(['toggled'])
 
+//--------[ Data ]--------//
+const isToggle = ref(false)
+
+//--------[ Methods ]--------//
 const toggle = () => {
   emit('toggled')
   isToggle.value = !isToggle.value

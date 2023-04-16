@@ -3,30 +3,22 @@ import { useTownyToast } from '~/composables/useTownyToast'
 import { $t } from '~/composables/useLang'
 
 export const useUserWalletStore = defineStore('userWalletStore', () => {
-  /**
-   * Stores Imports
-   */
+  //--------[ Stores ]--------//
   const connectionStore = useConnectionStore()
   const { getProvider } = storeToRefs(connectionStore)
 
-  /**
-   * States
-   */
+  //--------[ States ]--------//
   const address = ref(ZeroAddress)
   const ktaAllowance = ref<bigint>(0n)
   const currentBlockNumber = ref(0)
   const balance = ref('')
 
-  /**
-   * Getters
-   */
+  //--------[ Getters ]--------//
   const getSigner = computed(
     () => new JsonRpcSigner(getProvider.value, address.value)
   )
 
-  /**
-   * Actions
-   */
+  //--------[ Actions ]--------//
   const setAddress = (newAddress: string) => {
     address.value = newAddress
   }

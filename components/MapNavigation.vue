@@ -120,6 +120,7 @@ defineProps({
 //--------[ Stores ]--------//
 const appOptionsStore = useAppOptionsStore()
 const userGameStore = useUserGameStore()
+
 const { setUserCoordinate, setNearLevelByCalculatingCoordinates } =
   userGameStore
 
@@ -158,17 +159,6 @@ const navigateByArrow = (direction: Direction) => {
 
   setUserCoordinate(_originCoordinate)
 }
-
-// const userMove = async (direction: Direction) => {
-//   isMove.value = direction
-//   try {
-//     await kta.connect(connectionStore.signer).move(direction)
-//     isMove.value = -1
-//   } catch (error) {
-//     isMove.value = -1
-//     console.log(error)
-//   }
-// }
 </script>
 
 <style>

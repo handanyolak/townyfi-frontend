@@ -12,9 +12,11 @@
 import TheHeader from '~/components/layout/TheHeader.vue'
 import TheSidebar from '~/components/layout/TheSidebar.vue'
 
+//--------[ Stores ]--------//
 const connectionStore = useConnectionStore()
 const appOptionStore = useAppOptionsStore()
 
+//--------[ Methods ]--------//
 connectionStore.$subscribe(
   (_, state) => {
     if (!state.onValidNetwork) {
@@ -24,22 +26,3 @@ connectionStore.$subscribe(
   { detached: true }
 )
 </script>
-
-<style>
-/* .deneme1 {
-  overflow: auto;
-}
-
-.deneme1::before {
-  content: '';
-  position: fixed;
-
-  background-image: url(~/assets/img/map6.png);
-  width: 100%;
-  height: 100%;
-  background-size: 100% 100%;
-  background-position: 100% 100%;
-
-  filter: blur(3px);
-} */
-</style>

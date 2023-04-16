@@ -38,37 +38,28 @@ import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import { stringToHex } from '~/utils'
 
-/**
- * Props & Emits
- */
+//--------[ Props & Emits ]--------//
 const emit = defineEmits(['registerClosed'])
 
-/**
- * Stores
- */
+//--------[ Nuxt Imports ]--------//
+const { ktaAddress } = useRuntimeConfig().public
+
+//--------[ Stores ]--------//
 const connectionStore = useConnectionStore()
 const userWalletStore = useUserWalletStore()
 const userGameStore = useUserGameStore()
+
 const { getKtaToken, getKta } = storeToRefs(connectionStore)
 const { ktaAllowance } = storeToRefs(userWalletStore)
 const { setting } = storeToRefs(userGameStore)
 
-/**
- * Nuxt Imports
- */
-const { ktaAddress } = useRuntimeConfig().public
-
-/**
- * Data
- */
+//--------[ Data ]--------//
 const name = ref('')
 const referrer = ref('')
 const nameRules = yup.string().bytes32().required()
 const referrerRules = yup.string().ethereumAddress().optional()
 
-/**
- * Methods
- */
+//--------[ Methods ]--------//
 const userRegister = async () => {
   const tx = await getKta.value.register(
     encodeBytes32String(name.value),

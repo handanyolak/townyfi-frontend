@@ -161,16 +161,30 @@ import ListItem from '~/components/sidebar-items/ListItem.vue'
 import { IKillThemAll } from '~/types/typechain/KillThemAll'
 import { toCapitalizedWords, middleCropping } from '~/utils'
 
+//--------[ Stores ]--------//
 const userGameStore = useUserGameStore()
 const userWalletStore = useUserWalletStore()
+
 const { user } = storeToRefs(userGameStore)
+
+//--------[ Data ]--------//
 const timer = reactive<any>({ ...user.value.timer })
 const timers = Object.keys(user.value.timer).filter((item: any) => isNaN(item))
 const name = ref(decodeBytes32String(user.value.name))
 const reffererAddress = user.value.referrer
-const referrer = computed(() => middleCropping(reffererAddress))
 const nameRules = yup.string().bytes32()
 
+//--------[ Computed ]--------//
+// TODO: Backend'de get datalar ayrildiktan sonra duzenlenecek
+const getPointIcon = computed(() => (_getPoint: string) => {
+  const iconName = useSvg(_getPoint)
+
+  return iconName.includes('undefined') ? undefined : useSvg(_getPoint)
+})
+
+const referrer = computed(() => middleCropping(reffererAddress))
+
+//--------[ Methods ]--------//
 const convert = (
   isConvert: boolean,
   propertyName: keyof IKillThemAll.UserTimerStruct
@@ -188,10 +202,4 @@ const convert = (
     timer[propertyName] = user.value.timer[propertyName].toString()
   }
 }
-// TODO: Backend'de get datalar ayrildiktan sonra duzenlenecek
-const getPointIcon = computed(() => (_getPoint: string) => {
-  const iconName = useSvg(_getPoint)
-
-  return iconName.includes('undefined') ? undefined : useSvg(_getPoint)
-})
 </script>

@@ -25,15 +25,19 @@
 <script setup lang="ts">
 import { Tab } from '~/types'
 
+//--------[ Props & Emits ]--------//
 // TODO: change name to file name (SidebarTabItemProps)
 interface ContentListItemProps {
   tabs: Tab[]
 }
 
 const props = defineProps<ContentListItemProps>()
+
+//--------[ Data ]--------//
 const currentTabName = ref(props.tabs[0].name)
 const currentTabComponent = ref(props.tabs[0].component)
 
+//--------[ Computed ]--------//
 const currentComponent = computed(() => {
   const _currentTabComponent = currentTabComponent.value
 
@@ -42,6 +46,7 @@ const currentComponent = computed(() => {
   )
 })
 
+//--------[ Methods ]--------//
 const changeTab = (tab: Tab) => {
   useSound('demo_public_sounds_button', 'wav')
   currentTabName.value = tab.name

@@ -20,6 +20,7 @@
 <script setup lang="ts">
 import { onClickOutside } from '@vueuse/core'
 
+//--------[ Props & Emits ]--------//
 interface ContentClassesProps {
   contentClasses?: string
 }
@@ -28,8 +29,10 @@ defineProps<ContentClassesProps>()
 
 const emit = defineEmits(['modalClosed'])
 
+//--------[ Data ]--------//
 const modal = ref(null)
 
+//--------[ Methods ]--------//
 const closeModal = () => {
   emit('modalClosed')
 }

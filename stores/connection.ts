@@ -3,14 +3,10 @@ import { BrowserProvider } from 'ethers'
 import { numberToHex } from '~/utils'
 
 export const useConnectionStore = defineStore('connectionStore', () => {
-  /**
-   * Nuxt Imports
-   */
+  //--------[ Nuxt Imports ]--------//
   const { ktaChainId } = useRuntimeConfig().public
 
-  /**
-   * States
-   */
+  //--------[ States ]--------//
   const ethereum = window.ethereum
   const provider = new BrowserProvider(ethereum)
   const hasMetamask = Boolean(ethereum)
@@ -22,17 +18,13 @@ export const useConnectionStore = defineStore('connectionStore', () => {
   let ktaToken: KtaToken = {} as KtaToken
   let kta: KillThemAll = {} as KillThemAll
 
-  /**
-   * Getters
-   */
+  //--------[ Getters ]--------//
   const signer = computed(async () => await getProvider.value.getSigner())
   const getProvider = computed(() => provider)
   const getKtaToken = computed(() => ktaToken)
   const getKta = computed(() => kta)
 
-  /**
-   * Actions
-   */
+  //--------[ Actions ]--------//
   const setKtaToken = (newValue: KtaToken) => {
     ktaToken = newValue
   }

@@ -19,14 +19,14 @@
     </ListItem>
     <ListItem>
       <template #title> Sound: </template>
-      <Switch @toggled="appOptionStore.toggleAudio()">
+      <Switch @toggled="toggleAudio()">
         <template #item-1>Yes</template>
         <template #item-2>No</template>
       </Switch>
     </ListItem>
     <ListItem>
       <template #title> Music: </template>
-      <Switch @toggled="appOptionStore.toggleMusic()">
+      <Switch @toggled="toggleMusic()">
         <template #item-1>Yes</template>
         <template #item-2>No</template>
       </Switch>
@@ -50,32 +50,37 @@ import ListItem from '~/components/sidebar-items/ListItem.vue'
 import SidebarDropdown from '~/components/SidebarDropdown.vue'
 import Switch from '~/components/Switch.vue'
 
-const useUserOptions = useUserOptionsStore()
-const { language } = storeToRefs(useUserOptions)
+//--------[ Stores ]--------//
 const appOptionStore = useAppOptionsStore()
 const userGameStore = useUserGameStore()
+const useUserOptions = useUserOptionsStore()
+
+const { toggleAudio, toggleMusic } = appOptionStore
 const { setNearLevelByCalculatingCoordinates } = userGameStore
+const { setLanguage } = useUserOptions
+
 const { nearLevel } = storeToRefs(userGameStore)
-const { originCoordinate } = storeToRefs(appOptionStore)
+const { language } = storeToRefs(useUserOptions)
 
+//--------[ Data ]--------//
 const nearLevels = ['1', '2', '3', '4', '5']
-
 const isDark = useDark({
   storageKey: 'theme',
   valueDark: 'dark',
   valueLight: 'light',
 })
-
 const toggleTheme = useToggle(isDark)
 
+//--------[ Computed ]--------//
 const languages = computed(() => {
   const allLanguages = ['en', 'tr', 'de']
 
   return allLanguages.filter((item) => item !== language.value)
 })
 
+//--------[ Methods ]--------//
 const selectLanguage = (item: string) => {
-  useUserOptions.setLanguage(item)
+  setLanguage(item)
 }
 
 const selectNearLevel = (item: any) => {

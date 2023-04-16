@@ -1,12 +1,8 @@
 export const useUserOptionsStore = defineStore('userOptionsStore', () => {
-  /**
-   * States
-   */
+  //--------[ States ]--------//
   const language = ref(detectLanguage())
 
-  /**
-   * Actions
-   */
+  //--------[ Actions ]--------//
   const setLanguage = (newLanguage: string) => {
     language.value = newLanguage
     localStorage.setItem('lang', newLanguage)

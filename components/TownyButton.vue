@@ -19,10 +19,12 @@
 </template>
 
 <script setup lang="ts">
+//--------[ Props & Emits ]--------//
 interface ButtonThemeProps {
   fill?: boolean
   border?: boolean
   hoverEffect?: boolean
 }
+
 defineProps<ButtonThemeProps>()
 </script>

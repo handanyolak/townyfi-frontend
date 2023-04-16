@@ -140,41 +140,46 @@ import ListItem from '~/components/sidebar-items/ListItem.vue'
 import { IKillThemAll } from '~/types/typechain/KillThemAll'
 import { toCapitalizedWords, middleCropping } from '~/utils'
 
-const connectionStore = useConnectionStore()
-const { getKta } = storeToRefs(connectionStore)
-
-const userGameStore = useUserGameStore()
-const userWalletStore = useUserWalletStore()
-// TODO: Buraya bos deger koyunca template'de hata ciktigi icin burayi onmounted'ta eziyoruz.
-const user = ref(userGameStore.user)
-const timer = reactive<any>({ ...user.value.timer })
-const timers = Object.keys(user.value.timer).filter((item: any) => isNaN(item))
-
+//--------[ Props & Emits ]--------//
 interface UserProps {
   address: string
 }
 const props = defineProps<UserProps>()
 
-onMounted(async () => {
-  user.value = { ...(await getKta.value.userByAddr(props.address)) }
-})
+//--------[ Stores ]--------//
+const connectionStore = useConnectionStore()
+const userGameStore = useUserGameStore()
+const userWalletStore = useUserWalletStore()
 
-const userName = computed(() => decodeBytes32String(user.value.name as any))
+const { getKta } = storeToRefs(connectionStore)
+const { currentBlockNumber } = storeToRefs(userWalletStore)
 
+//--------[ Data ]--------//
+// TODO: Buraya bos deger koyunca template'de hata ciktigi icin burayi onmounted'ta eziyoruz.
+const user = ref(userGameStore.user)
+const timer = reactive<any>({ ...user.value.timer })
+const timers = Object.keys(user.value.timer).filter((item: any) => isNaN(item))
 const reffererAddress = user.value.referrer as string
+
+//--------[ Computed ]--------//
+const userName = computed(() => decodeBytes32String(user.value.name))
 const referrer = computed(() => middleCropping(reffererAddress))
 
+//--------[ Hooks ]--------//
+onMounted(async () => {
+  user.value = await getKta.value.userByAddr(props.address)
+})
+
+//--------[ Methods ]--------//
 const convert = (
   isConvert: boolean,
   propertyName: keyof IKillThemAll.UserTimerStruct
 ) => {
   if (isConvert) {
     timer[propertyName] =
-      timer[propertyName] - userWalletStore.currentBlockNumber > 0
+      timer[propertyName] - currentBlockNumber.value > 0
         ? duration(
-            (timer[propertyName] - userWalletStore.currentBlockNumber) *
-              12 *
-              1000
+            (timer[propertyName] - currentBlockNumber.value) * 12 * 1000
           ).humanize()
         : 0
   } else {

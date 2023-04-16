@@ -56,10 +56,12 @@
 </template>
 
 <script setup lang="ts">
+//--------[ Stores ]--------//
 const appOptionStore = useAppOptionsStore()
 const { isGameInfo, isContractInfo, isBlockchainInfo, isOptions } =
   storeToRefs(appOptionStore)
 
+//--------[ Methods ]--------//
 const sideOver = (
   drawerName: 'isGameInfo' | 'isContractInfo' | 'isBlockchainInfo' | 'isOptions'
 ) => {

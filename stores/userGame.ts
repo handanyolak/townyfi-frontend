@@ -8,21 +8,15 @@ import {
 import { IKillThemAll, Coordinates } from '~/types/typechain/KillThemAll'
 
 export const useUserGameStore = defineStore('userGameStore', () => {
-  /**
-   * Nuxt Imports
-   */
+  //--------[ Nuxt Imports ]--------//
   const { minNearLevel, maxNearLevel, ktaAddress } = useRuntimeConfig().public
 
-  /**
-   * Stores Imports
-   */
+  //--------[ Stores ]--------//
   const appOptionsStore = useAppOptionsStore()
   const connectionStore = useConnectionStore()
   const { getProvider } = storeToRefs(connectionStore)
 
-  /**
-   * States
-   */
+  //--------[ States ]--------//
   const isRegistered = ref(false)
   const isLoading = ref(false)
   // TODO: solve this
@@ -33,25 +27,21 @@ export const useUserGameStore = defineStore('userGameStore', () => {
   const nearLevel = useStorage<number>('nearLevel', 2, undefined, {
     serializer: StorageSerializers.number,
   })
-  const setting = ref<IKillThemAll.SettingStructOutput | null>(null)
+  const setting = ref<IKillThemAll.SettingStruct | null>(null)
   const userCountByCoordinate = ref(new Map<string, number>())
   const hasTownByCoordinate = ref(new Map<string, boolean>())
   const addressesByCoordinate = ref<CoordinateItem[]>([])
 
-  /**
-   * Getters
-   */
+  //--------[ Getters ]--------//
   const getUserCountByCoordinate = computed(() => userCountByCoordinate.value)
   const getHasTownByCoordinate = computed(() => hasTownByCoordinate.value)
 
-  /**
-   * Actions
-   */
+  //--------[ Actions ]--------//
   const setUser = (newUser: IKillThemAll.UserStruct) => {
     user.value = newUser
   }
 
-  const setSetting = (newSetting: IKillThemAll.SettingStructOutput) => {
+  const setSetting = (newSetting: IKillThemAll.SettingStruct) => {
     setting.value = newSetting
   }
 
@@ -127,7 +117,10 @@ export const useUserGameStore = defineStore('userGameStore', () => {
               .getStorage(ktaAddress, slot)
               .then((addressesLength) => {
                 // TODO: use bigint for this
-                userCountByCoordinate.value.set(mapKey, Number(addressesLength))
+                userCountByCoordinate.value.set(
+                  mapKey,
+                  Number(addressesLength) || 0
+                )
               })
           )
         }
