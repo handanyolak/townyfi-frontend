@@ -12,7 +12,9 @@
         <slot />
       </div>
     </div>
-    <div class="round-parchment h-20 scale-105 transform rounded-xl bg-white">
+    <div
+      class="round-parchment flex h-20 scale-105 transform items-center justify-center rounded-xl bg-white"
+    >
       <slot name="parchment-footer" />
     </div>
   </div>
