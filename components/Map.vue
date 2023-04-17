@@ -33,7 +33,6 @@
           class="select-none"
           @modalOpened="openModal(item)"
         />
-        <!-- TODO: TownBoxModal -->
         <InformationModal
           v-if="showModal"
           :content-classes="'min-h-[50%] w-1/3 bg-transparent'"
@@ -57,8 +56,18 @@
               </div>
             </div>
             <template #parchment-footer>
-              <div class="flex justify-center">
-                <TownyButton>Move</TownyButton>
+              <div>
+                <TownyButton
+                  class="px-4 text-xl"
+                  v-if="
+                    !(
+                      user.coordinate._x === currentItem._x &&
+                      user.coordinate._y === currentItem._y
+                    )
+                  "
+                  @click="isMoveable() ? move() : teleport()"
+                  >{{ isMoveable() ? 'Move' : 'Teleport' }}</TownyButton
+                >
               </div>
             </template>
           </Parchment>
@@ -76,6 +85,8 @@ import { CoordinateItem } from '~/types'
 import MapNavigation from '~/components/MapNavigation.vue'
 import OtherUser from '~/components/OtherUser.vue'
 import Accordion from '~/components/Accordion.vue'
+import { Direction } from '~/enums'
+import { abs } from 'extra-bigint.web'
 
 //--------[ Stores ]--------//
 const connectionStore = useConnectionStore()
@@ -83,12 +94,12 @@ const userGameStore = useUserGameStore()
 const appOptionsStore = useAppOptionsStore()
 
 const { hasMetamask } = connectionStore
-
-const { addressesByCoordinate, nearLevel } = storeToRefs(userGameStore)
-const { onValidNetwork, getKta } = storeToRefs(connectionStore)
-const { originCoordinate } = storeToRefs(appOptionsStore)
 const { setUserCoordinate, setNearLevelByCalculatingCoordinates } =
   userGameStore
+
+const { onValidNetwork, getKta } = storeToRefs(connectionStore)
+const { addressesByCoordinate, nearLevel, user } = storeToRefs(userGameStore)
+const { originCoordinate } = storeToRefs(appOptionsStore)
 
 //--------[ Nuxt ]--------//
 const { maxNearLevel } = useRuntimeConfig().public
@@ -116,6 +127,38 @@ const openModal = async (item: CoordinateItem) => {
   addresses.value = await getKta.value.getAddressesByCoordinate(
     currentItem.value
   )
+}
+
+const move = async () => {
+  const deltaX = currentItem.value._x - user.value.coordinate._x
+  const deltaY = currentItem.value._y - user.value.coordinate._y
+
+  let direction: Direction
+  if (deltaX < 0) {
+    direction = Direction.Left
+  } else if (deltaX > 0) {
+    direction = Direction.Right
+  } else if (deltaY < 0) {
+    direction = Direction.Down
+  } else {
+    direction = Direction.Up
+  }
+
+  await getKta.value.move(BigInt(direction))
+}
+
+const isMoveable = () => {
+  const deltaX = abs(currentItem.value._x - user.value.coordinate._x)
+  const deltaY = abs(currentItem.value._y - user.value.coordinate._y)
+
+  return abs(deltaX + deltaY) <= 1
+}
+
+const teleport = async () => {
+  await getKta.value.teleport({
+    _x: currentItem.value._x,
+    _y: currentItem.value._y,
+  })
 }
 
 const onWheel = (event: WheelEvent) => {
