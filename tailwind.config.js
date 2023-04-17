@@ -75,6 +75,7 @@ module.exports = {
       boxShadow: {
         'towni-200': '0px 0px 15px 0px rgba(198, 140, 82, 0.8)',
         'towni-300': '0px 3px 8px -6px #b44e00',
+        'towni-400': '0px 1px 0px 1px rgba(255, 205, 116, 0.4)',
       },
       zIndex: {
         max: '99999',
