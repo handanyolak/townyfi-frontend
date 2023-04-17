@@ -1,12 +1,19 @@
 import { convertToInteger } from './utils'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
+
 export default defineNuxtConfig({
   ssr: false,
 
   vite: {
     build: {
       assetsInlineLimit: 0,
+      target: 'ESNext',
+    },
+    optimizeDeps: {
+      esbuildOptions: {
+        target: 'ESNext',
+      },
     },
   },
 
