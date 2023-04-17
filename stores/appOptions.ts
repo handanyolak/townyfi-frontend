@@ -2,6 +2,7 @@ import { ContractEventPayload } from 'ethers'
 import { useToggle, useStorage } from '@vueuse/core'
 import { IKillThemAll, Coordinates } from '~/types/typechain/KillThemAll'
 import { KillThemAll__factory, KtaToken__factory } from '~/types/typechain'
+import deepmerge from 'deepmerge'
 
 export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   //--------[ Nuxt Imports ]--------//
@@ -24,6 +25,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
 
   const { onValidNetwork, getKta, getProvider } = storeToRefs(connectionStore)
   const { address, getSigner } = storeToRefs(userWalletStore)
+  const { userCountByCoordinate } = storeToRefs(userGameStore)
 
   //--------[ States ]--------//
   const isBlockchainInfo = ref(false)
@@ -77,14 +79,65 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
         setKtaToken(ktaToken)
         setKta(kta)
 
-        const userInfo = await kta.userByAddr(address.value)
+        const {
+          health,
+          mana,
+          energy,
+          armor,
+          coordinate,
+          name,
+          exp,
+          levelId,
+          referrer,
+          townInfo,
+          timer,
+          charPoint,
+        } = await kta.userByAddr(address.value)
+
+        const userInfo = {
+          health,
+          mana,
+          energy,
+          armor,
+          coordinate,
+          name,
+          exp,
+          levelId,
+          referrer,
+          townInfo,
+          timer,
+          charPoint,
+        }
+
         await setUserInfo(userInfo)
 
         setOriginCoordinate(userInfo.coordinate)
 
         setKtaAllowance(await ktaToken.allowance(address.value, ktaAddress))
 
-        setSetting(await kta.settings())
+        const {
+          max,
+          price,
+          rate,
+          time,
+          min,
+          exp: settingExp,
+          multiplier,
+          numberDigits,
+        } = await kta.settings()
+
+        const setting = {
+          max,
+          price,
+          rate,
+          time,
+          min,
+          exp: settingExp,
+          multiplier,
+          numberDigits,
+        }
+
+        setSetting(setting)
 
         setCurrentBlockNumber(await getProvider.value.getBlockNumber())
 
@@ -98,11 +151,35 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
           kta.filters.UserMoved,
           async (
             user,
-            _, // oldCoordinate: Coordinates.CoordinateStruct,
+            oldCoordinate, // oldCoordinate: Coordinates.CoordinateStruct,
             newCoordinate
           ) => {
-            useTownyToast('info', `New Coordinate: ${newCoordinate}`)
+            const oldCoordinateMapKey = `${oldCoordinate._x.toString()},${oldCoordinate._y.toString()}`
+            if (userCountByCoordinate.value.has(oldCoordinateMapKey)) {
+              const oldCoordinateUserLength = userCountByCoordinate.value.get(
+                oldCoordinateMapKey
+              ) as number
+
+              userCountByCoordinate.value.set(
+                oldCoordinateMapKey,
+                oldCoordinateUserLength - 1
+              )
+            }
+
+            const newCoordinateMapKey = `${newCoordinate._x.toString()},${newCoordinate._y.toString()}`
+            if (userCountByCoordinate.value.has(newCoordinateMapKey)) {
+              const newCoordinateUserLength = userCountByCoordinate.value.get(
+                newCoordinateMapKey
+              ) as number
+
+              userCountByCoordinate.value.set(
+                newCoordinateMapKey,
+                newCoordinateUserLength + 1
+              )
+            }
+
             if (user === address.value) {
+              useTownyToast('info', `New Coordinate: ${newCoordinate}`)
               setUserProperty('coordinate', newCoordinate)
               userGameStore.setUserCoordinate(userInfo.coordinate)
             }
@@ -123,7 +200,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
         await ktaToken.on(
           ktaToken.filters.Approval,
           (owner, spender, value) => {
-            if (owner === address.value && spender === ktaAddress) {
+            if (spender === ktaAddress && owner === address.value) {
               setKtaAllowance(value)
             }
           }
