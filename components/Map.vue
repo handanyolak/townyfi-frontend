@@ -41,6 +41,7 @@
           <Parchment>
             <template #parchment-header> Addresses </template>
             <div class="flex flex-col">
+              <SearchBar></SearchBar>
               <div>
                 <Accordion v-for="(_address, index) in addresses" :key="index">
                   <template #title>
@@ -85,6 +86,7 @@ import { CoordinateItem } from '~/types'
 import MapNavigation from '~/components/MapNavigation.vue'
 import OtherUser from '~/components/OtherUser.vue'
 import Accordion from '~/components/Accordion.vue'
+import SearchBar from '~/components/SearchBar.vue'
 import { Direction } from '~/enums'
 import { abs } from 'extra-bigint.web'
 
