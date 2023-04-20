@@ -2,6 +2,9 @@ import { toUtf8Bytes, isAddress } from 'ethers'
 import { addMethod, string, StringSchema } from 'yup'
 
 export default defineNuxtPlugin(() => {
+  const connectionStore = useConnectionStore()
+  const { getKta } = storeToRefs(connectionStore)
+
   addMethod<StringSchema<string>>(
     string,
     'bytes32',
@@ -23,4 +26,16 @@ export default defineNuxtPlugin(() => {
       })
     }
   )
+
+  addMethod(string, 'townyIsRegistered', function () {
+    return this.test(async (value, context) => {
+      try {
+        return await getKta.value.isRegistered(value as string)
+      } catch (error: any) {
+        return context.createError({
+          message: 'this field must be an TownyFi player',
+        })
+      }
+    })
+  })
 })
