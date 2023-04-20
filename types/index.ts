@@ -9,6 +9,7 @@ declare module 'yup' {
   interface StringSchema {
     bytes32(message?: yup.Message<any>): this
     ethereumAddress(message?: yup.Message<any>): this
+    townyIsRegistered(message?: yup.Message<any>): this
   }
 }
 
