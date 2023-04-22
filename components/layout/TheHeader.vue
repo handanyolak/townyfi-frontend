@@ -1,7 +1,7 @@
 <template>
   <div class="absolute top-0 w-full">
-    <div class="container">
-      <div class="mb-10 flex justify-between py-5">
+    <div class="mx-5">
+      <div class="mb-10 flex items-center justify-between py-5">
         <span
           class="flex select-none items-center bg-gradient-to-r from-towni-brown-dark-400 via-towni-brown-dark-400 to-towni-brown-dark-200 bg-clip-text text-5xl font-extrabold text-transparent"
           style="font-family: Pirata One, sans-serif"
@@ -9,6 +9,13 @@
           <img class="h-7 w-7" src="@/assets/img/paper-document.svg" />
           TownyFi
         </span>
+        <SearchBar
+          class="w-1/3"
+          @searched="showSearchModel = true"
+          v-model="search"
+          :is-disable="isValid"
+          :rules="searchRules"
+        />
         <div class="flex items-center space-x-2">
           <div v-if="hasMetamask" class="flex justify-between py-5">
             <div v-if="onValidNetwork">
@@ -81,6 +88,14 @@
       <InformationModal v-if="showModal" @modalClosed="toggleModal(false)">
         <Register @registerClosed="toggleModal(false)" />
       </InformationModal>
+
+      <InformationModal
+        :content-classes="'overflow-y-auto overflow-x-hidden'"
+        v-if="showSearchModel"
+        @modalClosed="showSearchModel = !showSearchModel"
+      >
+        <OtherUser class="mt-12" :address="search" />
+      </InformationModal>
     </div>
   </div>
 </template>
@@ -89,10 +104,11 @@
 import { useDark, useToggle } from '@vueuse/core'
 import Dropdown from '~/components/Dropdown.vue'
 import InformationModal from '~/components/InformationModal.vue'
+import SearchBar from '~/components/SearchBar.vue'
 import TownyButton from '~/components/TownyButton.vue'
 import { $t } from '~/composables/useLang'
 import { numberToHex } from '~/utils'
-
+import * as yup from 'yup'
 //--------[ Nuxt ]--------//
 const { ktaChainId } = useRuntimeConfig().public
 
@@ -125,6 +141,10 @@ const toggleTheme = useToggle(isDark)
 
 //--------[ Data ]--------//
 const showModal = ref(false)
+const search = ref('')
+const showSearchModel = ref(false)
+const isValid = ref(false)
+const searchRules = yup.string().ethereumAddress()
 
 //--------[ Computed ]--------//
 const audioIcon = computed(() => useSvg(audio.value ? 'sound' : 'sound-mute'))
@@ -139,6 +159,12 @@ const languages = computed(() =>
 )
 
 //--------[ Hooks ]--------//
+watch(search, async (newSearch) => {
+  isValid.value = await searchRules.townyIsRegistered().isValid(newSearch, {
+    abortEarly: true,
+  })
+})
+
 onMounted(() => {
   if (hasMetamask) {
     startEthEvents()
