@@ -5,7 +5,11 @@ export enum TownStatus {
 
 export enum Direction {
   Up,
+  UpRight,
   Right,
+  RightDown,
   Down,
+  DownLeft,
   Left,
+  LeftUp,
 }
