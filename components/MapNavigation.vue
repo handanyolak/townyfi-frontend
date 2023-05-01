@@ -38,10 +38,22 @@
                 @click="navigateByArrow(Direction.Left)"
                 class="rotate-180"
               />
-              <MoveArrow class="rotate-45" />
-              <MoveArrow class="-rotate-45" />
-              <MoveArrow class="rotate-[135deg]" />
-              <MoveArrow class="-rotate-[135deg]" />
+              <MoveArrow
+                @click="navigateByArrow(Direction.RightDown)"
+                class="rotate-45"
+              />
+              <MoveArrow
+                @click="navigateByArrow(Direction.UpRight)"
+                class="-rotate-45"
+              />
+              <MoveArrow
+                @click="navigateByArrow(Direction.DownLeft)"
+                class="rotate-[135deg]"
+              />
+              <MoveArrow
+                @click="navigateByArrow(Direction.LeftUp)"
+                class="-rotate-[135deg]"
+              />
             </div>
           </div>
           <div class="zoom">
@@ -142,22 +154,39 @@ const teleport = () => {
 }
 
 const navigateByArrow = (direction: Direction) => {
-  console.log(direction)
   // TODO:Ethers try this
-  const _originCoordinate = { ...originCoordinate.value }
+  let { _x, _y } = originCoordinate.value
 
-  const navigateValue = BigInt(1)
+  const navigateValue = 1n
   if (direction === Direction.Up) {
-    _originCoordinate._y = _originCoordinate._y + navigateValue
+    _y += navigateValue
+  } else if (direction === Direction.UpRight) {
+    _x += navigateValue
+    _y += navigateValue
   } else if (direction === Direction.Right) {
-    _originCoordinate._x = _originCoordinate._x + navigateValue
+    _x += navigateValue
+  } else if (direction === Direction.RightDown) {
+    _x += navigateValue
+    _y -= navigateValue
   } else if (direction === Direction.Down) {
-    _originCoordinate._y = _originCoordinate._y - navigateValue
+    _y -= navigateValue
+  } else if (direction === Direction.DownLeft) {
+    _x -= navigateValue
+    _y -= navigateValue
+  } else if (direction === Direction.Left) {
+    _x -= navigateValue
+  } else if (direction === Direction.LeftUp) {
+    _x -= navigateValue
+    _y += navigateValue
   } else {
-    _originCoordinate._x = _originCoordinate._x - navigateValue
+    console.log('selam')
+    // TODO: Throw exception etc.
   }
 
-  setUserCoordinate(_originCoordinate)
+  setUserCoordinate({
+    _x,
+    _y,
+  })
 }
 </script>
 
