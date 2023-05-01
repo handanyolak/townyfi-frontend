@@ -1,7 +1,7 @@
 <template>
   <button
     :class="[
-      ' mx-auto rounded-full bg-gradient-to-tr from-towni-brown-dark-300 via-towni-brown-dark-200 to-towni-brown-light-400 p-[2px] text-sm duration-1000 ease-in-out',
+      ' mx-auto rounded-full bg-gradient-to-tr from-towni-brown-dark-300 via-towni-brown-dark-200 to-towni-brown-light-400 p-[2px] text-sm duration-1000 ease-in-out disabled:opacity-50',
       hoverEffect ? 'group' : '',
     ]"
   >
