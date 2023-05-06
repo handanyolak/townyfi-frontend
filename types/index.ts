@@ -1,8 +1,8 @@
 import * as yup from 'yup'
 
 export * from './typechain'
-export * from './components/CastleBox'
-export * from './components/SidebarTab'
+export * from './composables'
+export * from './components'
 export * from './TownyToast'
 
 declare module 'yup' {

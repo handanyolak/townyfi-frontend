@@ -23,7 +23,74 @@ import type {
   TypedContractMethod,
 } from "./common";
 
+export declare namespace Coordinates {
+  export type CoordinateStruct = { _x: BigNumberish; _y: BigNumberish };
+
+  export type CoordinateStructOutput = [_x: bigint, _y: bigint] & {
+    _x: bigint;
+    _y: bigint;
+  };
+}
+
+export declare namespace Timers {
+  export type BlockNumberStruct = { _at: BigNumberish };
+
+  export type BlockNumberStructOutput = [_at: bigint] & { _at: bigint };
+}
+
 export declare namespace IKillThemAll {
+  export type WarStruct = {
+    attackerTownId: BigNumberish;
+    defenderTownId: BigNumberish;
+    attackableAt: Timers.BlockNumberStruct;
+    expiredAt: Timers.BlockNumberStruct;
+  };
+
+  export type WarStructOutput = [
+    attackerTownId: bigint,
+    defenderTownId: bigint,
+    attackableAt: Timers.BlockNumberStructOutput,
+    expiredAt: Timers.BlockNumberStructOutput
+  ] & {
+    attackerTownId: bigint;
+    defenderTownId: bigint;
+    attackableAt: Timers.BlockNumberStructOutput;
+    expiredAt: Timers.BlockNumberStructOutput;
+  };
+
+  export type GamePassStruct = {
+    pass: AddressLike;
+    price: BigNumberish;
+    startBlock: BigNumberish;
+    endBlock: BigNumberish;
+    phaseLimits: BigNumberish[];
+  };
+
+  export type GamePassStructOutput = [
+    pass: string,
+    price: bigint,
+    startBlock: bigint,
+    endBlock: bigint,
+    phaseLimits: bigint[]
+  ] & {
+    pass: string;
+    price: bigint;
+    startBlock: bigint;
+    endBlock: bigint;
+    phaseLimits: bigint[];
+  };
+
+  export type TownLevelStruct = { maxUser: BigNumberish };
+
+  export type TownLevelStructOutput = [maxUser: bigint] & { maxUser: bigint };
+
+  export type UserLevelStruct = { min: BigNumberish; max: BigNumberish };
+
+  export type UserLevelStructOutput = [min: bigint, max: bigint] & {
+    min: bigint;
+    max: bigint;
+  };
+
   export type MaxSettingStruct = {
     health: BigNumberish;
     mana: BigNumberish;
@@ -226,207 +293,9 @@ export declare namespace IKillThemAll {
     multiplier: IKillThemAll.MultiplierSettingStructOutput;
     numberDigits: bigint;
   };
-
-  export type UserLevelStruct = { min: BigNumberish; max: BigNumberish };
-
-  export type UserLevelStructOutput = [min: bigint, max: bigint] & {
-    min: bigint;
-    max: bigint;
-  };
-
-  export type TownLevelStruct = { maxUser: BigNumberish };
-
-  export type TownLevelStructOutput = [maxUser: bigint] & { maxUser: bigint };
-
-  export type WarStruct = {
-    attackerTownId: BigNumberish;
-    defenderTownId: BigNumberish;
-    attackableAt: Timers.BlockNumberStruct;
-    expiredAt: Timers.BlockNumberStruct;
-  };
-
-  export type WarStructOutput = [
-    attackerTownId: bigint,
-    defenderTownId: bigint,
-    attackableAt: Timers.BlockNumberStructOutput,
-    expiredAt: Timers.BlockNumberStructOutput
-  ] & {
-    attackerTownId: bigint;
-    defenderTownId: bigint;
-    attackableAt: Timers.BlockNumberStructOutput;
-    expiredAt: Timers.BlockNumberStructOutput;
-  };
-
-  export type GamePassStruct = {
-    pass: AddressLike;
-    price: BigNumberish;
-    startBlock: BigNumberish;
-    endBlock: BigNumberish;
-    phaseLimits: BigNumberish[];
-  };
-
-  export type GamePassStructOutput = [
-    pass: string,
-    price: bigint,
-    startBlock: bigint,
-    endBlock: bigint,
-    phaseLimits: bigint[]
-  ] & {
-    pass: string;
-    price: bigint;
-    startBlock: bigint;
-    endBlock: bigint;
-    phaseLimits: bigint[];
-  };
-
-  export type TownStruct = {
-    coordinate: Coordinates.CoordinateStruct;
-    name: BytesLike;
-    leader: AddressLike;
-    citizens: AddressLike[];
-    exp: BigNumberish;
-    levelId: BigNumberish;
-    price: BigNumberish;
-    recruitment: boolean;
-    status: BigNumberish;
-    mode: BigNumberish;
-    protectionAt: Timers.BlockNumberStruct;
-  };
-
-  export type TownStructOutput = [
-    coordinate: Coordinates.CoordinateStructOutput,
-    name: string,
-    leader: string,
-    citizens: string[],
-    exp: bigint,
-    levelId: bigint,
-    price: bigint,
-    recruitment: boolean,
-    status: bigint,
-    mode: bigint,
-    protectionAt: Timers.BlockNumberStructOutput
-  ] & {
-    coordinate: Coordinates.CoordinateStructOutput;
-    name: string;
-    leader: string;
-    citizens: string[];
-    exp: bigint;
-    levelId: bigint;
-    price: bigint;
-    recruitment: boolean;
-    status: bigint;
-    mode: bigint;
-    protectionAt: Timers.BlockNumberStructOutput;
-  };
-
-  export type UserTownInfoStruct = {
-    townId: BigNumberish;
-    joinBlock: BigNumberish;
-  };
-
-  export type UserTownInfoStructOutput = [townId: bigint, joinBlock: bigint] & {
-    townId: bigint;
-    joinBlock: bigint;
-  };
-
-  export type UserTimerStruct = {
-    getHealth: Timers.BlockNumberStruct;
-    getMana: Timers.BlockNumberStruct;
-    getEnergy: Timers.BlockNumberStruct;
-    revive: Timers.BlockNumberStruct;
-    teleport: Timers.BlockNumberStruct;
-    teleportToTown: Timers.BlockNumberStruct;
-    prepareToAttack: Timers.BlockNumberStruct;
-  };
-
-  export type UserTimerStructOutput = [
-    getHealth: Timers.BlockNumberStructOutput,
-    getMana: Timers.BlockNumberStructOutput,
-    getEnergy: Timers.BlockNumberStructOutput,
-    revive: Timers.BlockNumberStructOutput,
-    teleport: Timers.BlockNumberStructOutput,
-    teleportToTown: Timers.BlockNumberStructOutput,
-    prepareToAttack: Timers.BlockNumberStructOutput
-  ] & {
-    getHealth: Timers.BlockNumberStructOutput;
-    getMana: Timers.BlockNumberStructOutput;
-    getEnergy: Timers.BlockNumberStructOutput;
-    revive: Timers.BlockNumberStructOutput;
-    teleport: Timers.BlockNumberStructOutput;
-    teleportToTown: Timers.BlockNumberStructOutput;
-    prepareToAttack: Timers.BlockNumberStructOutput;
-  };
-
-  export type UserCharPointStruct = {
-    attack: BigNumberish;
-    defend: BigNumberish;
-  };
-
-  export type UserCharPointStructOutput = [attack: bigint, defend: bigint] & {
-    attack: bigint;
-    defend: bigint;
-  };
-
-  export type UserStruct = {
-    health: BigNumberish;
-    mana: BigNumberish;
-    energy: BigNumberish;
-    armor: BigNumberish;
-    coordinate: Coordinates.CoordinateStruct;
-    name: BytesLike;
-    exp: BigNumberish;
-    levelId: BigNumberish;
-    referrer: AddressLike;
-    townInfo: IKillThemAll.UserTownInfoStruct;
-    timer: IKillThemAll.UserTimerStruct;
-    charPoint: IKillThemAll.UserCharPointStruct;
-  };
-
-  export type UserStructOutput = [
-    health: bigint,
-    mana: bigint,
-    energy: bigint,
-    armor: bigint,
-    coordinate: Coordinates.CoordinateStructOutput,
-    name: string,
-    exp: bigint,
-    levelId: bigint,
-    referrer: string,
-    townInfo: IKillThemAll.UserTownInfoStructOutput,
-    timer: IKillThemAll.UserTimerStructOutput,
-    charPoint: IKillThemAll.UserCharPointStructOutput
-  ] & {
-    health: bigint;
-    mana: bigint;
-    energy: bigint;
-    armor: bigint;
-    coordinate: Coordinates.CoordinateStructOutput;
-    name: string;
-    exp: bigint;
-    levelId: bigint;
-    referrer: string;
-    townInfo: IKillThemAll.UserTownInfoStructOutput;
-    timer: IKillThemAll.UserTimerStructOutput;
-    charPoint: IKillThemAll.UserCharPointStructOutput;
-  };
 }
 
-export declare namespace Coordinates {
-  export type CoordinateStruct = { _x: BigNumberish; _y: BigNumberish };
-
-  export type CoordinateStructOutput = [_x: bigint, _y: bigint] & {
-    _x: bigint;
-    _y: bigint;
-  };
-}
-
-export declare namespace Timers {
-  export type BlockNumberStruct = { _at: BigNumberish };
-
-  export type BlockNumberStructOutput = [_at: bigint] & { _at: bigint };
-}
-
-export interface KillThemAllInterface extends Interface {
+export interface IKillThemAllInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "addGamePass"
@@ -441,41 +310,25 @@ export interface KillThemAllInterface extends Interface {
       | "createUserLevel"
       | "declareWar"
       | "exileCitizen"
-      | "gamePasses"
       | "get"
       | "getAddressesByCoordinate"
-      | "getCitizensByTownId"
-      | "isRegistered"
-      | "isUserClaimedGamePassPhase"
       | "joinTown"
       | "leaveTown"
       | "move"
-      | "owner"
       | "prepareToConditionBonus"
       | "register"
-      | "renounceOwnership"
       | "revive"
       | "setConditionBonus"
-      | "settings"
       | "settleTown"
       | "teleport"
       | "teleportToTown"
-      | "townById"
-      | "townIdByCoordinate"
-      | "townWar"
-      | "transferOwnership"
-      | "typechainGenerateTown"
-      | "typechainGenerateUser"
       | "updateSettings"
-      | "upgradeCharacter"
-      | "userByAddr"
       | "voyageTown"
   ): FunctionFragment;
 
   getEvent(
     nameOrSignatureOrTopic:
       | "LevelUp"
-      | "OwnershipTransferred"
       | "TownCreated"
       | "TownDisbanded"
       | "TownRecruitmentUpdated"
@@ -542,26 +395,10 @@ export interface KillThemAllInterface extends Interface {
     functionFragment: "exileCitizen",
     values: [AddressLike]
   ): string;
-  encodeFunctionData(
-    functionFragment: "gamePasses",
-    values: [BigNumberish]
-  ): string;
   encodeFunctionData(functionFragment: "get", values: [BigNumberish]): string;
   encodeFunctionData(
     functionFragment: "getAddressesByCoordinate",
     values: [Coordinates.CoordinateStruct]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getCitizensByTownId",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "isRegistered",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "isUserClaimedGamePassPhase",
-    values: [AddressLike, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "joinTown",
@@ -569,7 +406,6 @@ export interface KillThemAllInterface extends Interface {
   ): string;
   encodeFunctionData(functionFragment: "leaveTown", values?: undefined): string;
   encodeFunctionData(functionFragment: "move", values: [BigNumberish]): string;
-  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "prepareToConditionBonus",
     values: [BigNumberish, AddressLike]
@@ -578,16 +414,11 @@ export interface KillThemAllInterface extends Interface {
     functionFragment: "register",
     values: [BytesLike, AddressLike]
   ): string;
-  encodeFunctionData(
-    functionFragment: "renounceOwnership",
-    values?: undefined
-  ): string;
   encodeFunctionData(functionFragment: "revive", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "setConditionBonus",
     values: [BigNumberish, BytesLike, BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "settings", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "settleTown",
     values?: undefined
@@ -601,37 +432,8 @@ export interface KillThemAllInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "townById",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "townIdByCoordinate",
-    values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(functionFragment: "townWar", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "transferOwnership",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "typechainGenerateTown",
-    values: [IKillThemAll.TownStruct]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "typechainGenerateUser",
-    values: [IKillThemAll.UserStruct]
-  ): string;
-  encodeFunctionData(
     functionFragment: "updateSettings",
     values: [IKillThemAll.SettingStruct]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "upgradeCharacter",
-    values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "userByAddr",
-    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "voyageTown",
@@ -671,76 +473,34 @@ export interface KillThemAllInterface extends Interface {
     functionFragment: "exileCitizen",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "gamePasses", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "get", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getAddressesByCoordinate",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "getCitizensByTownId",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "isRegistered",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "isUserClaimedGamePassPhase",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "joinTown", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "leaveTown", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "move", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "prepareToConditionBonus",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "register", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "renounceOwnership",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "revive", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setConditionBonus",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "settings", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "settleTown", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "teleport", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "teleportToTown",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "townById", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "townIdByCoordinate",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "townWar", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "transferOwnership",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "typechainGenerateTown",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "typechainGenerateUser",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "updateSettings",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "upgradeCharacter",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "userByAddr", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "voyageTown", data: BytesLike): Result;
 }
 
@@ -749,19 +509,6 @@ export namespace LevelUpEvent {
   export type OutputTuple = [user: string];
   export interface OutputObject {
     user: string;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace OwnershipTransferredEvent {
-  export type InputTuple = [previousOwner: AddressLike, newOwner: AddressLike];
-  export type OutputTuple = [previousOwner: string, newOwner: string];
-  export interface OutputObject {
-    previousOwner: string;
-    newOwner: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -1020,12 +767,12 @@ export namespace WarDeclaredEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export interface KillThemAll extends BaseContract {
+export interface IKillThemAll extends BaseContract {
   connect(runner?: ContractRunner | null): BaseContract;
   attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
-  interface: KillThemAllInterface;
+  interface: IKillThemAllInterface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,
@@ -1111,22 +858,9 @@ export interface KillThemAll extends BaseContract {
   declareWar: TypedContractMethod<[townId: BigNumberish], [void], "nonpayable">;
 
   exileCitizen: TypedContractMethod<
-    [citizen: AddressLike],
+    [citizen_: AddressLike],
     [void],
     "nonpayable"
-  >;
-
-  gamePasses: TypedContractMethod<
-    [arg0: BigNumberish],
-    [
-      [string, bigint, bigint, bigint] & {
-        pass: string;
-        price: bigint;
-        startBlock: bigint;
-        endBlock: bigint;
-      }
-    ],
-    "view"
   >;
 
   get: TypedContractMethod<[get_: BigNumberish], [void], "nonpayable">;
@@ -1137,27 +871,11 @@ export interface KillThemAll extends BaseContract {
     "view"
   >;
 
-  getCitizensByTownId: TypedContractMethod<
-    [townId: BigNumberish],
-    [string[]],
-    "view"
-  >;
-
-  isRegistered: TypedContractMethod<[user: AddressLike], [boolean], "view">;
-
-  isUserClaimedGamePassPhase: TypedContractMethod<
-    [arg0: AddressLike, arg1: BigNumberish, arg2: BigNumberish],
-    [boolean],
-    "view"
-  >;
-
   joinTown: TypedContractMethod<[townId: BigNumberish], [void], "nonpayable">;
 
   leaveTown: TypedContractMethod<[], [void], "nonpayable">;
 
   move: TypedContractMethod<[direction: BigNumberish], [void], "nonpayable">;
-
-  owner: TypedContractMethod<[], [string], "view">;
 
   prepareToConditionBonus: TypedContractMethod<
     [to: BigNumberish, target: AddressLike],
@@ -1171,40 +889,12 @@ export interface KillThemAll extends BaseContract {
     "nonpayable"
   >;
 
-  renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
-
   revive: TypedContractMethod<[], [void], "nonpayable">;
 
   setConditionBonus: TypedContractMethod<
     [to: BigNumberish, addressesHash: BytesLike, random: BigNumberish],
     [void],
     "nonpayable"
-  >;
-
-  settings: TypedContractMethod<
-    [],
-    [
-      [
-        IKillThemAll.MaxSettingStructOutput,
-        IKillThemAll.PriceSettingStructOutput,
-        IKillThemAll.RateSettingStructOutput,
-        IKillThemAll.TimeSettingStructOutput,
-        IKillThemAll.MinSettingStructOutput,
-        IKillThemAll.ExpSettingStructOutput,
-        IKillThemAll.MultiplierSettingStructOutput,
-        bigint
-      ] & {
-        max: IKillThemAll.MaxSettingStructOutput;
-        price: IKillThemAll.PriceSettingStructOutput;
-        rate: IKillThemAll.RateSettingStructOutput;
-        time: IKillThemAll.TimeSettingStructOutput;
-        min: IKillThemAll.MinSettingStructOutput;
-        exp: IKillThemAll.ExpSettingStructOutput;
-        multiplier: IKillThemAll.MultiplierSettingStructOutput;
-        numberDigits: bigint;
-      }
-    ],
-    "view"
   >;
 
   settleTown: TypedContractMethod<[], [void], "nonpayable">;
@@ -1217,106 +907,10 @@ export interface KillThemAll extends BaseContract {
 
   teleportToTown: TypedContractMethod<[], [void], "nonpayable">;
 
-  townById: TypedContractMethod<
-    [arg0: BigNumberish],
-    [
-      [
-        Coordinates.CoordinateStructOutput,
-        string,
-        string,
-        bigint,
-        bigint,
-        bigint,
-        boolean,
-        bigint,
-        bigint,
-        Timers.BlockNumberStructOutput
-      ] & {
-        coordinate: Coordinates.CoordinateStructOutput;
-        name: string;
-        leader: string;
-        exp: bigint;
-        levelId: bigint;
-        price: bigint;
-        recruitment: boolean;
-        status: bigint;
-        mode: bigint;
-        protectionAt: Timers.BlockNumberStructOutput;
-      }
-    ],
-    "view"
-  >;
-
-  townIdByCoordinate: TypedContractMethod<
-    [arg0: BigNumberish, arg1: BigNumberish],
-    [bigint],
-    "view"
-  >;
-
-  townWar: TypedContractMethod<[], [void], "nonpayable">;
-
-  transferOwnership: TypedContractMethod<
-    [newOwner: AddressLike],
-    [void],
-    "nonpayable"
-  >;
-
-  typechainGenerateTown: TypedContractMethod<
-    [town: IKillThemAll.TownStruct],
-    [void],
-    "nonpayable"
-  >;
-
-  typechainGenerateUser: TypedContractMethod<
-    [user: IKillThemAll.UserStruct],
-    [void],
-    "nonpayable"
-  >;
-
   updateSettings: TypedContractMethod<
     [settings_: IKillThemAll.SettingStruct],
     [void],
     "nonpayable"
-  >;
-
-  upgradeCharacter: TypedContractMethod<
-    [charInfo: BigNumberish, amount: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
-
-  userByAddr: TypedContractMethod<
-    [arg0: AddressLike],
-    [
-      [
-        bigint,
-        bigint,
-        bigint,
-        bigint,
-        Coordinates.CoordinateStructOutput,
-        string,
-        bigint,
-        bigint,
-        string,
-        IKillThemAll.UserTownInfoStructOutput,
-        IKillThemAll.UserTimerStructOutput,
-        IKillThemAll.UserCharPointStructOutput
-      ] & {
-        health: bigint;
-        mana: bigint;
-        energy: bigint;
-        armor: bigint;
-        coordinate: Coordinates.CoordinateStructOutput;
-        name: string;
-        exp: bigint;
-        levelId: bigint;
-        referrer: string;
-        townInfo: IKillThemAll.UserTownInfoStructOutput;
-        timer: IKillThemAll.UserTimerStructOutput;
-        charPoint: IKillThemAll.UserCharPointStructOutput;
-      }
-    ],
-    "view"
   >;
 
   voyageTown: TypedContractMethod<[], [void], "nonpayable">;
@@ -1380,21 +974,7 @@ export interface KillThemAll extends BaseContract {
   ): TypedContractMethod<[townId: BigNumberish], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "exileCitizen"
-  ): TypedContractMethod<[citizen: AddressLike], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "gamePasses"
-  ): TypedContractMethod<
-    [arg0: BigNumberish],
-    [
-      [string, bigint, bigint, bigint] & {
-        pass: string;
-        price: bigint;
-        startBlock: bigint;
-        endBlock: bigint;
-      }
-    ],
-    "view"
-  >;
+  ): TypedContractMethod<[citizen_: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "get"
   ): TypedContractMethod<[get_: BigNumberish], [void], "nonpayable">;
@@ -1406,19 +986,6 @@ export interface KillThemAll extends BaseContract {
     "view"
   >;
   getFunction(
-    nameOrSignature: "getCitizensByTownId"
-  ): TypedContractMethod<[townId: BigNumberish], [string[]], "view">;
-  getFunction(
-    nameOrSignature: "isRegistered"
-  ): TypedContractMethod<[user: AddressLike], [boolean], "view">;
-  getFunction(
-    nameOrSignature: "isUserClaimedGamePassPhase"
-  ): TypedContractMethod<
-    [arg0: AddressLike, arg1: BigNumberish, arg2: BigNumberish],
-    [boolean],
-    "view"
-  >;
-  getFunction(
     nameOrSignature: "joinTown"
   ): TypedContractMethod<[townId: BigNumberish], [void], "nonpayable">;
   getFunction(
@@ -1427,9 +994,6 @@ export interface KillThemAll extends BaseContract {
   getFunction(
     nameOrSignature: "move"
   ): TypedContractMethod<[direction: BigNumberish], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "owner"
-  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "prepareToConditionBonus"
   ): TypedContractMethod<
@@ -1445,9 +1009,6 @@ export interface KillThemAll extends BaseContract {
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "renounceOwnership"
-  ): TypedContractMethod<[], [void], "nonpayable">;
-  getFunction(
     nameOrSignature: "revive"
   ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
@@ -1456,33 +1017,6 @@ export interface KillThemAll extends BaseContract {
     [to: BigNumberish, addressesHash: BytesLike, random: BigNumberish],
     [void],
     "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "settings"
-  ): TypedContractMethod<
-    [],
-    [
-      [
-        IKillThemAll.MaxSettingStructOutput,
-        IKillThemAll.PriceSettingStructOutput,
-        IKillThemAll.RateSettingStructOutput,
-        IKillThemAll.TimeSettingStructOutput,
-        IKillThemAll.MinSettingStructOutput,
-        IKillThemAll.ExpSettingStructOutput,
-        IKillThemAll.MultiplierSettingStructOutput,
-        bigint
-      ] & {
-        max: IKillThemAll.MaxSettingStructOutput;
-        price: IKillThemAll.PriceSettingStructOutput;
-        rate: IKillThemAll.RateSettingStructOutput;
-        time: IKillThemAll.TimeSettingStructOutput;
-        min: IKillThemAll.MinSettingStructOutput;
-        exp: IKillThemAll.ExpSettingStructOutput;
-        multiplier: IKillThemAll.MultiplierSettingStructOutput;
-        numberDigits: bigint;
-      }
-    ],
-    "view"
   >;
   getFunction(
     nameOrSignature: "settleTown"
@@ -1498,103 +1032,11 @@ export interface KillThemAll extends BaseContract {
     nameOrSignature: "teleportToTown"
   ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
-    nameOrSignature: "townById"
-  ): TypedContractMethod<
-    [arg0: BigNumberish],
-    [
-      [
-        Coordinates.CoordinateStructOutput,
-        string,
-        string,
-        bigint,
-        bigint,
-        bigint,
-        boolean,
-        bigint,
-        bigint,
-        Timers.BlockNumberStructOutput
-      ] & {
-        coordinate: Coordinates.CoordinateStructOutput;
-        name: string;
-        leader: string;
-        exp: bigint;
-        levelId: bigint;
-        price: bigint;
-        recruitment: boolean;
-        status: bigint;
-        mode: bigint;
-        protectionAt: Timers.BlockNumberStructOutput;
-      }
-    ],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "townIdByCoordinate"
-  ): TypedContractMethod<
-    [arg0: BigNumberish, arg1: BigNumberish],
-    [bigint],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "townWar"
-  ): TypedContractMethod<[], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "transferOwnership"
-  ): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "typechainGenerateTown"
-  ): TypedContractMethod<[town: IKillThemAll.TownStruct], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "typechainGenerateUser"
-  ): TypedContractMethod<[user: IKillThemAll.UserStruct], [void], "nonpayable">;
-  getFunction(
     nameOrSignature: "updateSettings"
   ): TypedContractMethod<
     [settings_: IKillThemAll.SettingStruct],
     [void],
     "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "upgradeCharacter"
-  ): TypedContractMethod<
-    [charInfo: BigNumberish, amount: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "userByAddr"
-  ): TypedContractMethod<
-    [arg0: AddressLike],
-    [
-      [
-        bigint,
-        bigint,
-        bigint,
-        bigint,
-        Coordinates.CoordinateStructOutput,
-        string,
-        bigint,
-        bigint,
-        string,
-        IKillThemAll.UserTownInfoStructOutput,
-        IKillThemAll.UserTimerStructOutput,
-        IKillThemAll.UserCharPointStructOutput
-      ] & {
-        health: bigint;
-        mana: bigint;
-        energy: bigint;
-        armor: bigint;
-        coordinate: Coordinates.CoordinateStructOutput;
-        name: string;
-        exp: bigint;
-        levelId: bigint;
-        referrer: string;
-        townInfo: IKillThemAll.UserTownInfoStructOutput;
-        timer: IKillThemAll.UserTimerStructOutput;
-        charPoint: IKillThemAll.UserCharPointStructOutput;
-      }
-    ],
-    "view"
   >;
   getFunction(
     nameOrSignature: "voyageTown"
@@ -1606,13 +1048,6 @@ export interface KillThemAll extends BaseContract {
     LevelUpEvent.InputTuple,
     LevelUpEvent.OutputTuple,
     LevelUpEvent.OutputObject
-  >;
-  getEvent(
-    key: "OwnershipTransferred"
-  ): TypedContractEvent<
-    OwnershipTransferredEvent.InputTuple,
-    OwnershipTransferredEvent.OutputTuple,
-    OwnershipTransferredEvent.OutputObject
   >;
   getEvent(
     key: "TownCreated"
@@ -1758,17 +1193,6 @@ export interface KillThemAll extends BaseContract {
       LevelUpEvent.InputTuple,
       LevelUpEvent.OutputTuple,
       LevelUpEvent.OutputObject
-    >;
-
-    "OwnershipTransferred(address,address)": TypedContractEvent<
-      OwnershipTransferredEvent.InputTuple,
-      OwnershipTransferredEvent.OutputTuple,
-      OwnershipTransferredEvent.OutputObject
-    >;
-    OwnershipTransferred: TypedContractEvent<
-      OwnershipTransferredEvent.InputTuple,
-      OwnershipTransferredEvent.OutputTuple,
-      OwnershipTransferredEvent.OutputObject
     >;
 
     "TownCreated()": TypedContractEvent<
