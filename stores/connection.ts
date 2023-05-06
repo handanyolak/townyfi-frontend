@@ -1,4 +1,4 @@
-import { KillThemAll, KtaToken } from '~/types/typechain'
+import { KillThemAll, KtaToken, MultiCall } from '~/types/typechain'
 import { BrowserProvider } from 'ethers'
 import { numberToHex } from '~/utils'
 
@@ -17,12 +17,14 @@ export const useConnectionStore = defineStore('connectionStore', () => {
   // NOTE: The reason for doing it this way is due to the bugs in the "ethers" library.
   let ktaToken: KtaToken = {} as KtaToken
   let kta: KillThemAll = {} as KillThemAll
+  let multiCall: MultiCall = {} as MultiCall
 
   //--------[ Getters ]--------//
   const signer = computed(async () => await getProvider.value.getSigner())
   const getProvider = computed(() => provider)
   const getKtaToken = computed(() => ktaToken)
   const getKta = computed(() => kta)
+  const getMultiCall = computed(() => multiCall)
 
   //--------[ Actions ]--------//
   const setKtaToken = (newValue: KtaToken) => {
@@ -31,6 +33,10 @@ export const useConnectionStore = defineStore('connectionStore', () => {
 
   const setKta = (newValue: KillThemAll) => {
     kta = newValue
+  }
+
+  const setMultiCall = (newValue: MultiCall) => {
+    multiCall = newValue
   }
 
   const setOnValidNetwork = (newValue: boolean) => {
@@ -47,10 +53,12 @@ export const useConnectionStore = defineStore('connectionStore', () => {
     getProvider,
     isConnected,
     getKtaToken,
+    getMultiCall,
     hasMetamask,
     onValidNetwork,
     setKta,
     setKtaToken,
+    setMultiCall,
     setIsConnected,
     setOnValidNetwork,
   }
