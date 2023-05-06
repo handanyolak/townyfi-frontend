@@ -1,12 +1,15 @@
-import { ContractEventPayload } from 'ethers'
 import { useToggle, useStorage } from '@vueuse/core'
 import { IKillThemAll, Coordinates } from '~/types/typechain/KillThemAll'
-import { KillThemAll__factory, KtaToken__factory } from '~/types/typechain'
-import deepmerge from 'deepmerge'
+import {
+  KillThemAll__factory,
+  KtaToken__factory,
+  MultiCall__factory,
+} from '~/types/typechain'
 
 export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   //--------[ Nuxt Imports ]--------//
-  const { ktaAddress, ktaTokenAddress } = useRuntimeConfig().public
+  const { ktaAddress, ktaTokenAddress, multiCallAddress } =
+    useRuntimeConfig().public
 
   //--------[ Stores ]--------//
   const userWalletStore = useUserWalletStore()
@@ -14,7 +17,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const connectionStore = useConnectionStore()
 
   const { setCurrentBlockNumber, connect, setKtaAllowance } = userWalletStore
-  const { hasMetamask, setKtaToken, setKta } = connectionStore
+  const { hasMetamask, setKtaToken, setKta, setMultiCall } = connectionStore
   const {
     setUser,
     setSetting,
@@ -76,8 +79,14 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
 
         const kta = KillThemAll__factory.connect(ktaAddress, getSigner.value)
 
+        const multiCall = MultiCall__factory.connect(
+          multiCallAddress,
+          getSigner.value
+        )
+
         setKtaToken(ktaToken)
         setKta(kta)
+        setMultiCall(multiCall)
 
         const {
           health,
