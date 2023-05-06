@@ -41,6 +41,7 @@ export default defineNuxtConfig({
     public: {
       ktaAddress: process.env.NUXT_KTA_ADDRESS,
       ktaTokenAddress: process.env.NUXT_KTA_TOKEN_ADDRESS,
+      multiCallAddress: process.env.NUXT_MULTICALL_ADDRESS,
       ktaChainId: convertToInteger(process.env.NUXT_KTA_CHAIN_ID, 1337),
       minNearLevel: convertToInteger(process.env.NUXT_MIN_NEAR_LEVEL, 2),
       maxNearLevel: convertToInteger(process.env.NUXT_MAX_NEAR_LEVEL, 5),
