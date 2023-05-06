@@ -1,20 +1,17 @@
 import { StorageSerializers, useStorage } from '@vueuse/core'
-import { CoordinateItem } from '~/types'
+import { CoordinateItem, MultiCallData } from '~/types'
 import { middleElement } from '~/utils'
-import {
-  getAddressesLengthByCoordinateSlot,
-  getTownIdByCoordinateSlot,
-} from '~/composables/useContractReader'
+import { useMultiCall } from '~/composables/useMultiCall'
 import { IKillThemAll, Coordinates } from '~/types/typechain/KillThemAll'
 
 export const useUserGameStore = defineStore('userGameStore', () => {
   //--------[ Nuxt Imports ]--------//
-  const { minNearLevel, maxNearLevel, ktaAddress } = useRuntimeConfig().public
+  const { minNearLevel, maxNearLevel } = useRuntimeConfig().public
 
   //--------[ Stores ]--------//
   const appOptionsStore = useAppOptionsStore()
   const connectionStore = useConnectionStore()
-  const { getProvider } = storeToRefs(connectionStore)
+  const { getKta } = storeToRefs(connectionStore)
 
   //--------[ States ]--------//
   const isRegistered = ref(false)
@@ -72,17 +69,23 @@ export const useUserGameStore = defineStore('userGameStore', () => {
   }
 
   const setUserCoordinate = (coordinates: Coordinates.CoordinateStruct) => {
-    const promises = []
+    isLoading.value = true
+
     const x = BigInt(coordinates._x)
     const y = BigInt(coordinates._y)
-
-    isLoading.value = true
-    addressesByCoordinate.value = []
     const minScanX = x - BigInt(nearLevel.value)
     const maxScanX = x + BigInt(nearLevel.value)
     const minScanY = y - BigInt(nearLevel.value)
     const maxScanY = y + BigInt(nearLevel.value)
 
+    const multiCallData: MultiCallData[] = [
+      {
+        contract: getKta.value,
+        functionsData: [],
+      },
+    ]
+
+    addressesByCoordinate.value = []
     for (let j: bigint = maxScanY; j >= minScanY; ) {
       for (let i: bigint = minScanX; i <= maxScanX; ) {
         const coordinateItem: CoordinateItem = {
@@ -90,55 +93,23 @@ export const useUserGameStore = defineStore('userGameStore', () => {
           _y: j,
         }
 
-        // kta.getAddressesByCoordinate(coordinateItem).then((addresses) => {
-        //   userCountByCoordinate.value.set(mapKey, addresses.length)
-        //   console.log(
-        //     `${mapKey} icin getAddressesByCoordinate datasi aliniyor`
-        //   )
-        // })
-
-        // kta
-        //   .townIdByCoordinate(coordinateItem._x, coordinateItem._y)
-        //   .then((townId) => {
-        //     hasTownByCoordinate.value.set(mapKey, !townId.isZero())
-        //   })
-
         const mapKey = `${coordinateItem._x.toString()},${coordinateItem._y.toString()}`
         if (!userCountByCoordinate.value.has(mapKey)) {
           userCountByCoordinate.value.set(mapKey, 0)
 
-          const slot = getAddressesLengthByCoordinateSlot(
-            coordinateItem._x,
-            coordinateItem._y
-          )
-
-          promises.push(
-            getProvider.value
-              .getStorage(ktaAddress, slot)
-              .then((addressesLength) => {
-                // TODO: use bigint for this
-                userCountByCoordinate.value.set(
-                  mapKey,
-                  Number(addressesLength) || 0
-                )
-              })
-          )
+          multiCallData[0].functionsData.push({
+            name: 'getAddressesByCoordinate',
+            inputs: [coordinateItem],
+          })
         }
 
         if (!hasTownByCoordinate.value.has(mapKey)) {
           hasTownByCoordinate.value.set(mapKey, false)
 
-          const slot = getTownIdByCoordinateSlot(
-            coordinateItem._x,
-            coordinateItem._y
-          )
-
-          promises.push(
-            getProvider.value.getStorage(ktaAddress, slot).then((townId) => {
-              // TODO: use bigint for this
-              hasTownByCoordinate.value.set(mapKey, Boolean(Number(townId)))
-            })
-          )
+          multiCallData[0].functionsData.push({
+            name: 'townIdByCoordinate',
+            inputs: [coordinateItem._x, coordinateItem._y],
+          })
         }
 
         addressesByCoordinate.value.push(coordinateItem)
@@ -148,22 +119,32 @@ export const useUserGameStore = defineStore('userGameStore', () => {
       j -= BigInt(1)
     }
 
-    // NOTE: use for execute all async
-    // Promise.all(promises).catch(() => {
-    //   // do nothing
-    // })
+    useMultiCall(multiCallData).then((results) => {
+      const resultInfosByAddrKey = results.values()
+      for (const values of resultInfosByAddrKey) {
+        const resultInfos = values.values()
+        for (const resultInfo of resultInfos) {
+          if (resultInfo.hasError) {
+            continue
+          }
 
-    // NOTE: use for execute all sequentially
-    promises.forEach((promiseFactory) => {
-      promiseFactory.catch(() => {
-        // do nothing
-      })
+          if (resultInfo.name === 'getAddressesByCoordinate') {
+            const addressLength = resultInfo.result[0].length
+            const { _x, _y } = resultInfo.inputs[0]
+            const mapKey = `${_x.toString()},${_y.toString()}`
+            userCountByCoordinate.value.set(mapKey, addressLength)
+          } else if (resultInfo.name === 'townIdByCoordinate') {
+            const [_x, _y] = resultInfo.inputs
+            const mapKey = `${_x.toString()},${_y.toString()}`
+            hasTownByCoordinate.value.set(mapKey, Boolean(resultInfo.result[0]))
+          }
+        }
+      }
     })
 
     const middleCoordinate = middleElement<CoordinateItem>(
       addressesByCoordinate.value
     )
-
     appOptionsStore.setOriginCoordinate(middleCoordinate)
 
     isLoading.value = false

@@ -27,43 +27,23 @@ export interface KtaTokenInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "allowance"
-      | "allowance(address,address)"
       | "approve"
-      | "approve(address,uint256)"
       | "balanceOf"
-      | "balanceOf(address)"
       | "decimals"
-      | "decimals()"
       | "decreaseAllowance"
-      | "decreaseAllowance(address,uint256)"
       | "increaseAllowance"
-      | "increaseAllowance(address,uint256)"
+      | "mint"
       | "name"
-      | "name()"
       | "symbol"
-      | "symbol()"
       | "totalSupply"
-      | "totalSupply()"
       | "transfer"
-      | "transfer(address,uint256)"
       | "transferFrom"
-      | "transferFrom(address,address,uint256)"
   ): FunctionFragment;
 
-  getEvent(
-    nameOrSignatureOrTopic:
-      | "Approval"
-      | "Approval(address,address,uint256)"
-      | "Transfer"
-      | "Transfer(address,address,uint256)"
-  ): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Approval" | "Transfer"): EventFragment;
 
   encodeFunctionData(
     functionFragment: "allowance",
-    values: [AddressLike, AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "allowance(address,address)",
     values: [AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
@@ -71,28 +51,12 @@ export interface KtaTokenInterface extends Interface {
     values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "approve(address,uint256)",
-    values: [AddressLike, BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "balanceOf",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "balanceOf(address)",
     values: [AddressLike]
   ): string;
   encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "decimals()",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "decreaseAllowance",
-    values: [AddressLike, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "decreaseAllowance(address,uint256)",
     values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
@@ -100,19 +64,13 @@ export interface KtaTokenInterface extends Interface {
     values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "increaseAllowance(address,uint256)",
+    functionFragment: "mint",
     values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
-  encodeFunctionData(functionFragment: "name()", values?: undefined): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
-  encodeFunctionData(functionFragment: "symbol()", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "totalSupply",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "totalSupply()",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -120,74 +78,32 @@ export interface KtaTokenInterface extends Interface {
     values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "transfer(address,uint256)",
-    values: [AddressLike, BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "transferFrom",
-    values: [AddressLike, AddressLike, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "transferFrom(address,address,uint256)",
     values: [AddressLike, AddressLike, BigNumberish]
   ): string;
 
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "allowance(address,address)",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "approve(address,uint256)",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "balanceOf(address)",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "decimals()", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "decreaseAllowance",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "decreaseAllowance(address,uint256)",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "increaseAllowance",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "increaseAllowance(address,uint256)",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "name()", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "symbol()", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "totalSupply()",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "transfer", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "transfer(address,uint256)",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "transferFrom",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "transferFrom(address,address,uint256)",
     data: BytesLike
   ): Result;
 }
@@ -229,9 +145,7 @@ export namespace TransferEvent {
 }
 
 export interface KtaToken extends BaseContract {
-  contractName: "KtaToken";
-
-  connect(runner?: ContractRunner | null): KtaToken;
+  connect(runner?: ContractRunner | null): BaseContract;
   attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
@@ -280,19 +194,7 @@ export interface KtaToken extends BaseContract {
     "view"
   >;
 
-  "allowance(address,address)": TypedContractMethod<
-    [owner: AddressLike, spender: AddressLike],
-    [bigint],
-    "view"
-  >;
-
   approve: TypedContractMethod<
-    [spender: AddressLike, amount: BigNumberish],
-    [boolean],
-    "nonpayable"
-  >;
-
-  "approve(address,uint256)": TypedContractMethod<
     [spender: AddressLike, amount: BigNumberish],
     [boolean],
     "nonpayable"
@@ -300,23 +202,9 @@ export interface KtaToken extends BaseContract {
 
   balanceOf: TypedContractMethod<[account: AddressLike], [bigint], "view">;
 
-  "balanceOf(address)": TypedContractMethod<
-    [account: AddressLike],
-    [bigint],
-    "view"
-  >;
-
   decimals: TypedContractMethod<[], [bigint], "view">;
 
-  "decimals()": TypedContractMethod<[], [bigint], "view">;
-
   decreaseAllowance: TypedContractMethod<
-    [spender: AddressLike, subtractedValue: BigNumberish],
-    [boolean],
-    "nonpayable"
-  >;
-
-  "decreaseAllowance(address,uint256)": TypedContractMethod<
     [spender: AddressLike, subtractedValue: BigNumberish],
     [boolean],
     "nonpayable"
@@ -328,23 +216,17 @@ export interface KtaToken extends BaseContract {
     "nonpayable"
   >;
 
-  "increaseAllowance(address,uint256)": TypedContractMethod<
-    [spender: AddressLike, addedValue: BigNumberish],
-    [boolean],
+  mint: TypedContractMethod<
+    [_address: AddressLike, amount: BigNumberish],
+    [void],
     "nonpayable"
   >;
 
   name: TypedContractMethod<[], [string], "view">;
 
-  "name()": TypedContractMethod<[], [string], "view">;
-
   symbol: TypedContractMethod<[], [string], "view">;
 
-  "symbol()": TypedContractMethod<[], [string], "view">;
-
   totalSupply: TypedContractMethod<[], [bigint], "view">;
-
-  "totalSupply()": TypedContractMethod<[], [bigint], "view">;
 
   transfer: TypedContractMethod<
     [to: AddressLike, amount: BigNumberish],
@@ -352,19 +234,7 @@ export interface KtaToken extends BaseContract {
     "nonpayable"
   >;
 
-  "transfer(address,uint256)": TypedContractMethod<
-    [to: AddressLike, amount: BigNumberish],
-    [boolean],
-    "nonpayable"
-  >;
-
   transferFrom: TypedContractMethod<
-    [from: AddressLike, to: AddressLike, amount: BigNumberish],
-    [boolean],
-    "nonpayable"
-  >;
-
-  "transferFrom(address,address,uint256)": TypedContractMethod<
     [from: AddressLike, to: AddressLike, amount: BigNumberish],
     [boolean],
     "nonpayable"
@@ -382,21 +252,7 @@ export interface KtaToken extends BaseContract {
     "view"
   >;
   getFunction(
-    nameOrSignature: "allowance(address,address)"
-  ): TypedContractMethod<
-    [owner: AddressLike, spender: AddressLike],
-    [bigint],
-    "view"
-  >;
-  getFunction(
     nameOrSignature: "approve"
-  ): TypedContractMethod<
-    [spender: AddressLike, amount: BigNumberish],
-    [boolean],
-    "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "approve(address,uint256)"
   ): TypedContractMethod<
     [spender: AddressLike, amount: BigNumberish],
     [boolean],
@@ -406,23 +262,10 @@ export interface KtaToken extends BaseContract {
     nameOrSignature: "balanceOf"
   ): TypedContractMethod<[account: AddressLike], [bigint], "view">;
   getFunction(
-    nameOrSignature: "balanceOf(address)"
-  ): TypedContractMethod<[account: AddressLike], [bigint], "view">;
-  getFunction(
     nameOrSignature: "decimals"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "decimals()"
-  ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
     nameOrSignature: "decreaseAllowance"
-  ): TypedContractMethod<
-    [spender: AddressLike, subtractedValue: BigNumberish],
-    [boolean],
-    "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "decreaseAllowance(address,uint256)"
   ): TypedContractMethod<
     [spender: AddressLike, subtractedValue: BigNumberish],
     [boolean],
@@ -436,29 +279,20 @@ export interface KtaToken extends BaseContract {
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "increaseAllowance(address,uint256)"
+    nameOrSignature: "mint"
   ): TypedContractMethod<
-    [spender: AddressLike, addedValue: BigNumberish],
-    [boolean],
+    [_address: AddressLike, amount: BigNumberish],
+    [void],
     "nonpayable"
   >;
   getFunction(
     nameOrSignature: "name"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
-    nameOrSignature: "name()"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
     nameOrSignature: "symbol"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
-    nameOrSignature: "symbol()"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
     nameOrSignature: "totalSupply"
-  ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "totalSupply()"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "transfer"
@@ -468,21 +302,7 @@ export interface KtaToken extends BaseContract {
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "transfer(address,uint256)"
-  ): TypedContractMethod<
-    [to: AddressLike, amount: BigNumberish],
-    [boolean],
-    "nonpayable"
-  >;
-  getFunction(
     nameOrSignature: "transferFrom"
-  ): TypedContractMethod<
-    [from: AddressLike, to: AddressLike, amount: BigNumberish],
-    [boolean],
-    "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "transferFrom(address,address,uint256)"
   ): TypedContractMethod<
     [from: AddressLike, to: AddressLike, amount: BigNumberish],
     [boolean],
@@ -497,25 +317,11 @@ export interface KtaToken extends BaseContract {
     ApprovalEvent.OutputObject
   >;
   getEvent(
-    key: "Approval(address,address,uint256)"
-  ): TypedContractEvent<
-    Approval_address_address_uint256_Event.InputTuple,
-    Approval_address_address_uint256_Event.OutputTuple,
-    Approval_address_address_uint256_Event.OutputObject
-  >;
-  getEvent(
     key: "Transfer"
   ): TypedContractEvent<
     TransferEvent.InputTuple,
     TransferEvent.OutputTuple,
     TransferEvent.OutputObject
-  >;
-  getEvent(
-    key: "Transfer(address,address,uint256)"
-  ): TypedContractEvent<
-    Transfer_address_address_uint256_Event.InputTuple,
-    Transfer_address_address_uint256_Event.OutputTuple,
-    Transfer_address_address_uint256_Event.OutputObject
   >;
 
   filters: {
