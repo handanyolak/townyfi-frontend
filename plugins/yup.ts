@@ -27,6 +27,16 @@ export default defineNuxtPlugin(() => {
     }
   )
 
+  addMethod<StringSchema<string>>(
+    string,
+    'coordinate',
+    function (message = 'this field must be a coordinate') {
+      return this.test('coordinate', message, (value) => {
+        return /^-?\d+,-?\d+$/.test(value)
+      })
+    }
+  )
+
   addMethod(string, 'townyIsRegistered', function () {
     return this.test(async (value, context) => {
       try {
