@@ -9,7 +9,7 @@
           <VErrorMessage class="text-red-800" name="name" />
         </VForm>
       </template>
-      <span>{{ decodeBytes32String(townInfo.name as any) }}</span>
+      <span>{{ townName }}</span>
       <template #tooltip>
         <span
           >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
@@ -19,9 +19,9 @@
     </ListItem>
     <ListItem tooltip>
       <template #title> Coordinate </template>
-      <span>({{ townInfo.coordinate._x.toString() }}</span>
+      <span>({{ town.coordinate._x.toString() }}</span>
       <span>,</span>
-      <span>{{ townInfo.coordinate._y.toString() }})</span>
+      <span>{{ town.coordinate._y.toString() }})</span>
       <template #tooltip>
         <span
           >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
@@ -31,7 +31,7 @@
     </ListItem>
     <ListItem tooltip>
       <template #title> Level: </template>
-      <span>{{ townInfo.levelId }}</span>
+      <span>{{ town.levelId }}</span>
       <template #tooltip>
         <span
           >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
@@ -41,7 +41,7 @@
     </ListItem>
     <ListItem tooltip>
       <template #title> Exp: </template>
-      <span>{{ townInfo.exp }}</span>
+      <span>{{ town.exp }}</span>
       <template #tooltip>
         <span
           >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
@@ -49,7 +49,7 @@
         >
       </template>
     </ListItem>
-    <ListItem copiable tooltip :copy-value="townInfo.leader">
+    <ListItem copiable tooltip :copy-value="town.leader">
       <template #title> Leader: </template>
       <span>{{ leader }}</span>
       <template #tooltip>
@@ -61,7 +61,7 @@
     </ListItem>
     <ListItem tooltip>
       <template #title> Status: </template>
-      <span>{{ TownStatus[Number(townInfo.status)] }}</span>
+      <span>{{ TownStatus[Number(town.status)] }}</span>
       <template #tooltip>
         <span
           >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
@@ -69,6 +69,32 @@
         >
       </template>
     </ListItem>
+    <ListItem tooltip>
+      <template #title> Recruitment: </template>
+      <span>{{ town.recruitment }}</span>
+      <template #tooltip>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
+      </template>
+    </ListItem>
+    <ListItem tooltip>
+      <template #title> ID: </template>
+      <span>{{ user.townInfo.townId }}</span>
+      <template #tooltip>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
+      </template>
+    </ListItem>
+    <TownyButton v-if="isLeader" @click="settleTown()">
+      Settle Town
+    </TownyButton>
+    <TownyButton v-if="isLeader" @click="toggleRecruitment()">
+      Recruitment Town
+    </TownyButton>
     <ListTitle>Citizens</ListTitle>
     <ScrollableList
       :items="citizenAddresses"
@@ -78,7 +104,7 @@
     <ListTitle>Timers</ListTitle>
     <ListItem tooltip>
       <template #title> Protection: </template>
-      <span>{{ townInfo.protectionAt.toString() }}</span>
+      <span>{{ town.protectionAt.toString() }}</span>
       <template #tooltip>
         <span
           >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
@@ -128,7 +154,7 @@
       </template>
     </ListItem>
   </div>
-  <div v-else>Create a new town or Search a town</div>
+  <HasNotTown v-else></HasNotTown>
 </template>
 
 <script setup lang="ts">
@@ -137,19 +163,22 @@ import * as yup from 'yup'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ScrollableList from '~/components/sidebar-items/ScrollableList.vue'
+import HasNotTown from '~/components/HasNotTown.vue'
+import TownyButton from '~/components/TownyButton.vue'
 import { TownStatus } from '~/enums'
 
 //--------[ Stores ]--------//
 const userGameStore = useUserGameStore()
 const connectionStore = useConnectionStore()
+const userWalletStore = useUserWalletStore()
 
-const { user } = storeToRefs(userGameStore)
+const { user, town } = storeToRefs(userGameStore)
 const { getKta } = storeToRefs(connectionStore)
+const { address } = storeToRefs(userWalletStore)
 
 //--------[ Data ]--------//
 const nameRules = yup.string().bytes32()
-const townInfo = await getKta.value.townById(user.value.townInfo.townId)
-const townName = ref(decodeBytes32String(townInfo.name))
+
 const addresses = await getKta.value.getCitizensByTownId(
   user.value.townInfo.townId
 )
@@ -159,9 +188,32 @@ const attackable = ref(3743879)
 const expired = ref(3743879)
 
 //--------[ Computed ]--------//
-const leader = computed(() => middleCropping(townInfo.leader))
+const leader = computed(() => middleCropping(town.value.leader))
 
 const citizenAddresses = computed(() =>
   addresses.map((address) => middleCropping(address))
 )
+const townName = computed(() => decodeBytes32String(town.value.name))
+
+const isLeader = computed(() => address.value === town.value.leader)
+
+const settleTown = async () => {
+  try {
+    await getKta.value.settleTown()
+  } catch (error: any) {
+    console.log(
+      getKta.value.interface.getError(error.info.error.data.data.result)
+    )
+  }
+}
+
+const toggleRecruitment = async () => {
+  try {
+    await getKta.value.changeTownRecruitment()
+  } catch (error: any) {
+    console.log(
+      getKta.value.interface.getError(error.info.error.data.data.result)
+    )
+  }
+}
 </script>
