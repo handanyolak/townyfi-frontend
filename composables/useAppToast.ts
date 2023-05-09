@@ -1,17 +1,20 @@
-import { useToast } from 'vue-toastification'
+import { TYPE, useToast } from 'vue-toastification'
 import { uppercaseFirstChar } from '~/utils'
-import { ToastType } from '~/types'
 import { defaultToastificationConfig } from '~/config'
+import { ToastFunction } from '~~/types'
 
 // TODO: change useAppToast
-export const useTownyToast = (type: ToastType, message: string) => {
+export const useAppToast = (
+  type: Exclude<TYPE, TYPE.DEFAULT>,
+  message: string
+) => {
   const icon = defineAsyncComponent(
     () => import(`../components/Toastification/${uppercaseFirstChar(type)}.vue`)
   )
 
-  useToast()[type](message, {
+  return (useToast()[type] as ToastFunction)(message, {
+    ...defaultToastificationConfig,
     icon,
     type,
-    ...defaultToastificationConfig,
   })
 }

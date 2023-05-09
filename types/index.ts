@@ -3,12 +3,13 @@ import * as yup from 'yup'
 export * from './typechain'
 export * from './composables'
 export * from './components'
-export * from './TownyToast'
+export * from './toastification'
 
 declare module 'yup' {
   interface StringSchema {
     bytes32(message?: yup.Message<any>): this
     ethereumAddress(message?: yup.Message<any>): this
+    coordinate(message?: yup.Message<any>): this
     townyIsRegistered(message?: yup.Message<any>): this
   }
 }
