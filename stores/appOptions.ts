@@ -47,8 +47,22 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const audio = useStorage('audio', false)
   const _toggleAudio = useToggle(audio)
   const _toggleMusic = useToggle(music)
+  const modalComponentName = ref('')
+  const modalComponentProps = ref({})
 
   //--------[ Actions ]--------//
+  const setModalInfo = (
+    newModalComponentName: string,
+    newModalComponentProps?: any
+  ) => {
+    modalComponentName.value = newModalComponentName
+    modalComponentProps.value = newModalComponentProps
+  }
+  const clearModalInfo = () => {
+    modalComponentName.value = ''
+    modalComponentProps.value = {}
+  }
+
   const sideLeave = () => {
     showSidebar.value = false
 
@@ -270,11 +284,15 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     isContractInfo,
     isBlockchainInfo,
     originCoordinate,
+    modalComponentName,
+    modalComponentProps,
     sideLeave,
     toggleMusic,
     setUserInfo,
     toggleAudio,
     initializeApp,
     setOriginCoordinate,
+    setModalInfo,
+    clearModalInfo,
   }
 })

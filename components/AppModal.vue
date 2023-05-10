@@ -21,11 +21,11 @@
 import { onClickOutside } from '@vueuse/core'
 
 //--------[ Props & Emits ]--------//
-interface ContentClassesProps {
+interface AppModalProps {
   contentClasses?: string
 }
 
-defineProps<ContentClassesProps>()
+defineProps<AppModalProps>()
 
 const emit = defineEmits(['modalClosed'])
 
