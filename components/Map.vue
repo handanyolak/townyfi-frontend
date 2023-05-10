@@ -1,12 +1,11 @@
 <template>
-  <div
-    class="relative"
-    ref="mapElement"
-    v-drag="dragHandler"
-    style="width: 40% !important"
-    @wheel="onWheel($event)"
-  >
-    <div v-if="hasMetamask && onValidNetwork" class="relative z-50">
+  <div class="relative" style="width: 40% !important">
+    <div
+      ref="mapElement"
+      @wheel="onWheel($event)"
+      v-if="hasMetamask && onValidNetwork"
+      class="relative z-50"
+    >
       <div
         class="relative grid overflow-hidden border-[10px] border-[#391f05]"
         :style="`grid-template-columns: repeat(${getGridColsByNearLevel}, minmax(0, 1fr));`"
@@ -16,11 +15,11 @@
           :style="`transform: scale(${
             100 + (maxNearLevel - nearLevel) * 10
           }%); background-position: ${
-            (-BigInt(originCoordinate._x) *
+            (-originCoordinate._x *
               BigInt(Math.round(width / (nearLevel * 2 + 1)))) %
             BigInt(MAX_PIXEL_VALUE)
           }px ${
-            (BigInt(originCoordinate._y) *
+            (originCoordinate._y *
               BigInt(Math.round(width / (nearLevel * 2 + 1)))) %
             BigInt(MAX_PIXEL_VALUE)
           }px`"
@@ -41,12 +40,24 @@
           <Parchment>
             <template #parchment-header> Addresses </template>
             <div class="flex flex-col">
-              <SearchBar></SearchBar>
+              <SearchBar v-model="search" :rules="searchRules" />
               <div>
-                <Accordion v-for="(_address, index) in addresses" :key="index">
+                <Accordion
+                  v-for="(_address, index) in filteredList"
+                  :key="index"
+                >
                   <template #title>
-                    <div @click="clickedAddress = _address">
-                      {{ _address }}
+                    <div class="flex items-center">
+                      <div
+                        class="mr-1 rounded-md bg-towni-brown-dark-300 p-1 text-xs text-white"
+                        @click.stop="attack(_address)"
+                      >
+                        TODO:Attack
+                      </div>
+
+                      <div class="text-xs" @click="clickedAddress = _address">
+                        {{ _address }}
+                      </div>
                     </div>
                   </template>
                   <OtherUser
@@ -81,6 +92,7 @@
 
 <script setup lang="ts">
 import { MAX_PIXEL_VALUE } from '~/constants'
+import { useDebounce, useDebounceFn } from '@vueuse/core'
 import { useDrag } from '@vueuse/gesture'
 import { CoordinateItem } from '~/types'
 import MapNavigation from '~/components/MapNavigation.vue'
@@ -89,6 +101,7 @@ import Accordion from '~/components/Accordion.vue'
 import SearchBar from '~/components/SearchBar.vue'
 import { Direction } from '~/enums'
 import { abs } from 'extra-bigint.web'
+import * as yup from 'yup'
 
 //--------[ Stores ]--------//
 const connectionStore = useConnectionStore()
@@ -112,8 +125,10 @@ const mapElement = ref(null)
 const showModal = ref(false)
 const zoomOut = ref(0)
 const zoomIn = ref(0)
+const search = ref('')
 const addresses = ref<string[]>([])
 const { width } = useElementSize(mapElement)
+const searchRules = yup.string().ethereumAddress()
 const currentItem = ref<CoordinateItem>({
   _x: BigInt(0),
   _y: BigInt(0),
@@ -122,7 +137,20 @@ const currentItem = ref<CoordinateItem>({
 //--------[ Computed ]--------//
 const getGridColsByNearLevel = computed(() => nearLevel.value * 2 + 1)
 
+const filteredList = computed(() => {
+  return addresses.value.filter((address: string) =>
+    address.toLowerCase().includes(searchDebounced.value.toLowerCase())
+  )
+})
+
 //--------[ Methods ]--------//
+const debouncedSetUserCoordinate = useDebounceFn((x: bigint, y: bigint) => {
+  setUserCoordinate({
+    _x: x,
+    _y: y,
+  })
+}, maxNearLevel - nearLevel.value)
+
 const openModal = async (item: CoordinateItem) => {
   currentItem.value = item
   showModal.value = true
@@ -163,6 +191,16 @@ const teleport = async () => {
   })
 }
 
+const attack = async (address: string) => {
+  try {
+    await getKta.value.attack(address)
+  } catch (error: any) {
+    console.log(
+      getKta.value.interface.getError(error.info.error.data.data.result)
+    )
+  }
+}
+
 const onWheel = (event: WheelEvent) => {
   let newNearLevel: number
 
@@ -189,20 +227,34 @@ const onWheel = (event: WheelEvent) => {
   setNearLevelByCalculatingCoordinates(newNearLevel)
 }
 
-const dragHandler = ({ movement: [x, y] }: { movement: [number, number] }) => {
+const dragHandler = async ({ movement: [x, y], swipe, tap }) => {
+  console.log('swipe')
+  console.log(swipe)
+  console.log('tap')
+  console.log(tap)
   const { _x, _y } = originCoordinate.value
 
-  setUserCoordinate({
-    _x: _x + BigInt(Math.trunc(-x / 100)),
-    _y: _y + BigInt(Math.trunc(y / 100)),
-  })
+  const newX =
+    _x +
+    BigInt(Math.trunc(-x / Math.round(width.value / (nearLevel.value * 2 + 1))))
+  const newY =
+    _y +
+    BigInt(Math.trunc(y / Math.round(width.value / (nearLevel.value * 2 + 1))))
+
+  await debouncedSetUserCoordinate(newX, newY)
 }
 
 useDrag(dragHandler, {
   domTarget: mapElement,
+  filterTaps: true,
 })
 
-const closeModal = () => (showModal.value = false)
+const closeModal = () => {
+  showModal.value = false
+  search.value = ''
+}
+
+const searchDebounced = useDebounce(search, 1000)
 </script>
 
 <style></style>
