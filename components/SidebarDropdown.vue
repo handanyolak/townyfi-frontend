@@ -7,8 +7,10 @@
         @click="toggleDropdown()"
         @blur="showDropdown = false"
       >
-        <img class="mr-2 h-4 w-4" :src="dropdownIcon()" />
-        <span class="capitalize">{{ select }}</span>
+        <img v-if="iconNames" class="mr-2 h-4 w-4" :src="dropdownIcon()" />
+        <span class="capitalize">{{
+          selectedItem || select || dropdownItems[0]
+        }}</span>
         <img
           class="ml-2 block h-4 w-4 transform transition-transform duration-200 ease-in-out"
           :class="showDropdown ? 'rotate-180' : 'rotate-0'"
@@ -47,7 +49,11 @@
 interface DropdownProps {
   dropdownItems: string[]
   iconNames?: string[]
-  select?: String
+  select?: string
+}
+
+interface DropdownExpose {
+  selectedItem: string | null
 }
 
 const props = defineProps<DropdownProps>()
@@ -55,6 +61,7 @@ const emit = defineEmits(['selected'])
 
 //--------[ Data ]--------//
 const showDropdown = ref(false)
+const selectedItem = ref<string | null>(null)
 
 //--------[ Computed ]--------//
 const dropdownIcon = computed(
@@ -70,10 +77,16 @@ const toggleDropdown = () => {
 }
 
 const selectItem = (item: string) => {
-  emit('selected', item)
+  selectedItem.value = item
+
+  emit('selected', selectedItem.value)
 
   toggleDropdown()
 }
+
+defineExpose({
+  selectedItem,
+})
 </script>
 
 <style scoped>
