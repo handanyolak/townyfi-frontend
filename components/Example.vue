@@ -84,8 +84,8 @@ onMounted(async () => {
       armor: 200,
       teleportDistance: 50,
       killArmorRewardLimit: 3,
-      safeTownDistance: 0,
-      safeTownDifference: 0,
+      safeTownDistance: 100,
+      safeTownDifference: 100,
       safeZoneDistance: 4,
       safeZoneDifference: 10000,
       attackDistance: 1,
@@ -124,7 +124,7 @@ onMounted(async () => {
       prepareToAttack: 30,
     },
     min: {
-      levelToCreateTown: 3,
+      levelToCreateTown: 0,
       townAreaRadius: 1,
     },
     exp: {
@@ -138,13 +138,18 @@ onMounted(async () => {
     numberDigits: 1,
   }
 
-  // setTimeout(async () => {
-  //   await getKta.value.updateSettings(settings_ as any)
-  // }, 10000)
+  setTimeout(async () => {
+    await getKta.value.updateSettings(settings_ as any)
+  }, 10000)
 })
 
 // watch(referrer, async (newUsername) => {
 //   const hadaRules = yup.string().townyIsRegistered()
 //   console.log(await hadaRules.isValid(newUsername))
+// })
+
+// watch([() => form.image, () => form.body],
+// ([newImage, newBody], [prevImage, prevBody]) => {
+//     console.log(form.body, form.image)
 // })
 </script>
