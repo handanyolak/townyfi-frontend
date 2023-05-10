@@ -12,14 +12,15 @@
     </div>
     <div>
       <div
-        class="duration-400 absolute top-0 left-0 z-50 flex w-16 items-center justify-between bg-towni-brown-dark-600 bg-opacity-60 px-1 py-1 opacity-0 transition-opacity group-hover:opacity-100"
+        class="duration-400 absolute top-0 left-0 z-50 flex w-16 items-center justify-between bg-towni-brown-dark-600 bg-opacity-60 px-1 py-1 opacity-0 transition-opacity delay-1000 group-hover:opacity-100"
       >
-        <img
-          @click="toggleModal()"
-          class="h-4 w-4 cursor-pointer"
-          src="@/assets/img/information.svg"
-        />
-        <div class="text-xs text-towni-brown-light-200">
+        <div @dblclick="toggleModal()" class="inline cursor-pointer">
+          <img
+            class="pointer-events-none h-4 w-4"
+            src="@/assets/img/information.svg"
+          />
+        </div>
+        <div class="select-none text-xs text-towni-brown-light-200">
           <span>({{ item._x.toString() }}</span>
           <span>,</span>
           <span>{{ item._y.toString() }})</span>
@@ -30,14 +31,14 @@
           <span
             :class="[
               'absolute inline-flex h-full w-full animate-ping rounded-full opacity-75',
-              pulse,
+              pulseColor,
               nearLevel <= 5 ? 'h-2 w-2' : 'h-1 w-1',
             ]"
           />
           <span
             :class="[
               'relative inline-flex h-1 w-1 rounded-full',
-              pulse,
+              pulseColor,
               nearLevel <= 5 ? 'h-2 w-2' : 'h-1 w-1',
             ]"
             class=""
@@ -56,8 +57,6 @@ import { useUserGameStore } from '~/stores/userGame'
 interface MapboxProps {
   item: CoordinateItem
 }
-
-const pulseColor = ref('')
 
 const props = defineProps<MapboxProps>()
 const emit = defineEmits(['modalOpened'])
@@ -78,22 +77,22 @@ const getMapKey = computed(
   () => `${props.item._x.toString()},${props.item._y.toString()}`
 )
 
-const pulse = computed(() => {
-  if (getUserCountByCoordinate.value.get(getMapKey.value) === undefined) {
-    pulseColor.value = 'bg-gray-500'
-  } else if (getUserCountByCoordinate.value.get(getMapKey.value) === 0) {
-    pulseColor.value = 'bg-zinc-50'
-  } else if (getUserCountByCoordinate.value.get(getMapKey.value) === 1) {
-    pulseColor.value = 'bg-green-500'
-  } else if (
-    getUserCountByCoordinate.value.get(getMapKey.value)!! >= 2 &&
-    getUserCountByCoordinate.value.get(getMapKey.value)!! <= 3
-  ) {
-    pulseColor.value = 'bg-yellow-600'
-  } else if (getUserCountByCoordinate.value.get(getMapKey.value)!! >= 4) {
-    pulseColor.value = 'bg-red-500'
+const pulseColor = computed(() => {
+  const userByCountByCoordinate = getUserCountByCoordinate.value.get(
+    getMapKey.value
+  )
+
+  if (userByCountByCoordinate === undefined) {
+    return 'bg-gray-500'
+  } else if (userByCountByCoordinate === 0) {
+    return 'bg-zinc-50'
+  } else if (userByCountByCoordinate === 1) {
+    return 'bg-green-500'
+  } else if (userByCountByCoordinate!! >= 2 && userByCountByCoordinate!! <= 3) {
+    return 'bg-yellow-600'
+  } else if (userByCountByCoordinate!! >= 4) {
+    return 'bg-red-500'
   }
-  return pulseColor.value
 })
 
 //--------[ Methods ]--------//
