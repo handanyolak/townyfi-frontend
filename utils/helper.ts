@@ -30,6 +30,10 @@ export const middleElement = <T>(array: T[]): T => {
   return array[middleIndex]
 }
 
+export function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
 export const convertToInteger = (
   variable: any,
   defaultValue?: number,
