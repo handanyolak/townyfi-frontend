@@ -20,6 +20,9 @@ export const useUserGameStore = defineStore('userGameStore', () => {
   const user = ref<IKillThemAll.UserStruct>(
     null as unknown as IKillThemAll.UserStruct
   )
+  const town = ref<IKillThemAll.TownStruct>(
+    null as unknown as IKillThemAll.TownStruct
+  )
   // TODO: move to app options store
   const nearLevel = useStorage<number>('nearLevel', 2, undefined, {
     serializer: StorageSerializers.number,
@@ -36,6 +39,10 @@ export const useUserGameStore = defineStore('userGameStore', () => {
   //--------[ Actions ]--------//
   const setUser = (newUser: IKillThemAll.UserStruct) => {
     user.value = newUser
+  }
+
+  const setTown = (newTown: IKillThemAll.TownStruct) => {
+    town.value = newTown
   }
 
   const setSetting = (newSetting: IKillThemAll.SettingStruct) => {
@@ -73,10 +80,11 @@ export const useUserGameStore = defineStore('userGameStore', () => {
 
     const x = BigInt(coordinates._x)
     const y = BigInt(coordinates._y)
-    const minScanX = x - BigInt(nearLevel.value)
-    const maxScanX = x + BigInt(nearLevel.value)
-    const minScanY = y - BigInt(nearLevel.value)
-    const maxScanY = y + BigInt(nearLevel.value)
+    const nearLevelValue = BigInt(nearLevel.value)
+    const minScanX = x - nearLevelValue
+    const maxScanX = x + nearLevelValue
+    const minScanY = y - nearLevelValue
+    const maxScanY = y + nearLevelValue
 
     const multiCallData: MultiCallData[] = [
       {
@@ -86,8 +94,8 @@ export const useUserGameStore = defineStore('userGameStore', () => {
     ]
 
     addressesByCoordinate.value = []
-    for (let j: bigint = maxScanY; j >= minScanY; ) {
-      for (let i: bigint = minScanX; i <= maxScanX; ) {
+    for (let j: bigint = maxScanY; j >= minScanY; j--) {
+      for (let i: bigint = minScanX; i <= maxScanX; i++) {
         const coordinateItem: CoordinateItem = {
           _x: i,
           _y: j,
@@ -113,10 +121,7 @@ export const useUserGameStore = defineStore('userGameStore', () => {
         }
 
         addressesByCoordinate.value.push(coordinateItem)
-        // TODO:Ethers try ++
-        i += BigInt(1)
       }
-      j -= BigInt(1)
     }
 
     useMultiCall(multiCallData).then((results) => {
@@ -162,6 +167,8 @@ export const useUserGameStore = defineStore('userGameStore', () => {
     getHasTownByCoordinate,
     getUserCountByCoordinate,
     setUser,
+    setTown,
+    town,
     setSetting,
     setNearLevel,
     setIsRegistered,

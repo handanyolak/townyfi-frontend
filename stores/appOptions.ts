@@ -24,6 +24,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     setUserProperty,
     setIsRegistered,
     setUserCoordinate,
+    setTown,
   } = userGameStore
 
   const { onValidNetwork, getKta, getProvider } = storeToRefs(connectionStore)
@@ -188,7 +189,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
             }
 
             if (user === address.value) {
-              useTownyToast('info', `New Coordinate: ${newCoordinate}`)
+              useAppToast('info', `New Coordinate: ${newCoordinate}`)
               setUserProperty('coordinate', newCoordinate)
               userGameStore.setUserCoordinate(userInfo.coordinate)
             }
@@ -222,6 +223,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     setIsRegistered(await getKta.value.isRegistered(address.value))
     setUser(userInfo)
     setUserCoordinate(userInfo.coordinate)
+    setTown((await getKta.value.townById(userInfo.townInfo.townId)) as any)
   }
 
   const toggleAudio = () => {
