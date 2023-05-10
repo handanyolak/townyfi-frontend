@@ -1,5 +1,5 @@
 import { formatEther, JsonRpcSigner, ZeroAddress } from 'ethers'
-import { useTownyToast } from '~/composables/useTownyToast'
+import { useAppToast } from '~/composables/useAppToast'
 import { $t } from '~/composables/useLang'
 
 export const useUserWalletStore = defineStore('userWalletStore', () => {
@@ -80,7 +80,7 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
   const disconnectWeb3 = () => {
     handleAccountsChanged()
     connectionStore.setIsConnected(false)
-    useTownyToast('success', $t('disconnected'))
+    useAppToast('success', $t('disconnected'))
   }
 
   const connectWeb3 = async () => {
