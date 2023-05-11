@@ -25,9 +25,10 @@
 
 <script setup lang="ts">
 import { encodeBytes32String } from 'ethers'
-import * as yup from 'yup'
+import { object } from 'yup'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
+import { getBytes32Rule, getUintRule } from '~/composables/useYupRules'
 
 //--------[ Stores ]--------//
 const connectionStore = useConnectionStore()
@@ -39,16 +40,11 @@ const formInput = reactive({
   price: '',
 })
 const formIsValid = ref(false)
-const nameRules = yup.string().bytes32().required()
-const priceRules = yup
-  .number()
-  .typeError('this must be a `number` type')
-  .transform((value, originalValue) => {
-    return originalValue === '' ? 0 : value
-  })
-  .integer()
-  .min(0)
-const formRules = yup.object().shape({
+const nameRules = getBytes32Rule({
+  required: true,
+})
+const priceRules = getUintRule()
+const formRules = object().shape({
   name: nameRules,
   price: priceRules,
 })

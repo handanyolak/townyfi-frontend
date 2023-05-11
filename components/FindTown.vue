@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import * as yup from 'yup'
+import { object } from 'yup'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import SidebarDropdown from '~/components/SidebarDropdown.vue'
@@ -93,7 +93,7 @@ const selectedItemFormInput = computed(() =>
 )
 const formInput = selectedItemFormInput.value
 const selectedItemFormRules = computed(() =>
-  yup.object().shape({
+  object().shape({
     [findOptions[selectedItem.value]]: rules[findOptions[selectedItem.value]],
   })
 )

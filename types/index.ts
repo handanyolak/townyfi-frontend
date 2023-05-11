@@ -1,4 +1,4 @@
-import * as yup from 'yup'
+import { Message } from 'yup'
 
 export * from './typechain'
 export * from './composables'
@@ -7,10 +7,10 @@ export * from './toastification'
 
 declare module 'yup' {
   interface StringSchema {
-    bytes32(message?: yup.Message<any>): this
-    ethereumAddress(message?: yup.Message<any>): this
-    coordinate(message?: yup.Message<any>): this
-    townyIsRegistered(message?: yup.Message<any>): this
+    bytes32(message?: Message<any>): this
+    ethereumAddress(message?: Message<any>): this
+    coordinate(message?: Message<any>): this
+    townyIsRegistered(message?: Message<any>): this
   }
 }
 

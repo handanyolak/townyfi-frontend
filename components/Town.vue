@@ -159,13 +159,13 @@
 
 <script setup lang="ts">
 import { decodeBytes32String } from 'ethers'
-import * as yup from 'yup'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ScrollableList from '~/components/sidebar-items/ScrollableList.vue'
 import HasNotTown from '~/components/HasNotTown.vue'
 import TownyButton from '~/components/TownyButton.vue'
 import { TownStatus } from '~/enums'
+import { getBytes32Rule } from '~/composables/useYupRules'
 
 //--------[ Stores ]--------//
 const userGameStore = useUserGameStore()
@@ -177,8 +177,7 @@ const { getKta } = storeToRefs(connectionStore)
 const { address } = storeToRefs(userWalletStore)
 
 //--------[ Data ]--------//
-const nameRules = yup.string().bytes32()
-
+const nameRules = getBytes32Rule()
 const addresses = await getKta.value.getCitizensByTownId(
   user.value.townInfo.townId
 )

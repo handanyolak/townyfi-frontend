@@ -33,10 +33,10 @@
 
 <script setup lang="ts">
 import { encodeBytes32String, ZeroAddress, MaxUint256 } from 'ethers'
-import * as yup from 'yup'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import { stringToHex } from '~/utils'
+import { getAddressRule, getBytes32Rule } from '~/composables/useYupRules'
 
 //--------[ Props & Emits ]--------//
 const emit = defineEmits(['registerClosed'])
@@ -56,8 +56,10 @@ const { setting } = storeToRefs(userGameStore)
 //--------[ Data ]--------//
 const name = ref('')
 const referrer = ref('')
-const nameRules = yup.string().bytes32().required()
-const referrerRules = yup.string().ethereumAddress().optional()
+const nameRules = getBytes32Rule({
+  required: true,
+})
+const referrerRules = getAddressRule()
 
 //--------[ Methods ]--------//
 const userRegister = async () => {

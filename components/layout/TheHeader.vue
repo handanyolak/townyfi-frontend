@@ -95,7 +95,7 @@ import SearchBar from '~/components/SearchBar.vue'
 import TownyButton from '~/components/TownyButton.vue'
 import { $t } from '~/composables/useLang'
 import { numberToHex } from '~/utils'
-import * as yup from 'yup'
+import { getAddressRule } from '~/composables/useYupRules'
 
 //--------[ Nuxt ]--------//
 const { ktaChainId } = useRuntimeConfig().public
@@ -130,7 +130,7 @@ const toggleTheme = useToggle(isDark)
 //--------[ Data ]--------//
 const search = ref('')
 const isValid = ref(false)
-const searchRules = yup.string().ethereumAddress()
+const searchRules = getAddressRule()
 
 //--------[ Computed ]--------//
 const audioIcon = computed(() => useSvg(audio.value ? 'sound' : 'sound-mute'))

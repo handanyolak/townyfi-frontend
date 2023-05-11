@@ -3,7 +3,6 @@ import {
   BytesLike,
   FunctionFragment,
   checkResultErrors,
-  solidityPacked,
 } from 'ethers'
 import { MultiCallData, ResultInfo } from '~/types'
 

@@ -155,11 +155,11 @@
 <script setup lang="ts">
 import { duration } from 'moment'
 import { decodeBytes32String } from 'ethers'
-import * as yup from 'yup'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import { IKillThemAll } from '~/types/typechain/KillThemAll'
 import { toCapitalizedWords, middleCropping } from '~/utils'
+import { getBytes32Rule } from '~/composables/useYupRules'
 
 //--------[ Stores ]--------//
 const userGameStore = useUserGameStore()
@@ -172,7 +172,7 @@ const timer = reactive<any>({ ...user.value.timer })
 const timers = Object.keys(user.value.timer).filter((item: any) => isNaN(item))
 const name = ref(decodeBytes32String(user.value.name))
 const reffererAddress = user.value.referrer
-const nameRules = yup.string().bytes32()
+const nameRules = getBytes32Rule()
 
 //--------[ Computed ]--------//
 // TODO: Backend'de get datalar ayrildiktan sonra duzenlenecek
