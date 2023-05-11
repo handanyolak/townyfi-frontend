@@ -8,7 +8,7 @@
     <AppModal v-if="modalComponentName" @modalClosed="clearModalInfo()">
       <Component
         :is="currentComponent"
-        v-bind="{ ...modalComponentProps }"
+        v-bind="modalComponentProps"
         class="tab"
       ></Component>
     </AppModal>
