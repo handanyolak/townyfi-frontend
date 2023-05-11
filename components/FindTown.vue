@@ -45,6 +45,7 @@ import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import SidebarDropdown from '~/components/SidebarDropdown.vue'
 import OtherTown from '~/components/OtherTown.vue'
+import { useDebounceFn } from '@vueuse/core'
 import {
   getAddressRule,
   getUintRule,
@@ -106,9 +107,7 @@ const onDropdownChanged = async () => {
   formInput[findOptions[selectedItem.value]] = ''
 }
 
-const setId = async () => {
-  id.value = null
-
+const debouncedSetId = useDebounceFn(async () => {
   if (formIsValid.value) {
     const value = formInput[findOptions[selectedItem.value]]
     switch (selectedItem.value) {
@@ -130,5 +129,10 @@ const setId = async () => {
         break
     }
   }
+}, 500)
+
+const setId = () => {
+  id.value = null
+  debouncedSetId()
 }
 </script>
