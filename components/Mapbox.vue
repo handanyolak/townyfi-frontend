@@ -14,7 +14,7 @@
       <div
         class="duration-400 absolute top-0 left-0 z-50 flex w-16 items-center justify-between bg-towni-brown-dark-600 bg-opacity-60 px-1 py-1 opacity-0 transition-opacity delay-1000 group-hover:opacity-100"
       >
-        <div @dblclick="toggleModal()" class="inline cursor-pointer">
+        <div class="inline cursor-pointer">
           <img
             class="pointer-events-none h-4 w-4"
             src="@/assets/img/information.svg"
@@ -59,7 +59,6 @@ interface MapboxProps {
 }
 
 const props = defineProps<MapboxProps>()
-const emit = defineEmits(['modalOpened'])
 
 //--------[ Stores ]--------//
 const userGameStore = useUserGameStore()
@@ -94,13 +93,4 @@ const pulseColor = computed(() => {
     return 'bg-red-500'
   }
 })
-
-//--------[ Methods ]--------//
-/**
- * Bu fonksiyon Parent'a model acildi bilgisini verecek event'i yayinlayan fonksiyondur.
- * @Component Mapbox
- */
-const toggleModal = () => {
-  emit('modalOpened', props.item)
-}
 </script>
