@@ -95,6 +95,7 @@
     <TownyButton v-if="isLeader" @click="toggleRecruitment()">
       Recruitment Town
     </TownyButton>
+    <TownyButton @click="leaveTown()"> Leave Town </TownyButton>
     <ListTitle>Citizens</ListTitle>
     <ScrollableList
       :items="citizenAddresses"
@@ -209,6 +210,16 @@ const settleTown = async () => {
 const toggleRecruitment = async () => {
   try {
     await getKta.value.changeTownRecruitment()
+  } catch (error: any) {
+    console.log(
+      getKta.value.interface.getError(error.info.error.data.data.result)
+    )
+  }
+}
+
+const leaveTown = async () => {
+  try {
+    await getKta.value.leaveTown()
   } catch (error: any) {
     console.log(
       getKta.value.interface.getError(error.info.error.data.data.result)
