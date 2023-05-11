@@ -8,6 +8,11 @@
       tooltip
     >
       <span>{{ item }}</span>
+      <TownyButton
+        v-if="actionable"
+        @click="actionValue?.action(copyValue[index], item)"
+        >{{ actionValue?.name }}</TownyButton
+      >
       <template #tooltip>
         <!-- TODO: change here -->
         <span
@@ -27,6 +32,11 @@ interface ScrollableListProps {
   items?: string[]
   copyValue?: string | string[]
   copiable?: boolean
+  actionable?: boolean
+  actionValue?: {
+    name: string
+    action: (copyValue: string, item: string) => any
+  }
 }
 
 withDefaults(defineProps<ScrollableListProps>(), {

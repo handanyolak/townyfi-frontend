@@ -101,6 +101,11 @@
       :items="citizenAddresses"
       :copy-value="addresses"
       copiable
+      :actionable="isLeader"
+      :action-value="{
+        name: 'Kick Citizen',
+        action: kickCitizen,
+      }"
     />
     <ListTitle>Timers</ListTitle>
     <ListItem tooltip>
@@ -220,6 +225,16 @@ const toggleRecruitment = async () => {
 const leaveTown = async () => {
   try {
     await getKta.value.leaveTown()
+  } catch (error: any) {
+    console.log(
+      getKta.value.interface.getError(error.info.error.data.data.result)
+    )
+  }
+}
+
+const kickCitizen = async (item: string) => {
+  try {
+    await getKta.value.exileCitizen(item)
   } catch (error: any) {
     console.log(
       getKta.value.interface.getError(error.info.error.data.data.result)
