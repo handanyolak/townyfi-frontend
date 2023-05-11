@@ -11,7 +11,7 @@
         </span>
         <SearchBar
           class="w-1/3"
-          @searched="showSearchModel = true"
+          @searched="setModalInfo('TheHeaderSearchModal', { address: search })"
           v-model="search"
           :is-disable="isValid"
           :rules="searchRules"
@@ -24,7 +24,7 @@
                   v-if="!isRegistered"
                   fill
                   hover-effect
-                  @click.native="toggleModal(true)"
+                  @click="setModalInfo('RegisterModal')"
                 >
                   Register
                 </TownyButton>
@@ -84,18 +84,6 @@
           />
         </div>
       </div>
-
-      <InformationModal v-if="showModal" @modalClosed="toggleModal(false)">
-        <Register @registerClosed="toggleModal(false)" />
-      </InformationModal>
-
-      <InformationModal
-        :content-classes="'overflow-y-auto overflow-x-hidden'"
-        v-if="showSearchModel"
-        @modalClosed="showSearchModel = !showSearchModel"
-      >
-        <OtherUser class="mt-12" :address="search" />
-      </InformationModal>
     </div>
   </div>
 </template>
@@ -103,12 +91,12 @@
 <script setup lang="ts">
 import { useDark, useToggle } from '@vueuse/core'
 import Dropdown from '~/components/Dropdown.vue'
-import InformationModal from '~/components/InformationModal.vue'
 import SearchBar from '~/components/SearchBar.vue'
 import TownyButton from '~/components/TownyButton.vue'
 import { $t } from '~/composables/useLang'
 import { numberToHex } from '~/utils'
 import * as yup from 'yup'
+
 //--------[ Nuxt ]--------//
 const { ktaChainId } = useRuntimeConfig().public
 
@@ -121,7 +109,7 @@ const useUserOptions = useUserOptionsStore()
 
 const { hasMetamask } = connectionStore
 const { startEthEvents } = userWalletStore
-const { toggleMusic, toggleAudio } = appOptionStore
+const { toggleMusic, toggleAudio, setModalInfo } = appOptionStore
 const { setLanguage } = useUserOptions
 
 const { onValidNetwork, isConnected } = storeToRefs(connectionStore)
@@ -140,9 +128,7 @@ const isDark = useDark({
 const toggleTheme = useToggle(isDark)
 
 //--------[ Data ]--------//
-const showModal = ref(false)
 const search = ref('')
-const showSearchModel = ref(false)
 const isValid = ref(false)
 const searchRules = yup.string().ethereumAddress()
 
@@ -191,8 +177,6 @@ const switchNetwork = async () => {
 const selected = (item: string) => {
   setLanguage(item)
 }
-
-const toggleModal = (modalValue: boolean) => (showModal.value = modalValue)
 </script>
 
 <style scoped>
