@@ -9,9 +9,9 @@
             contentClasses,
             contentClasses === 'bg-transparent'
               ? 'shadow-none'
-              : 'shadow-2xl shadow-towni-brown-dark-600',
+              : 'bg-towni-brown-light-100 shadow-2xl shadow-towni-brown-dark-600',
           ]"
-          class="modal relative h-3/5 w-2/5 rounded-lg bg-towni-brown-light-100"
+          class="modal relative h-3/5 w-2/5 rounded-lg"
         >
           <button class="absolute right-2 top-2 z-50" @click="closeModal">
             <img class="h-10 w-10" src="@/assets/img/exit.svg" />
