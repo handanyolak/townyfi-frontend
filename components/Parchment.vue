@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      class="round-parchment h-20 scale-105 transform rounded-xl bg-white py-3 text-center text-5xl font-bold text-towni-brown-dark-400"
+      class="round-parchment h-[16%] scale-105 transform rounded-xl bg-white py-3 text-center text-5xl font-bold text-towni-brown-dark-400 md:h-[12%]"
     >
       <slot name="parchment-header" />
     </div>
@@ -13,7 +13,7 @@
       </div>
     </div>
     <div
-      class="round-parchment flex h-20 scale-105 transform items-center justify-center rounded-xl bg-white"
+      class="round-parchment flex h-[16%] scale-105 transform items-center justify-center rounded-xl bg-white md:h-[12%]"
     >
       <slot name="parchment-footer" />
     </div>
@@ -27,8 +27,8 @@
   font-family: 'Bilbo', cursive;
 }
 .parchment {
-  height: 40vh;
-  animation: height 3s 1;
+  height: 50vh;
+  animation: height 4s 1;
   box-shadow: 2px 3px 20px #3f2007, 0 0 60px #8a4d0f inset;
 }
 
@@ -37,7 +37,7 @@
     height: 10vh;
   }
   100% {
-    height: 40vh;
+    height: 50vh;
   }
 }
 </style>

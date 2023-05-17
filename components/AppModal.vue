@@ -4,8 +4,14 @@
       <div class="flex h-screen items-center justify-center">
         <div
           ref="modal"
-          :class="contentClasses"
-          class="modal relative min-h-[20%] min-w-[30%] rounded-lg bg-towni-brown-light-100"
+          :style="`height: ${modalSize}px; width: ${modalSize}px`"
+          :class="[
+            contentClasses,
+            contentClasses === 'bg-transparent'
+              ? 'shadow-none'
+              : 'shadow-2xl shadow-towni-brown-dark-600',
+          ]"
+          class="modal relative h-3/5 w-2/5 rounded-lg bg-towni-brown-light-100"
         >
           <button class="absolute right-2 top-2 z-50" @click="closeModal">
             <img class="h-10 w-10" src="@/assets/img/exit.svg" />
@@ -23,6 +29,7 @@ import { onClickOutside } from '@vueuse/core'
 //--------[ Props & Emits ]--------//
 interface AppModalProps {
   contentClasses?: string
+  modalSize?: string
 }
 
 defineProps<AppModalProps>()

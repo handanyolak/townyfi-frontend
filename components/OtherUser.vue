@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-6">
+  <div class="p-5">
     <ListTitle>General</ListTitle>
     <ListItem tooltip>
       <template #title> Name: </template>

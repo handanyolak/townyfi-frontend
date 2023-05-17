@@ -3,13 +3,25 @@
     <GameInfo v-if="!hasMetamask && !onValidNetwork" />
     <SidebarMenu v-if="onValidNetwork" />
     <ChatBox v-if="hasMetamask && onValidNetwork" />
-    <Map />
+    <Map ref="mapElement" />
     <TheLoading v-show="isLoading" />
-    <AppModal v-if="modalComponentName" @modalClosed="clearModalInfo()">
+    <AppModal
+      :modalSize="(width + 20).toString()"
+      :contentClasses="
+        modalComponentName === 'MapboxModal' ? 'bg-transparent' : ''
+      "
+      v-if="modalComponentName"
+      @modalClosed="clearModalInfo()"
+    >
       <Component
         :is="currentComponent"
         v-bind="modalComponentProps"
-        class="tab"
+        :class="
+          modalComponentName === 'MapboxModal'
+            ? ''
+            : 'overflow-y-auto overflow-x-hidden'
+        "
+        class="tab h-full"
       ></Component>
     </AppModal>
   </div>
@@ -32,11 +44,17 @@ const { modalComponentName, modalComponentProps } = storeToRefs(appOptionsStore)
 const { onValidNetwork } = storeToRefs(connectionStore)
 const { isLoading } = storeToRefs(userGameStore)
 
+//--------[ Data ]--------//
+//TODO: map'de hesaplanan width buraya emit ile gonderilecek
+const mapElement = ref(null)
+const { width } = useElementSize(mapElement)
+
 //--------[ Hooks ]--------//
 onMounted(async () => {
   await initializeApp()
 })
 
+//--------[ Computed ]--------//
 const currentComponent = computed(() => {
   const _modalComponentName = modalComponentName.value
   return defineAsyncComponent(
