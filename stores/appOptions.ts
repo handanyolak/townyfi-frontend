@@ -57,6 +57,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   ) => {
     modalComponentName.value = newModalComponentName
     modalComponentProps.value = newModalComponentProps
+    sideLeave()
   }
   const clearModalInfo = () => {
     modalComponentName.value = ''
