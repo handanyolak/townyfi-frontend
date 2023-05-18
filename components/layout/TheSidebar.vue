@@ -99,6 +99,6 @@ onClickOutside(sideBar, () => sideLeave())
 
 .parchment {
   height: 110vh;
-  box-shadow: 2px 3px 20px #411c06, 30px 65px 200px #91510ffc inset;
+  box-shadow: 2px 3px 20px #854819, 30px 65px 200px #91510ffc inset;
 }
 </style>

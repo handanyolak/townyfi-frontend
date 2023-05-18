@@ -5,10 +5,10 @@
         <a
           style="font-family: Pirata One, sans-serif"
           :class="[
-            'block cursor-pointer rounded p-2 font-bold uppercase leading-normal shadow-lg',
+            'block rounded p-2 font-bold uppercase leading-normal shadow-lg',
             currentTabName === tab.name
               ? 'bg-towni-brown-dark-300 text-towni-brown-light-400 '
-              : 'bg-towni-brown-light-400 text-towni-brown-dark-300 hover:shadow-towni-brown-dark-500',
+              : 'cursor-pointer bg-towni-brown-light-400 text-towni-brown-dark-300 hover:shadow-towni-brown-dark-500',
           ]"
           @click="changeTab(tab)"
         >
