@@ -7,10 +7,10 @@
     <TheLoading v-show="isLoading" />
     <AppModal
       :modalSize="(width + 20).toString()"
+      :modalActive="Boolean(modalComponentName)"
       :contentClasses="
         modalComponentName === 'MapboxModal' ? 'bg-transparent' : ''
       "
-      v-if="modalComponentName"
       @modalClosed="clearModalInfo()"
     >
       <Component
