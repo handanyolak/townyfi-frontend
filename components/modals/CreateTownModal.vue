@@ -17,8 +17,8 @@
         </template>
       </ListItem>
     </VForm>
-    <TownyButton class="my-3" :disabled="!formIsValid" @click="createTown()"
-      >Create Town</TownyButton
+    <AppButton class="my-3" :disabled="!formIsValid" @click="createTown()"
+      >Create Town</AppButton
     >
   </div>
 </template>
