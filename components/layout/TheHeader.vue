@@ -20,46 +20,39 @@
           <div v-if="hasMetamask" class="flex justify-between py-5">
             <div v-if="onValidNetwork">
               <div v-if="isConnected" class="space-x-1">
-                <TownyButton
+                <AppButton
                   v-if="!isRegistered"
-                  fill
-                  hover-effect
+                  border-hover
                   @click="setModalInfo('RegisterModal')"
                 >
                   Register
-                </TownyButton>
-                <TownyButton fill hover-effect @click.native="disconnectWeb3()">
+                </AppButton>
+                <AppButton border-hover @click.native="disconnectWeb3()">
                   {{ $t('disconnect_wallet') }}
-                </TownyButton>
+                </AppButton>
               </div>
-              <TownyButton
-                v-else
-                border
-                hover-effect
-                @click.native="connectWeb3()"
-              >
+              <AppButton v-else fill-hover @click.native="connectWeb3()">
                 Connect Wallet
-              </TownyButton>
+              </AppButton>
             </div>
-            <TownyButton
+            <AppButton
               v-else
               target="_blank"
               border
-              hover-effect
+              border-hover
               @click.native="switchNetwork()"
             >
               Switch Network
-            </TownyButton>
+            </AppButton>
           </div>
-          <TownyButton
+          <AppButton
             v-else
             href="https://metamask.io/download/"
             target="_blank"
-            border
-            hover-effect
+            fill-hover
           >
             Install Metamask
-          </TownyButton>
+          </AppButton>
           <Dropdown
             :select="language"
             :dropdown-items="languages"
@@ -92,7 +85,7 @@
 import { useDark, useToggle } from '@vueuse/core'
 import Dropdown from '~/components/Dropdown.vue'
 import SearchBar from '~/components/SearchBar.vue'
-import TownyButton from '~/components/TownyButton.vue'
+import AppButton from '~/components/AppButton.vue'
 import { $t } from '~/composables/useLang'
 import { numberToHex } from '~/utils'
 import { getAddressRule } from '~/composables/useYupRules'

@@ -19,15 +19,13 @@
         </VForm>
       </template>
     </ListItem>
-    <TownyButton
+    <AppButton
       v-if="ktaAllowance <= setting?.price.register!!"
       class="my-3"
       @click="userApprove()"
-      >Approve</TownyButton
+      >Approve</AppButton
     >
-    <TownyButton v-else class="my-3" @click="userRegister()"
-      >Register</TownyButton
-    >
+    <AppButton v-else class="my-3" @click="userRegister()">Register</AppButton>
   </div>
 </template>
 

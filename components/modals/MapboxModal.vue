@@ -23,7 +23,7 @@
     </div>
     <template #parchment-footer>
       <div>
-        <TownyButton
+        <AppButton
           class="px-4 text-xl"
           v-if="
             !(
@@ -32,7 +32,7 @@
             )
           "
           @click="isMoveable() ? move() : teleport()"
-          >{{ isMoveable() ? 'Move' : 'Teleport' }}</TownyButton
+          >{{ isMoveable() ? 'Move' : 'Teleport' }}</AppButton
         >
       </div>
     </template>

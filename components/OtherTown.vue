@@ -131,8 +131,8 @@
         >
       </template>
     </ListItem>
-    <TownyButton v-if="town.recruitment" class="my-3" @click="joinTown()"
-      >Join {{ townName }}</TownyButton
+    <AppButton v-if="town.recruitment" class="my-3" @click="joinTown()"
+      >Join {{ townName }}</AppButton
     >
   </div>
 </template>

@@ -8,10 +8,10 @@
       tooltip
     >
       <span>{{ item }}</span>
-      <TownyButton
+      <AppButton
         v-if="actionable"
         @click="actionValue?.action(copyValue[index], item)"
-        >{{ actionValue?.name }}</TownyButton
+        >{{ actionValue?.name }}</AppButton
       >
       <template #tooltip>
         <!-- TODO: change here -->

@@ -101,12 +101,12 @@
                   </template>
                   <span>{{ coordinateY }}</span>
                 </ListItem>
-                <TownyButton
+                <AppButton
                   @click="teleport()"
                   class="w-full rounded-md bg-towni-brown-dark-400 text-towni-brown-light-400"
                 >
                   Go!
-                </TownyButton>
+                </AppButton>
               </div>
             </div>
           </div>

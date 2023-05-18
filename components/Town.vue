@@ -89,13 +89,11 @@
         >
       </template>
     </ListItem>
-    <TownyButton v-if="isLeader" @click="settleTown()">
-      Settle Town
-    </TownyButton>
-    <TownyButton v-if="isLeader" @click="toggleRecruitment()">
+    <AppButton v-if="isLeader" @click="settleTown()"> Settle Town </AppButton>
+    <AppButton v-if="isLeader" @click="toggleRecruitment()">
       Recruitment Town
-    </TownyButton>
-    <TownyButton @click="leaveTown()"> Leave Town </TownyButton>
+    </AppButton>
+    <AppButton @click="leaveTown()"> Leave Town </AppButton>
     <ListTitle>Citizens</ListTitle>
     <ScrollableList
       :items="citizenAddresses"
@@ -169,7 +167,7 @@ import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ScrollableList from '~/components/sidebar-items/ScrollableList.vue'
 import HasNotTown from '~/components/HasNotTown.vue'
-import TownyButton from '~/components/TownyButton.vue'
+import AppButton from '~/components/AppButton.vue'
 import { TownStatus } from '~/enums'
 import { getBytes32Rule } from '~/composables/useYupRules'
 
