@@ -30,7 +30,7 @@
       </ListItem>
     </VForm>
     <OtherTown
-      class="h-48 w-full overflow-y-auto overflow-x-hidden"
+      class="w-full"
       v-if="formInput[findOptions[selectedItem]] && id"
       :key="id.toString()"
       :id="id"
