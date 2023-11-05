@@ -2,7 +2,10 @@ import { StorageSerializers, useStorage } from '@vueuse/core'
 import { CoordinateItem, MultiCallData } from '~/types'
 import { middleElement } from '~/utils'
 import { useMultiCall } from '~/composables/useMultiCall'
-import { IKillThemAll, Coordinates } from '~/types/typechain/KillThemAll'
+import {
+  IKillThemAll,
+  Coordinates,
+} from '~/types/typechain/contracts/game/KillThemAll'
 
 export const useUserGameStore = defineStore('userGameStore', () => {
   //--------[ Nuxt Imports ]--------//

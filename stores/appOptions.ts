@@ -1,10 +1,12 @@
 import { useToggle, useStorage } from '@vueuse/core'
-import { IKillThemAll, Coordinates } from '~/types/typechain/KillThemAll'
+import { TYPE } from 'vue-toastification'
 import {
   KillThemAll__factory,
   KtaToken__factory,
   MultiCall__factory,
-} from '~/types/typechain'
+} from '~/types'
+import { Coordinates } from '~/types/typechain/contracts/game/IKillThemAll'
+import { IKillThemAll } from '~/types/typechain/contracts/game/KillThemAll'
 
 export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   //--------[ Nuxt Imports ]--------//
@@ -204,7 +206,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
             }
 
             if (user === address.value) {
-              useAppToast('info', `New Coordinate: ${newCoordinate}`)
+              useAppToast(TYPE.INFO, `New Coordinate: ${newCoordinate}`)
               setUserProperty('coordinate', newCoordinate)
               userGameStore.setUserCoordinate(userInfo.coordinate)
             }
