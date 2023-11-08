@@ -32,7 +32,7 @@ import { getBytes32Rule, getUintRule } from '~/composables/useYupRules'
 
 //--------[ Stores ]--------//
 const connectionStore = useConnectionStore()
-const { getKta } = storeToRefs(connectionStore)
+const { getKtaCaller } = storeToRefs(connectionStore)
 
 //--------[ Data ]--------//
 const formInput = reactive({
@@ -56,16 +56,9 @@ watch(formInput, (newFormInput) => {
 
 //--------[ Methods ]--------//
 const createTown = async () => {
-  try {
-    await getKta.value.createTown(
-      encodeBytes32String(formInput.name),
-      BigInt(formInput.price)
+    await getKtaCaller.value.callFunction(
+      'createTown', [encodeBytes32String(formInput.name),
+      BigInt(formInput.price)]
     )
-  } catch (error: any) {
-    console.log(error)
-    // console.log(
-    //   getKta.value.interface.getError(error.info.error.data.data.result)
-    // )
-  }
 }
 </script>

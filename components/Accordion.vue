@@ -12,6 +12,7 @@
       <slot name="title" />
     </ListTitle>
     <div
+      :style="dropdown ? 'height: 100vh;' : ''"
       :class="[
         ' overflow-y-auto overflow-x-hidden transition-all duration-1000 ease-in-out',
         isOpen ? 'max-h-96' : 'max-h-0',
@@ -25,6 +26,13 @@
 <script setup lang="ts">
 import { onClickOutside } from '@vueuse/core'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
+
+//--------[ Props & Emits ]--------//
+interface AccordionProps {
+  dropdown?: boolean
+}
+
+const props = defineProps<AccordionProps>()
 
 //--------[ Data ]--------//
 const isOpen = ref(false)

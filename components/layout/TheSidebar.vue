@@ -29,7 +29,7 @@
           <SidebarTab v-if="isGameInfo && isRegistered" :tabs="TABS.gameInfo" />
           <SidebarTab
             v-else-if="isGameInfo && !isRegistered"
-            :tabs="TABS.gameinfoFallback"
+            :tabs="TABS.gameInfoFallback"
           />
           <SidebarTab v-if="isOptions" :tabs="TABS.userOptions" />
           <SidebarTab v-if="isBlockchainInfo" :tabs="TABS.blockchainInfo" />

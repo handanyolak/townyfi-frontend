@@ -11,9 +11,10 @@
     <div
       :class="[
         'rounded-full py-2 px-4 duration-500 ease-in-out',
+        inlineClass ? inlineClass : '',
         fillHover
           ? 'bg-towni-brown-light-100 text-towni-brown-dark-200 group-hover:bg-transparent group-hover:text-white  dark:bg-night-blue'
-          : 'bg-transparent text-white group-hover:bg-towni-brown-light-100 group-hover:text-towni-brown-dark-200 dark:group-hover:bg-night-blue',
+          : 'bg-transparent text-white dark:group-hover:bg-night-blue',
       ]"
     >
       <slot />
@@ -27,6 +28,7 @@ interface ButtonThemeProps {
   fillHover?: boolean
   borderHover?: boolean
   basicHover?: boolean
+  inlineClass?: string
 }
 
 defineProps<ButtonThemeProps>()

@@ -1,7 +1,7 @@
 <template>
   <div>
     <ListTitle>General</ListTitle>
-    <ListItem editable tooltip>
+    <ListItem editable tooltip @saved="() => onSaved()">
       <template #title> Name: </template>
       <template #item>
         <VForm class="flex flex-col items-center">
@@ -9,12 +9,10 @@
           <VErrorMessage class="text-red-800" name="name" />
         </VForm>
       </template>
-      <span>{{ decodeBytes32String(user.name as any) }}</span>
+      <span>{{ decodeBytes32String(user.name) }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
     <ListItem tooltip>
@@ -23,40 +21,32 @@
       <span>,</span>
       <span>{{ user.coordinate._y.toString() }})</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
     <ListItem tooltip>
       <template #title> Level: </template>
       <span>{{ user.levelId }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
     <ListItem tooltip>
       <template #title> Exp: </template>
       <span>{{ user.exp }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
-    <ListItem copiable tooltip :copy-value="reffererAddress">
+    <ListItem copiable tooltip :copy-value="referrerAddress">
       <template #title> Referrer: </template>
       <span>{{ referrer }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
     <ListTitle>Stats</ListTitle>
@@ -64,40 +54,32 @@
       <template #title> Health: </template>
       <span>{{ user.health }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
     <ListItem tooltip>
       <template #title> Mana: </template>
       <span>{{ user.mana }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
     <ListItem tooltip>
       <template #title> Energy: </template>
       <span>{{ user.energy }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
     <ListItem tooltip>
       <template #title> Armor: </template>
       <span>{{ user.armor }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
     <ListTitle>Character Points</ListTitle>
@@ -105,48 +87,32 @@
       <template #title> Attack: </template>
       <span>{{ user.charPoint.attack }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
     <ListItem tooltip>
       <template #title> Defend: </template>
       <span>{{ user.charPoint.defend }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
     <ListTitle>Timers</ListTitle>
-    <!-- TODO: don't use for here -->
-    <ListItem
-      v-for="(item, index) in timers"
-      :key="index"
-      :item="item"
-      convertable
-      tooltip
-      @convert="(isConvert) => convert(isConvert, item as any)"
-    >
+    <ListItem v-for="(item, index) in timers" :key="index" :item="item" convertable tooltip
+      @convert="(isConvert) => convert(isConvert, item as any)">
       <template #title> {{ toCapitalizedWords(item) }}: </template>
       <span>{{
         timer[item].toString() === '0' ? 'Available!' : timer[item].toString()
       }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
       <template #action-icon>
-        <img
-          v-if="getPointIcon(item)"
-          class="mr-1 h-5 w-5 animate-bounce cursor-pointer"
-          :src="getPointIcon(item)"
-        />
+        <img v-if="getPointIcon(item)" class="mr-1 h-5 w-5 animate-bounce cursor-pointer" :src="getPointIcon(item)"
+          @click="getSomething(item)" />
       </template>
     </ListItem>
   </div>
@@ -157,21 +123,28 @@ import { duration } from 'moment'
 import { decodeBytes32String } from 'ethers'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
-import { IKillThemAll } from '~/types/typechain/KillThemAll'
+import { IKillThemAll } from '~/types/typechain/contracts/game/KillThemAll'
 import { toCapitalizedWords, middleCropping } from '~/utils'
 import { getBytes32Rule } from '~/composables/useYupRules'
+import { Get } from '~/enums'
+import { encodeBytes32String } from 'ethers'
+
+const { chainBlockTime } = useRuntimeConfig().public
 
 //--------[ Stores ]--------//
 const userGameStore = useUserGameStore()
 const userWalletStore = useUserWalletStore()
+const connectionStore = useConnectionStore()
 
 const { user } = storeToRefs(userGameStore)
+const { getKtaCaller } = storeToRefs(connectionStore)
+const { currentBlockNumber } = storeToRefs(userWalletStore)
 
 //--------[ Data ]--------//
-const timer = reactive<any>({ ...user.value.timer })
-const timers = Object.keys(user.value.timer).filter((item: any) => isNaN(item))
+const timer = reactive<any>(user.value.timer.toObject())
+const timers = Object.keys(timer).filter((item: any) => isNaN(item))
 const name = ref(decodeBytes32String(user.value.name))
-const reffererAddress = user.value.referrer
+const referrerAddress = user.value.referrer as string
 const nameRules = getBytes32Rule()
 
 //--------[ Computed ]--------//
@@ -182,7 +155,7 @@ const getPointIcon = computed(() => (_getPoint: string) => {
   return iconName.includes('undefined') ? undefined : useSvg(_getPoint)
 })
 
-const referrer = computed(() => middleCropping(reffererAddress))
+const referrer = computed(() => middleCropping(referrerAddress))
 
 //--------[ Methods ]--------//
 const convert = (
@@ -191,15 +164,37 @@ const convert = (
 ) => {
   if (isConvert) {
     timer[propertyName] =
-      timer[propertyName] - userWalletStore.currentBlockNumber > 0
+      timer[propertyName] - currentBlockNumber.value > 0
         ? duration(
-            (timer[propertyName] - userWalletStore.currentBlockNumber) *
-              12 *
-              1000
-          ).humanize()
+          (timer[propertyName] - currentBlockNumber.value) *
+          chainBlockTime *
+          1000
+        ).humanize()
         : 0
   } else {
     timer[propertyName] = user.value.timer[propertyName].toString()
+  }
+}
+
+const getSomething = async (item: string) => {
+  if (!item.startsWith('get')) {
+    return
+  }
+
+  const getItem = Get[item.slice(3) as keyof typeof Get]
+
+  await getKtaCaller.value.callFunction('get', [getItem])
+}
+
+const onSaved = async () => {
+  const tempName = name.value;
+  if (tempName === decodeBytes32String(user.value.name)) {
+    return
+  }
+  const encodedName = encodeBytes32String(tempName)
+  const result = await getKtaCaller.value.callFunction('changeName', [encodedName])
+  if (result) {
+    user.value.name = encodedName;
   }
 }
 </script>

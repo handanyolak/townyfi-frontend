@@ -23,35 +23,35 @@
             >
             <div class="relative mt-6 flex items-center justify-center p-10">
               <MoveArrow
-                @click="navigateByArrow(Direction.Down)"
+                @click="navigateByArrow(NavigateDirection.Down)"
                 class="rotate-90"
               />
               <MoveArrow
-                @click="navigateByArrow(Direction.Up)"
+                @click="navigateByArrow(NavigateDirection.Up)"
                 class="-rotate-90"
               />
               <MoveArrow
-                @click="navigateByArrow(Direction.Right)"
+                @click="navigateByArrow(NavigateDirection.Right)"
                 class="rotate-0"
               />
               <MoveArrow
-                @click="navigateByArrow(Direction.Left)"
+                @click="navigateByArrow(NavigateDirection.Left)"
                 class="rotate-180"
               />
               <MoveArrow
-                @click="navigateByArrow(Direction.RightDown)"
+                @click="navigateByArrow(NavigateDirection.RightDown)"
                 class="rotate-45"
               />
               <MoveArrow
-                @click="navigateByArrow(Direction.UpRight)"
+                @click="navigateByArrow(NavigateDirection.UpRight)"
                 class="-rotate-45"
               />
               <MoveArrow
-                @click="navigateByArrow(Direction.DownLeft)"
+                @click="navigateByArrow(NavigateDirection.DownLeft)"
                 class="rotate-[135deg]"
               />
               <MoveArrow
-                @click="navigateByArrow(Direction.LeftUp)"
+                @click="navigateByArrow(NavigateDirection.LeftUp)"
                 class="-rotate-[135deg]"
               />
             </div>
@@ -117,7 +117,7 @@
 </template>
 
 <script setup lang="ts">
-import { Direction } from '~/enums'
+import { NavigateDirection } from '~/enums'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import MoveArrow from '~/components/MoveArrow.vue'
@@ -153,33 +153,32 @@ const teleport = () => {
   })
 }
 
-const navigateByArrow = (direction: Direction) => {
+const navigateByArrow = (direction: NavigateDirection) => {
   // TODO:Ethers try this
   let { _x, _y } = originCoordinate.value
 
   const navigateValue = 1n
-  if (direction === Direction.Up) {
+  if (direction === NavigateDirection.Up) {
     _y += navigateValue
-  } else if (direction === Direction.UpRight) {
+  } else if (direction === NavigateDirection.UpRight) {
     _x += navigateValue
     _y += navigateValue
-  } else if (direction === Direction.Right) {
+  } else if (direction === NavigateDirection.Right) {
     _x += navigateValue
-  } else if (direction === Direction.RightDown) {
+  } else if (direction === NavigateDirection.RightDown) {
     _x += navigateValue
     _y -= navigateValue
-  } else if (direction === Direction.Down) {
+  } else if (direction === NavigateDirection.Down) {
     _y -= navigateValue
-  } else if (direction === Direction.DownLeft) {
+  } else if (direction === NavigateDirection.DownLeft) {
     _x -= navigateValue
     _y -= navigateValue
-  } else if (direction === Direction.Left) {
+  } else if (direction === NavigateDirection.Left) {
     _x -= navigateValue
-  } else if (direction === Direction.LeftUp) {
+  } else if (direction === NavigateDirection.LeftUp) {
     _x -= navigateValue
     _y += navigateValue
   } else {
-    console.log('selam')
     // TODO: Throw exception etc.
   }
 

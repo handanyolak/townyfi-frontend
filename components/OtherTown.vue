@@ -5,10 +5,8 @@
       <template #title> Name: </template>
       <span>{{ townName }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
     <ListItem tooltip>
@@ -17,77 +15,59 @@
       <span>,</span>
       <span>{{ town.coordinate._y.toString() }})</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
     <ListItem tooltip>
       <template #title> Level: </template>
       <span>{{ town.levelId }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
     <ListItem tooltip>
       <template #title> Exp: </template>
       <span>{{ town.exp }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
     <ListItem copiable tooltip :copy-value="town.leader">
       <template #title> Leader: </template>
       <span>{{ leader }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
     <ListItem tooltip>
       <template #title> Status: </template>
       <span>{{ TownStatus[Number(town.status)] }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
     <ListItem tooltip>
       <template #title> ID: </template>
       <span>{{ props.id }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
     <ListTitle>Citizens</ListTitle>
-    <ScrollableList
-      :items="citizenAddresses"
-      :copy-value="addresses"
-      copiable
-    />
+    <ScrollableList :items="citizenAddresses" :copy-value="addresses" copiable />
     <ListTitle>Timers</ListTitle>
     <ListItem tooltip>
       <template #title> Protection: </template>
       <span>{{ town.protectionAt.toString() }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
     <ListTitle>War</ListTitle>
@@ -95,45 +75,35 @@
       <template #title> Attacker: </template>
       <span>{{ attacker }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
     <ListItem tooltip>
       <template #title> Defender: </template>
       <span>{{ defender }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
     <ListItem tooltip>
       <template #title> Attackable: </template>
       <span>{{ attackable }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
     <ListItem tooltip>
       <template #title> Expired: </template>
       <span>{{ expired }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
-    <AppButton v-if="town.recruitment" class="my-3" @click="joinTown()"
-      >Join {{ townName }}</AppButton
-    >
+    <AppButton v-if="town.recruitment" class="my-3" @click="joinTown()">Join {{ townName }}</AppButton>
   </div>
 </template>
 
@@ -154,7 +124,7 @@ const props = defineProps<OtherTownProps>()
 const connectionStore = useConnectionStore()
 const userGameStore = useUserGameStore()
 
-const { getKta } = storeToRefs(connectionStore)
+const { getKta, getKtaCaller } = storeToRefs(connectionStore)
 
 //--------[ Data ]--------//
 const town = ref(userGameStore.town)
@@ -183,20 +153,6 @@ onMounted(async () => {
 })
 
 const joinTown = async () => {
-  try {
-    await getKta.value.joinTown(BigInt(props.id))
-  } catch (error: any) {
-    // console.log(error)
-    console.log(error.info.error.data.data)
-    console.log(
-      getKta.value.interface.decodeErrorResult(
-        'TownMustSettled',
-        error.info.error.data.data.result
-      )
-    )
-    console.log(
-      getKta.value.interface.getError(error.info.error.data.data.result)
-    )
-  }
+  await getKtaCaller.value.callFunction('joinTown', [BigInt(props.id)])
 }
 </script>

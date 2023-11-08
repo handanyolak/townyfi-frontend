@@ -36,7 +36,7 @@
       <template #title> Near Level: </template>
       <SidebarDropdown
         :select="nearLevel.toString()"
-        :dropdown-items="nearLevels"
+        :dropdown-items="createNumberArray(minNearLevel, maxNearLevel)"
         @selected="(item) => selectNearLevel(item)"
       ></SidebarDropdown>
     </ListItem>
@@ -49,6 +49,9 @@ import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import SidebarDropdown from '~/components/SidebarDropdown.vue'
 import Switch from '~/components/Switch.vue'
+
+  //--------[ Nuxt Imports ]--------//
+  const { minNearLevel, maxNearLevel } = useRuntimeConfig().public
 
 //--------[ Stores ]--------//
 const appOptionStore = useAppOptionsStore()
@@ -63,7 +66,6 @@ const { nearLevel } = storeToRefs(userGameStore)
 const { language } = storeToRefs(useUserOptions)
 
 //--------[ Data ]--------//
-const nearLevels = ['1', '2', '3', '4', '5']
 const isDark = useDark({
   storageKey: 'theme',
   valueDark: 'dark',
@@ -81,6 +83,14 @@ const languages = computed(() => {
 //--------[ Methods ]--------//
 const selectLanguage = (item: string) => {
   setLanguage(item)
+}
+
+const createNumberArray = (start: number, end: number) => {
+  const numberStrArray: string[] = [];
+  for (let i = start; i <= end; i++) {
+    numberStrArray.push(i.toString());
+  }
+  return numberStrArray;
 }
 
 const selectNearLevel = (item: any) => {

@@ -1,24 +1,15 @@
 <template>
-  <div
-    class="group relative shadow-towni-400"
-    :class="isCoordinateOfUser ? 'bg-gray-200 dark:bg-gray-900' : ''"
-  >
+  <div class="group relative shadow-towni-400">
     <div class="relative flex flex-col items-center justify-center">
-      <img
-        v-if="getHasTownByCoordinate.get(getMapKey)"
-        src="@/assets/img/town.png"
-      />
+      <img v-if="isRegistered && isCoordinateOfUser" :src="soldierIcon" />
+      <img v-else-if="getHasTownByCoordinate.get(getMapKey)" src="@/assets/img/town.png" />
       <img v-else src="@/assets/img/skeleton-castle.png" class="invisible" />
     </div>
     <div>
       <div
-        class="duration-400 absolute top-0 left-0 z-50 flex w-16 items-center justify-between bg-towni-brown-dark-600 bg-opacity-60 px-1 py-1 opacity-0 transition-opacity delay-1000 group-hover:opacity-100"
-      >
+        class="duration-400 absolute top-0 left-0 z-50 flex w-16 items-center justify-between bg-towni-brown-dark-600 bg-opacity-60 px-1 py-1 opacity-0 transition-opacity delay-1000 group-hover:opacity-100">
         <div class="inline cursor-pointer">
-          <img
-            class="pointer-events-none h-4 w-4"
-            src="@/assets/img/information.svg"
-          />
+          <img class="pointer-events-none h-4 w-4" src="@/assets/img/information.svg" />
         </div>
         <div class="select-none text-xs text-towni-brown-light-200">
           <span>({{ item._x.toString() }}</span>
@@ -28,21 +19,16 @@
       </div>
       <div class="absolute top-1 right-1">
         <span class="relative flex">
-          <span
-            :class="[
-              'absolute inline-flex h-full w-full animate-ping rounded-full opacity-75',
-              pulseColor,
-              nearLevel <= 5 ? 'h-2 w-2' : 'h-1 w-1',
-            ]"
-          />
-          <span
-            :class="[
-              'relative inline-flex h-1 w-1 rounded-full',
-              pulseColor,
-              nearLevel <= 5 ? 'h-2 w-2' : 'h-1 w-1',
-            ]"
-            class=""
-          />
+          <span :class="[
+            'absolute inline-flex h-full w-full animate-ping rounded-full opacity-75',
+            pulseColor,
+            nearLevel <= 5 ? 'h-2 w-2' : 'h-1 w-1',
+          ]" />
+          <span :class="[
+            'relative inline-flex h-1 w-1 rounded-full',
+            pulseColor,
+            nearLevel <= 5 ? 'h-2 w-2' : 'h-1 w-1',
+          ]" />
         </span>
       </div>
     </div>
@@ -62,8 +48,17 @@ const props = defineProps<MapboxProps>()
 
 //--------[ Stores ]--------//
 const userGameStore = useUserGameStore()
-const { user, getUserCountByCoordinate, getHasTownByCoordinate, nearLevel } =
+
+const { user, getUserCountByCoordinate, getHasTownByCoordinate, nearLevel, isRegistered } =
   storeToRefs(userGameStore)
+
+
+//--------[ Composables ]--------//
+const isDark = useDark({
+  storageKey: 'theme',
+  valueDark: 'dark',
+  valueLight: 'light',
+})
 
 //--------[ Computeds ]--------//
 const isCoordinateOfUser = computed(
@@ -74,6 +69,10 @@ const isCoordinateOfUser = computed(
 
 const getMapKey = computed(
   () => `${props.item._x.toString()},${props.item._y.toString()}`
+)
+
+const soldierIcon = computed(() =>
+  useSvg(isDark.value ? 'soldier' : 'knight')
 )
 
 const pulseColor = computed(() => {

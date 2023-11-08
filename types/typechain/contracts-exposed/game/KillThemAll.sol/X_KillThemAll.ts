@@ -1279,9 +1279,11 @@ export namespace UserKilledEvent {
 }
 
 export namespace UserMissedEvent {
-  export type InputTuple = [];
-  export type OutputTuple = [];
-  export interface OutputObject {}
+  export type InputTuple = [defender: AddressLike];
+  export type OutputTuple = [defender: string];
+  export interface OutputObject {
+    defender: string;
+  }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
   export type Log = TypedEventLog<Event>;
@@ -2564,7 +2566,7 @@ export interface X_KillThemAll extends BaseContract {
       UserKilledEvent.OutputObject
     >;
 
-    "UserMissed()": TypedContractEvent<
+    "UserMissed(address)": TypedContractEvent<
       UserMissedEvent.InputTuple,
       UserMissedEvent.OutputTuple,
       UserMissedEvent.OutputObject

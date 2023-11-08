@@ -6,11 +6,9 @@
       <Accordion v-for="(_address, index) in filteredList" :key="index">
         <template #title>
           <div class="flex items-center">
-            <div
-              class="mr-1 rounded-md bg-towni-brown-dark-300 p-1 text-xs text-white"
-              @click.stop="attack(_address)"
-            >
-              TODO:Attack
+            <div class="mr-1 rounded-md bg-towni-brown-dark-300 p-1 text-xs text-white"
+              @click.stop="!isOwnAddress(_address) && attack(_address)">
+              {{ isOwnAddress(_address) ? 'Self' : 'Attack' }}
             </div>
 
             <div class="text-xs" @click="clickedAddress = _address">
@@ -23,17 +21,11 @@
     </div>
     <template #parchment-footer>
       <div>
-        <AppButton
-          class="px-4 text-xl"
-          v-if="
-            !(
-              user.coordinate._x === coordinate._x &&
-              user.coordinate._y === coordinate._y
-            )
-          "
-          @click="isMoveable() ? move() : teleport()"
-          >{{ isMoveable() ? 'Move' : 'Teleport' }}</AppButton
-        >
+        <AppButton class="px-4 text-xl" v-if="!(
+          user.coordinate._x === coordinate._x &&
+          user.coordinate._y === coordinate._y
+        )
+          " @click="isMoveable() ? move() : teleport()">{{ isMoveable() ? 'Move' : 'Teleport' }}</AppButton>
       </div>
     </template>
   </Parchment>
@@ -47,6 +39,7 @@ import { getAddressRule } from '~/composables/useYupRules'
 import { useDebounce } from '@vueuse/core'
 import { CoordinateItem } from '~/types'
 import { Direction } from '~/enums'
+import { Caller } from '~/contracts'
 import { abs } from 'extra-bigint.web'
 
 //--------[ Props & Emits ]--------//
@@ -58,10 +51,16 @@ const props = defineProps<MapboxModalProps>()
 
 //--------[ Stores ]--------//
 const connectionStore = useConnectionStore()
-const { getKta } = storeToRefs(connectionStore)
+const appOptionsStore = useAppOptionsStore()
+
+const { getKta, getKtaCaller } = storeToRefs(connectionStore)
+const { clearModalInfo } = appOptionsStore
 
 const userGameStore = useUserGameStore()
 const { user } = storeToRefs(userGameStore)
+
+const userWalletStore = useUserWalletStore()
+const { address } = storeToRefs(userWalletStore)
 
 const search = ref('')
 const clickedAddress = ref('')
@@ -82,27 +81,27 @@ const filteredList = computed(() => {
   )
 })
 
+const isOwnAddress = computed(() => (_address: string) => address.value === _address)
+
 //--------[ Methods ]--------//
 const teleport = async () => {
-  await getKta.value.teleport({
+  const result = await getKtaCaller.value.callFunction('teleport', [{
     _x: props.coordinate._x,
     _y: props.coordinate._y,
-  })
-}
+  }])
 
-const attack = async (address: string) => {
-  try {
-    await getKta.value.attack(address)
-  } catch (error: any) {
-    console.log(
-      getKta.value.interface.getError(error.info.error.data.data.result)
-    )
+  if (result) {
+    clearModalInfo()
   }
 }
 
+const attack = async (address: string) => {
+  getKtaCaller.value.callFunction('attack', [address])
+}
+
 const move = async () => {
-  const deltaX = props.coordinate._x - user.value.coordinate._x
-  const deltaY = props.coordinate._y - user.value.coordinate._y
+  const deltaX = props.coordinate._x - BigInt(user.value.coordinate._x)
+  const deltaY = props.coordinate._y - BigInt(user.value.coordinate._y)
 
   let direction: Direction
   if (deltaX < 0) {
@@ -114,13 +113,15 @@ const move = async () => {
   } else {
     direction = Direction.Up
   }
+  console.log(BigInt(direction));
 
-  await getKta.value.move(BigInt(direction))
+  const caller = new Caller(getKta.value)
+  await caller.callFunction('move', [BigInt(direction)])
 }
 
 const isMoveable = () => {
-  const deltaX = abs(props.coordinate._x - user.value.coordinate._x)
-  const deltaY = abs(props.coordinate._y - user.value.coordinate._y)
+  const deltaX = abs(props.coordinate._x - BigInt(user.value.coordinate._x))
+  const deltaY = abs(props.coordinate._y - BigInt(user.value.coordinate._y))
 
   return abs(deltaX + deltaY) <= 1
 }

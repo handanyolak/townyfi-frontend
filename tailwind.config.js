@@ -12,6 +12,16 @@ module.exports = {
     './nuxt.config.{js,ts}',
     './app.vue',
   ],
+  safelist: [
+    {
+      pattern: /grid-cols-\d+/,
+      variants: ['sm', 'md', 'lg', 'xl', '2xl'],
+    },
+    {
+      pattern: /gap-[xy]-\d+/,
+      variants: ['sm', 'md', 'lg', 'xl', '2xl'],
+    },
+  ],
   theme: {
     extend: {
       container: {

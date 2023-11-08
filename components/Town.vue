@@ -11,10 +11,8 @@
       </template>
       <span>{{ townName }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
     <ListItem tooltip>
@@ -23,70 +21,56 @@
       <span>,</span>
       <span>{{ town.coordinate._y.toString() }})</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
     <ListItem tooltip>
       <template #title> Level: </template>
       <span>{{ town.levelId }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
     <ListItem tooltip>
       <template #title> Exp: </template>
       <span>{{ town.exp }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
     <ListItem copiable tooltip :copy-value="town.leader">
       <template #title> Leader: </template>
       <span>{{ leader }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
     <ListItem tooltip>
       <template #title> Status: </template>
       <span>{{ TownStatus[Number(town.status)] }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
     <ListItem tooltip>
       <template #title> Recruitment: </template>
       <span>{{ town.recruitment }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
     <ListItem tooltip>
       <template #title> ID: </template>
       <span>{{ user.townInfo.townId }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
     <AppButton v-if="isLeader" @click="settleTown()"> Settle Town </AppButton>
@@ -95,25 +79,17 @@
     </AppButton>
     <AppButton @click="leaveTown()"> Leave Town </AppButton>
     <ListTitle>Citizens</ListTitle>
-    <ScrollableList
-      :items="citizenAddresses"
-      :copy-value="addresses"
-      copiable
-      :actionable="isLeader"
-      :action-value="{
-        name: 'Kick Citizen',
-        action: kickCitizen,
-      }"
-    />
+    <ScrollableList :items="citizenAddresses" :copy-value="addresses" copiable :actionable="isLeader" :action-value="{
+      name: 'Kick Citizen',
+      action: kickCitizen,
+    }" />
     <ListTitle>Timers</ListTitle>
     <ListItem tooltip>
       <template #title> Protection: </template>
       <span>{{ town.protectionAt.toString() }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
     <ListTitle>War</ListTitle>
@@ -121,40 +97,32 @@
       <template #title> Attacker: </template>
       <span>{{ attacker }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
     <ListItem tooltip>
       <template #title> Defender: </template>
       <span>{{ defender }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
     <ListItem tooltip>
       <template #title> Attackable: </template>
       <span>{{ attackable }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
     <ListItem tooltip>
       <template #title> Expired: </template>
       <span>{{ expired }}</span>
       <template #tooltip>
-        <span
-          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span
-        >
+        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span>
       </template>
     </ListItem>
   </div>
@@ -177,7 +145,7 @@ const connectionStore = useConnectionStore()
 const userWalletStore = useUserWalletStore()
 
 const { user, town } = storeToRefs(userGameStore)
-const { getKta } = storeToRefs(connectionStore)
+const { getKta, getKtaCaller } = storeToRefs(connectionStore)
 const { address } = storeToRefs(userWalletStore)
 
 //--------[ Data ]--------//
@@ -201,42 +169,18 @@ const townName = computed(() => decodeBytes32String(town.value.name))
 const isLeader = computed(() => address.value === town.value.leader)
 
 const settleTown = async () => {
-  try {
-    await getKta.value.settleTown()
-  } catch (error: any) {
-    console.log(
-      getKta.value.interface.getError(error.info.error.data.data.result)
-    )
-  }
+  await getKtaCaller.value.callFunction('settleTown')
 }
 
 const toggleRecruitment = async () => {
-  try {
-    await getKta.value.changeTownRecruitment()
-  } catch (error: any) {
-    console.log(
-      getKta.value.interface.getError(error.info.error.data.data.result)
-    )
-  }
+  await getKtaCaller.value.callFunction('changeTownRecruitment')
 }
 
 const leaveTown = async () => {
-  try {
-    await getKta.value.leaveTown()
-  } catch (error: any) {
-    console.log(
-      getKta.value.interface.getError(error.info.error.data.data.result)
-    )
-  }
+  await getKtaCaller.value.callFunction('leaveTown')
 }
 
 const kickCitizen = async (item: string) => {
-  try {
-    await getKta.value.exileCitizen(item)
-  } catch (error: any) {
-    console.log(
-      getKta.value.interface.getError(error.info.error.data.data.result)
-    )
-  }
+  await getKtaCaller.value.callFunction('exileCitizen', [item])
 }
 </script>

@@ -1,15 +1,18 @@
 import { formatEther, JsonRpcSigner, ZeroAddress } from 'ethers'
+import { TYPE } from 'vue-toastification'
 import { useAppToast } from '~/composables/useAppToast'
 import { $t } from '~/composables/useLang'
 
 export const useUserWalletStore = defineStore('userWalletStore', () => {
   //--------[ Stores ]--------//
   const connectionStore = useConnectionStore()
+  const userGameStore = useUserGameStore()
   const { getProvider } = storeToRefs(connectionStore)
 
   //--------[ States ]--------//
   const address = ref(ZeroAddress)
-  const ktaAllowance = ref<bigint>(0n)
+  const ktaAllowance = ref(0n)
+  const ktaBalance = ref(0n)
   const currentBlockNumber = ref(0)
   const balance = ref('')
 
@@ -33,6 +36,10 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
 
   const setKtaAllowance = (newKtaAllowance: bigint) => {
     ktaAllowance.value = newKtaAllowance
+  }
+
+  const setKtaBalance = (newKtaBalance: bigint) => {
+    ktaBalance.value = newKtaBalance
   }
 
   const connect = async () => {
@@ -78,9 +85,9 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
   }
 
   const disconnectWeb3 = () => {
-    handleAccountsChanged()
     connectionStore.setIsConnected(false)
-    useAppToast('success', $t('disconnected'))
+    userGameStore.setIsRegistered(false)
+    useAppToast(TYPE.SUCCESS, $t('disconnected'))
   }
 
   const connectWeb3 = async () => {
@@ -106,6 +113,7 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
     startEthEvents,
     disconnectWeb3,
     setKtaAllowance,
+    setKtaBalance,
     handleDisconnect,
     updateUserBalance,
     updateUserAddress,

@@ -3,7 +3,7 @@ export enum TownStatus {
   SETTLE,
 }
 
-export enum Direction {
+export enum NavigateDirection {
   Up,
   UpRight,
   Right,
@@ -12,4 +12,17 @@ export enum Direction {
   DownLeft,
   Left,
   LeftUp,
+}
+
+export enum Direction {
+  Up,
+  Right,
+  Down,
+  Left,
+}
+
+export enum Get {
+  Health,
+  Mana,
+  Energy,
 }

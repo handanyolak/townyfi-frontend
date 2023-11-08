@@ -27,7 +27,7 @@ export const useUserGameStore = defineStore('userGameStore', () => {
     null as unknown as IKillThemAll.TownStruct
   )
   // TODO: move to app options store
-  const nearLevel = useStorage<number>('nearLevel', 2, undefined, {
+  const nearLevel = useStorage<number>('nearLevel', 3, undefined, {
     serializer: StorageSerializers.number,
   })
   const setting = ref<IKillThemAll.SettingStruct | null>(null)

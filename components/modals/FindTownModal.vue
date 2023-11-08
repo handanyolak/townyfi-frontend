@@ -4,37 +4,21 @@
     <ListItem input>
       <template #title> By: </template>
       <template #item>
-        <SidebarDropdown
-          ref="sidebarDropdown"
-          @selected="onDropdownChanged()"
-          :dropdown-items="Object.values(findOptions)"
-        />
+        <SidebarDropdown ref="sidebarDropdown" @selected="onDropdownChanged()"
+          :dropdown-items="Object.values(findOptions)" />
       </template>
     </ListItem>
-    <VForm class="flex flex-col items-center">
+    <VForm @submit.prevent class="flex flex-col items-center">
       <ListItem class="w-full" input>
         <template #title> {{ selectedItem }}: </template>
         <template #item>
-          <VField
-            v-model="formInput[findOptions[selectedItem]]"
-            :name="findOptions[selectedItem]"
-            @input="setId()"
-            :placeholder="placeholders[findOptions[selectedItem]]"
-            :rules="rules[findOptions[selectedItem]]"
-          />
-          <VErrorMessage
-            class="text-red-800"
-            :name="findOptions[selectedItem]"
-          />
+          <VField v-model="formInput[findOptions[selectedItem]]" :name="findOptions[selectedItem]" @input="setId()"
+            :placeholder="placeholders[findOptions[selectedItem]]" :rules="rules[findOptions[selectedItem]]" />
+          <VErrorMessage class="text-red-800" :name="findOptions[selectedItem]" />
         </template>
       </ListItem>
     </VForm>
-    <OtherTown
-      class="w-full"
-      v-if="formInput[findOptions[selectedItem]] && id"
-      :key="id.toString()"
-      :id="id"
-    />
+    <OtherTown class="w-full" v-if="formInput[findOptions[selectedItem]] && id" :key="id.toString()" :id="id" />
     <div v-if="id === BigInt(0)">town not found</div>
   </div>
 </template>
@@ -112,7 +96,6 @@ const debouncedSetId = useDebounceFn(async () => {
     const value = formInput[findOptions[selectedItem.value]]
     switch (selectedItem.value) {
       case findOptions.ID:
-        // @ts-ignore
         const townInfo = await getKta.value.townById(value)
         id.value = townInfo.leader === ZeroAddress ? BigInt(0) : BigInt(value)
         break

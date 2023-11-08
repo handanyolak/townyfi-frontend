@@ -1,4 +1,4 @@
-import { convertToInteger } from './utils'
+import { convertToInteger, convertToArray } from './utils'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
@@ -42,7 +42,12 @@ export default defineNuxtConfig({
       ktaAddress: process.env.NUXT_KTA_ADDRESS,
       ktaTokenAddress: process.env.NUXT_KTA_TOKEN_ADDRESS,
       multiCallAddress: process.env.NUXT_MULTICALL_ADDRESS,
-      ktaChainId: convertToInteger(process.env.NUXT_KTA_CHAIN_ID, 1337),
+      networkName: process.env.NUXT_NETWORK_NAME,
+      networkSymbol: process.env.NUXT_NETWORK_SYMBOL,
+      chainRpcs: convertToArray(process.env.NUXT_CHAIN_RPCS),
+      chainExplorers: convertToArray(process.env.NUXT_CHAIN_EXPLORERS),
+      chainId: convertToInteger(process.env.NUXT_CHAIN_ID, 11155111),
+      chainBlockTime: convertToInteger(process.env.NUXT_CHAIN_BLOCK_TIME, 10),
       minNearLevel: convertToInteger(process.env.NUXT_MIN_NEAR_LEVEL, 2),
       maxNearLevel: convertToInteger(process.env.NUXT_MAX_NEAR_LEVEL, 5),
     },

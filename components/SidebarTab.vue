@@ -1,11 +1,11 @@
 <template>
   <div class="mx-4 p-4">
-    <ul class="my-3 grid space-x-2" :class="`grid-cols-${tabs.length}`">
-      <li v-for="(tab, index) in tabs" :key="index" class="text-center">
+    <ul class="my-3 grid gap-y-1" :class="`gap-x-${Math.round(6 / tabs.length)} grid-cols-${tabs.length > 4 ? 3 : tabs.length}`">
+      <li v-for="(tab, index) in tabs" :key="index" class="text-center text-xs">
         <a
           style="font-family: Pirata One, sans-serif"
           :class="[
-            'block rounded p-2 font-bold uppercase leading-normal shadow-lg',
+            'block rounded p-2 font-bold uppercase leading-normal shadow-lg text-lg',
             currentTabName === tab.name
               ? 'bg-towni-brown-dark-300 text-towni-brown-light-400 '
               : 'cursor-pointer bg-towni-brown-light-400 text-towni-brown-dark-300 hover:shadow-towni-brown-dark-500',
@@ -17,7 +17,7 @@
       </li>
     </ul>
     <div class="w-full">
-      <Component :is="currentComponent" class="tab"></Component>
+      <Component :is="currentComponent" class="tab" :data="currentTabData"></Component>
     </div>
   </div>
 </template>
@@ -36,6 +36,7 @@ const props = defineProps<ContentListItemProps>()
 //--------[ Data ]--------//
 const currentTabName = ref(props.tabs[0].name)
 const currentTabComponent = ref(props.tabs[0].component)
+const currentTabData = ref(props.tabs[0].data)
 
 //--------[ Computed ]--------//
 const currentComponent = computed(() => {
@@ -51,6 +52,7 @@ const changeTab = (tab: Tab) => {
   useSound('demo_public_sounds_button', 'wav')
   currentTabName.value = tab.name
   currentTabComponent.value = tab.component
+  currentTabData.value = tab.data
 }
 </script>
 

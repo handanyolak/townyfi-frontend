@@ -1,19 +1,19 @@
 import { KillThemAll, KtaToken, MultiCall } from '~/types/typechain'
 import { BrowserProvider } from 'ethers'
 import { numberToHex } from '~/utils'
+import { Caller } from '~/contracts'
 
 export const useConnectionStore = defineStore('connectionStore', () => {
   //--------[ Nuxt Imports ]--------//
-  const { ktaChainId } = useRuntimeConfig().public
+  const { chainId } = useRuntimeConfig().public
 
   //--------[ States ]--------//
   const ethereum = window.ethereum
   const provider = new BrowserProvider(ethereum)
-  const hasMetamask = Boolean(ethereum)
+  const hasMetamask = Boolean(window.ethereum)
   const isConnected = ref(false)
-  const onValidNetwork = ref(
-    hasMetamask && ethereum.chainId === numberToHex(ktaChainId)
-  )
+  const onValidNetwork = ref(false)
+
   // NOTE: The reason for doing it this way is due to the bugs in the "ethers" library.
   let ktaToken: KtaToken = {} as KtaToken
   let kta: KillThemAll = {} as KillThemAll
@@ -23,7 +23,9 @@ export const useConnectionStore = defineStore('connectionStore', () => {
   const signer = computed(async () => await getProvider.value.getSigner())
   const getProvider = computed(() => provider)
   const getKtaToken = computed(() => ktaToken)
+  const getKtaTokenCaller = computed(() => new Caller(getKtaToken.value))
   const getKta = computed(() => kta)
+  const getKtaCaller = computed(() => new Caller(getKta.value))
   const getMultiCall = computed(() => multiCall)
 
   //--------[ Actions ]--------//
@@ -47,9 +49,19 @@ export const useConnectionStore = defineStore('connectionStore', () => {
     isConnected.value = newValue
   }
 
+  const checkOnValidNetwork = async () => {
+    const chainIdFromRpc = await window.ethereum.request({
+      method: 'eth_chainId',
+      params: [],
+    })
+    setOnValidNetwork(chainIdFromRpc === numberToHex(chainId))
+  }
+
   return {
     signer,
     getKta,
+    getKtaCaller,
+    getKtaTokenCaller,
     getProvider,
     isConnected,
     getKtaToken,
@@ -61,5 +73,6 @@ export const useConnectionStore = defineStore('connectionStore', () => {
     setMultiCall,
     setIsConnected,
     setOnValidNetwork,
+    checkOnValidNetwork,
   }
 })

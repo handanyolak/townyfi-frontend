@@ -30,8 +30,11 @@ export const middleElement = <T>(array: T[]): T => {
   return array[middleIndex]
 }
 
-export function sleep(ms: number) {
+export const sleep = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms))
+}
+export const enumKeys = (enumValue: any) => {
+  return Object.keys(enumValue).filter((key) => isNaN(Number(key)))
 }
 
 export const convertToInteger = (
@@ -52,6 +55,32 @@ export const convertToInteger = (
 
   if (!result && error) {
     throw new Error('Missing environment in your ".env" file.')
+  }
+
+  return result
+}
+
+// function cleanUrls(urls) {
+//   return urls.map((url) =>
+//     url.replace(/^https?:\/\//, '').replace(/\.[a-z]{2,}$/, '')
+//   )
+// }
+
+// // Example usage:
+// const urls = [
+//   'https://sepolia.etherscan.io',
+//   'https://sepolia.beaconcha.in',
+//   'http://eth-sepolia.blockscout.com',
+// ]
+
+// const cleanedUrls = cleanUrls(urls)
+// console.log(cleanedUrls)
+
+export const convertToArray = (variable: any, defaultValue?: any[]) => {
+  let result = typeof variable === 'string' ? variable.split(',') : undefined
+
+  if (!result && defaultValue) {
+    result = defaultValue
   }
 
   return result

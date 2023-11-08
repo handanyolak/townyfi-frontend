@@ -1,3 +1,3 @@
 <template>
-  <div>You can't see here before registration</div>
+  <div>Register for the game to see this section.</div>
 </template>

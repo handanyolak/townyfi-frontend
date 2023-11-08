@@ -1,13 +1,13 @@
 <template>
-  <div>
+  <div v-if="isConnected">
     <ListTitle>General</ListTitle>
-    <ListItem>
+    <ListItem copiable :copy-value="address">
       <template #title> Address: </template>
-      <span>0Xfslkflsf</span>
+      <span>{{ middleCropping(address) }}</span>
     </ListItem>
     <ListItem>
       <template #title> Balance: </template>
-      <span>1111</span>
+      <span>{{ balance }} {{ onValidNetwork ? networkSymbol : '' }}</span>
     </ListItem>
     <ListTitle>Miscellaneous</ListTitle>
     <ListItem>
@@ -15,9 +15,23 @@
       <span>11109491</span>
     </ListItem>
   </div>
+  <div v-else>
+    Connect your wallet to see this section.
+  </div>
 </template>
 
 <script setup lang="ts">
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
+
+
+//--------[ Nuxt ]--------//
+const { networkSymbol } = useRuntimeConfig().public
+
+//--------[ Nuxt ]--------//
+const userWalletStore = useUserWalletStore()
+const connectionStore = useConnectionStore()
+
+const { address, balance } = storeToRefs(userWalletStore)
+const { onValidNetwork, isConnected } = storeToRefs(connectionStore)
 </script>

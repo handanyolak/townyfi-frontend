@@ -386,7 +386,14 @@ const _abi = [
   },
   {
     anonymous: false,
-    inputs: [],
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "defender",
+        type: "address",
+      },
+    ],
     name: "UserMissed",
     type: "event",
   },

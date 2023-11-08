@@ -1,7 +1,7 @@
 import { TYPE, useToast } from 'vue-toastification'
 import { uppercaseFirstChar } from '~/utils'
 import { defaultToastificationConfig } from '~/config'
-import { ToastFunction } from '~~/types'
+import { ToastFunction } from '~/types'
 
 // TODO: change useAppToast
 export const useAppToast = (

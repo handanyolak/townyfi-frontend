@@ -1,4 +1,5 @@
 import { useToggle, useStorage } from '@vueuse/core'
+import { ethers } from 'ethers'
 import { TYPE } from 'vue-toastification'
 import {
   KillThemAll__factory,
@@ -18,8 +19,15 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const userGameStore = useUserGameStore()
   const connectionStore = useConnectionStore()
 
-  const { setCurrentBlockNumber, connect, setKtaAllowance } = userWalletStore
-  const { hasMetamask, setKtaToken, setKta, setMultiCall } = connectionStore
+  const { setCurrentBlockNumber, connect, setKtaAllowance, setKtaBalance } =
+    userWalletStore
+  const {
+    hasMetamask,
+    setKtaToken,
+    setKta,
+    setMultiCall,
+    checkOnValidNetwork,
+  } = connectionStore
   const {
     setUser,
     setSetting,
@@ -86,6 +94,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const initializeApp = async () => {
     if (hasMetamask) {
       await connect()
+      await checkOnValidNetwork()
 
       if (onValidNetwork.value && !initialized.value) {
         initialized.value = true
@@ -141,6 +150,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
         setOriginCoordinate(userInfo.coordinate)
 
         setKtaAllowance(await ktaToken.allowance(address.value, ktaAddress))
+        setKtaBalance(await ktaToken.balanceOf(address.value))
 
         const {
           max,
@@ -179,7 +189,8 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
           async (
             user,
             oldCoordinate, // oldCoordinate: Coordinates.CoordinateStruct,
-            newCoordinate
+            newCoordinate,
+            event
           ) => {
             const oldCoordinateMapKey = `${oldCoordinate._x.toString()},${oldCoordinate._y.toString()}`
             if (userCountByCoordinate.value.has(oldCoordinateMapKey)) {
@@ -205,10 +216,22 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
               )
             }
 
+            let toastMsg = ''
             if (user === address.value) {
-              useAppToast(TYPE.INFO, `New Coordinate: ${newCoordinate}`)
               setUserProperty('coordinate', newCoordinate)
               userGameStore.setUserCoordinate(userInfo.coordinate)
+
+              toastMsg += `You moved!\n` + `Event: ${event.eventName}\n`
+
+              const argsEntries = Object.entries(event.args.toObject())
+              argsEntries.forEach(([key, value], index) => {
+                toastMsg += `${toCapitalizedWords(key)}: ${value}`
+                if (index !== argsEntries.length - 1) {
+                  toastMsg += '\n'
+                }
+              })
+
+              useAppToast(TYPE.INFO, toastMsg)
             }
           }
         )
@@ -218,17 +241,114 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
           const tx = await event.getTransaction()
           const registeredAddress = tx.from
 
+          let toastMsg = ''
           if (registeredAddress === address.value) {
             const userInfo = await kta.userByAddr(address.value)
             await setUserInfo(userInfo)
+
+            toastMsg += `Welcome to TownyFi!\n` + `Event: ${event.eventName}\n`
+
+            useAppToast(TYPE.INFO, toastMsg)
           }
         })
 
-        await ktaToken.on(
-          ktaToken.filters.Approval,
-          (owner, spender, value) => {
-            if (spender === ktaAddress && owner === address.value) {
-              setKtaAllowance(value)
+        kta.on(kta.filters.UserMissed, async (defender, event) => {
+          const tx = await event.getTransaction()
+          const fromAddress = tx.from
+          let toastMsg = ''
+
+          if (fromAddress === address.value) {
+            toastMsg += `Your attack was dodged!\n`
+          }
+
+          if (defender === address.value) {
+            toastMsg += `You dodged the attack!\n`
+          }
+
+          if (toastMsg) {
+            toastMsg += `Event: ${event.eventName}\n`
+          }
+
+          const argsEntries = Object.entries(event.args.toObject())
+          argsEntries.forEach(([key, value], index) => {
+            toastMsg += `${toCapitalizedWords(key)}: ${value}`
+            if (index !== argsEntries.length - 1) {
+              toastMsg += '\n'
+            }
+          })
+
+          if (toastMsg) {
+            useAppToast(TYPE.INFO, toastMsg)
+          }
+        })
+
+        kta.on(kta.filters.UserAttacked, async (defender, _, __, event) => {
+          const tx = await event.getTransaction()
+          const fromAddress = tx.from
+          let toastMsg = ''
+
+          if (fromAddress === address.value) {
+            toastMsg += `You attacked!\n`
+          }
+
+          if (defender === address.value) {
+            toastMsg += `You were attacked!\n`
+          }
+
+          if (toastMsg) {
+            toastMsg += `Event: ${event.eventName}\n`
+          }
+
+          const argsEntries = Object.entries(event.args.toObject())
+          argsEntries.forEach(([key, value], index) => {
+            toastMsg += `${toCapitalizedWords(key)}: ${value}`
+            if (index !== argsEntries.length - 1) {
+              toastMsg += '\n'
+            }
+          })
+
+          if (toastMsg) {
+            useAppToast(TYPE.INFO, toastMsg)
+          }
+        })
+
+        ktaToken.on(ktaToken.filters.Approval, (owner, spender, value) => {
+          if (spender === ktaAddress && owner === address.value) {
+            setKtaAllowance(value)
+          }
+        })
+
+        ktaToken.on(
+          ktaToken.filters.Transfer,
+          async (from, to, value, event) => {
+            if (from === address.value || to === address.value) {
+              setKtaBalance(await ktaToken.balanceOf(address.value))
+
+              const valueFormat = ethers.formatUnits(
+                value,
+                await ktaToken.decimals()
+              )
+
+              let toastMsg = ''
+              if (from === address.value) {
+                toastMsg += `You sent ${valueFormat} Game Token!\n`
+              }
+
+              if (to === address.value) {
+                toastMsg += `You received ${valueFormat} Game Token!\n`
+              }
+
+              toastMsg += `Event: ${event.eventName}\n`
+
+              const argsEntries = Object.entries(event.args.toObject())
+              argsEntries.forEach(([key, value], index) => {
+                toastMsg += `${toCapitalizedWords(key)}: ${value}`
+                if (index !== argsEntries.length - 1) {
+                  toastMsg += '\n'
+                }
+              })
+
+              useAppToast(TYPE.INFO, toastMsg)
             }
           }
         )
