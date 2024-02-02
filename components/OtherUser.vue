@@ -106,7 +106,7 @@
 </template>
 
 <script setup lang="ts">
-import { duration } from 'moment'
+import moment from 'moment'
 import { decodeBytes32String } from 'ethers'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
@@ -155,7 +155,7 @@ const convert = (
   if (isConvert) {
     timer.value[propertyName] =
       timer.value[propertyName] - currentBlockNumber.value > 0
-        ? duration(
+        ? moment.duration(
           (timer.value[propertyName] - currentBlockNumber.value) * chainBlockTime * 1000
         ).humanize()
         : 0

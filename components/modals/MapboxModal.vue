@@ -113,7 +113,6 @@ const move = async () => {
   } else {
     direction = Direction.Up
   }
-  console.log(BigInt(direction));
 
   const caller = new Caller(getKta.value)
   await caller.callFunction('move', [BigInt(direction)])
