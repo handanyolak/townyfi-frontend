@@ -5,12 +5,26 @@
     <ChatBox v-if="hasMetamask && onValidNetwork" />
     <Map ref="mapElement" v-if="hasMetamask && onValidNetwork" />
     <TheLoading v-show="isLoading" />
-    <AppModal :modalSize="(width + 20).toString()" :modalActive="Boolean(modalComponentName)" :contentClasses="modalComponentName === 'MapboxModal' ? 'bg-transparent' : ''
-      " @modalClosed="clearModalInfo()">
-      <Component :is="currentComponent" v-bind="modalComponentProps" :class="modalComponentName === 'MapboxModal'
-          ? ''
-          : 'overflow-y-auto overflow-x-hidden'
-        " class="tab h-full"></Component>
+    <AppModal
+      :modalSize="(width + 20).toString()"
+      :modalActive="Boolean(modalComponentName)"
+      :contentClasses="
+        modalComponentName === 'MapboxModal' || 'AnimationModal'
+          ? 'bg-transparent'
+          : ''
+      "
+      @modalClosed="clearModalInfo()"
+    >
+      <Component
+        :is="currentComponent"
+        v-bind="modalComponentProps"
+        :class="
+          modalComponentName === 'MapboxModal'
+            ? ''
+            : 'overflow-y-auto overflow-x-hidden'
+        "
+        class="tab h-full"
+      ></Component>
     </AppModal>
   </div>
 </template>
@@ -53,6 +67,6 @@ const currentComponent = computed(() => {
 
 <style>
 .toast-theme {
-  @apply bg-towni-brown-dark-300 bg-opacity-30 text-towni-brown-light-200 backdrop-blur-sm flex items-center;
+  @apply flex items-center bg-towni-brown-dark-300 bg-opacity-30 text-towni-brown-light-200 backdrop-blur-sm;
 }
 </style>
