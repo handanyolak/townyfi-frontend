@@ -13,7 +13,7 @@
         <slot name="title" />
       </span>
     </div>
-    <div class="flex flex-1 items-start justify-between">
+    <div class="flex flex-1 items-center justify-between">
       <div class="flex w-full">
         <div v-if="isEdit || input" class="mx-1">
           <slot name="item" />

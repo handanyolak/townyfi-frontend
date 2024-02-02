@@ -111,8 +111,10 @@
           amet.</span>
       </template>
       <template #action-icon>
-        <img v-if="getPointIcon(item)" class="mr-1 h-5 w-5 animate-bounce cursor-pointer" :src="getPointIcon(item)"
-          @click="getSomething(item)" />
+        <client-only>
+          <Vue3Lottie class="cursor-pointer" :animation-link="getPointIcon(item)" :scale="1.5" :height="40" :width="40"
+            @click="getSomething(item)" />
+        </client-only>
       </template>
     </ListItem>
   </div>
@@ -128,6 +130,7 @@ import { toCapitalizedWords, middleCropping } from '~/utils'
 import { getBytes32Rule } from '~/composables/useYupRules'
 import { Get } from '~/enums'
 import { encodeBytes32String } from 'ethers'
+import { Vue3Lottie } from 'vue3-lottie'
 
 const { chainBlockTime } = useRuntimeConfig().public
 
@@ -150,9 +153,9 @@ const nameRules = getBytes32Rule()
 //--------[ Computed ]--------//
 // TODO: Backend'de get datalar ayrildiktan sonra duzenlenecek
 const getPointIcon = computed(() => (_getPoint: string) => {
-  const iconName = useSvg(_getPoint)
+  const iconName = useLottie(_getPoint)
 
-  return iconName.includes('undefined') ? undefined : useSvg(_getPoint)
+  return iconName.includes('undefined') ? undefined : useLottie(_getPoint)
 })
 
 const referrer = computed(() => middleCropping(referrerAddress))
