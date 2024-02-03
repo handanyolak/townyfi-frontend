@@ -59,19 +59,42 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const _toggleMusic = useToggle(music)
   const modalComponentName = ref('')
   const modalComponentProps = ref({})
+  const isAnimation = ref(false)
+  const isConfirmed = ref(false)
+  const modalResultResolver = ref<((value: unknown) => void) | null>(null)
+  const isAttackSuccess = ref(false)
 
   //--------[ Actions ]--------//
+
   const setModalInfo = (
     newModalComponentName: string,
     newModalComponentProps?: any
   ) => {
     modalComponentName.value = newModalComponentName
     modalComponentProps.value = newModalComponentProps
+    isAnimation.value = modalComponentProps.value?.hasOwnProperty('animation')
     sideLeave()
+    return new Promise((resolve) => {
+      modalResultResolver.value = resolve
+    })
   }
+
   const clearModalInfo = () => {
     modalComponentName.value = ''
     modalComponentProps.value = {}
+    if (modalResultResolver.value) {
+      modalResultResolver.value(false)
+      modalResultResolver.value = null
+    }
+    isConfirmed.value = false
+    isAttackSuccess.value = false
+  }
+
+  const closeModalWithResponse = (response: boolean) => {
+    if (modalResultResolver.value) {
+      modalResultResolver.value(response)
+      modalResultResolver.value = null
+    }
   }
 
   const sideLeave = () => {
@@ -409,6 +432,10 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     originCoordinate,
     modalComponentName,
     modalComponentProps,
+    isConfirmed,
+    isAnimation,
+    modalResultResolver,
+    isAttackSuccess,
     sideLeave,
     toggleMusic,
     setUserInfo,
@@ -417,5 +444,6 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     setOriginCoordinate,
     setModalInfo,
     clearModalInfo,
+    closeModalWithResponse,
   }
 })
