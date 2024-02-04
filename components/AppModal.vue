@@ -17,7 +17,11 @@
             ]"
             class="modal relative h-3/5 w-2/5 rounded-md"
           >
-            <button class="absolute right-2 top-2 z-50" @click="closeModal">
+            <button
+              v-if="!isAnimation"
+              class="absolute right-2 top-2 z-50"
+              @click="closeModal"
+            >
               <img class="h-10 w-10" src="@/assets/img/exit.svg" />
             </button>
             <slot />
@@ -30,6 +34,9 @@
 
 <script setup lang="ts">
 import { onClickOutside } from '@vueuse/core'
+
+const appOptionsStore = useAppOptionsStore()
+const { isAnimation } = storeToRefs(appOptionsStore)
 
 //--------[ Props & Emits ]--------//
 interface AppModalProps {
@@ -47,7 +54,9 @@ const modal = ref(null)
 
 //--------[ Methods ]--------//
 const closeModal = () => {
-  emit('modalClosed')
+  if (!isAnimation.value) {
+    emit('modalClosed')
+  }
 }
 
 onClickOutside(modal, () => closeModal())
