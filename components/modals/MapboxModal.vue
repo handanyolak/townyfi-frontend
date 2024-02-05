@@ -6,8 +6,10 @@
       <Accordion v-for="(_address, index) in filteredList" :key="index">
         <template #title>
           <div class="flex items-center">
-            <div class="mr-1 rounded-md bg-towni-brown-dark-300 p-1 text-xs text-white"
-              @click.stop="!isOwnAddress(_address) && attack(_address)">
+            <div
+              class="mr-1 rounded-md bg-towni-brown-dark-300 p-1 text-xs text-white"
+              @click.stop="!isOwnAddress(_address) && attack(_address)"
+            >
               {{ isOwnAddress(_address) ? 'Self' : 'Attack' }}
             </div>
 
@@ -21,11 +23,17 @@
     </div>
     <template #parchment-footer>
       <div>
-        <AppButton class="px-4 text-xl" v-if="!(
-          user.coordinate._x === coordinate._x &&
-          user.coordinate._y === coordinate._y
-        )
-          " @click="isMoveable() ? move() : teleport()">{{ isMoveable() ? 'Move' : 'Teleport' }}</AppButton>
+        <AppButton
+          class="px-4 text-xl"
+          v-if="
+            !(
+              user.coordinate._x === coordinate._x &&
+              user.coordinate._y === coordinate._y
+            )
+          "
+          @click="isMoveable() ? move() : teleport()"
+          >{{ isMoveable() ? 'Move' : 'Teleport' }}</AppButton
+        >
       </div>
     </template>
   </Parchment>
@@ -54,7 +62,8 @@ const connectionStore = useConnectionStore()
 const appOptionsStore = useAppOptionsStore()
 
 const { getKta, getKtaCaller } = storeToRefs(connectionStore)
-const { clearModalInfo } = appOptionsStore
+const { clearModalInfo, setModalInfo } = appOptionsStore
+const { isAttackSuccess } = storeToRefs(appOptionsStore)
 
 const userGameStore = useUserGameStore()
 const { user } = storeToRefs(userGameStore)
@@ -81,22 +90,43 @@ const filteredList = computed(() => {
   )
 })
 
-const isOwnAddress = computed(() => (_address: string) => address.value === _address)
+const isOwnAddress = computed(
+  () => (_address: string) => address.value === _address
+)
 
 //--------[ Methods ]--------//
 const teleport = async () => {
-  const result = await getKtaCaller.value.callFunction('teleport', [{
-    _x: props.coordinate._x,
-    _y: props.coordinate._y,
-  }])
+  const result = await getKtaCaller.value.callFunction('teleport', [
+    {
+      _x: props.coordinate._x,
+      _y: props.coordinate._y,
+    },
+  ])
 
   if (result) {
     clearModalInfo()
   }
 }
 
+//TODO: notification will be made after the transaction is confirmed
 const attack = async (address: string) => {
-  getKtaCaller.value.callFunction('attack', [address])
+  const confirmed = await setModalInfo('AnimationModal', {
+    animation: 'attack',
+    message: `Are you sure you want to attack ${address}?`,
+  })
+
+  if (!confirmed) {
+    return
+  }
+
+  try {
+    const success = await getKtaCaller.value.callFunction('attack', [address])
+    isAttackSuccess.value = success
+  } catch (error) {
+    console.error('Attack transaction failed: ', error)
+  } finally {
+    clearModalInfo()
+  }
 }
 
 const move = async () => {
@@ -113,7 +143,7 @@ const move = async () => {
   } else {
     direction = Direction.Up
   }
-  console.log(BigInt(direction));
+  console.log(BigInt(direction))
 
   const caller = new Caller(getKta.value)
   await caller.callFunction('move', [BigInt(direction)])
