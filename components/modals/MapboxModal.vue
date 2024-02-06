@@ -63,7 +63,6 @@ const appOptionsStore = useAppOptionsStore()
 
 const { getKta, getKtaCaller } = storeToRefs(connectionStore)
 const { clearModalInfo, setModalInfo } = appOptionsStore
-const { isAttackSuccess } = storeToRefs(appOptionsStore)
 
 const userGameStore = useUserGameStore()
 const { user } = storeToRefs(userGameStore)
@@ -120,8 +119,7 @@ const attack = async (address: string) => {
   }
 
   try {
-    const success = await getKtaCaller.value.callFunction('attack', [address])
-    isAttackSuccess.value = success
+    await getKtaCaller.value.callFunction('attack', [address])
   } catch (error) {
     console.error('Attack transaction failed: ', error)
   } finally {
