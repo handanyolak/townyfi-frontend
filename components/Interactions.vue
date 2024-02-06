@@ -95,14 +95,14 @@
       </template>
       <div class="flex">
         <ListItem input>
-      <template #title> Direction: </template>
-      <template #item>
-        <SidebarDropdown
-          @selected="(item: string) => onDropdownChanged(item)"
-          :dropdown-items="enumKeys(Direction)"
-        />
-      </template>
-    </ListItem>
+          <template #title> Direction: </template>
+          <template #item>
+            <SidebarDropdown
+              @selected="(item: string) => onDropdownChanged(item)"
+              :dropdown-items="enumKeys(Direction)"
+            />
+          </template>
+        </ListItem>
         <img
           class="cursor-pointer"
           src="@/assets/img/check.svg"
@@ -127,6 +127,9 @@ const userGameStore = useUserGameStore()
 const { getKtaCaller } = storeToRefs(connectionStore)
 const { user } = storeToRefs(userGameStore)
 
+const appOptionsStore = useAppOptionsStore()
+const { clearModalInfo, setModalInfo } = appOptionsStore
+
 //--------[ Data ]--------//
 const coordinateX = ref(user.value?.coordinate._x)
 const coordinateY = ref(user.value?.coordinate._y)
@@ -134,14 +137,33 @@ const targetAddress = ref('')
 const direction = ref<Direction>(Direction.Up)
 
 //--------[ Methods ]--------//
+
+//TODO: notification will be made after the transaction is confirmed
 const teleport = async () => {
-  getKtaCaller.value.callFunction('teleport', [{
-    _x: coordinateX.value,
-    _y: coordinateY.value,
-  }])
+  const confirmed = await setModalInfo('AnimationModal', {
+    animation: 'teleport',
+    message: `Are you sure want to teleport to (${coordinateX.value}, ${coordinateY.value})?`,
+  })
+
+  if (!confirmed) {
+    return
+  }
+
+  try {
+    await getKtaCaller.value.callFunction('teleport', [
+      {
+        _x: coordinateX.value,
+        _y: coordinateY.value,
+      },
+    ])
+  } catch (error) {
+    console.error('Teleport transaction failed: ', error)
+  } finally {
+    clearModalInfo()
+  }
 }
 
-const onDropdownChanged = async (item: any ) => {
+const onDropdownChanged = async (item: any) => {
   direction.value = Direction[item] as unknown as Direction
 }
 
@@ -150,6 +172,7 @@ const attack = async () => {
 }
 
 const move = async () => {
+  // @ts-ignore
   getKtaCaller.value.callFunction('move', [direction.value])
 }
 </script>
