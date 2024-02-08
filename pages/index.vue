@@ -8,11 +8,6 @@
     <AppModal
       :modalSize="(width + 20).toString()"
       :modalActive="Boolean(modalComponentName)"
-      :contentClasses="
-        modalComponentName === 'MapboxModal' || 'AnimationModal'
-          ? 'bg-transparent'
-          : ''
-      "
       @modalClosed="clearModalInfo()"
     >
       <Component
