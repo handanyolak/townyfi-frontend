@@ -5,40 +5,50 @@
         <template #tooltip-image>
           <img
             class="mr-1 h-3 w-3 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
-            src="@/assets/img/information.svg" />
+            src="@/assets/img/information.svg"
+          />
         </template>
         <slot name="tooltip" />
       </Tooltip>
-      <span class="flex items-center text-towni-brown-dark-400">
+      <span class="text-towni-brown-dark-400">
         <slot name="title" />
       </span>
     </div>
     <div class="flex flex-1 items-center justify-between">
       <div class="flex w-full">
-        <div v-if="isEdit || input" class="mx-1">
+        <div v-if="isEdit || input" class="mx-1 w-full">
           <slot name="item" />
         </div>
-        <span v-else class="mx-1 px-1 text-towni-brown-dark-600">
+        <span v-else class="mx-1 w-full px-1 text-towni-brown-dark-600">
           <slot />
         </span>
       </div>
       <div v-if="editable">
-        <img class="h-4 w-4 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
-          :src="isEdit ? languageIcon('check') : languageIcon('edit')" @click="isEdit ? save() : edit()" />
+        <img
+          class="h-4 w-4 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
+          :src="isEdit ? languageIcon('check') : languageIcon('edit')"
+          @click="isEdit ? save() : edit()"
+        />
       </div>
       <div v-if="copiable">
         <Tooltip auto-close>
           <template #tooltip-image>
-            <img class="h-4 w-4 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
-              :src="isCopy ? languageIcon('check') : languageIcon('copy')" @click="isCopy || copy()" />
+            <img
+              class="h-4 w-4 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
+              :src="isCopy ? languageIcon('check') : languageIcon('copy')"
+              @click="isCopy || copy()"
+            />
           </template>
           <span> Copied! </span>
         </Tooltip>
       </div>
       <slot name="action-icon" />
-      <img v-if="convertable"
+      <img
+        v-if="convertable"
         class="h-3 w-3 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
-        src="@/assets/img/convert.svg" @click="convert()" />
+        src="@/assets/img/convert.svg"
+        @click="convert()"
+      />
     </div>
   </div>
 </template>
@@ -63,8 +73,8 @@ const props = withDefaults(defineProps<ContentListItemProps>(), {
 })
 
 const emit = defineEmits<{
-  (event: 'convert', isConvert: boolean): void,
-  (event: 'saved'): void,
+  (event: 'convert', isConvert: boolean): void
+  (event: 'saved'): void
 }>()
 
 //--------[ Data ]--------//
