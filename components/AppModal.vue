@@ -11,11 +11,8 @@
             :style="`height: ${modalSize}px; width: ${modalSize}px`"
             :class="[
               contentClasses,
-              contentClasses === 'bg-transparent'
-                ? 'shadow-none'
-                : 'bg-towni-brown-light-100 shadow-xl',
+              'modal relative h-3/5 w-2/5 rounded-md bg-transparent',
             ]"
-            class="modal relative h-3/5 w-2/5 rounded-md"
           >
             <button
               v-if="!isAnimation"
