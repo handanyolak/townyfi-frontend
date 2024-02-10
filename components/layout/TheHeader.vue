@@ -4,21 +4,34 @@
       <div class="mb-10 flex items-center justify-between py-5">
         <span
           class="flex select-none items-center bg-gradient-to-r from-towni-brown-dark-400 via-towni-brown-dark-400 to-towni-brown-dark-200 bg-clip-text text-5xl font-extrabold text-transparent"
-          style="font-family: Pirata One, sans-serif">
+          style="font-family: Pirata One, sans-serif"
+        >
           <img class="h-7 w-7" src="@/assets/img/paper-document.svg" />
           TownyFi
         </span>
-        <SearchBar class="w-1/3" @searched="setModalInfo('TheHeaderSearchModal', { address: search })" v-model="search"
-          :is-disable="isValid" :rules="searchRules" />
+        <SearchBar
+          class="w-1/3"
+          @searched="setModalInfo('TheHeaderSearchModal', { address: search })"
+          v-model="search"
+          :is-disable="isValid"
+          :rules="searchRules"
+        />
         <div class="flex items-center space-x-2">
           <div v-if="hasMetamask" class="flex justify-between py-5">
             <div v-if="onValidNetwork">
               <div v-if="isConnected" class="space-x-1">
-                <AppButton v-if="!isRegistered" border-hover @click="setModalInfo('RegisterModal')">
+                <AppButton
+                  v-if="!isRegistered"
+                  border-hover
+                  @click="setModalInfo('RegisterModal')"
+                >
                   Register
                 </AppButton>
-                <AppButton border-hover @click.native="disconnectWeb3()"
-                  inline-class="group-hover:bg-towni-brown-light-100 group-hover:text-towni-brown-dark-200">
+                <AppButton
+                  border-hover
+                  @click.native="disconnectWeb3()"
+                  inline-class="group-hover:bg-towni-brown-light-100 group-hover:text-towni-brown-dark-200"
+                >
                   {{ $t('disconnect_wallet') }}
                 </AppButton>
               </div>
@@ -26,18 +39,55 @@
                 Connect Wallet
               </AppButton>
             </div>
-            <AppButton v-else target="_blank" border border-hover @click.native="switchOrAddNetwork()">
+            <AppButton
+              v-else
+              target="_blank"
+              border
+              border-hover
+              @click.native="switchOrAddNetwork()"
+            >
               Switch Network
             </AppButton>
           </div>
-          <AppButton v-else href="https://metamask.io/download/" target="_blank" fill-hover>
+          <AppButton
+            v-else
+            href="https://metamask.io/download/"
+            target="_blank"
+            fill-hover
+          >
             Install Metamask
           </AppButton>
-          <Dropdown :select="language" :dropdown-items="languages" :icon-names="languages"
-            @selected="(item) => selected(item)" />
-          <img :src="themeIcon" class="h-5 w-5 cursor-pointer" @click="toggleTheme()" />
-          <img :src="audioIcon" class="h-7 w-7 cursor-pointer" @click="toggleAudio()" />
-          <img v-if="audio" :src="musicIcon" class="h-5 w-5 cursor-pointer" @click="toggleMusic()" />
+          <Dropdown
+            :select="language"
+            :dropdown-items="languages"
+            :icon-names="languages"
+            @selected="(item) => selected(item)"
+            class="dropdown-background"
+          />
+          <img
+            :src="themeIcon"
+            class="h-14 w-14 cursor-pointer"
+            @click="toggleTheme()"
+          />
+
+          <img
+            :src="audioIcon"
+            class="h-16 w-16 cursor-pointer"
+            @click="toggleAudio()"
+          />
+          <client-only>
+            <Vue3Lottie
+              v-if="audio"
+              class="cursor-pointer"
+              @click="toggleMusicAndAnimation()"
+              :animation-data="Harp"
+              :height="55"
+              :width="55"
+              :scale="1.4"
+              :auto-play="isAnimating"
+              :pause-animation="!isAnimating"
+            />
+          </client-only>
         </div>
       </div>
     </div>
@@ -52,9 +102,12 @@ import AppButton from '~/components/AppButton.vue'
 import { $t } from '~/composables/useLang'
 import { numberToHex } from '~/utils'
 import { getAddressRule } from '~/composables/useYupRules'
+import { Vue3Lottie } from 'vue3-lottie'
+import Harp from '~/assets/lotties/harp.json'
 
 //--------[ Nuxt ]--------//
-const { chainId, networkName, networkSymbol, chainExplorers, chainRpcs } = useRuntimeConfig().public
+const { chainId, networkName, networkSymbol, chainExplorers, chainRpcs } =
+  useRuntimeConfig().public
 
 //--------[ Stores ]--------//
 const connectionStore = useConnectionStore()
@@ -74,6 +127,8 @@ const { isRegistered } = storeToRefs(userGameStore)
 const { audio, music } = storeToRefs(appOptionStore)
 const { language } = storeToRefs(useUserOptions)
 
+const isAnimating = ref(false)
+
 //--------[ Composables ]--------//
 const isDark = useDark({
   storageKey: 'theme',
@@ -81,16 +136,14 @@ const isDark = useDark({
   valueLight: 'light',
 })
 
-const toggleTheme = useToggle(isDark)
-
 //--------[ Data ]--------//
 const search = ref('')
 const isValid = ref(false)
 const searchRules = getAddressRule()
+const toggleTheme = useToggle(isDark)
 
 //--------[ Computed ]--------//
 const audioIcon = computed(() => useSvg(audio.value ? 'sound' : 'sound-mute'))
-const musicIcon = computed(() => useSvg(music.value ? 'pause' : 'music'))
 
 const themeIcon = computed(() =>
   useSvg(isDark.value ? 'dark-mode' : 'light-mode')
@@ -146,6 +199,11 @@ const switchOrAddNetwork = async () => {
 
 const selected = (item: string) => {
   setLanguage(item)
+}
+
+const toggleMusicAndAnimation = () => {
+  toggleMusic()
+  isAnimating.value = !isAnimating.value
 }
 </script>
 
