@@ -1,8 +1,8 @@
 <template>
   <div class="flex items-center justify-center">
-    <div class="relative z-10">
+    <div class="relative z-10 w-full">
       <button
-        class="flex items-center justify-between bg-towni-brown-dark-300 bg-opacity-20 py-1 px-3 text-towni-brown-dark-300 outline-none backdrop-blur"
+        class="flex w-full items-center justify-between bg-towni-brown-dark-300 bg-opacity-20 py-1 px-3 text-towni-brown-dark-300 outline-none backdrop-blur"
         :class="!showDropdown ? 'rounded-full' : 'rounded-t-2xl'"
         @click="toggleDropdown()"
         @blur="showDropdown = false"
