@@ -83,7 +83,7 @@
           </div>
           <div class="teleport">
             <ListTitle class="text-sm shadow-md shadow-towni-brown-dark-400"
-              >Teleport</ListTitle
+              >Navigate</ListTitle
             >
             <div class="flex items-center rounded-md p-1">
               <div class="flex flex-col">
