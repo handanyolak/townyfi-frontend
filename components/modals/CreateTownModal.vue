@@ -1,25 +1,34 @@
 <template>
-  <div class="flex flex-col items-center space-y-4">
-    <ListTitle class="w-full">Create Town</ListTitle>
-    <VForm class="flex flex-col items-center">
-      <ListItem class="w-full" input>
-        <template #title> Name: </template>
-        <template #item>
-          <VField v-model="formInput.name" name="name" :rules="nameRules" />
-          <VErrorMessage class="text-red-800" name="name" />
-        </template>
-      </ListItem>
-      <ListItem class="w-full" input>
-        <template #title> Price: </template>
-        <template #item>
-          <VField v-model="formInput.price" name="price" :rules="priceRules" />
-          <VErrorMessage class="text-red-800" name="price" />
-        </template>
-      </ListItem>
-    </VForm>
-    <AppButton class="my-3" :disabled="!formIsValid" @click="createTown()"
-      >Create Town</AppButton
+  <div class="background-town flex items-center bg-towni-brown-light-100 p-4">
+    <div
+      class="flex w-full flex-col items-center space-y-4 bg-towni-brown-light-100 bg-opacity-20 p-1 backdrop-blur-sm"
     >
+      <VForm class="flex w-full flex-col items-center">
+        <ListItem class="w-full bg-towni-brown-light-100" input>
+          <template #title> Name: </template>
+          <template #item>
+            <VField v-model="formInput.name" name="name" :rules="nameRules" />
+            <VErrorMessage class="text-red-800" name="name" />
+          </template>
+        </ListItem>
+        <ListItem class="w-full bg-towni-brown-light-100" input>
+          <template #title> Price: </template>
+          <template #item>
+            <VField
+              v-model="formInput.price"
+              name="price"
+              :rules="priceRules"
+            />
+            <VErrorMessage class="text-red-800" name="price" />
+          </template>
+        </ListItem>
+      </VForm>
+      <div class="my-3 rounded-full bg-towni-brown-light-100">
+        <AppButton :disabled="!formIsValid" @click="createTown()"
+          >Create Town</AppButton
+        >
+      </div>
+    </div>
   </div>
 </template>
 
@@ -56,9 +65,18 @@ watch(formInput, (newFormInput) => {
 
 //--------[ Methods ]--------//
 const createTown = async () => {
-    await getKtaCaller.value.callFunction(
-      'createTown', [encodeBytes32String(formInput.name),
-      BigInt(formInput.price)]
-    )
+  await getKtaCaller.value.callFunction('createTown', [
+    encodeBytes32String(formInput.name),
+    BigInt(formInput.price),
+  ])
 }
 </script>
+
+<style scoped>
+.background-town {
+  background-image: url('~/assets/img/create-town.svg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+</style>
