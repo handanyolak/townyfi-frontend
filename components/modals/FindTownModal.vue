@@ -1,24 +1,42 @@
 <template>
-  <div class="flex flex-col items-center space-y-4">
-    <ListTitle class="w-full">Find Town</ListTitle>
-    <ListItem input>
+  <div
+    class="find-town-background flex flex-col items-center space-y-4 bg-towni-brown-light-100"
+  >
+    <ListTitle class="w-3/4">Find Town</ListTitle>
+    <ListItem class="w-1/2" input>
       <template #title> By: </template>
       <template #item>
-        <SidebarDropdown ref="sidebarDropdown" @selected="onDropdownChanged()"
-          :dropdown-items="Object.values(findOptions)" />
+        <SidebarDropdown
+          ref="sidebarDropdown"
+          @selected="onDropdownChanged()"
+          :dropdown-items="Object.values(findOptions)"
+        />
       </template>
     </ListItem>
-    <VForm @submit.prevent class="flex flex-col items-center">
+    <VForm @submit.prevent class="flex w-3/4 flex-col items-center">
       <ListItem class="w-full" input>
         <template #title> {{ selectedItem }}: </template>
         <template #item>
-          <VField v-model="formInput[findOptions[selectedItem]]" :name="findOptions[selectedItem]" @input="setId()"
-            :placeholder="placeholders[findOptions[selectedItem]]" :rules="rules[findOptions[selectedItem]]" />
-          <VErrorMessage class="text-red-800" :name="findOptions[selectedItem]" />
+          <VField
+            v-model="formInput[findOptions[selectedItem]]"
+            :name="findOptions[selectedItem]"
+            @input="setId()"
+            :placeholder="placeholders[findOptions[selectedItem]]"
+            :rules="rules[findOptions[selectedItem]]"
+          />
+          <VErrorMessage
+            class="text-red-800"
+            :name="findOptions[selectedItem]"
+          />
         </template>
       </ListItem>
     </VForm>
-    <OtherTown class="w-full" v-if="formInput[findOptions[selectedItem]] && id" :key="id.toString()" :id="id" />
+    <OtherTown
+      class="w-full"
+      v-if="formInput[findOptions[selectedItem]] && id"
+      :key="id.toString()"
+      :id="id"
+    />
     <div v-if="id === BigInt(0)">town not found</div>
   </div>
 </template>
@@ -119,3 +137,11 @@ const setId = () => {
   debouncedSetId()
 }
 </script>
+
+<style scoped>
+.find-town-background {
+  background-image: url('~/assets/img/treasure-map.svg');
+  background-repeat: no-repeat;
+  background-position-x: center;
+}
+</style>
