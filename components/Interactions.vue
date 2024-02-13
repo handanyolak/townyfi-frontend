@@ -37,7 +37,7 @@
           class="cursor-pointer"
           src="@/assets/img/check.svg"
           alt="teleport"
-          @click="teleport()"
+          @click="onClickTeleport()"
         />
       </div>
     </Accordion>
@@ -71,7 +71,7 @@
           class="cursor-pointer"
           src="@/assets/img/check.svg"
           alt="attack"
-          @click="attack()"
+          @click="onClickAttack()"
         />
       </div>
     </Accordion>
@@ -106,8 +106,8 @@
         <img
           class="cursor-pointer"
           src="@/assets/img/check.svg"
-          alt="attack"
-          @click="move()"
+          alt="move"
+          @click="onClickMove()"
         />
       </div>
     </Accordion>
@@ -135,11 +135,12 @@ const coordinateX = ref(user.value?.coordinate._x)
 const coordinateY = ref(user.value?.coordinate._y)
 const targetAddress = ref('')
 const direction = ref<Direction>(Direction.Up)
+const directionTarget = ref('Up')
 
 //--------[ Methods ]--------//
 
 //TODO: notification will be made after the transaction is confirmed
-const teleport = async () => {
+const onClickTeleport = async () => {
   const confirmed = await setModalInfo('AnimationModal', {
     animation: 'teleport',
     message: `Are you sure want to teleport to (${coordinateX.value}, ${coordinateY.value})?`,
@@ -165,14 +166,47 @@ const teleport = async () => {
 
 const onDropdownChanged = async (item: any) => {
   direction.value = Direction[item] as unknown as Direction
+  directionTarget.value = item
 }
 
-const attack = async () => {
-  getKtaCaller.value.callFunction('attack', [targetAddress.value])
+//TODO: notification will be made after the transaction is confirmed
+const onClickAttack = async () => {
+  const confirmed = await setModalInfo('AnimationModal', {
+    animation: 'attack',
+    message: `Are you sure you want to attack ${targetAddress.value}?`,
+  })
+
+  if (!confirmed) {
+    return
+  }
+
+  try {
+    await getKtaCaller.value.callFunction('attack', [targetAddress.value])
+  } catch (error) {
+    console.error('Attack transaction failed: ', error)
+  } finally {
+    clearModalInfo()
+  }
 }
 
-const move = async () => {
-  // @ts-ignore
-  getKtaCaller.value.callFunction('move', [direction.value])
+//TODO: notification will be made after the transaction is confirmed
+const onClickMove = async () => {
+  const confirmed = await setModalInfo('AnimationModal', {
+    animation: 'move',
+    message: `Are you sure want to move to ${directionTarget.value}?`,
+  })
+
+  if (!confirmed) {
+    return
+  }
+
+  try {
+    // @ts-ignore
+    await getKtaCaller.value.callFunction('move', [direction.value])
+  } catch (error) {
+    console.error('Move transaction failed: ', error)
+  } finally {
+    clearModalInfo()
+  }
 }
 </script>
