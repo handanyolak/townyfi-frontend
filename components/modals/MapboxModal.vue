@@ -18,7 +18,9 @@
             </div>
           </div>
         </template>
-        <OtherUser v-if="clickedAddress === _address" :address="_address" />
+        <template #content>
+          <OtherUser v-if="clickedAddress === _address" :address="_address" />
+        </template>
       </Accordion>
     </div>
     <template #parchment-footer>
