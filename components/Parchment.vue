@@ -6,7 +6,7 @@
       <slot name="parchment-header" />
     </div>
     <div
-      class="parchment overflow-auto bg-white py-8 px-2 text-towni-brown-dark-600"
+      class="parchment scrollbar-gutter-stable overflow-auto bg-white py-8 px-2 text-towni-brown-dark-600"
     >
       <div class="animate-fadein">
         <slot />

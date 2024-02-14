@@ -19,7 +19,7 @@
     <div
       :style="dropdown ? 'height: 100vh;' : ''"
       :class="[
-        ' overflow-y-auto overflow-x-hidden transition-all duration-1000 ease-in-out',
+        ' scrollbar-gutter-stable overflow-y-auto overflow-x-hidden transition-all duration-1000 ease-in-out',
         isOpen ? 'max-h-96' : 'max-h-0',
       ]"
     >

@@ -18,7 +18,7 @@
       <Transition name="dropdown">
         <div
           v-show="showDropdown"
-          class="absolute left-0 right-0 mb-4 h-20 overflow-auto bg-towni-brown-light-100 dark:bg-night-blue"
+          class="scrollbar-gutter-stable absolute left-0 right-0 mb-4 h-20 overflow-auto bg-towni-brown-light-100 dark:bg-night-blue"
           :class="!showDropdown ? 'rounded-md' : 'rounded-b-md'"
         >
           <span
