@@ -1,6 +1,9 @@
 <template>
   <span ref="tooltip" class="relative" @click.stop="toggleTooltip()">
-    <slot name="tooltip-image" />
+    <img
+      class="mr-1 h-3 w-3 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
+      src="@/assets/img/information.svg"
+    />
     <span
       :class="[
         ' absolute bottom-4 transform rounded-md bg-towni-brown-light-400 p-1 py-1 text-center text-sm text-towni-brown-dark-300 shadow-xl transition-all duration-700 ease-out',
