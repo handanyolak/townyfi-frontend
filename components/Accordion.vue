@@ -9,7 +9,12 @@
         src="@/assets/img/arrow-down.svg"
         :class="isOpen ? 'rotate-180' : 'rotate-0'"
       />
-      <slot name="title" />
+      <div class="group flex">
+        <Tooltip v-if="tooltip" class="self-center">
+          <slot name="tooltip" />
+        </Tooltip>
+        <slot name="title" />
+      </div>
     </ListTitle>
     <div
       :style="dropdown ? 'height: 100vh;' : ''"
@@ -18,7 +23,7 @@
         isOpen ? 'max-h-96' : 'max-h-0',
       ]"
     >
-      <slot />
+      <slot name="content" />
     </div>
   </div>
 </template>
@@ -30,6 +35,7 @@ import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 //--------[ Props & Emits ]--------//
 interface AccordionProps {
   dropdown?: boolean
+  tooltip?: boolean
 }
 
 const props = defineProps<AccordionProps>()
