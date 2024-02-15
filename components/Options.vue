@@ -8,6 +8,7 @@
         :dropdown-items="languages"
         :icon-names="languages"
         @selected="(item) => selectLanguage(item)"
+        rounded
       />
     </ListItem>
     <ListItem>
@@ -38,6 +39,7 @@
         :select="nearLevel.toString()"
         :dropdown-items="createNumberArray(minNearLevel, maxNearLevel)"
         @selected="(item) => selectNearLevel(item)"
+        rounded
       ></SidebarDropdown>
     </ListItem>
   </div>
@@ -50,8 +52,8 @@ import ListItem from '~/components/sidebar-items/ListItem.vue'
 import SidebarDropdown from '~/components/SidebarDropdown.vue'
 import Switch from '~/components/Switch.vue'
 
-  //--------[ Nuxt Imports ]--------//
-  const { minNearLevel, maxNearLevel } = useRuntimeConfig().public
+//--------[ Nuxt Imports ]--------//
+const { minNearLevel, maxNearLevel } = useRuntimeConfig().public
 
 //--------[ Stores ]--------//
 const appOptionStore = useAppOptionsStore()
@@ -86,11 +88,11 @@ const selectLanguage = (item: string) => {
 }
 
 const createNumberArray = (start: number, end: number) => {
-  const numberStrArray: string[] = [];
+  const numberStrArray: string[] = []
   for (let i = start; i <= end; i++) {
-    numberStrArray.push(i.toString());
+    numberStrArray.push(i.toString())
   }
-  return numberStrArray;
+  return numberStrArray
 }
 
 const selectNearLevel = (item: any) => {

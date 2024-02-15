@@ -74,6 +74,7 @@
               <SidebarDropdown
                 @selected="(item: string) => onDropdownChanged(item)"
                 :dropdown-items="enumKeys(Direction)"
+                rounded
               />
             </template>
           </ListItem>
