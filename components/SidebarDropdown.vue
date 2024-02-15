@@ -3,7 +3,7 @@
     <div class="relative z-10 w-full">
       <button
         class="flex w-full items-center justify-between bg-towni-brown-dark-300 bg-opacity-20 py-1 px-3 text-towni-brown-dark-300 outline-none backdrop-blur"
-        :class="!showDropdown ? 'rounded-full' : 'rounded-t-2xl'"
+        :class="isRounded"
         @click="toggleDropdown()"
         @blur="showDropdown = false"
       >
@@ -20,7 +20,7 @@
       <Transition name="dropdown">
         <div
           v-show="showDropdown"
-          class="absolute left-0 right-0 mb-4 h-20 overflow-auto bg-towni-brown-dark-300 bg-opacity-20 backdrop-blur"
+          class="scrollbar-gutter-stable absolute left-0 right-0 mb-4 h-20 overflow-auto bg-towni-brown-dark-300 bg-opacity-20 backdrop-blur"
           :class="!showDropdown ? 'rounded-md' : 'rounded-b-2xl'"
         >
           <span
@@ -50,6 +50,7 @@ interface DropdownProps {
   dropdownItems: string[]
   iconNames?: string[]
   select?: string
+  rounded?: boolean
 }
 
 interface DropdownExpose {
@@ -70,6 +71,11 @@ const dropdownIcon = computed(
       // @ts-ignore
       useSvg(icon)
 )
+
+const isRounded = computed(() => {
+  if (!props.rounded) return ''
+  return showDropdown.value ? 'rounded-t-2xl' : 'rounded-full'
+})
 
 //--------[ Methods ]--------//
 const toggleDropdown = () => {
