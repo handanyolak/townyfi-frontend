@@ -1,6 +1,6 @@
 <template>
   <div
-    class="h-screen overflow-hidden transition-colors duration-300 dark:bg-[#040413]"
+    class="h-screen overflow-hidden transition-colors duration-300 dark:bg-[#0D1117]"
   >
     <TheHeader />
     <TheSidebar />
