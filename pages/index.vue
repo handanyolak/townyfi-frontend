@@ -4,7 +4,7 @@
     <SidebarMenu v-if="hasMetamask" />
     <ChatBox v-if="hasMetamask && onValidNetwork" />
     <Map ref="mapElement" v-if="hasMetamask && onValidNetwork" />
-    <TheLoading v-show="isLoading" />
+    <TheLoading v-show="isLoading" fullScreen />
     <AppModal
       :modalSize="(width + 20).toString()"
       :modalActive="Boolean(modalComponentName)"
@@ -13,12 +13,12 @@
       <Component
         :is="currentComponent"
         v-bind="modalComponentProps"
-        :class="
+        :class="[
+          'tab scrollbar-gutter-stable h-full',
           modalComponentName === 'MapboxModal'
             ? ''
-            : 'overflow-y-auto overflow-x-hidden'
-        "
-        class="tab h-full"
+            : 'overflow-y-auto overflow-x-hidden',
+        ]"
       ></Component>
     </AppModal>
   </div>
