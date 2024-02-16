@@ -1,20 +1,42 @@
 <template>
-  <div class="relative" style="width: 40% !important">
-    <div ref="mapElement" @wheel="onWheel($event)" v-if="hasMetamask && onValidNetwork" class="relative z-50" tabindex="0"
-      @keyup.up="navigateByArrowKeys(NavigateDirection.Up)" @keyup.right="navigateByArrowKeys(NavigateDirection.Right)"
-      @keyup.down="navigateByArrowKeys(NavigateDirection.Down)" @keyup.left="navigateByArrowKeys(NavigateDirection.Left)">
-      <div class=" relative grid overflow-hidden border-[10px] border-[#391f05]"
-        :style="`grid-template-columns: repeat(${getGridColsByNearLevel}, minmax(0, 1fr));`">
-        <div class="absolute top-0 h-full w-full bg-map bg-cover" :style="`transform: scale(${100 + (maxNearLevel - nearLevel) * 10
-          }%); background-position: ${(-originCoordinate._x *
-            BigInt(Math.round(width / (nearLevel * 2 + 1)))) %
-          BigInt(MAX_PIXEL_VALUE)
-          }px ${(originCoordinate._y *
-            BigInt(Math.round(width / (nearLevel * 2 + 1)))) %
-          BigInt(MAX_PIXEL_VALUE)
-          }px`" />
-        <Mapbox v-for="(item, index) in addressesByCoordinate" :key="index" :item="item" :emit-ready-event="index === 0"
-          class="select-none" @dblclick="setModalInfo('MapboxModal', { coordinate: item })" />
+  <div class="relative" style="width: 55% !important">
+    <div
+      ref="mapElement"
+      @wheel="onWheel($event)"
+      v-if="hasMetamask && onValidNetwork"
+      class="relative z-50"
+      tabindex="0"
+      @keyup.up="navigateByArrowKeys(NavigateDirection.Up)"
+      @keyup.right="navigateByArrowKeys(NavigateDirection.Right)"
+      @keyup.down="navigateByArrowKeys(NavigateDirection.Down)"
+      @keyup.left="navigateByArrowKeys(NavigateDirection.Left)"
+    >
+      <div
+        class="relative grid overflow-hidden border-[10px] border-[#391f05]"
+        :style="`grid-template-columns: repeat(${getGridColsByNearLevel}, minmax(0, 1fr));`"
+      >
+        <div
+          class="absolute top-0 h-full w-full bg-map bg-cover"
+          :style="`transform: scale(${
+            100 + (maxNearLevel - nearLevel) * 10
+          }%); background-position: ${
+            (-originCoordinate._x *
+              BigInt(Math.round(width / (nearLevel * 2 + 1)))) %
+            BigInt(MAX_PIXEL_VALUE)
+          }px ${
+            (originCoordinate._y *
+              BigInt(Math.round(width / (nearLevel * 2 + 1)))) %
+            BigInt(MAX_PIXEL_VALUE)
+          }px`"
+        />
+        <Mapbox
+          v-for="(item, index) in addressesByCoordinate"
+          :key="index"
+          :item="item"
+          :emit-ready-event="index === 0"
+          class="select-none"
+          @dblclick="setModalInfo('MapboxModal', { coordinate: item })"
+        />
       </div>
     </div>
     <MapNavigation :height="width.toString()" />
