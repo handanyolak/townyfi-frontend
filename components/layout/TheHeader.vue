@@ -9,14 +9,15 @@
           <img class="h-7 w-7" src="@/assets/img/paper-document.svg" />
           TownyFi
         </span>
-        <SearchBar
-          class="w-1/3"
-          @searched="setModalInfo('TheHeaderSearchModal', { address: search })"
-          v-model="search"
-          :is-disable="isValid"
-          :rules="searchRules"
-        />
         <div class="flex items-center space-x-2">
+          <button @click="setModalInfo('SearchModal')">
+            <img
+              src="~/assets/img/search.svg"
+              class="h-14 w-14 cursor-pointer"
+              alt="search"
+            />
+          </button>
+
           <div v-if="hasMetamask" class="flex justify-between py-5">
             <div v-if="onValidNetwork">
               <div v-if="isConnected" class="space-x-1">
@@ -97,7 +98,6 @@
 <script setup lang="ts">
 import { useDark, useToggle } from '@vueuse/core'
 import Dropdown from '~/components/Dropdown.vue'
-import SearchBar from '~/components/SearchBar.vue'
 import AppButton from '~/components/AppButton.vue'
 import { $t } from '~/composables/useLang'
 import { numberToHex } from '~/utils'
