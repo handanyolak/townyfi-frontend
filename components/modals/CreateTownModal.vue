@@ -4,15 +4,13 @@
       class="flex w-full flex-col items-center space-y-4 bg-towni-brown-light-100 bg-opacity-20 p-1 backdrop-blur-sm"
     >
       <VForm class="flex w-full flex-col items-center">
-        <ListItem class="w-full bg-towni-brown-light-100" input>
-          <template #title> Name: </template>
+        <ListItem title="Name:" class="w-full bg-towni-brown-light-100" input>
           <template #item>
             <VField v-model="formInput.name" name="name" :rules="nameRules" />
             <VErrorMessage class="text-red-800" name="name" />
           </template>
         </ListItem>
-        <ListItem class="w-full bg-towni-brown-light-100" input>
-          <template #title> Price: </template>
+        <ListItem title="Price:" class="w-full bg-towni-brown-light-100" input>
           <template #item>
             <VField
               v-model="formInput.price"
@@ -36,7 +34,6 @@
 import { encodeBytes32String } from 'ethers'
 import { object } from 'yup'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
-import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import { getBytes32Rule, getUintRule } from '~/composables/useYupRules'
 
 //--------[ Stores ]--------//

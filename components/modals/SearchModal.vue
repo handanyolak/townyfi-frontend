@@ -4,8 +4,7 @@
   >
     <ListTitle class="w-3/4">Search</ListTitle>
     <div class="flex w-full space-x-2">
-      <ListItem class="w-full" input>
-        <template #title>Type:</template>
+      <ListItem class="w-full" title="Type:" input>
         <template #item>
           <SidebarDropdown
             ref="searchTypeDropdown"
@@ -15,8 +14,7 @@
         </template>
       </ListItem>
 
-      <ListItem class="w-full" input>
-        <template #title> By: </template>
+      <ListItem class="w-full" title="By:" input>
         <template #item>
           <SidebarDropdown
             ref="sidebarDropdown"
@@ -27,8 +25,7 @@
       </ListItem>
     </div>
     <VForm @submit.prevent class="flex w-3/4 flex-col items-center">
-      <ListItem class="w-full" input>
-        <template #title> {{ selectedItem }}: </template>
+      <ListItem class="w-full" :title="`${selectedItem}:`" input>
         <template #item>
           <VField
             v-model="searchFormInput[findOptions[selectedItem]]"

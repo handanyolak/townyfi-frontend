@@ -1,26 +1,30 @@
 <template>
   <div>
     <ListTitle>General</ListTitle>
-    <ListItem v-if="onValidNetwork">
-      <template #title> Name: </template>
+    <ListItem v-if="onValidNetwork" title="Name:">
       <span>{{ networkName }}</span>
     </ListItem>
-    <ListItem>
-      <template #title> Chain ID: </template>
+    <ListItem title="Chain ID:">
       <span>{{ chainId }}</span>
     </ListItem>
-    <ListItem v-if="onValidNetwork">
-      <template #title> Symbol: </template>
+    <ListItem v-if="onValidNetwork" title="Symbol:">
       <span>{{ networkSymbol }}</span>
     </ListItem>
     <ListTitle v-if="onValidNetwork">Explorer URLs</ListTitle>
-    <ScrollableList v-if="onValidNetwork" :items=chainExplorers :copy-value=chainExplorers linkable />
+    <ScrollableList
+      v-if="onValidNetwork"
+      :items="chainExplorers"
+      :copy-value="chainExplorers"
+      linkable
+    />
     <ListTitle>Miscellaneous</ListTitle>
-    <ListItem>
-      <template #title> Current Block Number: </template>
+    <ListItem title="Current Block Number:">
       <span>{{ currentBlockNumber }}</span>
     </ListItem>
-    <AppButton class="w-full my-2 flex justify-center" @click="switchOrAddNetwork()">
+    <AppButton
+      class="my-2 flex w-full justify-center"
+      @click="switchOrAddNetwork()"
+    >
       Add {{ networkName }} Chain to Metamask
     </AppButton>
   </div>
@@ -32,7 +36,8 @@ import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ScrollableList from '~/components/sidebar-items/ScrollableList.vue'
 
 //--------[ Nuxt ]--------//
-const { networkName, networkSymbol, chainExplorers, chainId, chainRpcs } = useRuntimeConfig().public
+const { networkName, networkSymbol, chainExplorers, chainId, chainRpcs } =
+  useRuntimeConfig().public
 
 //--------[ Stores ]--------//
 const userWalletStore = useUserWalletStore()

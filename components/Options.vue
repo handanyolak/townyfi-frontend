@@ -1,8 +1,7 @@
 <template>
   <div>
     <ListTitle>General</ListTitle>
-    <ListItem>
-      <template #title> Coordinate: </template>
+    <ListItem title="Coordinate:">
       <SidebarDropdown
         :select="language"
         :dropdown-items="languages"
@@ -11,30 +10,26 @@
         rounded
       />
     </ListItem>
-    <ListItem>
-      <template #title> Theme: </template>
+    <ListItem title="Theme:">
       <Switch @toggled="toggleTheme()">
         <template #item-1>Light</template>
         <template #item-2>Dark</template>
       </Switch>
     </ListItem>
-    <ListItem>
-      <template #title> Sound: </template>
+    <ListItem title="Sound:">
       <Switch @toggled="toggleAudio()">
         <template #item-1>Yes</template>
         <template #item-2>No</template>
       </Switch>
     </ListItem>
-    <ListItem>
-      <template #title> Music: </template>
+    <ListItem title="Music:">
       <Switch @toggled="toggleMusic()">
         <template #item-1>Yes</template>
         <template #item-2>No</template>
       </Switch>
     </ListItem>
     <ListTitle>Interface</ListTitle>
-    <ListItem>
-      <template #title> Near Level: </template>
+    <ListItem title="Near Level:">
       <SidebarDropdown
         :select="nearLevel.toString()"
         :dropdown-items="createNumberArray(minNearLevel, maxNearLevel)"

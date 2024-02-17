@@ -7,18 +7,15 @@
       <template #tooltip>
         <span> Lorem ipsum, dolor sit amet consectetur adipisicing. </span>
       </template>
-
       <template #content>
         <div class="flex">
-          <ListItem input>
-            <template #title> X: </template>
+          <ListItem input title="X:">
             <template #item>
               <input v-model="coordinateX" type="text" />
             </template>
             <span>{{ coordinateX }}</span>
           </ListItem>
-          <ListItem input>
-            <template #title> Y: </template>
+          <ListItem input title="Y:">
             <template #item>
               <input v-model="coordinateY" type="text" />
             </template>
@@ -42,8 +39,7 @@
       </template>
       <template #content>
         <div class="flex">
-          <ListItem input>
-            <template #title> Address: </template>
+          <ListItem input title="Address: ">
             <template #item>
               <input v-model="targetAddress" type="text" />
             </template>
@@ -65,11 +61,9 @@
       <template #tooltip>
         <span> Lorem ipsum, dolor sit amet consectetur adipisicing. </span>
       </template>
-
       <template #content>
         <div class="flex">
-          <ListItem input>
-            <template #title> Direction: </template>
+          <ListItem input title="Direction:">
             <template #item>
               <SidebarDropdown
                 @selected="(item: string) => onDropdownChanged(item)"

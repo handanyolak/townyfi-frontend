@@ -1,104 +1,121 @@
 <template>
   <div class="p-5">
     <ListTitle>General</ListTitle>
-    <ListItem tooltip>
-      <template #title> Name: </template>
+    <ListItem title="Name:" tooltip>
       <span>{{ userName }}</span>
       <template #tooltip>
-        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
       </template>
     </ListItem>
-    <ListItem tooltip>
-      <template #title> Coordinate: </template>
+    <ListItem title="Coordinate:" tooltip>
       <span>({{ user.coordinate._x.toString() }}</span>
       <span>,</span>
       <span>{{ user.coordinate._y.toString() }})</span>
       <template #tooltip>
-        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
       </template>
     </ListItem>
-    <ListItem tooltip>
-      <template #title> Level: </template>
+    <ListItem title="Level:" tooltip>
       <span>{{ user.levelId }}</span>
       <template #tooltip>
-        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
       </template>
     </ListItem>
-    <ListItem tooltip>
-      <template #title> Exp: </template>
+    <ListItem title="Exp:" tooltip>
       <span>{{ user.exp }}</span>
       <template #tooltip>
-        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
       </template>
     </ListItem>
-    <ListItem copiable tooltip :copy-value="referrerAddress">
-      <template #title> Referrer: </template>
+    <ListItem title="Referrer:" copiable tooltip :copy-value="referrerAddress">
       <span>{{ referrer }}</span>
       <template #tooltip>
-        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
       </template>
     </ListItem>
     <ListTitle>Stats</ListTitle>
-    <ListItem tooltip>
-      <template #title> Health: </template>
+    <ListItem title="Health:" tooltip>
       <span>{{ user.health }}</span>
       <template #tooltip>
-        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
       </template>
     </ListItem>
-    <ListItem tooltip>
-      <template #title> Mana: </template>
+    <ListItem title="Mana:" tooltip>
       <span>{{ user.mana }}</span>
       <template #tooltip>
-        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
       </template>
     </ListItem>
-    <ListItem tooltip>
-      <template #title> Energy: </template>
+    <ListItem title="Energy:" tooltip>
       <span>{{ user.energy }}</span>
     </ListItem>
-    <ListItem tooltip>
-      <template #title> Armor: </template>
+    <ListItem title="Armor:" tooltip>
       <span>{{ user.armor }}</span>
       <template #tooltip>
-        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
       </template>
     </ListItem>
     <ListTitle>Character Points</ListTitle>
-    <ListItem tooltip>
-      <template #title> Attack: </template>
+    <ListItem title="Attack:" tooltip>
       <span>{{ user.charPoint.attack }}</span>
       <template #tooltip>
-        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
       </template>
     </ListItem>
-    <ListItem tooltip>
-      <template #title> Defend: </template>
+    <ListItem title="Defend:" tooltip>
       <span>{{ user.charPoint.defend }}</span>
       <template #tooltip>
-        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
       </template>
     </ListItem>
     <ListTitle>Timers</ListTitle>
-    <ListItem v-for="(item, index) in timers" :key="index" :item="item" convertable tooltip
-      @convert="(isConvert) => convert(isConvert, item as any)">
-      <template #title> {{ toCapitalizedWords(item) }}: </template>
+    <ListItem
+      :title="`${toCapitalizedWords(item)}:`"
+      v-for="(item, index) in timers"
+      :key="index"
+      :item="item"
+      convertable
+      tooltip
+      @convert="(isConvert) => convert(isConvert, item as any)"
+    >
       <span>{{
         timer[item].toString() === '0' ? 'Available!' : timer[item].toString()
       }}</span>
       <template #tooltip>
-        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
       </template>
     </ListItem>
     <OtherTown v-if="user.townInfo.townId" :id="user.townInfo.townId" />
@@ -133,7 +150,9 @@ const { currentBlockNumber } = storeToRefs(userWalletStore)
 // TODO: Buraya bos deger koyunca template'de hata ciktigi icin burayi onmounted'ta eziyoruz.
 const user = ref(userGameStore.user)
 const timer = ref<any>(user.value.timer.toObject())
-const timers = ref(Object.keys(user.value.timer).filter((item: any) => isNaN(item)))
+const timers = ref(
+  Object.keys(user.value.timer).filter((item: any) => isNaN(item))
+)
 const referrerAddress = user.value.referrer as string
 
 //--------[ Computed ]--------//
@@ -156,8 +175,10 @@ const convert = (
     timer.value[propertyName] =
       timer.value[propertyName] - currentBlockNumber.value > 0
         ? duration(
-          (timer.value[propertyName] - currentBlockNumber.value) * chainBlockTime * 1000
-        ).humanize()
+            (timer.value[propertyName] - currentBlockNumber.value) *
+              chainBlockTime *
+              1000
+          ).humanize()
         : 0
   } else {
     timer.value[propertyName] = user.value.timer[propertyName].toString()

@@ -1,8 +1,7 @@
 <template>
   <div v-if="user.townInfo.townId">
     <ListTitle>General</ListTitle>
-    <ListItem editable tooltip>
-      <template #title> Name: </template>
+    <ListItem title="Name:" editable tooltip>
       <template #item>
         <VForm class="flex flex-col items-center">
           <VField v-model="townName" name="name" :rules="nameRules" />
@@ -11,66 +10,75 @@
       </template>
       <span>{{ townName }}</span>
       <template #tooltip>
-        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
       </template>
     </ListItem>
-    <ListItem tooltip>
-      <template #title> Coordinate </template>
+    <ListItem title="Coordinate:" tooltip>
       <span>({{ town.coordinate._x.toString() }}</span>
       <span>,</span>
       <span>{{ town.coordinate._y.toString() }})</span>
       <template #tooltip>
-        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
       </template>
     </ListItem>
-    <ListItem tooltip>
-      <template #title> Level: </template>
+    <ListItem title="Level:" tooltip>
       <span>{{ town.levelId }}</span>
       <template #tooltip>
-        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
       </template>
     </ListItem>
-    <ListItem tooltip>
-      <template #title> Exp: </template>
+    <ListItem title="Exp:" tooltip>
       <span>{{ town.exp }}</span>
       <template #tooltip>
-        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
       </template>
     </ListItem>
-    <ListItem copiable tooltip :copy-value="town.leader">
-      <template #title> Leader: </template>
+    <ListItem title="Leader:" copiable tooltip :copy-value="town.leader">
       <span>{{ leader }}</span>
       <template #tooltip>
-        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
       </template>
     </ListItem>
-    <ListItem tooltip>
-      <template #title> Status: </template>
+    <ListItem title="Status:" tooltip>
       <span>{{ TownStatus[Number(town.status)] }}</span>
       <template #tooltip>
-        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
       </template>
     </ListItem>
-    <ListItem tooltip>
-      <template #title> Recruitment: </template>
+    <ListItem title="Recruitment:" tooltip>
       <span>{{ town.recruitment }}</span>
       <template #tooltip>
-        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
       </template>
     </ListItem>
-    <ListItem tooltip>
-      <template #title> ID: </template>
+    <ListItem title="ID:" tooltip>
       <span>{{ user.townInfo.townId }}</span>
       <template #tooltip>
-        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
       </template>
     </ListItem>
     <AppButton v-if="isLeader" @click="settleTown()"> Settle Town </AppButton>
@@ -79,50 +87,61 @@
     </AppButton>
     <AppButton @click="leaveTown()"> Leave Town </AppButton>
     <ListTitle>Citizens</ListTitle>
-    <ScrollableList :items="citizenAddresses" :copy-value="addresses" copiable :actionable="isLeader" :action-value="{
-      name: 'Kick Citizen',
-      action: kickCitizen,
-    }" />
+    <ScrollableList
+      :items="citizenAddresses"
+      :copy-value="addresses"
+      copiable
+      :actionable="isLeader"
+      :action-value="{
+        name: 'Kick Citizen',
+        action: kickCitizen,
+      }"
+    />
     <ListTitle>Timers</ListTitle>
-    <ListItem tooltip>
-      <template #title> Protection: </template>
+    <ListItem title="Protection:" tooltip>
       <span>{{ town.protectionAt.toString() }}</span>
       <template #tooltip>
-        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
       </template>
     </ListItem>
     <ListTitle>War</ListTitle>
-    <ListItem tooltip>
-      <template #title> Attacker: </template>
+    <ListItem title="Attacker:" tooltip>
       <span>{{ attacker }}</span>
       <template #tooltip>
-        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
       </template>
     </ListItem>
-    <ListItem tooltip>
-      <template #title> Defender: </template>
+    <ListItem title="Defender:" tooltip>
       <span>{{ defender }}</span>
       <template #tooltip>
-        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
       </template>
     </ListItem>
-    <ListItem tooltip>
-      <template #title> Attackable: </template>
+    <ListItem title="Attackable:" tooltip>
       <span>{{ attackable }}</span>
       <template #tooltip>
-        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
       </template>
     </ListItem>
-    <ListItem tooltip>
-      <template #title> Expired: </template>
+    <ListItem title="Expired:" tooltip>
       <span>{{ expired }}</span>
       <template #tooltip>
-        <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
-          amet.</span>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
       </template>
     </ListItem>
   </div>

@@ -1,26 +1,31 @@
 <template>
   <div>
     <ListTitle>General</ListTitle>
-    <ListItem>
-      <template #title> Name: </template>
+    <ListItem title="Name:">
       <span>{{ data.contractName }}</span>
     </ListItem>
-    <ListItem copiable :copy-value="data.contractAddress">
-      <template #title> Address: </template>
+    <ListItem copiable :copy-value="data.contractAddress" title="Address:">
       <span>{{ middleCropping(data.contractAddress) }}</span>
     </ListItem>
     <ListItem>
       <span>{{ data.contractDesc }}</span>
     </ListItem>
-    <a :href="`${chainExplorers[0]}/address/${data.contractAddress}`" target="_blank">
-      <AppButton class="w-full my-2 flex justify-center">
+    <a
+      :href="`${chainExplorers[0]}/address/${data.contractAddress}`"
+      target="_blank"
+    >
+      <AppButton class="my-2 flex w-full justify-center">
         <div class="flex items-center">
           View on Explorer
-          <img src="@/assets/img/link-external.svg" class="h-3 w-3 ml-1">
+          <img src="@/assets/img/link-external.svg" class="ml-1 h-3 w-3" />
         </div>
       </AppButton>
     </a>
-    <AppButton v-if="data.contractName === 'TownyFi Token'" class="w-full my-2" @click="addKtaTokenToWallet()">
+    <AppButton
+      v-if="data.contractName === 'TownyFi Token'"
+      class="my-2 w-full"
+      @click="addKtaTokenToWallet()"
+    >
       <span>Add Token to Metamask</span>
     </AppButton>
   </div>
@@ -57,7 +62,7 @@ const addKtaTokenToWallet = async () => {
           decimals: (await getKtaToken.value.decimals()).toString(),
         },
       },
-    });
+    })
   } catch (error) {
     useAppToast(TYPE.ERROR, 'Something went wrong')
   }

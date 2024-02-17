@@ -11,7 +11,7 @@
         <slot name="tooltip" />
       </Tooltip>
       <span class="text-towni-brown-dark-400">
-        <slot name="title" />
+        {{ title }}
       </span>
     </div>
     <div class="flex flex-1 items-center justify-between">
@@ -61,6 +61,7 @@ import Tooltip from '~/components/Tooltip.vue'
 interface ContentListItemProps {
   item?: string
   input?: boolean
+  title?: string // remove ?
   tooltip?: boolean
   editable?: boolean
   copiable?: boolean

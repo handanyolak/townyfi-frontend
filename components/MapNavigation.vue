@@ -87,15 +87,13 @@
             >
             <div class="flex items-center rounded-md p-1">
               <div class="flex flex-col">
-                <ListItem class="shadow-none" input>
-                  <template #title> X: </template>
+                <ListItem class="shadow-none" title="X:" input>
                   <template #item>
                     <input v-model="coordinateX" type="text" />
                   </template>
                   <span>{{ coordinateX }}</span>
                 </ListItem>
-                <ListItem class="shadow-none" input>
-                  <template #title> Y: </template>
+                <ListItem class="shadow-none" title="Y:" input>
                   <template #item>
                     <input v-model="coordinateY" type="text" />
                   </template>
