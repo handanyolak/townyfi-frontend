@@ -2,12 +2,6 @@
   <div class="group my-2 flex p-1 shadow-towni-300">
     <div class="flex items-center">
       <Tooltip v-if="tooltip">
-        <template #tooltip-image>
-          <img
-            class="mr-1 h-3 w-3 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
-            src="@/assets/img/information.svg"
-          />
-        </template>
         <slot name="tooltip" />
       </Tooltip>
       <span class="text-towni-brown-dark-400">
@@ -19,49 +13,63 @@
         <div v-if="isEdit || input" class="mx-1 w-full">
           <slot name="item" />
         </div>
-        <span v-else class="mx-1 w-full px-1 text-towni-brown-dark-600">
+        <span
+          v-else
+          class="mx-1 flex w-full items-center px-1 text-towni-brown-dark-600"
+        >
           <slot />
+          <div v-if="copiable" class="ml-2">
+            <Tooltip
+              :icon-name="isCopy ? 'uil:check-circle' : 'uil:copy'"
+              auto-close
+              @action="isCopy || copy()"
+            >
+              <span> Copied! </span>
+            </Tooltip>
+          </div>
         </span>
       </div>
       <div v-if="editable">
-        <img
-          class="h-4 w-4 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
-          :src="isEdit ? languageIcon('check') : languageIcon('edit')"
+        <Icon
           @click="isEdit ? save() : edit()"
+          :name="isEdit ? 'uil:check-circle' : 'uil:edit'"
+          class="h-4 w-4 cursor-pointer text-towni-brown-dark-300 opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
         />
       </div>
-      <div v-if="copiable">
-        <Tooltip auto-close>
-          <template #tooltip-image>
-            <img
-              class="h-4 w-4 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
-              :src="isCopy ? languageIcon('check') : languageIcon('copy')"
-              @click="isCopy || copy()"
-            />
-          </template>
-          <span> Copied! </span>
-        </Tooltip>
+      <div>
+        <slot name="action" />
       </div>
-      <slot name="action-icon" />
-      <img
-        v-if="convertable"
-        class="h-3 w-3 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
-        src="@/assets/img/convert.svg"
+      <div
         @click="convert()"
-      />
+        v-if="convertable"
+        class="mr-2 h-3 w-3 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
+      >
+        <client-only>
+          <Vue3Lottie
+            :animation-data="Convert"
+            :auto-play="isConvert"
+            :pause-animation="!isConvert"
+            height="20px"
+            width="20px"
+            scale="1.3"
+          />
+        </client-only>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import Tooltip from '~/components/Tooltip.vue'
+import { Vue3Lottie } from 'vue3-lottie'
+import Convert from '~/assets/lotties/convert.json'
 
 //--------[ Props & Emits ]--------//
 // TODO: change name to file name (ListItemProps)
 interface ContentListItemProps {
   item?: string
   input?: boolean
-  title?: string // remove ?
+  title: string
   tooltip?: boolean
   editable?: boolean
   copiable?: boolean
@@ -82,9 +90,6 @@ const emit = defineEmits<{
 const isEdit = ref(false)
 const isCopy = ref(false)
 const isConvert = ref(false)
-
-//--------[ Computed ]--------//
-const languageIcon = computed(() => (_language: string) => useSvg(_language))
 
 //--------[ Methods ]--------//
 const edit = () => {
