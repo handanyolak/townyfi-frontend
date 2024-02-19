@@ -69,7 +69,7 @@ import Convert from '~/assets/lotties/convert.json'
 interface ContentListItemProps {
   item?: string
   input?: boolean
-  title: string
+  title?: string
   tooltip?: boolean
   editable?: boolean
   copiable?: boolean
