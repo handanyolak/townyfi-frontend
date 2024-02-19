@@ -129,7 +129,7 @@
           amet.</span
         >
       </template>
-      <template #action-icon>
+      <template #action>
         <client-only>
           <Vue3Lottie
             class="cursor-pointer"
