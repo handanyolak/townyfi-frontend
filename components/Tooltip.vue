@@ -1,8 +1,9 @@
 <template>
   <span ref="tooltip" class="relative" @click.stop="toggleTooltip()">
-    <img
-      class="mr-1 h-3 w-3 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
-      src="@/assets/img/information.svg"
+    <Icon
+      @click="actionTooltip()"
+      :name="iconName"
+      class="mr-1 h-4 w-4 cursor-pointer text-towni-brown-dark-300 opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
     />
     <span
       :class="[
@@ -27,6 +28,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  iconName: {
+    type: String,
+    default: 'uil:info-circle',
+  },
 })
 
 //--------[ Data ]--------//
@@ -39,6 +44,12 @@ const toggleTooltip = () => {
   if (props.autoClose) {
     setTimeout(() => (isShowTooltip.value = false), 1500)
   }
+}
+
+const emit = defineEmits(['action'])
+
+const actionTooltip = () => {
+  emit('action')
 }
 
 onClickOutside(tooltip, () => (isShowTooltip.value = false))
