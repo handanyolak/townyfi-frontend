@@ -1,11 +1,21 @@
 <template>
-  <div class="mx-4 p-4">
-    <ul class="my-3 grid gap-y-1" :class="`gap-x-${Math.round(6 / tabs.length)} grid-cols-${tabs.length > 4 ? 3 : tabs.length}`">
-      <li v-for="(tab, index) in tabs" :key="index" class="text-center text-xs">
+  <div ref="scrollContainerRef" class="mx-4 max-h-screen overflow-y-auto p-4">
+    <ul
+      :class="[
+        'sticky top-0 z-50 my-3 grid gap-y-1',
+        `gap-x-${Math.round(6 / tabs.length)} grid-cols-${
+          tabs.length > 4 ? 3 : tabs.length
+        }`,
+        {
+          'bg-towni-brown-dark-300 bg-opacity-20  backdrop-blur': hasScrolled,
+        },
+      ]"
+    >
+      <li v-for="tab in tabs" :key="tab.id" class="text-center text-xs">
         <a
           style="font-family: Pirata One, sans-serif"
           :class="[
-            'block rounded p-2 font-bold uppercase leading-normal shadow-lg text-lg',
+            'block rounded p-2 text-lg font-bold uppercase leading-normal shadow-lg',
             currentTabName === tab.name
               ? 'bg-towni-brown-dark-300 text-towni-brown-light-400 '
               : 'cursor-pointer bg-towni-brown-light-400 text-towni-brown-dark-300 hover:shadow-towni-brown-dark-500',
@@ -17,7 +27,11 @@
       </li>
     </ul>
     <div class="w-full">
-      <Component :is="currentComponent" class="tab" :data="currentTabData"></Component>
+      <Component
+        :is="currentComponent"
+        class="tab"
+        :data="currentTabData"
+      ></Component>
     </div>
   </div>
 </template>
@@ -26,17 +40,18 @@
 import { Tab } from '~/types'
 
 //--------[ Props & Emits ]--------//
-// TODO: change name to file name (SidebarTabItemProps)
-interface ContentListItemProps {
+interface SidebarTabProps {
   tabs: Tab[]
 }
 
-const props = defineProps<ContentListItemProps>()
+const props = defineProps<SidebarTabProps>()
 
 //--------[ Data ]--------//
 const currentTabName = ref(props.tabs[0].name)
 const currentTabComponent = ref(props.tabs[0].component)
 const currentTabData = ref(props.tabs[0].data)
+const scrollContainerRef = ref<HTMLElement | null>(null)
+const { y } = useScroll(scrollContainerRef)
 
 //--------[ Computed ]--------//
 const currentComponent = computed(() => {
@@ -46,6 +61,8 @@ const currentComponent = computed(() => {
     () => import(`../components/${_currentTabComponent}.vue`)
   )
 })
+
+const hasScrolled = computed(() => y.value > 0)
 
 //--------[ Methods ]--------//
 const changeTab = (tab: Tab) => {
