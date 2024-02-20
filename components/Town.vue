@@ -62,6 +62,16 @@
           amet.</span
         >
       </template>
+      <template #action>
+        <AppButton
+          v-if="isLeader"
+          @click="settleTown()"
+          class="w-[120px]"
+          basicHover
+        >
+          {{ buttonLabel }}
+        </AppButton>
+      </template>
     </ListItem>
     <ListItem title="Recruitment:" tooltip>
       <span>{{ town.recruitment }}</span>
@@ -70,6 +80,16 @@
           >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
           amet.</span
         >
+      </template>
+      <template #action>
+        <AppButton
+          v-if="isLeader"
+          @click="toggleRecruitment()"
+          class="w-[120px]"
+          basicHover
+        >
+          Recruitment
+        </AppButton>
       </template>
     </ListItem>
     <ListItem title="ID:" tooltip>
@@ -81,10 +101,7 @@
         >
       </template>
     </ListItem>
-    <AppButton v-if="isLeader" @click="settleTown()"> Settle Town </AppButton>
-    <AppButton v-if="isLeader" @click="toggleRecruitment()">
-      Recruitment Town
-    </AppButton>
+
     <AppButton @click="leaveTown()"> Leave Town </AppButton>
     <ListTitle>Citizens</ListTitle>
     <ScrollableList
@@ -187,6 +204,11 @@ const townName = computed(() => decodeBytes32String(town.value.name))
 
 const isLeader = computed(() => address.value === town.value.leader)
 
+const buttonLabel = computed(() =>
+  BigInt(town.value.status) === BigInt(TownStatus.VOYAGE) ? 'Settle' : 'Voyage'
+)
+
+//--------[ Methods ]--------//
 const settleTown = async () => {
   await getKtaCaller.value.callFunction('settleTown')
 }
