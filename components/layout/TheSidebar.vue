@@ -12,8 +12,8 @@
     >
       <img
         :class="[
-          'absolute top-3  z-10 h-8 w-8 cursor-pointer',
-          isGameInfo || isOptions ? '-right-1' : '-left-2',
+          'absolute top-2  z-10 h-10 w-10 cursor-pointer',
+          isGameInfo || isOptions ? '-right-8' : '-left-8',
         ]"
         src="@/assets/img/exit.svg"
         @click="sideLeave()"
