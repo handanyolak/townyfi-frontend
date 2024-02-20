@@ -81,7 +81,18 @@
               </button>
             </div>
           </div>
-          <div class="teleport">
+          <div class="return-back">
+            <ListTitle class="shadow-md shadow-towni-brown-dark-400"
+              ><span class="text-sm">Return To Start Location</span></ListTitle
+            >
+            <AppButton
+              @click="goBackToInitialPosition()"
+              class="my-2 w-full rounded-md bg-towni-brown-dark-400 text-towni-brown-light-400"
+            >
+              Return!
+            </AppButton>
+          </div>
+          <div class="navigate">
             <ListTitle class="text-sm shadow-md shadow-towni-brown-dark-400"
               >Navigate</ListTitle
             >
@@ -100,7 +111,7 @@
                   <span>{{ coordinateY }}</span>
                 </ListItem>
                 <AppButton
-                  @click="teleport()"
+                  @click="navigate()"
                   class="w-full rounded-md bg-towni-brown-dark-400 text-towni-brown-light-400"
                 >
                   Go!
@@ -119,6 +130,7 @@ import { NavigateDirection } from '~/enums'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import MoveArrow from '~/components/MoveArrow.vue'
+import AppButton from '~/components/AppButton.vue'
 
 //--------[ Props & Emits ]--------//
 defineProps({
@@ -135,7 +147,7 @@ const { setUserCoordinate, setNearLevelByCalculatingCoordinates } =
   userGameStore
 
 const { originCoordinate } = storeToRefs(appOptionsStore)
-const { nearLevel } = storeToRefs(userGameStore)
+const { nearLevel, user } = storeToRefs(userGameStore)
 
 //--------[ Data ]--------//
 const coordinateX = ref('')
@@ -144,10 +156,17 @@ const isMove = ref(-1)
 const isMapNavigation = ref(false)
 
 //--------[ Methods ]--------//
-const teleport = () => {
+const navigate = () => {
   setUserCoordinate({
     _x: BigInt(coordinateX.value),
     _y: BigInt(coordinateY.value),
+  })
+}
+
+const goBackToInitialPosition = () => {
+  setUserCoordinate({
+    _x: BigInt(user.value.coordinate._x.toString()),
+    _y: BigInt(user.value.coordinate._y.toString()),
   })
 }
 
