@@ -1,38 +1,45 @@
 import { Tab } from '~/types'
 
-export const TABS: Record<any, Tab[]> = {
+export const TABS: Record<string, Tab[]> = {
   gameInfo: [
     {
+      id: 'user-info',
       name: 'User',
       component: 'User',
     },
     {
+      id: 'town-info',
       name: 'Town',
       component: 'Town',
     },
     {
+      id: 'interactions-info',
       name: 'Interactions',
       component: 'Interactions',
     },
   ],
   userOptions: [
     {
+      id: 'options-info',
       name: 'Options',
       component: 'Options',
     },
   ],
   blockchainInfo: [
     {
+      id: 'chain-info',
       name: 'Chain',
       component: 'Chain',
     },
     {
+      id: 'wallet-info',
       name: 'Wallet',
       component: 'Wallet',
     },
   ],
   contractInfo: [
     {
+      id: 'game-contract',
       name: 'Game',
       component: 'Contract',
       data: {
@@ -42,6 +49,7 @@ export const TABS: Record<any, Tab[]> = {
       },
     },
     {
+      id: 'token-contract',
       name: 'Token',
       component: 'Contract',
       data: {
@@ -52,6 +60,7 @@ export const TABS: Record<any, Tab[]> = {
       },
     },
     {
+      id: 'nft-contract',
       name: 'NFT',
       component: 'Contract',
       data: {
@@ -62,6 +71,7 @@ export const TABS: Record<any, Tab[]> = {
       },
     },
     {
+      id: 'chat-contract',
       name: 'Chat',
       component: 'Contract',
       data: {
@@ -72,6 +82,7 @@ export const TABS: Record<any, Tab[]> = {
       },
     },
     {
+      id: 'pass-contract',
       name: 'Pass',
       component: 'Contract',
       data: {
@@ -81,6 +92,7 @@ export const TABS: Record<any, Tab[]> = {
       },
     },
     {
+      id: 'multicall-contract',
       name: 'Multicall',
       component: 'Contract',
       data: {
@@ -93,6 +105,7 @@ export const TABS: Record<any, Tab[]> = {
   ],
   gameInfoFallback: [
     {
+      id: 'unregistered-fallback',
       name: 'Unregistered',
       component: 'Unregistered',
     },
