@@ -21,7 +21,7 @@
       <div>
         <div
           :class="[
-            'parchment absolute -top-3 w-full bg-white [filter:url(#wavy)]',
+            'torn-edges-paper absolute -top-3 w-full bg-white [filter:url(#wavy)]',
             isBlockchainInfo || isContractInfo ? 'rotate-180 transform' : '',
           ]"
         ></div>
@@ -74,7 +74,7 @@ const sideBar = ref(null)
 onClickOutside(sideBar, () => sideLeave())
 </script>
 
-<style>
+<style scoped>
 .slide-left-fade-enter-active,
 .slide-left-fade-leave-active {
   transition: transform 0.8s ease;
@@ -97,7 +97,7 @@ onClickOutside(sideBar, () => sideLeave())
   transition: all 0.3s ease-out;
 }
 
-.parchment {
+.torn-edges-paper {
   height: 110vh;
   box-shadow: 2px 3px 20px #854819, 30px 65px 200px #91510ffc inset;
 }
