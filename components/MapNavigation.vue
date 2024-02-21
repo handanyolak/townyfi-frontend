@@ -2,6 +2,7 @@
   <div>
     <Transition name="map-navigation">
       <div
+        ref="navigation"
         :style="`height: ${height}px`"
         :class="[
           'absolute top-0 -right-52  transition-all duration-300 ease-in-out',
@@ -131,6 +132,7 @@ import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import MoveArrow from '~/components/MoveArrow.vue'
 import AppButton from '~/components/AppButton.vue'
+import { onClickOutside } from '@vueuse/core'
 
 //--------[ Props & Emits ]--------//
 defineProps({
@@ -152,8 +154,8 @@ const { nearLevel, user } = storeToRefs(userGameStore)
 //--------[ Data ]--------//
 const coordinateX = ref('')
 const coordinateY = ref('')
-const isMove = ref(-1)
 const isMapNavigation = ref(false)
+const navigation = ref(null)
 
 //--------[ Methods ]--------//
 const navigate = () => {
@@ -204,6 +206,8 @@ const navigateByArrow = (direction: NavigateDirection) => {
     _y,
   })
 }
+
+onClickOutside(navigation, () => (isMapNavigation.value = false))
 </script>
 
 <style>
