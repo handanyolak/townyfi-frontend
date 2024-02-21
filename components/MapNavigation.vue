@@ -2,21 +2,13 @@
   <div>
     <Transition name="map-navigation">
       <div
-        ref="navigation"
+        v-show="isMapNavigationVisible"
         :style="`height: ${height}px`"
         :class="[
-          'absolute top-0 -right-52  transition-all duration-300 ease-in-out',
-          isMapNavigation ? '' : '-translate-x-52',
+          'absolute top-0 -right-52 transition-all duration-300 ease-in-out',
+          isMapNavigationVisible ? '' : '-translate-x-52',
         ]"
       >
-        <img
-          :class="[
-            'absolute top-0 -right-4 h-3 w-3 transform cursor-pointer transition-transform duration-200 ease-in-out',
-            isMapNavigation ? 'rotate-180' : '',
-          ]"
-          src="@/assets/img/multiple-arrow.svg"
-          @click="isMapNavigation = !isMapNavigation"
-        />
         <div class="flex h-full w-52 flex-col justify-between bg-[#391f05] p-2">
           <div class="move">
             <ListTitle class="shadow-md shadow-towni-brown-dark-400"
@@ -132,13 +124,14 @@ import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import MoveArrow from '~/components/MoveArrow.vue'
 import AppButton from '~/components/AppButton.vue'
-import { onClickOutside } from '@vueuse/core'
 
 //--------[ Props & Emits ]--------//
 defineProps({
   height: {
+    type: String,
     default: '200px',
   },
+  isMapNavigationVisible: Boolean,
 })
 
 //--------[ Stores ]--------//
@@ -154,8 +147,6 @@ const { nearLevel, user } = storeToRefs(userGameStore)
 //--------[ Data ]--------//
 const coordinateX = ref('')
 const coordinateY = ref('')
-const isMapNavigation = ref(false)
-const navigation = ref(null)
 
 //--------[ Methods ]--------//
 const navigate = () => {
@@ -173,41 +164,45 @@ const goBackToInitialPosition = () => {
 }
 
 const navigateByArrow = (direction: NavigateDirection) => {
-  // TODO:Ethers try this
+  // TODO: Ethers try this
   let { _x, _y } = originCoordinate.value
-
   const navigateValue = 1n
-  if (direction === NavigateDirection.Up) {
-    _y += navigateValue
-  } else if (direction === NavigateDirection.UpRight) {
-    _x += navigateValue
-    _y += navigateValue
-  } else if (direction === NavigateDirection.Right) {
-    _x += navigateValue
-  } else if (direction === NavigateDirection.RightDown) {
-    _x += navigateValue
-    _y -= navigateValue
-  } else if (direction === NavigateDirection.Down) {
-    _y -= navigateValue
-  } else if (direction === NavigateDirection.DownLeft) {
-    _x -= navigateValue
-    _y -= navigateValue
-  } else if (direction === NavigateDirection.Left) {
-    _x -= navigateValue
-  } else if (direction === NavigateDirection.LeftUp) {
-    _x -= navigateValue
-    _y += navigateValue
-  } else {
-    // TODO: Throw exception etc.
+
+  switch (direction) {
+    case NavigateDirection.Up:
+      _y += navigateValue
+      break
+    case NavigateDirection.UpRight:
+      _x += navigateValue
+      _y += navigateValue
+      break
+    case NavigateDirection.Right:
+      _x += navigateValue
+      break
+    case NavigateDirection.RightDown:
+      _x += navigateValue
+      _y -= navigateValue
+      break
+    case NavigateDirection.Down:
+      _y -= navigateValue
+      break
+    case NavigateDirection.DownLeft:
+      _x -= navigateValue
+      _y -= navigateValue
+      break
+    case NavigateDirection.Left:
+      _x -= navigateValue
+      break
+    case NavigateDirection.LeftUp:
+      _x -= navigateValue
+      _y += navigateValue
+      break
+    default:
+      console.error('Invalid navigation direction')
   }
 
-  setUserCoordinate({
-    _x,
-    _y,
-  })
+  setUserCoordinate({ _x, _y })
 }
-
-onClickOutside(navigation, () => (isMapNavigation.value = false))
 </script>
 
 <style>
