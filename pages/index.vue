@@ -3,7 +3,12 @@
     <GamePreview v-if="!hasMetamask || !onValidNetwork" />
     <SidebarMenu v-if="hasMetamask" />
     <ChatBox v-if="hasMetamask && onValidNetwork" />
-    <Map ref="mapElement" v-if="hasMetamask && onValidNetwork" />
+    <div
+      v-if="hasMetamask && onValidNetwork"
+      class="map-frame flex items-center justify-center p-14"
+    >
+      <Map ref="mapElement" />
+    </div>
     <TheLoading v-show="isLoading" fullScreen />
     <AppModal
       :modalSize="(width + 20).toString()"
@@ -63,5 +68,11 @@ const currentComponent = computed(() => {
 <style>
 .toast-theme {
   @apply flex items-center bg-towni-brown-dark-300 bg-opacity-30 text-towni-brown-light-200 backdrop-blur-sm;
+}
+
+.map-frame {
+  background-image: url('~/assets/img/map-background.svg');
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
 }
 </style>
