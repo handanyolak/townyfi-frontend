@@ -9,7 +9,7 @@
           isMapNavigationVisible ? '' : '-translate-x-52',
         ]"
       >
-        <div class="flex h-full w-52 flex-col justify-between bg-[#391f05] p-2">
+        <div class="flex h-full w-52 flex-col justify-between bg-[#5a3006] p-2">
           <div class="move">
             <ListTitle class="shadow-md shadow-towni-brown-dark-400"
               ><span class="text-sm">Move</span></ListTitle
@@ -51,7 +51,7 @@
           </div>
           <div class="zoom">
             <ListTitle class="text-sm shadow-md shadow-towni-brown-dark-400"
-              >Zoom in / Zoom out</ListTitle
+              >Zoom in / out</ListTitle
             >
             <div class="flex justify-around">
               <button
@@ -75,14 +75,11 @@
             </div>
           </div>
           <div class="return-back">
-            <ListTitle class="shadow-md shadow-towni-brown-dark-400"
-              ><span class="text-sm">Return To Start Location</span></ListTitle
-            >
             <AppButton
               @click="goBackToInitialPosition()"
               class="my-2 w-full rounded-md bg-towni-brown-dark-400 text-towni-brown-light-400"
             >
-              Return!
+              Recenter!
             </AppButton>
           </div>
           <div class="navigate">
