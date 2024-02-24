@@ -31,7 +31,7 @@
       </button>
 
       <div
-        class="relative grid overflow-hidden border-[10px] border-[#391f05]"
+        class="relative grid overflow-hidden rounded-lg border-[10px] border-[#5a3006]"
         :style="`grid-template-columns: repeat(${getGridColsByNearLevel}, minmax(0, 1fr));`"
       >
         <div
