@@ -1,11 +1,24 @@
 <template>
   <div class="group relative shadow-towni-400">
-    <div class="relative flex flex-col items-center justify-center">
-      <img v-if="isRegistered && isCoordinateOfUser" :src="soldierIcon" />
-      <img
+    <div class="relative flex h-full flex-col items-center">
+      <div
+        v-if="
+          isRegistered &&
+          isCoordinateOfUser &&
+          getHasTownByCoordinate.get(getMapKey)
+        "
+        class="knight flex h-full w-full flex-col items-center"
+      >
+        <Banner class="w-full" />
+      </div>
+      <Banner
         v-else-if="getHasTownByCoordinate.get(getMapKey)"
-        src="@/assets/img/town.png"
+        class="w-full"
       />
+      <div
+        v-else-if="isRegistered && isCoordinateOfUser"
+        class="knight h-full w-full"
+      ></div>
       <img v-else src="@/assets/img/skeleton-castle.png" class="invisible" />
     </div>
     <div>
@@ -24,7 +37,7 @@
           <span>{{ item._y.toString() }})</span>
         </div>
       </div>
-      <div class="absolute top-1 right-1">
+      <div v-if="pulseColor" class="absolute top-1 right-1">
         <span class="relative flex">
           <span
             :class="[
@@ -95,16 +108,28 @@ const pulseColor = computed(() => {
     getMapKey.value
   )
 
-  if (userByCountByCoordinate === undefined) {
-    return 'bg-gray-500'
-  } else if (userByCountByCoordinate === 0) {
-    return 'bg-zinc-50'
-  } else if (userByCountByCoordinate === 1) {
-    return 'bg-green-500'
-  } else if (userByCountByCoordinate!! >= 2 && userByCountByCoordinate!! <= 3) {
-    return 'bg-yellow-600'
-  } else if (userByCountByCoordinate!! >= 4) {
-    return 'bg-red-500'
+  if (!userByCountByCoordinate) {
+    return ''
   }
+
+  let color = ''
+  if (userByCountByCoordinate <= 1) {
+    color = 'bg-green-500'
+  } else if (userByCountByCoordinate!! >= 2 && userByCountByCoordinate!! <= 3) {
+    color = 'bg-yellow-600'
+  } else if (userByCountByCoordinate!! >= 4) {
+    color = 'bg-red-500'
+  }
+
+  return color
 })
 </script>
+
+<style scoped>
+.knight {
+  background-image: url('~/assets/img/cavalry.svg');
+  background-repeat: no-repeat;
+  background-position: 50% 110%;
+  background-size: 80%;
+}
+</style>
