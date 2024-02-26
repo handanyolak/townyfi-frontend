@@ -21,8 +21,8 @@ export const TABS: Record<string, Tab[]> = {
   userOptions: [
     {
       id: 'options-info',
-      name: 'Options',
-      component: 'Options',
+      name: 'Interface',
+      component: 'Interface',
     },
   ],
   blockchainInfo: [
