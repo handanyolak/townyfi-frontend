@@ -26,3 +26,8 @@ export enum Get {
   Mana,
   Energy,
 }
+
+export enum Prepare {
+  Defend,
+  Attack,
+}
