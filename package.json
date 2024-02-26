@@ -16,6 +16,7 @@
     "moment": "^2.29.4",
     "pinia": "^2.0.28",
     "vee-validate": "^4.7.4",
+    "vue-guided-tour": "^0.5.0",
     "vue-toastification": "^2.0.0-rc.5",
     "vue3-lottie": "^3.2.0",
     "yup": "^1.0.2"
