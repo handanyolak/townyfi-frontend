@@ -19,7 +19,11 @@ export default defineNuxtConfig({
 
   modules: ['@pinia/nuxt', '@vueuse/nuxt', 'nuxt-icon'],
 
-  plugins: ['@/plugins/vue-toastification', '@/plugins/vue3-lottie'],
+  plugins: [
+    '@/plugins/vue-toastification',
+    '@/plugins/vue3-lottie',
+    '@/plugins/vue-guided-tour',
+  ],
 
   css: ['~/assets/css/main.css'],
 
