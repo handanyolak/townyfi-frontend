@@ -37,7 +37,7 @@
 </template>
 
 <script setup lang="ts">
-import { Tab } from '~/types'
+import type { Tab } from '~/types'
 
 //--------[ Props & Emits ]--------//
 interface SidebarTabProps {

@@ -1,8 +1,8 @@
 import { StorageSerializers, useStorage } from '@vueuse/core'
-import { CoordinateItem, MultiCallData } from '~/types'
+import type { CoordinateItem, MultiCallData } from '~/types'
 import { middleElement } from '~/utils'
 import { useMultiCall } from '~/composables/useMultiCall'
-import {
+import type {
   IKillThemAll,
   Coordinates,
 } from '~/types/typechain/contracts/game/KillThemAll'

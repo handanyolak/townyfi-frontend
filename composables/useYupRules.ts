@@ -1,5 +1,5 @@
 import { number, string } from 'yup'
-import { RuleOptions } from '~/types'
+import type { RuleOptions } from '~/types'
 
 export const getUintRule = (options?: RuleOptions) => {
   let rule = number()

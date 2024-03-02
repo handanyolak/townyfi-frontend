@@ -1,10 +1,10 @@
 import {
   BaseContract,
-  BytesLike,
+  type BytesLike,
   FunctionFragment,
   checkResultErrors,
 } from 'ethers'
-import { MultiCallData, ResultInfo } from '~/types'
+import type { MultiCallData, ResultInfo } from '~/types'
 
 export const useMultiCall = async (
   multicallData: MultiCallData[]

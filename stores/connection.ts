@@ -1,4 +1,4 @@
-import { KillThemAll, KtaToken, MultiCall } from '~/types/typechain'
+import type { KillThemAll, KtaToken, MultiCall } from '~/types/typechain'
 import { BrowserProvider } from 'ethers'
 import { numberToHex } from '~/utils'
 import { Caller } from '~/contracts'

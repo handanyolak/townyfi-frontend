@@ -1,4 +1,4 @@
-import { Tab } from '~/types'
+import type { Tab } from '~/types'
 
 export const TABS: Record<string, Tab[]> = {
   gameInfo: [

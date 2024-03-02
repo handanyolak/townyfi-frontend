@@ -14,10 +14,13 @@ export const useUserOptionsStore = defineStore('userOptionsStore', () => {
     const currentLanguage = localStorage.getItem('lang')
 
     if (!currentLanguage) {
-      localStorage.setItem('lang', 'en')
+      const defaultLanguage = 'en'
+      localStorage.setItem('lang', defaultLanguage)
+
+      return defaultLanguage
     }
 
-    return localStorage.getItem('lang')
+    return currentLanguage
   }
 
   return { language, setLanguage }

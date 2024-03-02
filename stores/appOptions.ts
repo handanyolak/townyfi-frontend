@@ -6,8 +6,8 @@ import {
   KtaToken__factory,
   MultiCall__factory,
 } from '~/types'
-import { Coordinates } from '~/types/typechain/contracts/game/IKillThemAll'
-import { IKillThemAll } from '~/types/typechain/contracts/game/KillThemAll'
+import type { Coordinates } from '~/types/typechain/contracts/game/IKillThemAll'
+import type { IKillThemAll } from '~/types/typechain/contracts/game/KillThemAll'
 
 export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   //--------[ Nuxt Imports ]--------//

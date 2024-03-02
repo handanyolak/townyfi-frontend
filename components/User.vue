@@ -146,15 +146,14 @@
 </template>
 
 <script setup lang="ts">
-import { duration } from 'moment'
-import { decodeBytes32String } from 'ethers'
+import moment from 'moment'
+import { decodeBytes32String, encodeBytes32String } from 'ethers'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
-import { IKillThemAll } from '~/types/typechain/contracts/game/KillThemAll'
+import { type IKillThemAll } from '~/types/typechain/contracts/game/KillThemAll'
 import { toCapitalizedWords, middleCropping } from '~/utils'
 import { getBytes32Rule } from '~/composables/useYupRules'
 import { Get } from '~/enums'
-import { encodeBytes32String } from 'ethers'
 import { Vue3Lottie } from 'vue3-lottie'
 
 const { chainBlockTime } = useRuntimeConfig().public
@@ -193,11 +192,13 @@ const convert = (
   if (isConvert) {
     timer[propertyName] =
       timer[propertyName] - currentBlockNumber.value > 0
-        ? duration(
-            (timer[propertyName] - currentBlockNumber.value) *
-              chainBlockTime *
-              1000
-          ).humanize()
+        ? moment
+            .duration(
+              (timer[propertyName] - currentBlockNumber.value) *
+                chainBlockTime *
+                1000
+            )
+            .humanize()
         : 0
   } else {
     timer[propertyName] = user.value.timer[propertyName].toString()

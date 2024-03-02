@@ -123,11 +123,11 @@
 </template>
 
 <script setup lang="ts">
-import { duration } from 'moment'
+import moment from 'moment'
 import { decodeBytes32String } from 'ethers'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
-import { IKillThemAll } from '~/types/typechain/contracts/game/KillThemAll'
+import { type IKillThemAll } from '~/types/typechain/contracts/game/KillThemAll'
 import { toCapitalizedWords, middleCropping } from '~/utils'
 
 const { chainBlockTime } = useRuntimeConfig().public
@@ -174,11 +174,13 @@ const convert = (
   if (isConvert) {
     timer.value[propertyName] =
       timer.value[propertyName] - currentBlockNumber.value > 0
-        ? duration(
-            (timer.value[propertyName] - currentBlockNumber.value) *
-              chainBlockTime *
-              1000
-          ).humanize()
+        ? moment
+            .duration(
+              (timer.value[propertyName] - currentBlockNumber.value) *
+                chainBlockTime *
+                1000
+            )
+            .humanize()
         : 0
   } else {
     timer.value[propertyName] = user.value.timer[propertyName].toString()

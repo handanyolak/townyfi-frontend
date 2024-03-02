@@ -51,7 +51,7 @@
             :pause-animation="!isConvert"
             height="20px"
             width="20px"
-            scale="1.3"
+            :scale="1.3"
           />
         </client-only>
       </div>

@@ -1,4 +1,4 @@
-import { Message } from 'yup'
+import { type Message } from 'yup'
 
 export * from './typechain'
 export * from './composables'

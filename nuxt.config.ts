@@ -1,8 +1,13 @@
 import { convertToInteger, convertToArray } from './utils'
+import { createResolver } from '@nuxt/kit'
+const { resolve } = createResolver(import.meta.url)
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
-
 export default defineNuxtConfig({
+  experimental: {
+    localLayerAliases: true,
+  },
+
   ssr: false,
 
   vite: {
@@ -19,11 +24,7 @@ export default defineNuxtConfig({
 
   modules: ['@pinia/nuxt', '@vueuse/nuxt', 'nuxt-icon'],
 
-  plugins: [
-    '@/plugins/vue-toastification',
-    '@/plugins/vue3-lottie',
-    '@/plugins/vue-guided-tour',
-  ],
+  plugins: ['@/plugins/vue-toastification', '@/plugins/vue3-lottie'],
 
   css: ['~/assets/css/main.css'],
 
@@ -31,7 +32,7 @@ export default defineNuxtConfig({
 
   imports: {
     autoImport: true,
-    dirs: ['stores', 'composables'],
+    dirs: [resolve('./stores'), '~/stores'],
   },
 
   postcss: {
@@ -58,6 +59,12 @@ export default defineNuxtConfig({
   },
 
   pinia: {
-    autoImports: ['defineStore', 'storeToRefs'],
+    storesDirs: ['~/stores/**', '#/stores/**', '@/stores/**'],
+  },
+
+  devtools: {
+    timeline: {
+      enabled: true,
+    },
   },
 })

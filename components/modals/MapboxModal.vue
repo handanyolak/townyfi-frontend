@@ -47,7 +47,7 @@ import Accordion from '~/components/Accordion.vue'
 import SearchBar from '~/components/SearchBar.vue'
 import { getAddressRule } from '~/composables/useYupRules'
 import { useDebounce } from '@vueuse/core'
-import { CoordinateItem } from '~/types'
+import type { CoordinateItem } from '~/types'
 import { Direction } from '~/enums'
 import { Caller } from '~/contracts'
 import { abs } from 'extra-bigint.web'
@@ -153,6 +153,6 @@ const isMoveable = () => {
   const deltaX = abs(props.coordinate._x - BigInt(user.value.coordinate._x))
   const deltaY = abs(props.coordinate._y - BigInt(user.value.coordinate._y))
 
-  return abs(deltaX + deltaY) <= 1
+  return deltaX + deltaY <= 1
 }
 </script>

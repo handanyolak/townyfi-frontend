@@ -60,7 +60,7 @@
 </template>
 
 <script setup lang="ts">
-import { CoordinateItem } from '~/types'
+import type { CoordinateItem } from '~/types'
 import { useUserGameStore } from '~/stores/userGame'
 
 //--------[ Props & Emits ]--------//
