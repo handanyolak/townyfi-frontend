@@ -17,7 +17,6 @@
               alt="search"
             />
           </button>
-
           <div v-if="hasMetamask" class="flex justify-between py-5">
             <div v-if="onValidNetwork">
               <div v-if="isConnected" class="space-x-1">
@@ -126,7 +125,6 @@ const { connectWeb3, disconnectWeb3 } = userWalletStore
 const { isRegistered } = storeToRefs(userGameStore)
 const { audio, music } = storeToRefs(appOptionStore)
 const { language } = storeToRefs(useUserOptions)
-
 const isAnimating = ref(false)
 
 //--------[ Composables ]--------//

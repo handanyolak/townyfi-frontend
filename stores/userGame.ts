@@ -33,6 +33,7 @@ export const useUserGameStore = defineStore('userGameStore', () => {
   const setting = ref<IKillThemAll.SettingStruct | null>(null)
   const userCountByCoordinate = ref(new Map<string, number>())
   const hasTownByCoordinate = ref(new Map<string, boolean>())
+  // TODO: this is not addresses. it's coordinates :D
   const addressesByCoordinate = ref<CoordinateItem[]>([])
 
   //--------[ Getters ]--------//
@@ -78,7 +79,10 @@ export const useUserGameStore = defineStore('userGameStore', () => {
     isRegistered.value = newIsRegistered
   }
 
-  const setUserCoordinate = (coordinates: Coordinates.CoordinateStruct) => {
+  const setUserCoordinate = (
+    coordinates: Coordinates.CoordinateStruct,
+    getDataFromBlockchain = true
+  ) => {
     isLoading.value = true
 
     const x = BigInt(coordinates._x)
@@ -104,27 +108,40 @@ export const useUserGameStore = defineStore('userGameStore', () => {
           _y: j,
         }
 
-        const mapKey = `${coordinateItem._x.toString()},${coordinateItem._y.toString()}`
-        if (!userCountByCoordinate.value.has(mapKey)) {
-          userCountByCoordinate.value.set(mapKey, 0)
+        if (getDataFromBlockchain) {
+          const mapKey = `${coordinateItem._x.toString()},${coordinateItem._y.toString()}`
+          if (!userCountByCoordinate.value.has(mapKey)) {
+            userCountByCoordinate.value.set(mapKey, 0)
 
-          multiCallData[0].functionsData.push({
-            name: 'getAddressesByCoordinate',
-            inputs: [coordinateItem],
-          })
-        }
+            multiCallData[0].functionsData.push({
+              name: 'getAddressesByCoordinate',
+              inputs: [coordinateItem],
+            })
+          }
 
-        if (!hasTownByCoordinate.value.has(mapKey)) {
-          hasTownByCoordinate.value.set(mapKey, false)
+          if (!hasTownByCoordinate.value.has(mapKey)) {
+            hasTownByCoordinate.value.set(mapKey, false)
 
-          multiCallData[0].functionsData.push({
-            name: 'townIdByCoordinate',
-            inputs: [coordinateItem._x, coordinateItem._y],
-          })
+            multiCallData[0].functionsData.push({
+              name: 'townIdByCoordinate',
+              inputs: [coordinateItem._x, coordinateItem._y],
+            })
+          }
         }
 
         addressesByCoordinate.value.push(coordinateItem)
       }
+    }
+
+    const middleCoordinate = middleElement<CoordinateItem>(
+      addressesByCoordinate.value
+    )
+    appOptionsStore.setOriginCoordinate(middleCoordinate)
+
+    if (!getDataFromBlockchain) {
+      isLoading.value = false
+
+      return
     }
 
     useMultiCall(multiCallData).then((results) => {
@@ -149,11 +166,6 @@ export const useUserGameStore = defineStore('userGameStore', () => {
         }
       }
     })
-
-    const middleCoordinate = middleElement<CoordinateItem>(
-      addressesByCoordinate.value
-    )
-    appOptionsStore.setOriginCoordinate(middleCoordinate)
 
     isLoading.value = false
   }

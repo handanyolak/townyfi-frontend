@@ -15,7 +15,7 @@
         ref="toggleButton"
         @click="handleNavigationToggle"
         :class="[
-          'absolute -top-1 -right-6 cursor-pointer transition-all  ease-in-out',
+          'absolute -right-6 -top-1 cursor-pointer transition-all  ease-in-out',
           isMapNavigationVisible
             ? 'translate-x-48 delay-300 duration-500 '
             : 'duration-300',
@@ -59,7 +59,7 @@
 
 <script setup lang="ts">
 import { MAX_PIXEL_VALUE } from '~/constants'
-import { useDebounceFn, onClickOutside } from '@vueuse/core'
+import { onClickOutside } from '@vueuse/core'
 import { useDrag } from '@vueuse/gesture'
 import MapNavigation from '~/components/MapNavigation.vue'
 import { NavigateDirection } from '~~/enums'
@@ -101,7 +101,7 @@ const mapStyle = computed(() => {
         BigInt(Math.round(width.value / (nearLevel.value * 2 + 1)))) %
       BigInt(MAX_PIXEL_VALUE)
     }px ${
-      (-originCoordinate.value._y *
+      (originCoordinate.value._y *
         BigInt(Math.round(width.value / (nearLevel.value * 2 + 1)))) %
       BigInt(MAX_PIXEL_VALUE)
     }px`,
@@ -109,13 +109,6 @@ const mapStyle = computed(() => {
 })
 
 //--------[ Methods ]--------//
-const debouncedSetUserCoordinate = useDebounceFn((x: bigint, y: bigint) => {
-  setUserCoordinate({
-    _x: x,
-    _y: y,
-  })
-}, maxNearLevel - nearLevel.value)
-
 const onWheel = (event: WheelEvent) => {
   let newNearLevel: number
 
@@ -171,8 +164,10 @@ const navigateByArrowKeys = (direction: NavigateDirection) => {
 
 const dragHandler = async ({
   movement: [x, y],
+  last,
 }: {
   movement: [number, number]
+  last: boolean
 }) => {
   const { _x, _y } = originCoordinate.value
 
@@ -183,7 +178,13 @@ const dragHandler = async ({
     _y +
     BigInt(Math.trunc(y / Math.round(width.value / (nearLevel.value * 2 + 1))))
 
-  await debouncedSetUserCoordinate(newX, newY)
+  setUserCoordinate(
+    {
+      _x: newX,
+      _y: newY,
+    },
+    last
+  )
 }
 
 useDrag(dragHandler, {
