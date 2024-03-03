@@ -10,7 +10,7 @@
     "typecheck": "nuxt typecheck"
   },
   "dependencies": {
-    "@vueuse/components": "^10.9.0",
+    "@vueuse/components": "^9.13.0",
     "@vueuse/gesture": "^2.0.0",
     "ethers": "6.8.1",
     "extra-bigint.web": "^1.1.17",
@@ -28,8 +28,8 @@
     "@pinia/nuxt": "^0.5.1",
     "@types/lodash": "^4.14.202",
     "@vue/test-utils": "^2.4.4",
-    "@vueuse/core": "^10.9.0",
-    "@vueuse/nuxt": "^10.9.0",
+    "@vueuse/core": "^9.13.0",
+    "@vueuse/nuxt": "^9.13.0",
     "autoprefixer": "^10.4.13",
     "babel-jest": "^29.7.0",
     "eslint": "^8.57.0",

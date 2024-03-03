@@ -1,4 +1,4 @@
-import { StorageSerializers, useStorage } from '@vueuse/core'
+import { useStorage } from '@vueuse/core'
 import type { CoordinateItem, MultiCallData } from '~/types'
 import { middleElement } from '~/utils'
 import { useMultiCall } from '~/composables/useMultiCall'
@@ -27,9 +27,7 @@ export const useUserGameStore = defineStore('userGameStore', () => {
     null as unknown as IKillThemAll.TownStruct
   )
   // TODO: move to app options store
-  const nearLevel = useStorage<number>('nearLevel', 3, undefined, {
-    serializer: StorageSerializers.number,
-  })
+  const nearLevel = useStorage('nearLevel', 3)
   const setting = ref<IKillThemAll.SettingStruct | null>(null)
   const userCountByCoordinate = ref(new Map<string, number>())
   const hasTownByCoordinate = ref(new Map<string, boolean>())

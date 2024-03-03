@@ -62,7 +62,7 @@ import { MAX_PIXEL_VALUE } from '~/constants'
 import { onClickOutside } from '@vueuse/core'
 import { useDrag } from '@vueuse/gesture'
 import MapNavigation from '~/components/MapNavigation.vue'
-import { NavigateDirection } from '~~/enums'
+import { NavigateDirection } from '~/enums'
 
 //--------[ Stores ]--------//
 const connectionStore = useConnectionStore()
