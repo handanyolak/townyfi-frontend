@@ -23,7 +23,7 @@
     </div>
     <div>
       <div
-        class="duration-400 absolute top-0 left-0 z-50 flex w-16 items-center justify-between bg-towni-brown-dark-600 bg-opacity-60 px-1 py-1 opacity-0 transition-opacity delay-1000 group-hover:opacity-100"
+        class="duration-400 absolute left-0 top-0 z-50 flex w-16 items-center justify-between bg-towni-brown-dark-600 bg-opacity-60 px-1 py-1 opacity-0 transition-opacity delay-1000 group-hover:opacity-100"
       >
         <div class="inline cursor-pointer">
           <img
@@ -37,7 +37,7 @@
           <span>{{ item._y.toString() }})</span>
         </div>
       </div>
-      <div v-if="pulseColor" class="absolute top-1 right-1">
+      <div v-if="pulseColor" class="absolute right-1 top-1">
         <span class="relative flex">
           <span
             :class="[

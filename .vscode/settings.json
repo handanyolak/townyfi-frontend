@@ -2,6 +2,7 @@
   "css.lint.unknownAtRules": "ignore",
   "typescript.tsdk": "node_modules/typescript/lib",
   "vue.autoInsert.dotValue": true,
-  "vue.inlayHints.inlineHandlerLeading": false,
-  "vue.inlayHints.missingProps": true
+  "vue.inlayHints.inlineHandlerLeading": true,
+  "vue.inlayHints.missingProps": true,
+  "vue.inlayHints.optionsWrapper": true
 }

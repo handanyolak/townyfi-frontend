@@ -18,11 +18,11 @@
           class="mx-1 flex w-full items-center px-1 text-towni-brown-dark-600"
         >
           <slot />
-          <div v-if="copiable" class="ml-2">
+          <div v-if="isSupported && copiable" class="ml-2">
             <Tooltip
-              :icon-name="isCopy ? 'uil:check-circle' : 'uil:copy'"
+              :icon-name="copied ? 'uil:check-circle' : 'uil:copy'"
               auto-close
-              @action="isCopy || copy()"
+              @action="copied || copy(copyValue)"
             >
               <span> Copied! </span>
             </Tooltip>
@@ -63,6 +63,11 @@
 import Tooltip from '~/components/Tooltip.vue'
 import { Vue3Lottie } from 'vue3-lottie'
 import Convert from '~/assets/lotties/convert.json'
+import { useClipboard } from '@vueuse/core'
+
+const { copy, copied, isSupported } = useClipboard({
+  legacy: true,
+})
 
 //--------[ Props & Emits ]--------//
 // TODO: change name to file name (ListItemProps)
@@ -77,7 +82,7 @@ interface ContentListItemProps {
   convertable?: boolean
 }
 
-const props = withDefaults(defineProps<ContentListItemProps>(), {
+withDefaults(defineProps<ContentListItemProps>(), {
   copyValue: '',
 })
 
@@ -88,7 +93,6 @@ const emit = defineEmits<{
 
 //--------[ Data ]--------//
 const isEdit = ref(false)
-const isCopy = ref(false)
 const isConvert = ref(false)
 
 //--------[ Methods ]--------//
@@ -99,12 +103,6 @@ const edit = () => {
 const save = () => {
   isEdit.value = false
   emit('saved')
-}
-
-const copy = () => {
-  navigator.clipboard.writeText(props.copyValue)
-  isCopy.value = true
-  setTimeout(() => (isCopy.value = false), 1000)
 }
 
 const convert = () => {
