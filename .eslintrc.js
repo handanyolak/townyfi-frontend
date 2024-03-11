@@ -7,18 +7,13 @@ module.exports = {
   extends: [
     '@nuxtjs/eslint-config-typescript',
     'plugin:nuxt/recommended',
+    'plugin:vue/vue3-recommended',
     'prettier',
   ],
   plugins: [],
-  // add your custom rules here
   rules: {
     'vue/multi-word-component-names': 0,
     'no-console': 'off',
   },
-  overrides: {
-    files: ['./composables/useKta.ts'],
-    rules: {
-      camelcase: 'off',
-    },
-  },
+  overrides: [],
 }

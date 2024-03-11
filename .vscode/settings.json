@@ -1,6 +1,10 @@
 {
-  "css.lint.unknownAtRules": "ignore",
+  "[json][jsonc][javascript][typescript][vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.formatOnSave": true,
   "typescript.tsdk": "node_modules/typescript/lib",
+  "css.lint.unknownAtRules": "ignore",
   "vue.autoInsert.dotValue": true,
   "vue.inlayHints.inlineHandlerLeading": true,
   "vue.inlayHints.missingProps": true,
