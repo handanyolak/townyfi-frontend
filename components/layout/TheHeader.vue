@@ -3,14 +3,18 @@
     <div class="mx-5">
       <div class="mb-10 flex items-center justify-between py-5">
         <span
-          class="flex select-none items-center bg-gradient-to-r from-towni-brown-dark-400 via-towni-brown-dark-400 to-towni-brown-dark-200 bg-clip-text text-5xl font-extrabold text-transparent"
-          style="font-family: Pirata One, sans-serif"
+          class="step-2 flex select-none items-center bg-gradient-to-r from-towni-brown-dark-400 via-towni-brown-dark-400 to-towni-brown-dark-200 bg-clip-text text-5xl font-extrabold text-transparent"
+          style="
+            font-family:
+              Pirata One,
+              sans-serif;
+          "
         >
           <img class="h-7 w-7" src="@/assets/img/paper-document.svg" />
           TownyFi
         </span>
         <div class="flex items-center space-x-2">
-          <button @click="setModalInfo('SearchModal')">
+          <button class="step-5" @click="setModalInfo('SearchModal')">
             <img
               src="~/assets/img/search.svg"
               class="h-14 w-14 cursor-pointer"
@@ -28,14 +32,15 @@
                   Register
                 </AppButton>
                 <AppButton
+                  class="step-4"
                   border-hover
-                  @click.native="disconnectWeb3()"
                   inline-class="group-hover:bg-towni-brown-light-100 group-hover:text-towni-brown-dark-200"
+                  @click="disconnectWeb3()"
                 >
                   {{ $t('disconnect_wallet') }}
                 </AppButton>
               </div>
-              <AppButton v-else fill-hover @click.native="connectWeb3()">
+              <AppButton v-else fill-hover @click="connectWeb3()">
                 Connect Wallet
               </AppButton>
             </div>
@@ -44,7 +49,7 @@
               target="_blank"
               border
               border-hover
-              @click.native="switchOrAddNetwork()"
+              @click="switchOrAddNetwork()"
             >
               Switch Network
             </AppButton>
@@ -61,8 +66,8 @@
             :select="language"
             :dropdown-items="languages"
             :icon-names="languages"
+            class="dropdown-background step-3"
             @selected="(item) => selected(item)"
-            class="dropdown-background"
           />
           <img
             :src="themeIcon"
@@ -72,43 +77,46 @@
 
           <img
             :src="audioIcon"
-            class="h-16 w-16 cursor-pointer"
+            class="step-1 h-16 w-16 cursor-pointer"
             @click="toggleAudio()"
           />
           <client-only>
             <Vue3Lottie
               v-if="audio"
               class="cursor-pointer"
-              @click="toggleMusicAndAnimation()"
               :animation-data="Harp"
               :height="55"
               :width="55"
               :scale="1.4"
               :auto-play="isAnimating"
               :pause-animation="!isAnimating"
+              @click="toggleMusicAndAnimation()"
             />
           </client-only>
         </div>
       </div>
     </div>
+    <AppTour :steps="steps" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { useDark, useToggle } from '@vueuse/core'
+import { Vue3Lottie } from 'vue3-lottie'
 import Dropdown from '~/components/Dropdown.vue'
 import AppButton from '~/components/AppButton.vue'
+import AppTour from '~/components/AppTour.vue'
 import { $t } from '~/composables/useLang'
 import { numberToHex } from '~/utils'
 import { getAddressRule } from '~/composables/useYupRules'
-import { Vue3Lottie } from 'vue3-lottie'
 import Harp from '~/assets/lotties/harp.json'
+import type { Step } from '~/types'
 
-//--------[ Nuxt ]--------//
+// --------[ Nuxt ]--------//
 const { chainId, networkName, networkSymbol, chainExplorers, chainRpcs } =
   useRuntimeConfig().public
 
-//--------[ Stores ]--------//
+// --------[ Store ]--------//
 const connectionStore = useConnectionStore()
 const userWalletStore = useUserWalletStore()
 const userGameStore = useUserGameStore()
@@ -123,35 +131,67 @@ const { setLanguage } = useUserOptions
 const { onValidNetwork, isConnected } = storeToRefs(connectionStore)
 const { connectWeb3, disconnectWeb3 } = userWalletStore
 const { isRegistered } = storeToRefs(userGameStore)
-const { audio, music } = storeToRefs(appOptionStore)
+const { audio } = storeToRefs(appOptionStore)
 const { language } = storeToRefs(useUserOptions)
 const isAnimating = ref(false)
+useTour()
 
-//--------[ Composables ]--------//
+// --------[ Composable ]--------//
 const isDark = useDark({
   storageKey: 'theme',
   valueDark: 'dark',
   valueLight: 'light',
 })
 
-//--------[ Data ]--------//
+// --------[ Data ]-------- //
 const search = ref('')
 const isValid = ref(false)
 const searchRules = getAddressRule()
 const toggleTheme = useToggle(isDark)
 
-//--------[ Computed ]--------//
+const steps: Step[] = [
+  {
+    target: '.step-1',
+    content:
+      'Search for your town. Connect your wallet to start playing. Connect your wallet to start playingConnect your wallet to start playingConnect your wallet to start playing Connect your wallet to start playing ',
+  },
+  {
+    title: 'Welcome to TownyFi',
+    target: '.step-2',
+    content: 'Search for your town',
+  },
+  {
+    title: 'Welcome to TownyFi',
+    target: '.step-3',
+    content:
+      'Search for your town. Connect your wallet to start playing. Connect your wallet to start playingConnect your wallet to start playingConnect your wallet to start playing Connect your wallet to start playing ',
+  },
+  {
+    title: 'Welcome to TownyFi',
+    target: '.step-4',
+    content:
+      'Search for your town. Connect your wallet to start playing. Connect your wallet to start playingConnect your wallet to start playingConnect your wallet to start playing Connect your wallet to start playing ',
+  },
+  {
+    title: 'Welcome to TownyFi',
+    target: '.step-5',
+    content:
+      'Search for your town. Connect your wallet to start playing. Connect your wallet to start playingConnect your wallet to start playingConnect your wallet to start playing Connect your wallet to start playing ',
+  },
+]
+
+// --------[ Computed ]--------//
 const audioIcon = computed(() => useSvg(audio.value ? 'sound' : 'sound-mute'))
 
 const themeIcon = computed(() =>
-  useSvg(isDark.value ? 'dark-mode' : 'light-mode')
+  useSvg(isDark.value ? 'dark-mode' : 'light-mode'),
 )
 
 const languages = computed(() =>
-  ['en', 'tr', 'de'].filter((item) => item !== language.value)
+  ['en', 'tr', 'de'].filter((item) => item !== language.value),
 )
 
-//--------[ Hooks ]--------//
+// --------[ Hook ]-------- //
 watch(search, async (newSearch) => {
   isValid.value = await searchRules.townyIsRegistered().isValid(newSearch, {
     abortEarly: true,
@@ -164,7 +204,7 @@ onMounted(() => {
   }
 })
 
-//--------[ Methods ]--------//
+// --------[ Method ]-------- //
 const switchOrAddNetwork = async () => {
   try {
     await window.ethereum.request({
