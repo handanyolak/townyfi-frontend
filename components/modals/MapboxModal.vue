@@ -44,13 +44,13 @@
 <script setup lang="ts">
 import type { Address } from 'viem'
 import { useDebounce } from '@vueuse/core'
+import { abs } from 'extra-bigint.web'
 import OtherUser from '~/components/OtherUser.vue'
 import Accordion from '~/components/Accordion.vue'
 import SearchBar from '~/components/SearchBar.vue'
 import { getAddressRule } from '~/composables/useYupRules'
 import type { CoordinateItem } from '~/types'
 import { Direction } from '~/enums'
-import { abs } from 'extra-bigint.web'
 
 // --------[ Props & Emits ]-------- //
 interface MapboxModalProps {
