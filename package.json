@@ -19,7 +19,7 @@
     "vee-validate": "^4.7.4",
     "viem": "^2.8.18",
     "vue-toastification": "2.0.0-rc.5",
-    "vue3-lottie": "^3.2.0",
+    "vue3-lottie": "^3.3.0",
     "yup": "^1.0.2"
   },
   "devDependencies": {

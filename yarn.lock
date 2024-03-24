@@ -9364,7 +9364,7 @@ vue-virtual-scroller@2.0.0-beta.8:
     vue-observe-visibility "^2.0.0-alpha.1"
     vue-resize "^2.0.0-alpha.1"
 
-vue3-lottie@^3.2.0:
+vue3-lottie@^3.3.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/vue3-lottie/-/vue3-lottie-3.3.0.tgz#4ece1eff80d7eecc05bda4f28657baceb88f89a4"
   integrity sha512-Omv26YN3e78fh0QgQooeZcmPo8O2j5mJ5pacZh1mGdHH9ZTGayWlY1Yp6h+wAvfBKAvJ80JXrSgeBOKA4MRBYA==
