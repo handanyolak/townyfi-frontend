@@ -1,17 +1,11 @@
 import { useToggle, useStorage } from '@vueuse/core'
 import { formatUnits, type WatchContractEventReturnType } from 'viem'
 import { TYPE } from 'vue-toastification'
-import { transformTown } from '~/transformers'
-import { KillThemAll__factory } from '~/types'
+import { transformSettings, transformTown, transformUser } from '~/transformers'
+import type { User } from '~/types/contract'
 import type { Coordinates } from '~/types/typechain/contracts/game/IKillThemAll'
-import type { IKillThemAll } from '~/types/typechain/contracts/game/KillThemAll'
 
 export const useAppOptionsStore = defineStore('appOptionsStore', () => {
-  // --------[ Nuxt Imports ]-------- //
-  const {
-    public: { ktaAddress },
-  } = useRuntimeConfig()
-
   // --------[ Stores ]-------- //
   const userWalletStore = useUserWalletStore()
   const userGameStore = useUserGameStore()
@@ -108,11 +102,6 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
       if (onValidNetwork.value && !initialized.value) {
         initialized.value = true
 
-        const kta = KillThemAll__factory.connect(
-          ktaAddress,
-          userWalletStore.getSigner,
-        )
-
         const {
           health,
           mana,
@@ -126,7 +115,9 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
           townInfo,
           timer,
           charPoint,
-        } = await kta.userByAddr(userWalletStore.address)
+        } = transformUser(
+          await contractStore.getKta.read.userByAddr([userWalletStore.address]),
+        )
 
         const userInfo = {
           health,
@@ -159,29 +150,11 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
           ]),
         )
 
-        const {
-          max,
-          price,
-          rate,
-          time,
-          min,
-          exp: settingExp,
-          multiplier,
-          numberDigits,
-        } = await kta.settings()
+        const settings = transformSettings(
+          await contractStore.getKta.read.settings(),
+        )
 
-        const setting = {
-          max,
-          price,
-          rate,
-          time,
-          min,
-          exp: settingExp,
-          multiplier,
-          numberDigits,
-        }
-
-        userGameStore.setSetting(setting)
+        userGameStore.setSettings(settings)
 
         userWalletStore.walletClient.watchBlockNumber({
           onBlockNumber: (blockNumber) => {
@@ -329,9 +302,12 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                     const toastMsg =
                       `Welcome to TownyFi!\n` + `Event: ${eventName}\n`
 
-                    const userInfo = await kta.userByAddr(
-                      userWalletStore.address,
+                    const userInfo = transformUser(
+                      await contractStore.getKta.read.userByAddr([
+                        userWalletStore.address,
+                      ]),
                     )
+
                     await setUserInfo(userInfo)
 
                     useAppToast(TYPE.INFO, toastMsg)
@@ -555,7 +531,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     }
   }
 
-  const setUserInfo = async (userInfo: IKillThemAll.UserStruct) => {
+  const setUserInfo = async (userInfo: User) => {
     userGameStore.setIsRegistered(
       await contractStore.getKta.read.isRegistered([userWalletStore.address]),
     )

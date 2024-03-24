@@ -1,5 +1,4 @@
 import type { Address } from 'viem'
-import type { TypedContractMethod } from '~/types/typechain/common'
 
 export type CoordinateStruct = {
   _x: bigint
@@ -56,4 +55,80 @@ export type User = {
   townInfo: UserTownInfo
   timer: UserTimer
   charPoint: UserCharPoint
+}
+
+export type SettingsMax = {
+  health: bigint
+  mana: bigint
+  energy: bigint
+  armor: bigint
+  teleportDistance: bigint
+  killArmorRewardLimit: bigint
+  safeTownDistance: bigint
+  safeTownDifference: bigint
+  safeZoneDistance: bigint
+  safeZoneDifference: bigint
+  attackDistance: bigint
+  levelDifference: bigint
+}
+
+export type SettingsPrice = {
+  health: bigint
+  mana: bigint
+  energy: bigint
+  armor: bigint
+  revive: bigint
+  register: bigint
+  teleport: bigint
+  createTown: bigint
+  settleTown: bigint
+  teleportToTown: bigint
+  prepareAttack: bigint
+  prepareDefend: bigint
+}
+
+export type SettingsRate = {
+  getHealth: bigint
+  getMana: bigint
+  getEnergy: bigint
+  registerReferralReward: bigint
+  armorAbsorption: bigint
+  attack: bigint
+  movement: bigint
+}
+
+export type SettingsTime = {
+  revive: bigint
+  teleport: bigint
+  teleportToTown: bigint
+  attackableAt: bigint
+  warExpiredAt: bigint
+  protectionAt: bigint
+  prepareToAttack: bigint
+}
+
+export type SettingsMin = {
+  levelToCreateTown: bigint
+  townAreaRadius: bigint
+}
+
+export type SettingsExp = {
+  kill: bigint
+  referrerKill: bigint
+}
+
+export type SettingsMultiplier = {
+  attack: bigint
+  resistance: bigint
+}
+
+export type Settings = {
+  max: SettingsMax
+  price: SettingsPrice
+  rate: SettingsRate
+  time: SettingsTime
+  min: SettingsMin
+  exp: SettingsExp
+  multiplier: SettingsMultiplier
+  numberDigits: bigint
 }

@@ -1,5 +1,5 @@
 import { TownMode, TownStatus } from '~/enums'
-import type { Town, User } from '~/types/contract'
+import type { Settings, Town, User } from '~/types/contract'
 import { replaceAtKeys } from '~/utils'
 
 export function transformTown(values: any): Town {
@@ -31,5 +31,18 @@ export function transformUser(values: any): User {
     townInfo: values[9],
     timer: replaceAtKeys(values[10]),
     charPoint: values[11],
+  }
+}
+
+export function transformSettings(values: any): Settings {
+  return {
+    max: values[0],
+    price: values[1],
+    rate: values[2],
+    time: values[3],
+    min: values[4],
+    exp: values[5],
+    multiplier: values[6],
+    numberDigits: values[7],
   }
 }

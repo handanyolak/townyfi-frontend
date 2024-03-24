@@ -1,11 +1,8 @@
 import { useStorage } from '@vueuse/core'
 import type { CoordinateItem, MultiCallData } from '~/types'
 import { middleElement } from '~/utils'
-import type {
-  IKillThemAll,
-  Coordinates,
-} from '~/types/typechain/contracts/game/KillThemAll'
-import type { Town } from '~/types/contract'
+import type { Coordinates } from '~/types/typechain/contracts/game/KillThemAll'
+import type { Settings, Town, User } from '~/types/contract'
 import { useMultiCall } from '~/composables/useMultiCall'
 
 export const useUserGameStore = defineStore('userGameStore', () => {
@@ -22,14 +19,12 @@ export const useUserGameStore = defineStore('userGameStore', () => {
   const isRegistered = ref(false)
   const isLoading = ref(false)
   // TODO: solve this
-  const user = ref<IKillThemAll.UserStruct>(
-    null as unknown as IKillThemAll.UserStruct,
-  )
+  const user = ref<User>(null as unknown as User)
   const town = ref<Town>(null as unknown as Town)
+  const settings = ref<Settings>(null as unknown as Settings)
 
   // TODO: move to app options store
   const nearLevel = useStorage('nearLevel', 3)
-  const setting = ref<IKillThemAll.SettingStruct | null>(null)
   const userCountByCoordinate = ref(new Map<string, number>())
   const hasTownByCoordinate = ref(new Map<string, boolean>())
   // TODO: this is not addresses. it's coordinates :D
@@ -40,7 +35,7 @@ export const useUserGameStore = defineStore('userGameStore', () => {
   const getHasTownByCoordinate = computed(() => hasTownByCoordinate.value)
 
   // --------[ Actions ]-------- //
-  const setUser = (newUser: IKillThemAll.UserStruct) => {
+  const setUser = (newUser: User) => {
     user.value = newUser
   }
 
@@ -48,8 +43,8 @@ export const useUserGameStore = defineStore('userGameStore', () => {
     town.value = newTown
   }
 
-  const setSetting = (newSetting: IKillThemAll.SettingStruct) => {
-    setting.value = newSetting
+  const setSettings = (newSetting: Settings) => {
+    settings.value = newSetting
   }
 
   const setNearLevel = (newNearLevel: number) => {
@@ -67,9 +62,9 @@ export const useUserGameStore = defineStore('userGameStore', () => {
     setUserCoordinate(originCoordinate)
   }
 
-  const setUserProperty = <T extends keyof IKillThemAll.UserStruct>(
+  const setUserProperty = <T extends keyof User>(
     property: T,
-    newValue: IKillThemAll.UserStruct[T],
+    newValue: User[T],
   ) => {
     user.value[property] = newValue
   }
@@ -176,7 +171,7 @@ export const useUserGameStore = defineStore('userGameStore', () => {
 
   return {
     user,
-    setting,
+    settings,
     nearLevel,
     isLoading,
     isRegistered,
@@ -188,7 +183,7 @@ export const useUserGameStore = defineStore('userGameStore', () => {
     setUser,
     setTown,
     town,
-    setSetting,
+    setSettings,
     setNearLevel,
     setIsRegistered,
     setUserProperty,

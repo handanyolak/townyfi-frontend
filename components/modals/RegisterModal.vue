@@ -22,7 +22,7 @@
       </template>
     </ListItem>
     <AppButton
-      v-if="ktaAllowance <= BigInt(setting?.price.register ?? 0)"
+      v-if="ktaAllowance <= BigInt(settings.price.register ?? 0)"
       class="my-3"
       @click="userApprove()"
       >Approve
@@ -60,7 +60,7 @@ const { clearModalInfo } = appOptionsStore
 const { getKtaToken, getKtaTokenCaller, getKtaCaller } =
   storeToRefs(contractStore)
 const { ktaAllowance, address } = storeToRefs(userWalletStore)
-const { setting } = storeToRefs(userGameStore)
+const { settings } = storeToRefs(userGameStore)
 
 // --------[ Data ]-------- //
 const name = ref('')
@@ -92,10 +92,10 @@ const userApprove = async () => {
     address.value,
   ])
 
-  if (ktaTokenBalance < BigInt(setting.value?.price.register ?? 0)) {
+  if (ktaTokenBalance < BigInt(settings.value.price.register ?? 0)) {
     useAppToast(
       TYPE.ERROR,
-      `You don't have enough tokens (${setting.value?.price.register}) to register for the game`,
+      `You don't have enough tokens (${settings.value.price.register}) to register for the game`,
     )
 
     return
