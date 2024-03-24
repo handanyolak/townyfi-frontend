@@ -2,7 +2,7 @@
   <Transition name="modal-outer">
     <div
       v-show="modalActive"
-      class="absolute top-0 left-0 z-50 flex h-screen w-full items-center justify-center bg-[#362419] bg-opacity-40 backdrop-blur-sm"
+      class="absolute left-0 top-0 z-50 flex h-screen w-full items-center justify-center bg-[#362419] bg-opacity-40 backdrop-blur-sm"
     >
       <Transition name="modal-outer">
         <div v-if="modalActive">
@@ -35,7 +35,7 @@ import { onClickOutside } from '@vueuse/core'
 const appOptionsStore = useAppOptionsStore()
 const { isAnimation } = storeToRefs(appOptionsStore)
 
-//--------[ Props & Emits ]--------//
+// --------[ Props & Emits ]-------- //
 interface AppModalProps {
   contentClasses?: string
   modalSize?: string
@@ -46,10 +46,10 @@ defineProps<AppModalProps>()
 
 const emit = defineEmits(['modalClosed'])
 
-//--------[ Data ]--------//
+// --------[ Data ]-------- //
 const modal = ref(null)
 
-//--------[ Methods ]--------//
+// --------[ Methods ]-------- //
 const closeModal = () => {
   if (!isAnimation.value) {
     emit('modalClosed')

@@ -112,9 +112,9 @@
     </ListItem>
     <ListTitle>Timers</ListTitle>
     <ListItem
-      :title="`${toCapitalizedWords(item)}:`"
       v-for="(item, index) in timers"
       :key="index"
+      :title="`${toCapitalizedWords(item)}:`"
       :item="item"
       convertable
       tooltip
@@ -148,33 +148,35 @@
 <script setup lang="ts">
 import moment from 'moment'
 import { decodeBytes32String, encodeBytes32String } from 'ethers'
+import { Vue3Lottie } from 'vue3-lottie'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import { type IKillThemAll } from '~/types/typechain/contracts/game/KillThemAll'
 import { toCapitalizedWords, middleCropping } from '~/utils'
 import { getBytes32Rule } from '~/composables/useYupRules'
 import { Get } from '~/enums'
-import { Vue3Lottie } from 'vue3-lottie'
 
-const { chainBlockTime } = useRuntimeConfig().public
+const {
+  public: { chainBlockTime },
+} = useRuntimeConfig()
 
-//--------[ Stores ]--------//
+// --------[ Stores ]-------- //
 const userGameStore = useUserGameStore()
 const userWalletStore = useUserWalletStore()
-const connectionStore = useConnectionStore()
+const contractStore = useContractStore()
 
+const { getKtaCaller } = storeToRefs(contractStore)
 const { user } = storeToRefs(userGameStore)
-const { getKtaCaller } = storeToRefs(connectionStore)
 const { currentBlockNumber } = storeToRefs(userWalletStore)
 
-//--------[ Data ]--------//
+// --------[ Data ]-------- //
 const timer = reactive<any>(user.value.timer.toObject())
 const timers = Object.keys(timer).filter((item: any) => isNaN(item))
 const name = ref(decodeBytes32String(user.value.name))
 const referrerAddress = user.value.referrer as string
 const nameRules = getBytes32Rule()
 
-//--------[ Computed ]--------//
+// --------[ Computed ]-------- //
 // TODO: Backend'de get datalar ayrildiktan sonra duzenlenecek
 const getPointIcon = computed(() => (_getPoint: string) => {
   const iconName = useLottie(_getPoint)
@@ -184,19 +186,19 @@ const getPointIcon = computed(() => (_getPoint: string) => {
 
 const referrer = computed(() => middleCropping(referrerAddress))
 
-//--------[ Methods ]--------//
+// --------[ Methods ]-------- //
 const convert = (
   isConvert: boolean,
-  propertyName: keyof IKillThemAll.UserTimerStruct
+  propertyName: keyof IKillThemAll.UserTimerStruct,
 ) => {
   if (isConvert) {
     timer[propertyName] =
       timer[propertyName] - currentBlockNumber.value > 0
         ? moment
             .duration(
-              (timer[propertyName] - currentBlockNumber.value) *
+              (timer[propertyName] - Number(currentBlockNumber.value)) *
                 chainBlockTime *
-                1000
+                1000,
             )
             .humanize()
         : 0
@@ -212,7 +214,7 @@ const getSomething = async (item: string) => {
 
   const getItem = Get[item.slice(3) as keyof typeof Get]
 
-  await getKtaCaller.value.callFunction('get', [getItem])
+  await getKtaCaller.value.callFunction('write', 'get', [getItem])
 }
 
 const onSaved = async () => {
@@ -221,7 +223,7 @@ const onSaved = async () => {
     return
   }
   const encodedName = encodeBytes32String(tempName)
-  const result = await getKtaCaller.value.callFunction('changeName', [
+  const result = await getKtaCaller.value.callFunction('write', 'changeName', [
     encodedName,
   ])
   if (result) {

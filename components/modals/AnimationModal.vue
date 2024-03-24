@@ -26,7 +26,7 @@ const appOptionsStore = useAppOptionsStore()
 const { isConfirmed } = storeToRefs(appOptionsStore)
 const { closeModalWithResponse, clearModalInfo } = useAppOptionsStore()
 
-//--------[ Props & Emits ]--------//
+// --------[ Props & Emits ]-------- //
 interface AnimationModalProps {
   animation: string
   message: string

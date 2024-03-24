@@ -112,11 +112,11 @@ import { getAddressRule } from '~/composables/useYupRules'
 import Harp from '~/assets/lotties/harp.json'
 import type { Step } from '~/types'
 
-// --------[ Nuxt ]--------//
+// --------[ Nuxt ]-------- //
 const { chainId, networkName, networkSymbol, chainExplorers, chainRpcs } =
   useRuntimeConfig().public
 
-// --------[ Store ]--------//
+// --------[ Store ]-------- //
 const connectionStore = useConnectionStore()
 const userWalletStore = useUserWalletStore()
 const userGameStore = useUserGameStore()
@@ -136,7 +136,7 @@ const { language } = storeToRefs(useUserOptions)
 const isAnimating = ref(false)
 useTour()
 
-// --------[ Composable ]--------//
+// --------[ Composable ]-------- //
 const isDark = useDark({
   storageKey: 'theme',
   valueDark: 'dark',
@@ -180,7 +180,7 @@ const steps: Step[] = [
   },
 ]
 
-// --------[ Computed ]--------//
+// --------[ Computed ]-------- //
 const audioIcon = computed(() => useSvg(audio.value ? 'sound' : 'sound-mute'))
 
 const themeIcon = computed(() =>

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col items-center space-y-4 bg-towni-brown-light-100 py-2 px-4"
+    class="flex flex-col items-center space-y-4 bg-towni-brown-light-100 px-4 py-2"
   >
     <ListTitle class="w-3/4">Search</ListTitle>
     <div class="flex w-full space-x-2">
@@ -8,8 +8,8 @@
         <template #item>
           <SidebarDropdown
             ref="searchTypeDropdown"
-            @selected="handleSearchTypeChange"
             :dropdown-items="Object.values(searchOptions)"
+            @selected="handleSearchTypeChange"
           />
         </template>
       </ListItem>
@@ -18,21 +18,21 @@
         <template #item>
           <SidebarDropdown
             ref="sidebarDropdown"
-            @selected="handleDropdownChange()"
             :dropdown-items="dynamicFindOptions"
+            @selected="handleDropdownChange()"
           />
         </template>
       </ListItem>
     </div>
-    <VForm @submit.prevent class="flex w-3/4 flex-col items-center">
+    <VForm class="flex w-3/4 flex-col items-center" @submit.prevent>
       <ListItem class="w-full" :title="`${selectedItem}:`" input>
         <template #item>
           <VField
             v-model="searchFormInput[findOptions[selectedItem]]"
             :name="findOptions[selectedItem]"
-            @input="search()"
             :placeholder="placeholders[findOptions[selectedItem]]"
             :rules="rules[findOptions[selectedItem]]"
+            @input="search()"
           />
           <VErrorMessage
             class="text-red-800"
@@ -43,53 +43,59 @@
     </VForm>
     <TheLoading v-if="isDataLoading" />
     <OtherTown
-      class="w-full"
       v-if="
         searchFormInput[findOptions[selectedItem]] &&
         selectedItemId &&
         currentSearchType === 'Town'
       "
-      :key="selectedItemId.toString()"
       :id="selectedItemId"
+      :key="selectedItemId.toString()"
+      class="w-full"
     />
     <OtherUser
-      class="w-full"
       v-if="
         currentSearchType === SearchType.User &&
         selectedItem === 'Address' &&
         currentUserAddress
       "
+      class="w-full"
       :address="currentUserAddress"
     />
 
-    <Accordion
+    <div
       v-if="
         currentSearchType === SearchType.User &&
         selectedItem === 'Coordinate' &&
         userAddressList.length > 0
       "
-      v-for="(_address, index) in userAddressList"
-      :key="index"
-      class="w-full"
-      tooltip
     >
-      <template #title>
-        <div class="flex items-center py-1">
-          <div class="text-xs" @click="selectedAddress = _address">
-            {{ _address }}
+      <Accordion
+        v-for="(_address, index) in userAddressList"
+        :key="index"
+        class="w-full"
+        tooltip
+      >
+        <template #title>
+          <div class="flex items-center py-1">
+            <div class="text-xs" @click="selectedAddress = _address">
+              {{ _address }}
+            </div>
           </div>
-        </div>
-      </template>
-      <template #content>
-        <OtherUser v-if="selectedAddress === _address" :address="_address" />
-      </template>
-    </Accordion>
+        </template>
+        <template #content>
+          <OtherUser v-if="selectedAddress === _address" :address="_address" />
+        </template>
+      </Accordion>
+    </div>
 
     <div v-if="isTownUnavailable">town not found</div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { zeroAddress, type Address } from 'viem'
+import { useDebounceFn } from '@vueuse/core'
+import * as yup from 'yup'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import SidebarDropdown from '~/components/SidebarDropdown.vue'
@@ -102,25 +108,24 @@ import {
   addressValidationSchema,
   coordinateValidationSchema,
 } from '~/validations/'
-import { useDebounceFn } from '@vueuse/core'
-import * as yup from 'yup'
 import {
   getAddressRule,
   getUintRule,
   getCoordinateRule,
 } from '~/composables/useYupRules'
-import { ZeroAddress } from 'ethers'
+import { transformTown, transformUser } from '~/transformers'
 
-//--------[ Stores ]--------//
-const connectionStore = useConnectionStore()
-const { getKta } = storeToRefs(connectionStore)
+// --------[ Stores ]-------- //
+const contractStore = useContractStore()
 
-//--------[ Data ]--------//
+const { getKta } = storeToRefs(contractStore)
+
+// --------[ Data ]-------- //
 const sidebarDropdown = ref<InstanceType<typeof SidebarDropdown> | null>(null)
 const currentSearchType = ref<SearchType>(SearchType.Town)
-const currentUserAddress = ref<string | null>(null)
+const currentUserAddress = ref<Address | null>(null)
 const selectedAddress = ref<string | null>(null)
-const userAddressList = ref<string[]>([])
+const userAddressList = ref<readonly Address[]>([])
 const selectedItemId = ref<bigint | null>(null)
 const searchOptions = SearchType
 const findOptions = FindOptions
@@ -140,7 +145,7 @@ const rules = {
 
 const placeholders = {
   [FindOptions.ID]: '0',
-  [FindOptions.Address]: ZeroAddress,
+  [FindOptions.Address]: zeroAddress,
   [FindOptions.Coordinate]: '0,0',
 }
 
@@ -190,7 +195,7 @@ const dynamicFindOptions = computed(() => {
   return []
 })
 
-const handleDropdownChange = async () => {
+const handleDropdownChange = () => {
   resetSearchCriteria()
   searchFormInput[findOptions[selectedItem.value]] = ''
 }
@@ -219,30 +224,35 @@ const formIsValid = computed(() => {
 })
 
 const getTownDetailsById = async (value: string) => {
-  const townInfo = await getKta.value.townById(BigInt(value))
-  return townInfo.leader === ZeroAddress ? BigInt(0) : BigInt(value)
+  const townInfo = transformTown(
+    await getKta.value.read.townById([BigInt(value)]),
+  )
+  return townInfo.leader === zeroAddress ? BigInt(0) : BigInt(value)
 }
 
-const getUserDetailsByAddress = async (value: string) => {
-  const userInfo = await getKta.value.userByAddr(value)
+const getUserDetailsByAddress = async (address: Address) => {
+  const userInfo = transformUser(await getKta.value.read.userByAddr([address]))
   return userInfo.townInfo.townId
 }
 
 const getTownIdByCoordinates = async (value: string) => {
-  const coordinates = value.split(',')
-  //TODO:  Add error handling if coordinates cannot be parsed correctly.
-  // @ts-ignore
-  return await getKta.value.townIdByCoordinate(...coordinates)
+  const coordinates = value
+    .split(',')
+    .map((coordinate) => BigInt(coordinate.trim())) as unknown as Readonly<
+    [bigint, bigint]
+  >
+
+  return await getKta.value.read.townIdByCoordinate(coordinates)
 }
 
-const loadUserDetailsByAddress = async (address: string) => {
+const loadUserDetailsByAddress = (address: Address) => {
   currentUserAddress.value = address
 }
 
 const getAddressesByCoordinates = async (coordinateValue: string) => {
   const [x, y] = coordinateValue.split(',').map((coord) => BigInt(coord.trim()))
   const coordinates = { _x: x, _y: y }
-  return await getKta.value.getAddressesByCoordinate(coordinates)
+  return await getKta.value.read.getAddressesByCoordinate([coordinates])
 }
 
 const debouncedSearch = useDebounceFn(async () => {
@@ -256,7 +266,7 @@ const debouncedSearch = useDebounceFn(async () => {
           selectedItemId.value = await getTownDetailsById(value)
           break
         case FindOptions.Address:
-          selectedItemId.value = await getUserDetailsByAddress(value)
+          selectedItemId.value = await getUserDetailsByAddress(value as Address)
           break
         case FindOptions.Coordinate:
           selectedItemId.value = await getTownIdByCoordinates(value)
@@ -265,7 +275,7 @@ const debouncedSearch = useDebounceFn(async () => {
     } else if (currentSearchType.value === SearchType.User) {
       switch (selectedItem.value) {
         case FindOptions.Address:
-          await loadUserDetailsByAddress(value)
+          loadUserDetailsByAddress(value as Address)
           break
         case FindOptions.Coordinate:
           userAddressList.value = await getAddressesByCoordinates(value)

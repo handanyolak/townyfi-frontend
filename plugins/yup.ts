@@ -1,9 +1,10 @@
 import { toUtf8Bytes, isAddress } from 'ethers'
+import { zeroAddress, type Address } from 'viem'
 import { addMethod, string, StringSchema } from 'yup'
 
 export default defineNuxtPlugin(() => {
-  const connectionStore = useConnectionStore()
-  const { getKta } = storeToRefs(connectionStore)
+  const contractStore = useContractStore()
+  const { getKta } = storeToRefs(contractStore)
 
   addMethod<StringSchema<string>>(
     string,
@@ -14,7 +15,7 @@ export default defineNuxtPlugin(() => {
 
         return !(bytes.length > 31)
       })
-    }
+    },
   )
 
   addMethod<StringSchema<string>>(
@@ -24,7 +25,7 @@ export default defineNuxtPlugin(() => {
       return this.test('ethereumAddress', message, (value) => {
         return isAddress(value)
       })
-    }
+    },
   )
 
   addMethod<StringSchema<string>>(
@@ -34,13 +35,15 @@ export default defineNuxtPlugin(() => {
       return this.test('coordinate', message, (value) => {
         return /^-?\d+,-?\d+$/.test(value)
       })
-    }
+    },
   )
 
   addMethod(string, 'townyIsRegistered', function () {
     return this.test(async (value, context) => {
       try {
-        return await getKta.value.isRegistered(value as string)
+        return await getKta.value.read.isRegistered([
+          (value as Address) || zeroAddress,
+        ])
       } catch (error: any) {
         return context.createError({
           message: 'this field must be an TownyFi player',

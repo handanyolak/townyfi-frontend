@@ -69,7 +69,7 @@ const { copy, copied, isSupported } = useClipboard({
   legacy: true,
 })
 
-//--------[ Props & Emits ]--------//
+// --------[ Props & Emits ]-------- //
 // TODO: change name to file name (ListItemProps)
 interface ContentListItemProps {
   item?: string
@@ -91,11 +91,11 @@ const emit = defineEmits<{
   (event: 'saved'): void
 }>()
 
-//--------[ Data ]--------//
+// --------[ Data ]-------- //
 const isEdit = ref(false)
 const isConvert = ref(false)
 
-//--------[ Methods ]--------//
+// --------[ Methods ]-------- //
 const edit = () => {
   isEdit.value = true
 }

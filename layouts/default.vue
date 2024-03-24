@@ -12,17 +12,17 @@
 import TheHeader from '~/components/layout/TheHeader.vue'
 import TheSidebar from '~/components/layout/TheSidebar.vue'
 
-//--------[ Stores ]--------//
+// --------[ Stores ]-------- //
 const connectionStore = useConnectionStore()
 const appOptionStore = useAppOptionsStore()
 
-//--------[ Methods ]--------//
+// --------[ Methods ]-------- //
 connectionStore.$subscribe(
   (_, state) => {
     if (!state.onValidNetwork) {
       appOptionStore.sideLeave()
     }
   },
-  { detached: true }
+  { detached: true },
 )
 </script>

@@ -27,13 +27,13 @@
 </template>
 
 <script setup lang="ts">
-//--------[ Props & Emits ]--------//
+// --------[ Props & Emits ]-------- //
 const emit = defineEmits(['toggled'])
 
-//--------[ Data ]--------//
+// --------[ Data ]-------- //
 const isToggle = ref(false)
 
-//--------[ Methods ]--------//
+// --------[ Methods ]-------- //
 const toggle = () => {
   emit('toggled')
   isToggle.value = !isToggle.value

@@ -1,10 +1,10 @@
-import { BaseContract, Result } from 'ethers'
+import type { Abi, Address } from 'viem'
 
 export type ResultInfo = {
   name: string
   inputs: any[]
-  result: Result
-  errors: Array<{ path: Array<string | number>; error: Error }>
+  result?: unknown
+  error?: Error
   hasError: boolean
 }
 
@@ -14,6 +14,7 @@ export type FunctionData = {
 }
 
 export type MultiCallData = {
-  contract: BaseContract
+  address: Address
+  abi: Abi
   functionsData: FunctionData[]
 }

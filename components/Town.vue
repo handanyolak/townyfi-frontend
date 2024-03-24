@@ -55,7 +55,7 @@
       </template>
     </ListItem>
     <ListItem title="Status:" tooltip>
-      <span>{{ TownStatus[Number(town.status)] }}</span>
+      <span>{{ town.status }}</span>
       <template #tooltip>
         <span
           >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
@@ -65,12 +65,21 @@
       <template #action>
         <AppButton
           v-if="isLeader"
-          @click="settleTown()"
           class="w-[120px]"
-          basicHover
+          basic-hover
+          @click="settleTown()"
         >
           {{ buttonLabel }}
         </AppButton>
+      </template>
+    </ListItem>
+    <ListItem title="Mode:" tooltip>
+      <span>{{ town.mode }}</span>
+      <template #tooltip>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
       </template>
     </ListItem>
     <ListItem title="Recruitment:" tooltip>
@@ -84,9 +93,9 @@
       <template #action>
         <AppButton
           v-if="isLeader"
-          @click="toggleRecruitment()"
           class="w-[120px]"
-          basicHover
+          basic-hover
+          @click="toggleRecruitment()"
         >
           Recruitment
         </AppButton>
@@ -175,53 +184,55 @@ import AppButton from '~/components/AppButton.vue'
 import { TownStatus } from '~/enums'
 import { getBytes32Rule } from '~/composables/useYupRules'
 
-//--------[ Stores ]--------//
+// --------[ Stores ]-------- //
 const userGameStore = useUserGameStore()
-const connectionStore = useConnectionStore()
+const contractStore = useContractStore()
 const userWalletStore = useUserWalletStore()
 
 const { user, town } = storeToRefs(userGameStore)
-const { getKta, getKtaCaller } = storeToRefs(connectionStore)
+const { getKta, getKtaCaller } = storeToRefs(contractStore)
 const { address } = storeToRefs(userWalletStore)
 
-//--------[ Data ]--------//
+// --------[ Data ]-------- //
 const nameRules = getBytes32Rule()
-const addresses = await getKta.value.getCitizensByTownId(
-  user.value.townInfo.townId
-)
+// TODO: avoid any
+const addresses = await getKta.value.read.getCitizensByTownId([
+  user.value.townInfo.townId as any,
+])
+// TODO: avoid hardcoded values
 const attacker = ref(1)
 const defender = ref(2)
 const attackable = ref(3743879)
 const expired = ref(3743879)
 
-//--------[ Computed ]--------//
+// --------[ Computed ]-------- //
 const leader = computed(() => middleCropping(town.value.leader))
 
 const citizenAddresses = computed(() =>
-  addresses.map((address) => middleCropping(address))
+  addresses.map((address) => middleCropping(address)),
 )
 const townName = computed(() => decodeBytes32String(town.value.name))
 
 const isLeader = computed(() => address.value === town.value.leader)
 
 const buttonLabel = computed(() =>
-  BigInt(town.value.status) === BigInt(TownStatus.VOYAGE) ? 'Settle' : 'Voyage'
+  town.value.status === TownStatus[0] ? 'Settle' : 'Voyage',
 )
 
-//--------[ Methods ]--------//
+// --------[ Methods ]-------- //
 const settleTown = async () => {
-  await getKtaCaller.value.callFunction('settleTown')
+  await getKtaCaller.value.callFunction('write', 'settleTown')
 }
 
 const toggleRecruitment = async () => {
-  await getKtaCaller.value.callFunction('changeTownRecruitment')
+  await getKtaCaller.value.callFunction('write', 'changeTownRecruitment')
 }
 
 const leaveTown = async () => {
-  await getKtaCaller.value.callFunction('leaveTown')
+  await getKtaCaller.value.callFunction('write', 'leaveTown')
 }
 
 const kickCitizen = async (item: string) => {
-  await getKtaCaller.value.callFunction('exileCitizen', [item])
+  await getKtaCaller.value.callFunction('write', 'exileCitizen', [item])
 }
 </script>

@@ -13,7 +13,11 @@
     >
       <li v-for="tab in tabs" :key="tab.id" class="text-center text-xs">
         <a
-          style="font-family: Pirata One, sans-serif"
+          style="
+            font-family:
+              Pirata One,
+              sans-serif;
+          "
           :class="[
             'block rounded p-2 text-lg font-bold uppercase leading-normal shadow-lg',
             currentTabName === tab.name
@@ -39,32 +43,32 @@
 <script setup lang="ts">
 import type { Tab } from '~/types'
 
-//--------[ Props & Emits ]--------//
+// --------[ Props & Emits ]-------- //
 interface SidebarTabProps {
   tabs: Tab[]
 }
 
 const props = defineProps<SidebarTabProps>()
 
-//--------[ Data ]--------//
+// --------[ Data ]-------- //
 const currentTabName = ref(props.tabs[0].name)
 const currentTabComponent = ref(props.tabs[0].component)
 const currentTabData = ref(props.tabs[0].data)
 const scrollContainerRef = ref<HTMLElement | null>(null)
 const { y } = useScroll(scrollContainerRef)
 
-//--------[ Computed ]--------//
+// --------[ Computed ]-------- //
 const currentComponent = computed(() => {
   const _currentTabComponent = currentTabComponent.value
 
   return defineAsyncComponent(
-    () => import(`../components/${_currentTabComponent}.vue`)
+    () => import(`../components/${_currentTabComponent}.vue`),
   )
 })
 
 const hasScrolled = computed(() => y.value > 0)
 
-//--------[ Methods ]--------//
+// --------[ Methods ]-------- //
 const changeTab = (tab: Tab) => {
   useSound('demo_public_sounds_button', 'wav')
   currentTabName.value = tab.name

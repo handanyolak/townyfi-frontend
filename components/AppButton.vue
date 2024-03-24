@@ -10,7 +10,7 @@
   >
     <div
       :class="[
-        'rounded-full py-2 px-4 duration-500 ease-in-out',
+        'rounded-full px-4 py-2 duration-500 ease-in-out',
         inlineClass ? inlineClass : '',
         fillHover
           ? 'bg-towni-brown-light-100 text-towni-brown-dark-200 group-hover:bg-transparent group-hover:text-white  dark:bg-night-blue'
@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-//--------[ Props & Emits ]--------//
+// --------[ Props & Emits ]-------- //
 interface ButtonThemeProps {
   fillHover?: boolean
   borderHover?: boolean

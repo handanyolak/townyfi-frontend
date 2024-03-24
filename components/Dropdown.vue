@@ -46,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-//--------[ Props & Emits ]--------//
+// --------[ Props & Emits ]-------- //
 interface DropdownProps {
   dropdownItems: string[]
   iconNames?: string[]
@@ -58,17 +58,17 @@ const props = withDefaults(defineProps<DropdownProps>(), {
 })
 const emit = defineEmits(['selected'])
 
-//--------[ Data ]--------//
+// --------[ Data ]-------- //
 const showDropdown = ref(false)
 
-//--------[ Computed ]--------//
+// --------[ Computed ]-------- //
 const dropdownIcon = computed(
   () =>
     (icon = props.select) =>
-      useSvg(icon)
+      useSvg(icon),
 )
 
-//--------[ Methods ]--------//
+// --------[ Methods ]-------- //
 const toggleDropdown = () => {
   showDropdown.value = !showDropdown.value
 }

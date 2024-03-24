@@ -31,7 +31,7 @@
 <script setup lang="ts">
 import { StringSchema } from 'yup'
 
-//--------[ Props & Emits ]--------//
+// --------[ Props & Emits ]-------- //
 const emit = defineEmits(['update:modelValue', 'searched'])
 
 defineProps<SearchBarProps>()
@@ -41,10 +41,10 @@ interface SearchBarProps {
   isDisable?: Boolean
 }
 
-//--------[ Data ]--------//
+// --------[ Data ]-------- //
 const inputValue = ref('')
 
-//--------[ Methods ]--------//
+// --------[ Methods ]-------- //
 const updateValue = ({ target }: InputEvent) => {
   inputValue.value = (target as HTMLInputElement).value
   emit('update:modelValue', inputValue.value)

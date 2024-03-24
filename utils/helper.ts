@@ -40,7 +40,7 @@ export const enumKeys = (enumValue: any) => {
 export const convertToInteger = (
   variable: any,
   defaultValue?: number,
-  error?: boolean
+  error?: boolean,
 ) => {
   let result =
     typeof variable === 'boolean' ||
@@ -60,22 +60,6 @@ export const convertToInteger = (
   return result
 }
 
-// function cleanUrls(urls) {
-//   return urls.map((url) =>
-//     url.replace(/^https?:\/\//, '').replace(/\.[a-z]{2,}$/, '')
-//   )
-// }
-
-// // Example usage:
-// const urls = [
-//   'https://sepolia.etherscan.io',
-//   'https://sepolia.beaconcha.in',
-//   'http://eth-sepolia.blockscout.com',
-// ]
-
-// const cleanedUrls = cleanUrls(urls)
-// console.log(cleanedUrls)
-
 export const convertToArray = (variable: any, defaultValue?: any[]) => {
   let result = typeof variable === 'string' ? variable.split(',') : undefined
 
@@ -86,4 +70,15 @@ export const convertToArray = (variable: any, defaultValue?: any[]) => {
   return result
 }
 
-// TODO: convertToString
+export const replaceAtKeys = (inputObj: { [key: string]: any }): any => {
+  const outputObj: { [key: string]: any } = {}
+  for (const key in inputObj) {
+    const value = inputObj[key]
+    if (typeof value === 'object' && '_at' in value) {
+      outputObj[key] = value._at
+    } else {
+      outputObj[key] = value
+    }
+  }
+  return outputObj
+}

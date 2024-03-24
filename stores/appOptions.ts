@@ -1,47 +1,28 @@
 import { useToggle, useStorage } from '@vueuse/core'
 import { ethers } from 'ethers'
 import { TYPE } from 'vue-toastification'
-import {
-  KillThemAll__factory,
-  KtaToken__factory,
-  MultiCall__factory,
-} from '~/types'
+import { transformTown } from '~/transformers'
+import { KillThemAll__factory, KtaToken__factory } from '~/types'
 import type { Coordinates } from '~/types/typechain/contracts/game/IKillThemAll'
 import type { IKillThemAll } from '~/types/typechain/contracts/game/KillThemAll'
 
 export const useAppOptionsStore = defineStore('appOptionsStore', () => {
-  //--------[ Nuxt Imports ]--------//
-  const { ktaAddress, ktaTokenAddress, multiCallAddress } =
-    useRuntimeConfig().public
+  // --------[ Nuxt Imports ]-------- //
+  const {
+    public: { ktaAddress, ktaTokenAddress },
+  } = useRuntimeConfig()
 
-  //--------[ Stores ]--------//
+  // --------[ Stores ]-------- //
   const userWalletStore = useUserWalletStore()
   const userGameStore = useUserGameStore()
   const connectionStore = useConnectionStore()
+  const contractStore = useContractStore()
 
-  const { setCurrentBlockNumber, connect, setKtaAllowance, setKtaBalance } =
-    userWalletStore
-  const {
-    hasMetamask,
-    setKtaToken,
-    setKta,
-    setMultiCall,
-    checkOnValidNetwork,
-  } = connectionStore
-  const {
-    setUser,
-    setSetting,
-    setUserProperty,
-    setIsRegistered,
-    setUserCoordinate,
-    setTown,
-  } = userGameStore
+  const { hasMetamask, checkOnValidNetwork } = connectionStore
 
-  const { onValidNetwork, getKta, getProvider } = storeToRefs(connectionStore)
-  const { address, getSigner } = storeToRefs(userWalletStore)
-  const { userCountByCoordinate } = storeToRefs(userGameStore)
+  const { onValidNetwork } = storeToRefs(connectionStore)
 
-  //--------[ States ]--------//
+  // --------[ States ]-------- //
   const isBlockchainInfo = ref(false)
   const isContractInfo = ref(false)
   const initialized = ref(false)
@@ -64,11 +45,10 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const modalResultResolver = ref<((value: unknown) => void) | null>(null)
   const isAttackSuccess = ref(false)
 
-  //--------[ Actions ]--------//
-
+  // --------[ Actions ]-------- //
   const setModalInfo = (
     newModalComponentName: string,
-    newModalComponentProps?: any
+    newModalComponentProps?: any,
   ) => {
     modalComponentName.value = newModalComponentName
     modalComponentProps.value = newModalComponentProps
@@ -109,14 +89,14 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   }
 
   const setOriginCoordinate = (
-    newOriginCoordinate: Coordinates.CoordinateStruct
+    newOriginCoordinate: Coordinates.CoordinateStruct,
   ) => {
     originCoordinate.value = newOriginCoordinate
   }
 
   const initializeApp = async () => {
     if (hasMetamask) {
-      await connect()
+      await userWalletStore.connect()
       await checkOnValidNetwork()
 
       if (onValidNetwork.value && !initialized.value) {
@@ -124,19 +104,13 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
 
         const ktaToken = KtaToken__factory.connect(
           ktaTokenAddress,
-          getSigner.value
+          userWalletStore.getSigner,
         )
 
-        const kta = KillThemAll__factory.connect(ktaAddress, getSigner.value)
-
-        const multiCall = MultiCall__factory.connect(
-          multiCallAddress,
-          getSigner.value
+        const kta = KillThemAll__factory.connect(
+          ktaAddress,
+          userWalletStore.getSigner,
         )
-
-        setKtaToken(ktaToken)
-        setKta(kta)
-        setMultiCall(multiCall)
 
         const {
           health,
@@ -151,7 +125,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
           townInfo,
           timer,
           charPoint,
-        } = await kta.userByAddr(address.value)
+        } = await kta.userByAddr(userWalletStore.address)
 
         const userInfo = {
           health,
@@ -172,8 +146,12 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
 
         setOriginCoordinate(userInfo.coordinate)
 
-        setKtaAllowance(await ktaToken.allowance(address.value, ktaAddress))
-        setKtaBalance(await ktaToken.balanceOf(address.value))
+        userWalletStore.setKtaAllowance(
+          await ktaToken.allowance(userWalletStore.address, ktaAddress),
+        )
+        userWalletStore.setKtaBalance(
+          await ktaToken.balanceOf(userWalletStore.address),
+        )
 
         const {
           max,
@@ -197,51 +175,47 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
           numberDigits,
         }
 
-        setSetting(setting)
+        userGameStore.setSetting(setting)
 
-        setCurrentBlockNumber(await getProvider.value.getBlockNumber())
-
-        getProvider.value.on('block', (blockNumber: number) => {
-          setCurrentBlockNumber(blockNumber)
+        userWalletStore.walletClient.watchBlockNumber({
+          onBlockNumber: (blockNumber) => {
+            userWalletStore.setCurrentBlockNumber(blockNumber)
+          },
         })
 
-        // TODO: Ethers v6 events not working yet
         // TODO: startGameEvents fonksiyonunda eklenecek
         kta.on(
           kta.filters.UserMoved,
-          async (
-            user,
-            oldCoordinate, // oldCoordinate: Coordinates.CoordinateStruct,
-            newCoordinate,
-            event
-          ) => {
+          (user, oldCoordinate, newCoordinate, event) => {
             const oldCoordinateMapKey = `${oldCoordinate._x.toString()},${oldCoordinate._y.toString()}`
-            if (userCountByCoordinate.value.has(oldCoordinateMapKey)) {
-              const oldCoordinateUserLength = userCountByCoordinate.value.get(
-                oldCoordinateMapKey
-              ) as number
+            if (userGameStore.userCountByCoordinate.has(oldCoordinateMapKey)) {
+              const oldCoordinateUserLength =
+                userGameStore.userCountByCoordinate.get(
+                  oldCoordinateMapKey,
+                ) as number
 
-              userCountByCoordinate.value.set(
+              userGameStore.userCountByCoordinate.set(
                 oldCoordinateMapKey,
-                oldCoordinateUserLength - 1
+                oldCoordinateUserLength - 1,
               )
             }
 
             const newCoordinateMapKey = `${newCoordinate._x.toString()},${newCoordinate._y.toString()}`
-            if (userCountByCoordinate.value.has(newCoordinateMapKey)) {
-              const newCoordinateUserLength = userCountByCoordinate.value.get(
-                newCoordinateMapKey
-              ) as number
+            if (userGameStore.userCountByCoordinate.has(newCoordinateMapKey)) {
+              const newCoordinateUserLength =
+                userGameStore.userCountByCoordinate.get(
+                  newCoordinateMapKey,
+                ) as number
 
-              userCountByCoordinate.value.set(
+              userGameStore.userCountByCoordinate.set(
                 newCoordinateMapKey,
-                newCoordinateUserLength + 1
+                newCoordinateUserLength + 1,
               )
             }
 
             let toastMsg = ''
-            if (user === address.value) {
-              setUserProperty('coordinate', newCoordinate)
+            if (user === userWalletStore.address) {
+              userGameStore.setUserProperty('coordinate', newCoordinate)
               userGameStore.setUserCoordinate(userInfo.coordinate)
 
               toastMsg += `You moved!\n` + `Event: ${event.eventName}\n`
@@ -256,7 +230,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
 
               useAppToast(TYPE.INFO, toastMsg)
             }
-          }
+          },
         )
 
         // TODO: bu bilgiyi transaction'dan almak yerine parametre olarak alacagiz cunku frontend'e yuk biniyor.
@@ -265,8 +239,8 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
           const registeredAddress = tx.from
 
           let toastMsg = ''
-          if (registeredAddress === address.value) {
-            const userInfo = await kta.userByAddr(address.value)
+          if (registeredAddress === userWalletStore.address) {
+            const userInfo = await kta.userByAddr(userWalletStore.address)
             await setUserInfo(userInfo)
 
             toastMsg += `Welcome to TownyFi!\n` + `Event: ${event.eventName}\n`
@@ -280,11 +254,11 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
           const fromAddress = tx.from
           let toastMsg = ''
 
-          if (fromAddress === address.value) {
+          if (fromAddress === userWalletStore.address) {
             toastMsg += `Your attack was dodged!\n`
           }
 
-          if (defender === address.value) {
+          if (defender === userWalletStore.address) {
             toastMsg += `You dodged the attack!\n`
           }
 
@@ -310,11 +284,11 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
           const fromAddress = tx.from
           let toastMsg = ''
 
-          if (fromAddress === address.value) {
+          if (fromAddress === userWalletStore.address) {
             toastMsg += `You attacked!\n`
           }
 
-          if (defender === address.value) {
+          if (defender === userWalletStore.address) {
             toastMsg += `You were attacked!\n`
           }
 
@@ -336,28 +310,33 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
         })
 
         ktaToken.on(ktaToken.filters.Approval, (owner, spender, value) => {
-          if (spender === ktaAddress && owner === address.value) {
-            setKtaAllowance(value)
+          if (spender === ktaAddress && owner === userWalletStore.address) {
+            userWalletStore.setKtaAllowance(value)
           }
         })
 
         ktaToken.on(
           ktaToken.filters.Transfer,
           async (from, to, value, event) => {
-            if (from === address.value || to === address.value) {
-              setKtaBalance(await ktaToken.balanceOf(address.value))
+            if (
+              from === userWalletStore.address ||
+              to === userWalletStore.address
+            ) {
+              userWalletStore.setKtaBalance(
+                await ktaToken.balanceOf(userWalletStore.address),
+              )
 
               const valueFormat = ethers.formatUnits(
                 value,
-                await ktaToken.decimals()
+                await ktaToken.decimals(),
               )
 
               let toastMsg = ''
-              if (from === address.value) {
+              if (from === userWalletStore.address) {
                 toastMsg += `You sent ${valueFormat} Game Token!\n`
               }
 
-              if (to === address.value) {
+              if (to === userWalletStore.address) {
                 toastMsg += `You received ${valueFormat} Game Token!\n`
               }
 
@@ -373,17 +352,26 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
 
               useAppToast(TYPE.INFO, toastMsg)
             }
-          }
+          },
         )
       }
     }
   }
 
   const setUserInfo = async (userInfo: IKillThemAll.UserStruct) => {
-    setIsRegistered(await getKta.value.isRegistered(address.value))
-    setUser(userInfo)
-    setUserCoordinate(userInfo.coordinate)
-    setTown((await getKta.value.townById(userInfo.townInfo.townId)) as any)
+    userGameStore.setIsRegistered(
+      await contractStore.getKta.read.isRegistered([userWalletStore.address]),
+    )
+    userGameStore.setUser(userInfo)
+    userGameStore.setUserCoordinate(userInfo.coordinate)
+    userGameStore.setTown(
+      transformTown(
+        // TODO: avoid any
+        await contractStore.getKta.read.townById([
+          userInfo.townInfo.townId as any,
+        ]),
+      ),
+    )
   }
 
   const toggleAudio = () => {
@@ -408,7 +396,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     if (!mainThemeAudio.value) {
       mainThemeAudio.value = new Audio(
         // @ts-ignore
-        (await import('~/assets/sound/in-dreams.mp3')).default
+        (await import('~/assets/sound/in-dreams.mp3')).default,
       )
       mainThemeAudio.value.loop = true
     }

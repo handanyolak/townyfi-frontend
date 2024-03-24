@@ -49,7 +49,16 @@
       </template>
     </ListItem>
     <ListItem title="Status:" tooltip>
-      <span>{{ TownStatus[Number(town.status)] }}</span>
+      <span>{{ town.status }}</span>
+      <template #tooltip>
+        <span
+          >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
+          amet.</span
+        >
+      </template>
+    </ListItem>
+    <ListItem title="Mode:" tooltip>
+      <span>{{ town.mode }}</span>
       <template #tooltip>
         <span
           >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
@@ -127,50 +136,51 @@
 
 <script setup lang="ts">
 import { decodeBytes32String, ZeroAddress } from 'ethers'
+import type { Address } from 'viem'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ScrollableList from '~/components/sidebar-items/ScrollableList.vue'
-import { TownStatus } from '~/enums'
+import { transformTown } from '~/transformers'
 
-//--------[ Props & Emits ]--------//
+// --------[ Props & Emits ]-------- //
 interface OtherTownProps {
   id: bigint
 }
 const props = defineProps<OtherTownProps>()
 
-//--------[ Stores ]--------//
-const connectionStore = useConnectionStore()
+// --------[ Stores ]-------- //
 const userGameStore = useUserGameStore()
+const contractStore = useContractStore()
 
-const { getKta, getKtaCaller } = storeToRefs(connectionStore)
+const { getKta, getKtaCaller } = storeToRefs(contractStore)
 
-//--------[ Data ]--------//
+// --------[ Data ]-------- //
 const town = ref(userGameStore.town)
 
-const addresses = ref<string[]>([])
+const addresses = ref<readonly Address[]>([])
 const attacker = ref(1)
 const defender = ref(2)
 const attackable = ref(3743879)
 const expired = ref(3743879)
 
-//--------[ Computed ]--------//
+// --------[ Computed ]-------- //
 const leader = computed(() => middleCropping(town.value.leader))
 
 const citizenAddresses = computed(() =>
-  addresses.value.map((address) => middleCropping(address))
+  addresses.value.map((address) => middleCropping(address)),
 )
 
 const townName = computed(() => decodeBytes32String(town.value.name))
 
-//--------[ Hooks ]--------//
+// --------[ Hooks ]-------- //
 onMounted(async () => {
-  town.value = await getKta.value.townById(props.id)
+  town.value = transformTown(await getKta.value.read.townById([props.id]))
   if (town.value.leader !== ZeroAddress) {
-    addresses.value = await getKta.value.getCitizensByTownId(props.id)
+    addresses.value = await getKta.value.read.getCitizensByTownId([props.id])
   }
 })
 
 const joinTown = async () => {
-  await getKtaCaller.value.callFunction('joinTown', [BigInt(props.id)])
+  await getKtaCaller.value.callFunction('write', 'joinTown', [BigInt(props.id)])
 }
 </script>

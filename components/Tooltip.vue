@@ -22,7 +22,7 @@
 <script setup lang="ts">
 import { onClickOutside } from '@vueuse/core'
 
-//--------[ Props & Emits ]--------//
+// --------[ Props & Emits ]-------- //
 const props = defineProps({
   autoClose: {
     type: Boolean,
@@ -34,11 +34,11 @@ const props = defineProps({
   },
 })
 
-//--------[ Data ]--------//
+// --------[ Data ]-------- //
 const tooltip = ref(null)
 const isShowTooltip = ref(false)
 
-//--------[ Methods ]--------//
+// --------[ Methods ]-------- //
 const toggleTooltip = () => {
   isShowTooltip.value = !isShowTooltip.value
   if (props.autoClose) {

@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-//--------[ Stores ]--------//
+// --------[ Stores ]-------- //
 const appOptionStore = useAppOptionsStore()
 const { setModalInfo } = appOptionStore
 </script>

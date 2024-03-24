@@ -1,3 +1,5 @@
+import { createPublicClient, http } from 'viem'
+import { sepolia } from 'viem/chains'
 import type { Tab } from '~/types'
 
 export const TABS: Record<string, Tab[]> = {
@@ -96,10 +98,13 @@ export const TABS: Record<string, Tab[]> = {
       name: 'Multicall',
       component: 'Contract',
       data: {
-        contractName: 'Multicall',
+        contractName: 'Multicall3',
         contractDesc:
           'The multicall contract of the game. Used for batch calls in the Frontend App.',
-        contractAddress: '0x966F413E883b43CBcE9b0a795F1cbA8103AE5C95',
+        contractAddress: createPublicClient({
+          chain: sepolia,
+          transport: http(),
+        }).chain.contracts.multicall3.address,
       },
     },
   ],

@@ -2,7 +2,7 @@
   <div class="flex items-center justify-center">
     <div class="relative z-10 w-full">
       <button
-        class="flex w-full items-center justify-between bg-towni-brown-dark-300 bg-opacity-20 py-1 px-3 text-towni-brown-dark-300 outline-none backdrop-blur"
+        class="flex w-full items-center justify-between bg-towni-brown-dark-300 bg-opacity-20 px-3 py-1 text-towni-brown-dark-300 outline-none backdrop-blur"
         :class="isRounded"
         @click="toggleDropdown()"
         @blur="showDropdown = false"
@@ -45,7 +45,7 @@
 </template>
 
 <script setup lang="ts">
-//--------[ Props & Emits ]--------//
+// --------[ Props & Emits ]-------- //
 interface DropdownProps {
   dropdownItems: string[]
   iconNames?: string[]
@@ -60,16 +60,16 @@ interface DropdownExpose {
 const props = defineProps<DropdownProps>()
 const emit = defineEmits(['selected'])
 
-//--------[ Data ]--------//
+// --------[ Data ]-------- //
 const showDropdown = ref(false)
 const selectedItem = ref<string | null>(null)
 
-//--------[ Computed ]--------//
+// --------[ Computed ]-------- //
 const dropdownIcon = computed(
   () =>
     (icon = props.select) =>
       // @ts-ignore
-      useSvg(icon)
+      useSvg(icon),
 )
 
 const isRounded = computed(() => {
@@ -77,7 +77,7 @@ const isRounded = computed(() => {
   return showDropdown.value ? 'rounded-t-2xl' : 'rounded-full'
 })
 
-//--------[ Methods ]--------//
+// --------[ Methods ]-------- //
 const toggleDropdown = () => {
   showDropdown.value = !showDropdown.value
 }

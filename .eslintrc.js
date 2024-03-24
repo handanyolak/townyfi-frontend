@@ -14,6 +14,7 @@ module.exports = {
   rules: {
     'vue/multi-word-component-names': 0,
     'no-console': 'off',
+    'no-useless-constructor': 'off',
   },
   overrides: [],
 }

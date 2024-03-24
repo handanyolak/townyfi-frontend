@@ -57,7 +57,7 @@ import { onClickOutside } from '@vueuse/core'
 import SidebarTab from '~/components/SidebarTab.vue'
 import { TABS } from '~/constants'
 
-//--------[ Stores ]--------//
+// --------[ Stores ]-------- //
 const appOptionStore = useAppOptionsStore()
 const userGameStore = useUserGameStore()
 
@@ -67,10 +67,10 @@ const { isGameInfo, isContractInfo, isBlockchainInfo, isOptions, showSidebar } =
   storeToRefs(appOptionStore)
 const { isRegistered } = storeToRefs(userGameStore)
 
-//--------[ Data ]--------//
+// --------[ Data ]-------- //
 const sideBar = ref(null)
 
-//--------[ Methods ]--------//
+// --------[ Methods ]-------- //
 onClickOutside(sideBar, () => sideLeave())
 </script>
 
@@ -99,6 +99,8 @@ onClickOutside(sideBar, () => sideLeave())
 
 .torn-edges-paper {
   height: 110vh;
-  box-shadow: 2px 3px 20px #854819, 30px 65px 200px #91510ffc inset;
+  box-shadow:
+    2px 3px 20px #854819,
+    30px 65px 200px #91510ffc inset;
 }
 </style>

@@ -36,11 +36,12 @@ import { object } from 'yup'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import { getBytes32Rule, getUintRule } from '~/composables/useYupRules'
 
-//--------[ Stores ]--------//
-const connectionStore = useConnectionStore()
-const { getKtaCaller } = storeToRefs(connectionStore)
+// --------[ Stores ]-------- //
+const contractStore = useContractStore()
 
-//--------[ Data ]--------//
+const { getKtaCaller } = storeToRefs(contractStore)
+
+// --------[ Data ]-------- //
 const formInput = reactive({
   name: '',
   price: '',
@@ -55,14 +56,14 @@ const formRules = object().shape({
   price: priceRules,
 })
 
-//--------[ Hooks ]--------//
+// --------[ Hooks ]-------- //
 watch(formInput, (newFormInput) => {
   formIsValid.value = formRules.isValidSync(newFormInput)
 })
 
-//--------[ Methods ]--------//
+// --------[ Methods ]-------- //
 const createTown = async () => {
-  await getKtaCaller.value.callFunction('createTown', [
+  await getKtaCaller.value.callFunction('write', 'createTown', [
     encodeBytes32String(formInput.name),
     BigInt(formInput.price),
   ])

@@ -35,7 +35,7 @@
 <script setup lang="ts">
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 
-//--------[ Props & Emits ]--------//
+// --------[ Props & Emits ]-------- //
 interface ScrollableListProps {
   items?: string[]
   copyValue?: string | string[]

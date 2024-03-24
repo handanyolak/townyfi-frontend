@@ -5,7 +5,7 @@
         v-show="isMapNavigationVisible"
         :style="`height: ${height}px`"
         :class="[
-          'absolute top-0 -right-52 transition-all duration-300 ease-in-out',
+          'absolute -right-52 top-0 transition-all duration-300 ease-in-out',
           isMapNavigationVisible ? '' : '-translate-x-52',
         ]"
       >
@@ -122,7 +122,7 @@ import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import MoveArrow from '~/components/MoveArrow.vue'
 import AppButton from '~/components/AppButton.vue'
 
-//--------[ Props & Emits ]--------//
+// --------[ Props & Emits ]-------- //
 defineProps({
   height: {
     type: String,
@@ -131,7 +131,7 @@ defineProps({
   isMapNavigationVisible: Boolean,
 })
 
-//--------[ Stores ]--------//
+// --------[ Stores ]-------- //
 const appOptionsStore = useAppOptionsStore()
 const userGameStore = useUserGameStore()
 
@@ -141,11 +141,11 @@ const { setUserCoordinate, setNearLevelByCalculatingCoordinates } =
 const { originCoordinate } = storeToRefs(appOptionsStore)
 const { nearLevel, user } = storeToRefs(userGameStore)
 
-//--------[ Data ]--------//
+// --------[ Data ]-------- //
 const coordinateX = ref('')
 const coordinateY = ref('')
 
-//--------[ Methods ]--------//
+// --------[ Methods ]-------- //
 const navigate = () => {
   setUserCoordinate({
     _x: BigInt(coordinateX.value),

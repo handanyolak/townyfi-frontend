@@ -63,14 +63,14 @@
 import type { CoordinateItem } from '~/types'
 import { useUserGameStore } from '~/stores/userGame'
 
-//--------[ Props & Emits ]--------//
+// --------[ Props & Emits ]-------- //
 interface MapboxProps {
   item: CoordinateItem
 }
 
 const props = defineProps<MapboxProps>()
 
-//--------[ Stores ]--------//
+// --------[ Stores ]-------- //
 const userGameStore = useUserGameStore()
 
 const {
@@ -81,7 +81,7 @@ const {
   isRegistered,
 } = storeToRefs(userGameStore)
 
-//--------[ Composables ]--------//
+// --------[ Composables ]-------- //
 const isDark = useDark({
   storageKey: 'theme',
   valueDark: 'dark',
@@ -92,20 +92,20 @@ const isDark = useDark({
 const isCoordinateOfUser = computed(
   () =>
     props.item._x.toString() === user.value.coordinate._x.toString() &&
-    props.item._y.toString() === user.value.coordinate._y.toString()
+    props.item._y.toString() === user.value.coordinate._y.toString(),
 )
 
 const getMapKey = computed(
-  () => `${props.item._x.toString()},${props.item._y.toString()}`
+  () => `${props.item._x.toString()},${props.item._y.toString()}`,
 )
 
 const soldierIcon = computed(() =>
-  useSvg(isDark.value ? 'cavalry-night' : 'cavalry')
+  useSvg(isDark.value ? 'cavalry-night' : 'cavalry'),
 )
 
 const pulseColor = computed(() => {
   const userByCountByCoordinate = getUserCountByCoordinate.value.get(
-    getMapKey.value
+    getMapKey.value,
   )
 
   if (!userByCountByCoordinate) {

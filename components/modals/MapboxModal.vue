@@ -26,13 +26,13 @@
     <template #parchment-footer>
       <div>
         <AppButton
-          class="px-4 text-xl"
           v-if="
             !(
               user.coordinate._x === coordinate._x &&
               user.coordinate._y === coordinate._y
             )
           "
+          class="px-4 text-xl"
           @click="isMoveable() ? move() : teleport()"
           >{{ isMoveable() ? 'Move' : 'Teleport' }}</AppButton
         >
@@ -42,28 +42,28 @@
 </template>
 
 <script setup lang="ts">
+import type { Address } from 'viem'
+import { useDebounce } from '@vueuse/core'
 import OtherUser from '~/components/OtherUser.vue'
 import Accordion from '~/components/Accordion.vue'
 import SearchBar from '~/components/SearchBar.vue'
 import { getAddressRule } from '~/composables/useYupRules'
-import { useDebounce } from '@vueuse/core'
 import type { CoordinateItem } from '~/types'
 import { Direction } from '~/enums'
-import { Caller } from '~/contracts'
 import { abs } from 'extra-bigint.web'
 
-//--------[ Props & Emits ]--------//
+// --------[ Props & Emits ]-------- //
 interface MapboxModalProps {
   coordinate: CoordinateItem
 }
 
 const props = defineProps<MapboxModalProps>()
 
-//--------[ Stores ]--------//
-const connectionStore = useConnectionStore()
+// --------[ Stores ]-------- //
+const contractStore = useContractStore()
 const appOptionsStore = useAppOptionsStore()
 
-const { getKta, getKtaCaller } = storeToRefs(connectionStore)
+const { getKta, getKtaCaller } = storeToRefs(contractStore)
 const { clearModalInfo, setModalInfo } = appOptionsStore
 
 const userGameStore = useUserGameStore()
@@ -74,30 +74,30 @@ const { address } = storeToRefs(userWalletStore)
 
 const search = ref('')
 const clickedAddress = ref('')
-const addresses = ref<string[]>([])
+const addresses = ref<readonly Address[]>([])
 const searchRules = getAddressRule()
 const searchDebounced = useDebounce(search, 1000)
 
-//--------[ Hooks ]--------//
+// --------[ Hooks ]-------- //
 onMounted(async () => {
-  addresses.value = await getKta.value.getAddressesByCoordinate(
-    props.coordinate
-  )
+  addresses.value = await getKta.value.read.getAddressesByCoordinate([
+    props.coordinate,
+  ])
 })
 
 const filteredList = computed(() => {
   return addresses.value.filter((address: string) =>
-    address.toLowerCase().includes(searchDebounced.value.toLowerCase())
+    address.toLowerCase().includes(searchDebounced.value.toLowerCase()),
   )
 })
 
 const isOwnAddress = computed(
-  () => (_address: string) => address.value === _address
+  () => (_address: string) => address.value === _address,
 )
 
-//--------[ Methods ]--------//
+// --------[ Methods ]-------- //
 const teleport = async () => {
-  const result = await getKtaCaller.value.callFunction('teleport', [
+  const result = await getKtaCaller.value.callFunction('write', 'teleport', [
     {
       _x: props.coordinate._x,
       _y: props.coordinate._y,
@@ -109,7 +109,7 @@ const teleport = async () => {
   }
 }
 
-//TODO: notification will be made after the transaction is confirmed
+// TODO: notification will be made after the transaction is confirmed
 const attack = async (address: string) => {
   const confirmed = await setModalInfo('AnimationModal', {
     animation: 'attack',
@@ -121,7 +121,7 @@ const attack = async (address: string) => {
   }
 
   try {
-    await getKtaCaller.value.callFunction('attack', [address])
+    await getKtaCaller.value.callFunction('write', 'attack', [address])
   } catch (error) {
     console.error('Attack transaction failed: ', error)
   } finally {
@@ -143,10 +143,8 @@ const move = async () => {
   } else {
     direction = Direction.Up
   }
-  console.log(BigInt(direction))
 
-  const caller = new Caller(getKta.value)
-  await caller.callFunction('move', [BigInt(direction)])
+  await getKtaCaller.value.callFunction('write', 'move', [BigInt(direction)])
 }
 
 const isMoveable = () => {

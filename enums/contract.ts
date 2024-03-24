@@ -3,6 +3,12 @@ export enum TownStatus {
   SETTLE,
 }
 
+export enum TownMode {
+  NORMAL,
+  OFFENSIVE,
+  DEFENSIVE,
+}
+
 export enum NavigateDirection {
   Up,
   UpRight,

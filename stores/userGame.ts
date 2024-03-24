@@ -1,31 +1,32 @@
 import { useStorage } from '@vueuse/core'
 import type { CoordinateItem, MultiCallData } from '~/types'
 import { middleElement } from '~/utils'
-import { useMultiCall } from '~/composables/useMultiCall'
 import type {
   IKillThemAll,
   Coordinates,
 } from '~/types/typechain/contracts/game/KillThemAll'
+import type { Town } from '~/types/contract'
+import { useMultiCall } from '~/composables/useMultiCall'
 
 export const useUserGameStore = defineStore('userGameStore', () => {
-  //--------[ Nuxt Imports ]--------//
-  const { minNearLevel, maxNearLevel } = useRuntimeConfig().public
+  // --------[ Nuxt Imports ]-------- //
+  const {
+    public: { minNearLevel, maxNearLevel },
+  } = useRuntimeConfig()
 
-  //--------[ Stores ]--------//
+  // --------[ Stores ]-------- //
   const appOptionsStore = useAppOptionsStore()
-  const connectionStore = useConnectionStore()
-  const { getKta } = storeToRefs(connectionStore)
+  const contractStore = useContractStore()
 
-  //--------[ States ]--------//
+  // --------[ States ]-------- //
   const isRegistered = ref(false)
   const isLoading = ref(false)
   // TODO: solve this
   const user = ref<IKillThemAll.UserStruct>(
-    null as unknown as IKillThemAll.UserStruct
+    null as unknown as IKillThemAll.UserStruct,
   )
-  const town = ref<IKillThemAll.TownStruct>(
-    null as unknown as IKillThemAll.TownStruct
-  )
+  const town = ref<Town>(null as unknown as Town)
+
   // TODO: move to app options store
   const nearLevel = useStorage('nearLevel', 3)
   const setting = ref<IKillThemAll.SettingStruct | null>(null)
@@ -34,16 +35,16 @@ export const useUserGameStore = defineStore('userGameStore', () => {
   // TODO: this is not addresses. it's coordinates :D
   const addressesByCoordinate = ref<CoordinateItem[]>([])
 
-  //--------[ Getters ]--------//
+  // --------[ Getters ]-------- //
   const getUserCountByCoordinate = computed(() => userCountByCoordinate.value)
   const getHasTownByCoordinate = computed(() => hasTownByCoordinate.value)
 
-  //--------[ Actions ]--------//
+  // --------[ Actions ]-------- //
   const setUser = (newUser: IKillThemAll.UserStruct) => {
     user.value = newUser
   }
 
-  const setTown = (newTown: IKillThemAll.TownStruct) => {
+  const setTown = (newTown: Town) => {
     town.value = newTown
   }
 
@@ -68,7 +69,7 @@ export const useUserGameStore = defineStore('userGameStore', () => {
 
   const setUserProperty = <T extends keyof IKillThemAll.UserStruct>(
     property: T,
-    newValue: IKillThemAll.UserStruct[T]
+    newValue: IKillThemAll.UserStruct[T],
   ) => {
     user.value[property] = newValue
   }
@@ -79,7 +80,7 @@ export const useUserGameStore = defineStore('userGameStore', () => {
 
   const setUserCoordinate = (
     coordinates: Coordinates.CoordinateStruct,
-    getDataFromBlockchain = true
+    getDataFromChain = true,
   ) => {
     isLoading.value = true
 
@@ -93,7 +94,8 @@ export const useUserGameStore = defineStore('userGameStore', () => {
 
     const multiCallData: MultiCallData[] = [
       {
-        contract: getKta.value,
+        address: contractStore.getKta.address,
+        abi: contractStore.getKta.abi,
         functionsData: [],
       },
     ]
@@ -106,25 +108,25 @@ export const useUserGameStore = defineStore('userGameStore', () => {
           _y: j,
         }
 
-        if (getDataFromBlockchain) {
+        if (getDataFromChain) {
           const mapKey = `${coordinateItem._x.toString()},${coordinateItem._y.toString()}`
           if (!userCountByCoordinate.value.has(mapKey)) {
             userCountByCoordinate.value.set(mapKey, 0)
-
-            multiCallData[0].functionsData.push({
-              name: 'getAddressesByCoordinate',
-              inputs: [coordinateItem],
-            })
           }
+
+          multiCallData[0].functionsData.push({
+            name: 'getAddressesByCoordinate',
+            inputs: [coordinateItem],
+          })
 
           if (!hasTownByCoordinate.value.has(mapKey)) {
             hasTownByCoordinate.value.set(mapKey, false)
-
-            multiCallData[0].functionsData.push({
-              name: 'townIdByCoordinate',
-              inputs: [coordinateItem._x, coordinateItem._y],
-            })
           }
+
+          multiCallData[0].functionsData.push({
+            name: 'townIdByCoordinate',
+            inputs: [coordinateItem._x, coordinateItem._y],
+          })
         }
 
         addressesByCoordinate.value.push(coordinateItem)
@@ -132,35 +134,39 @@ export const useUserGameStore = defineStore('userGameStore', () => {
     }
 
     const middleCoordinate = middleElement<CoordinateItem>(
-      addressesByCoordinate.value
+      addressesByCoordinate.value,
     )
     appOptionsStore.setOriginCoordinate(middleCoordinate)
 
-    if (!getDataFromBlockchain) {
+    if (!getDataFromChain) {
       isLoading.value = false
 
       return
     }
 
     useMultiCall(multiCallData).then((results) => {
-      const resultInfosByAddrKey = results.values()
-      for (const values of resultInfosByAddrKey) {
-        const resultInfos = values.values()
-        for (const resultInfo of resultInfos) {
-          if (resultInfo.hasError) {
-            continue
-          }
+      const resultInfosByAddrKey = results.get(contractStore.getKta.address)
+      if (!resultInfosByAddrKey) {
+        return
+      }
 
-          if (resultInfo.name === 'getAddressesByCoordinate') {
-            const addressLength = resultInfo.result[0].length
-            const { _x, _y } = resultInfo.inputs[0]
-            const mapKey = `${_x.toString()},${_y.toString()}`
-            userCountByCoordinate.value.set(mapKey, addressLength)
-          } else if (resultInfo.name === 'townIdByCoordinate') {
-            const [_x, _y] = resultInfo.inputs
-            const mapKey = `${_x.toString()},${_y.toString()}`
-            hasTownByCoordinate.value.set(mapKey, Boolean(resultInfo.result[0]))
-          }
+      for (const resultInfo of resultInfosByAddrKey) {
+        if (resultInfo.hasError) {
+          console.error('Something went wrong')
+          console.error(JSON.stringify(resultInfo.error))
+
+          continue
+        }
+
+        if (resultInfo.name === 'getAddressesByCoordinate') {
+          const addressLength = (resultInfo.result as any[]).length
+          const { _x, _y } = resultInfo.inputs[0]
+          const mapKey = `${_x.toString()},${_y.toString()}`
+          userCountByCoordinate.value.set(mapKey, addressLength)
+        } else if (resultInfo.name === 'townIdByCoordinate') {
+          const [_x, _y] = resultInfo.inputs
+          const mapKey = `${_x.toString()},${_y.toString()}`
+          hasTownByCoordinate.value.set(mapKey, Boolean(resultInfo.result))
         }
       }
     })

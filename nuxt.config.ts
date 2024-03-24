@@ -1,5 +1,5 @@
-import { convertToInteger, convertToArray } from './utils'
 import { createResolver } from '@nuxt/kit'
+import { convertToInteger, convertToArray } from './utils'
 const { resolve } = createResolver(import.meta.url)
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
@@ -46,7 +46,6 @@ export default defineNuxtConfig({
     public: {
       ktaAddress: process.env.NUXT_KTA_ADDRESS,
       ktaTokenAddress: process.env.NUXT_KTA_TOKEN_ADDRESS,
-      multiCallAddress: process.env.NUXT_MULTICALL_ADDRESS,
       networkName: process.env.NUXT_NETWORK_NAME,
       networkSymbol: process.env.NUXT_NETWORK_SYMBOL,
       chainRpcs: convertToArray(process.env.NUXT_CHAIN_RPCS),

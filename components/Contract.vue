@@ -32,14 +32,16 @@
 </template>
 
 <script setup lang="ts">
+import { TYPE } from 'vue-toastification'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
-import { TYPE } from 'vue-toastification'
 
-const { chainExplorers } = useRuntimeConfig().public
-const connectionStore = useConnectionStore()
+const {
+  public: { chainExplorers },
+} = useRuntimeConfig()
+const contractStore = useContractStore()
 
-const { getKtaToken } = storeToRefs(connectionStore)
+const { getKtaToken } = storeToRefs(contractStore)
 
 interface ContractProps {
   data: {
@@ -57,9 +59,9 @@ const addKtaTokenToWallet = async () => {
       params: {
         type: 'ERC20',
         options: {
-          address: await getKtaToken.value.getAddress(),
-          symbol: await getKtaToken.value.symbol(),
-          decimals: (await getKtaToken.value.decimals()).toString(),
+          address: getKtaToken.value.address,
+          symbol: await getKtaToken.value.read.symbol(),
+          decimals: (await getKtaToken.value.read.decimals()).toString(),
         },
       },
     })

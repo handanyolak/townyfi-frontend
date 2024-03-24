@@ -19,10 +19,12 @@
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 
-//--------[ Nuxt ]--------//
-const { networkSymbol } = useRuntimeConfig().public
+// --------[ Nuxt ]-------- //
+const {
+  public: { networkSymbol },
+} = useRuntimeConfig()
 
-//--------[ Nuxt ]--------//
+// --------[ Nuxt ]-------- //
 const userWalletStore = useUserWalletStore()
 const connectionStore = useConnectionStore()
 

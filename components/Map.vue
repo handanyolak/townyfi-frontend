@@ -58,13 +58,13 @@
 </template>
 
 <script setup lang="ts">
-import { MAX_PIXEL_VALUE } from '~/constants'
 import { onClickOutside } from '@vueuse/core'
 import { useDrag } from '@vueuse/gesture'
+import { MAX_PIXEL_VALUE } from '~/constants'
 import MapNavigation from '~/components/MapNavigation.vue'
 import { NavigateDirection } from '~/enums'
 
-//--------[ Stores ]--------//
+// --------[ Stores ]-------- //
 const connectionStore = useConnectionStore()
 const userGameStore = useUserGameStore()
 const appOptionsStore = useAppOptionsStore()
@@ -78,10 +78,12 @@ const { onValidNetwork } = storeToRefs(connectionStore)
 const { addressesByCoordinate, nearLevel } = storeToRefs(userGameStore)
 const { originCoordinate } = storeToRefs(appOptionsStore)
 
-//--------[ Nuxt ]--------//
-const { maxNearLevel } = useRuntimeConfig().public
+// --------[ Nuxt ]-------- //
+const {
+  public: { maxNearLevel },
+} = useRuntimeConfig()
 
-//--------[ Data ]--------//
+// --------[ Data ]-------- //
 const mapElement = ref(null)
 const zoomOut = ref(0)
 const zoomIn = ref(0)
@@ -90,7 +92,7 @@ const navigation = ref<HTMLElement | null>(null)
 const toggleButton = ref<HTMLElement | null>(null)
 const { width } = useElementSize(mapElement)
 
-//--------[ Computed ]--------//
+// --------[ Computed ]-------- //
 const getGridColsByNearLevel = computed(() => nearLevel.value * 2 + 1)
 
 const mapStyle = computed(() => {
@@ -108,7 +110,7 @@ const mapStyle = computed(() => {
   }
 })
 
-//--------[ Methods ]--------//
+// --------[ Methods ]-------- //
 const onWheel = (event: WheelEvent) => {
   let newNearLevel: number
 
@@ -162,7 +164,7 @@ const navigateByArrowKeys = (direction: NavigateDirection) => {
   setUserCoordinate({ _x, _y })
 }
 
-const dragHandler = async ({
+const dragHandler = ({
   movement: [x, y],
   last,
 }: {
@@ -183,7 +185,7 @@ const dragHandler = async ({
       _x: newX,
       _y: newY,
     },
-    last
+    last,
   )
 }
 

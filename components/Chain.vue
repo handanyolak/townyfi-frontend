@@ -35,18 +35,19 @@ import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ScrollableList from '~/components/sidebar-items/ScrollableList.vue'
 
-//--------[ Nuxt ]--------//
-const { networkName, networkSymbol, chainExplorers, chainId, chainRpcs } =
-  useRuntimeConfig().public
+// --------[ Nuxt ]-------- //
+const {
+  public: { networkName, networkSymbol, chainExplorers, chainId, chainRpcs },
+} = useRuntimeConfig()
 
-//--------[ Stores ]--------//
+// --------[ Stores ]-------- //
 const userWalletStore = useUserWalletStore()
 const connectionStore = useConnectionStore()
 
 const { onValidNetwork } = storeToRefs(connectionStore)
 const { currentBlockNumber } = storeToRefs(userWalletStore)
 
-//--------[ Methods ]--------//
+// --------[ Methods ]-------- //
 const switchOrAddNetwork = async () => {
   try {
     await window.ethereum.request({
