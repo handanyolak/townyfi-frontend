@@ -1,5 +1,6 @@
 import { useToggle, useStorage } from '@vueuse/core'
 import { ethers } from 'ethers'
+import type { WatchContractEventReturnType } from 'viem'
 import { TYPE } from 'vue-toastification'
 import { transformTown } from '~/transformers'
 import { KillThemAll__factory, KtaToken__factory } from '~/types'
@@ -44,6 +45,8 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const isConfirmed = ref(false)
   const modalResultResolver = ref<((value: unknown) => void) | null>(null)
   const isAttackSuccess = ref(false)
+  const userMovedEvent = ref<WatchContractEventReturnType | null>(null)
+  const userRegisteredEvent = ref<WatchContractEventReturnType | null>(null)
 
   // --------[ Actions ]-------- //
   const setModalInfo = (
@@ -183,71 +186,151 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
           },
         })
 
-        // TODO: startGameEvents fonksiyonunda eklenecek
-        kta.on(
-          kta.filters.UserMoved,
-          (user, oldCoordinate, newCoordinate, event) => {
-            const oldCoordinateMapKey = `${oldCoordinate._x.toString()},${oldCoordinate._y.toString()}`
-            if (userGameStore.userCountByCoordinate.has(oldCoordinateMapKey)) {
-              const oldCoordinateUserLength =
-                userGameStore.userCountByCoordinate.get(
-                  oldCoordinateMapKey,
-                ) as number
+        // TODO: eventler startGameEvents fonksiyonunda eklenecek
+        if (!userMovedEvent.value) {
+          userMovedEvent.value =
+            userWalletStore.walletClient.watchContractEvent({
+              address: contractStore.getKta.address,
+              abi: contractStore.getKta.abi,
+              eventName: 'UserMoved',
+              strict: true,
+              onLogs: async (logs) => {
+                try {
+                  const isExistByLog: Record<string, boolean> = {}
+                  const logsLen = logs.length
 
-              userGameStore.userCountByCoordinate.set(
-                oldCoordinateMapKey,
-                oldCoordinateUserLength - 1,
-              )
-            }
+                  for (const log of logs) {
+                    if (logsLen > 1) {
+                      const hash = await createSha256Hash(JSON.stringify(log))
+                      if (isExistByLog[hash]) {
+                        continue
+                      }
+                      isExistByLog[hash] = true
+                    }
 
-            const newCoordinateMapKey = `${newCoordinate._x.toString()},${newCoordinate._y.toString()}`
-            if (userGameStore.userCountByCoordinate.has(newCoordinateMapKey)) {
-              const newCoordinateUserLength =
-                userGameStore.userCountByCoordinate.get(
-                  newCoordinateMapKey,
-                ) as number
+                    const { eventName, args } = log
+                    const { user, oldCoordinate, newCoordinate } = args
 
-              userGameStore.userCountByCoordinate.set(
-                newCoordinateMapKey,
-                newCoordinateUserLength + 1,
-              )
-            }
+                    const oldX = oldCoordinate._x.toString()
+                    const oldY = oldCoordinate._y.toString()
+                    const newX = newCoordinate._x.toString()
+                    const newY = newCoordinate._y.toString()
 
-            let toastMsg = ''
-            if (user === userWalletStore.address) {
-              userGameStore.setUserProperty('coordinate', newCoordinate)
-              userGameStore.setUserCoordinate(userInfo.coordinate)
+                    const oldCoordinateMapKey = `${oldX},${oldY}`
+                    if (
+                      userGameStore.userCountByCoordinate.has(
+                        oldCoordinateMapKey,
+                      )
+                    ) {
+                      userGameStore.userCountByCoordinate.set(
+                        oldCoordinateMapKey,
+                        userGameStore.userCountByCoordinate.get(
+                          oldCoordinateMapKey,
+                        ) ?? 1 - 1,
+                      )
+                    }
 
-              toastMsg += `You moved!\n` + `Event: ${event.eventName}\n`
+                    const newCoordinateMapKey = `${newX},${newY}`
+                    if (
+                      userGameStore.userCountByCoordinate.has(
+                        newCoordinateMapKey,
+                      )
+                    ) {
+                      userGameStore.userCountByCoordinate.set(
+                        newCoordinateMapKey,
+                        userGameStore.userCountByCoordinate.get(
+                          newCoordinateMapKey,
+                        ) ?? 0 + 1,
+                      )
+                    }
 
-              const argsEntries = Object.entries(event.args.toObject())
-              argsEntries.forEach(([key, value], index) => {
-                toastMsg += `${toCapitalizedWords(key)}: ${value}`
-                if (index !== argsEntries.length - 1) {
-                  toastMsg += '\n'
+                    if (!areAddressesEqual(user, userWalletStore.address)) {
+                      continue
+                    }
+
+                    userGameStore.setUserProperty('coordinate', newCoordinate)
+                    userGameStore.setUserCoordinate(userInfo.coordinate)
+
+                    const toastMsg =
+                      `You moved!\n` +
+                      `Event: ${eventName}\n` +
+                      `${formatEventArgs(args)}`
+
+                    useAppToast(TYPE.INFO, toastMsg)
+                  }
+                } catch (error) {
+                  console.error(`${logs[0].eventName} error`, error)
                 }
-              })
+              },
+            })
+        }
 
-              useAppToast(TYPE.INFO, toastMsg)
-            }
-          },
-        )
+        if (!userRegisteredEvent.value) {
+          userRegisteredEvent.value =
+            userWalletStore.walletClient.watchContractEvent({
+              address: contractStore.getKta.address,
+              abi: contractStore.getKta.abi,
+              eventName: 'UserRegistered',
+              strict: true,
+              onLogs: async (logs) => {
+                try {
+                  const isExistByLog: Record<string, boolean> = {}
+                  const logsLen = logs.length
 
-        // TODO: bu bilgiyi transaction'dan almak yerine parametre olarak alacagiz cunku frontend'e yuk biniyor.
-        kta.on(kta.filters.UserRegistered, async (event) => {
-          const tx = await event.getTransaction()
-          const registeredAddress = tx.from
+                  for (const log of logs) {
+                    if (logsLen > 1) {
+                      const hash = await createSha256Hash(JSON.stringify(log))
+                      if (isExistByLog[hash]) {
+                        continue
+                      }
+                      isExistByLog[hash] = true
+                    }
+                    // TODO: kayit olan kisi icin UserMoved event'i tetiklenmiyor. Eklenince bu silinecek.
+                    const coordinateMapKey = '0,0'
+                    if (
+                      userGameStore.userCountByCoordinate.has(coordinateMapKey)
+                    ) {
+                      userGameStore.userCountByCoordinate.set(
+                        coordinateMapKey,
+                        userGameStore.userCountByCoordinate.get(
+                          coordinateMapKey,
+                        ) ?? 0 + 1,
+                      )
+                    }
 
-          let toastMsg = ''
-          if (registeredAddress === userWalletStore.address) {
-            const userInfo = await kta.userByAddr(userWalletStore.address)
-            await setUserInfo(userInfo)
+                    const { eventName, transactionHash: hash } = log
+                    // TODO: tx'den almak yerine event'ten almaliyiz cunku client'a yuk biniyor
+                    const tx =
+                      await userWalletStore.walletClient.getTransaction({
+                        hash,
+                      })
+                    const registeredAddress = tx.from
 
-            toastMsg += `Welcome to TownyFi!\n` + `Event: ${event.eventName}\n`
+                    if (
+                      !areAddressesEqual(
+                        registeredAddress,
+                        userWalletStore.address,
+                      )
+                    ) {
+                      continue
+                    }
 
-            useAppToast(TYPE.INFO, toastMsg)
-          }
-        })
+                    const toastMsg =
+                      `Welcome to TownyFi!\n` + `Event: ${eventName}\n`
+
+                    const userInfo = await kta.userByAddr(
+                      userWalletStore.address,
+                    )
+                    await setUserInfo(userInfo)
+
+                    useAppToast(TYPE.INFO, toastMsg)
+                  }
+                } catch (error) {
+                  console.error(`${logs[0].eventName} error`, error)
+                }
+              },
+            })
+        }
 
         kta.on(kta.filters.UserMissed, async (defender, event) => {
           const tx = await event.getTransaction()
