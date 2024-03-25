@@ -101,7 +101,7 @@ import ListTitle from '~/components/common/ListTitle.vue'
 import SidebarDropdown from '~/components/common/SidebarDropdown.vue'
 import OtherTown from '~/components/OtherTown.vue'
 import OtherUser from '~/components/OtherUser.vue'
-import TheLoading from '~/components/TheLoading.vue'
+import TheLoading from '~/components/common/TheLoading.vue'
 import Accordion from '~/components/common/Accordion.vue'
 
 import { SearchType, FindOptions } from '~/enums'

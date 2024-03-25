@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import TheLoading from '~/components/TheLoading.vue'
+import TheLoading from '~/components/common/TheLoading.vue'
 import Map from '~/components/map/Map.vue'
 import AppModal from '~/components/common/AppModal.vue'
 
