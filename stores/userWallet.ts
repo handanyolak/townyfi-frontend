@@ -1,4 +1,3 @@
-import { JsonRpcSigner } from 'ethers'
 import {
   type Address,
   formatEther,
@@ -17,8 +16,6 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
   const connectionStore = useConnectionStore()
   const userGameStore = useUserGameStore()
 
-  const { getProvider } = storeToRefs(connectionStore)
-
   // --------[ States ]-------- //
   const ethereum = window.ethereum
   const address = ref(zeroAddress as Address)
@@ -33,13 +30,6 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
   const ktaBalance = ref(0n)
   const currentBlockNumber = ref(BigInt(0))
   const balance = ref('')
-
-  // --------[ Getters ]-------- //
-  const getSigner = computed(
-    () => new JsonRpcSigner(getProvider.value, address.value),
-  )
-
-  const vGetSigner = computed(() => address.value)
 
   // --------[ Actions ]-------- //
   const setAddress = (newAddress: Address) => {
@@ -126,9 +116,7 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
   return {
     address,
     balance,
-    getSigner,
     walletClient,
-    vGetSigner,
     ktaAllowance,
     currentBlockNumber,
     connect,

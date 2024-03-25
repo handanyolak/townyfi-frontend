@@ -175,7 +175,7 @@
 </template>
 
 <script setup lang="ts">
-import { decodeBytes32String } from 'ethers'
+import { hexToString } from 'viem'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ScrollableList from '~/components/sidebar-items/ScrollableList.vue'
@@ -211,7 +211,7 @@ const leader = computed(() => middleCropping(town.value.leader))
 const citizenAddresses = computed(() =>
   addresses.map((address) => middleCropping(address)),
 )
-const townName = computed(() => decodeBytes32String(town.value.name))
+const townName = computed(() => hexToString(town.value.name, { size: 32 }))
 
 const isLeader = computed(() => address.value === town.value.leader)
 

@@ -1,4 +1,3 @@
-import { BrowserProvider } from 'ethers'
 import { numberToHex } from '~/utils'
 
 export const useConnectionStore = defineStore('connectionStore', () => {
@@ -9,15 +8,11 @@ export const useConnectionStore = defineStore('connectionStore', () => {
 
   // --------[ States ]-------- //
   const ethereum = window.ethereum
-  const provider = new BrowserProvider(ethereum)
   const hasMetamask = Boolean(ethereum)
   const isConnected = ref(false)
   const onValidNetwork = ref(false)
 
   // --------[ Getters ]-------- //
-  const signer = computed(async () => await getProvider.value.getSigner())
-  const getProvider = computed(() => provider)
-
   // --------[ Actions ]-------- //
   const setOnValidNetwork = (newValue: boolean) => {
     onValidNetwork.value = hasMetamask && newValue
@@ -36,8 +31,6 @@ export const useConnectionStore = defineStore('connectionStore', () => {
   }
 
   return {
-    signer,
-    getProvider,
     isConnected,
     hasMetamask,
     onValidNetwork,

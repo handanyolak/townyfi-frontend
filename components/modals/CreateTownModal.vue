@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { encodeBytes32String } from 'ethers'
+import { stringToHex } from 'viem'
 import { object } from 'yup'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import { getBytes32Rule, getUintRule } from '~/composables/useYupRules'
@@ -64,7 +64,7 @@ watch(formInput, (newFormInput) => {
 // --------[ Methods ]-------- //
 const createTown = async () => {
   await getKtaCaller.value.callFunction('write', 'createTown', [
-    encodeBytes32String(formInput.name),
+    stringToHex(formInput.name, { size: 32 }),
     BigInt(formInput.price),
   ])
 }

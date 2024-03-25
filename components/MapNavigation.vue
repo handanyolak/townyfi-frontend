@@ -161,7 +161,6 @@ const goBackToInitialPosition = () => {
 }
 
 const navigateByArrow = (direction: NavigateDirection) => {
-  // TODO: Ethers try this
   let { _x, _y } = originCoordinate.value
   const navigateValue = 1n
 

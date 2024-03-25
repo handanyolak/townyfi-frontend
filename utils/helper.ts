@@ -12,11 +12,11 @@ export const middleCropping = (str: string) => {
   return str.substring(0, 5) + '...' + str.substring(str.length - 5)
 }
 
-export const numberToHex = (number: number) => {
-  return '0x' + number.toString(16)
+export const numberToHex = (num: number) => {
+  return '0x' + num.toString(16)
 }
 
-export const stringToHex = (str: string) => {
+export const addHexPrefix = (str: string) => {
   return str.startsWith('0x') ? str : '0x' + str
 }
 

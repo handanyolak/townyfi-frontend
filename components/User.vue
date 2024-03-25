@@ -8,7 +8,7 @@
           <VErrorMessage class="text-red-800" name="name" />
         </VForm>
       </template>
-      <span>{{ decodeBytes32String(user.name) }}</span>
+      <span>{{ hexToString(user.name, { size: 32 }) }}</span>
       <template #tooltip>
         <span
           >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
@@ -147,14 +147,14 @@
 
 <script setup lang="ts">
 import moment from 'moment'
-import { decodeBytes32String, encodeBytes32String } from 'ethers'
 import { Vue3Lottie } from 'vue3-lottie'
+import { hexToString, stringToHex } from 'viem'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
-import { type IKillThemAll } from '~/types/typechain/contracts/game/KillThemAll'
 import { toCapitalizedWords, middleCropping } from '~/utils'
 import { getBytes32Rule } from '~/composables/useYupRules'
 import { Get } from '~/enums'
+import type { UserTimer } from '~/types/contract'
 
 const {
   public: { chainBlockTime },
@@ -170,9 +170,9 @@ const { user } = storeToRefs(userGameStore)
 const { currentBlockNumber } = storeToRefs(userWalletStore)
 
 // --------[ Data ]-------- //
-const timer = reactive<any>(user.value.timer.toObject())
+const timer = reactive<any>(user.value.timer)
 const timers = Object.keys(timer).filter((item: any) => isNaN(item))
-const name = ref(decodeBytes32String(user.value.name))
+const name = ref(hexToString(user.value.name, { size: 32 }))
 const referrerAddress = user.value.referrer as string
 const nameRules = getBytes32Rule()
 
@@ -187,10 +187,7 @@ const getPointIcon = computed(() => (_getPoint: string) => {
 const referrer = computed(() => middleCropping(referrerAddress))
 
 // --------[ Methods ]-------- //
-const convert = (
-  isConvert: boolean,
-  propertyName: keyof IKillThemAll.UserTimerStruct,
-) => {
+const convert = (isConvert: boolean, propertyName: keyof UserTimer) => {
   if (isConvert) {
     timer[propertyName] =
       timer[propertyName] - currentBlockNumber.value > 0
@@ -219,10 +216,10 @@ const getSomething = async (item: string) => {
 
 const onSaved = async () => {
   const tempName = name.value
-  if (tempName === decodeBytes32String(user.value.name)) {
+  if (tempName === hexToString(user.value.name, { size: 32 })) {
     return
   }
-  const encodedName = encodeBytes32String(tempName)
+  const encodedName = stringToHex(tempName, { size: 32 })
   const result = await getKtaCaller.value.callFunction('write', 'changeName', [
     encodedName,
   ])

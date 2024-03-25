@@ -19,8 +19,3 @@ declare global {
     ethereum?: any
   }
 }
-
-declare module 'ethers' {
-  export type BigNumberish = bigint
-  export type AddressLike = string
-}

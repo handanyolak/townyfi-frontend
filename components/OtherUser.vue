@@ -124,13 +124,12 @@
 
 <script setup lang="ts">
 import moment from 'moment'
-import { decodeBytes32String } from 'ethers'
-import type { Address } from 'viem'
+import { type Address, hexToString } from 'viem'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
-import { type IKillThemAll } from '~/types/typechain/contracts/game/KillThemAll'
 import { toCapitalizedWords, middleCropping } from '~/utils'
 import { transformUser } from '~/transformers'
+import type { UserTimer } from '~/types/contract'
 
 const {
   public: { chainBlockTime },
@@ -159,7 +158,7 @@ const timers = ref(
 const referrerAddress = user.value.referrer as string
 
 // --------[ Computed ]-------- //
-const userName = computed(() => decodeBytes32String(user.value.name))
+const userName = computed(() => hexToString(user.value.name, { size: 32 }))
 const referrer = computed(() => middleCropping(referrerAddress))
 
 // --------[ Hooks ]-------- //
@@ -172,10 +171,7 @@ onMounted(async () => {
 })
 
 // --------[ Methods ]-------- //
-const convert = (
-  isConvert: boolean,
-  propertyName: keyof IKillThemAll.UserTimerStruct,
-) => {
+const convert = (isConvert: boolean, propertyName: keyof UserTimer) => {
   if (isConvert) {
     timer.value[propertyName] =
       BigInt(timer.value[propertyName]) - currentBlockNumber.value > 0

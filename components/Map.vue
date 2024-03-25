@@ -138,7 +138,6 @@ const onWheel = (event: WheelEvent) => {
 }
 
 const navigateByArrowKeys = (direction: NavigateDirection) => {
-  // TODO: Ethers try this
   let { _x, _y } = originCoordinate.value
 
   const navigateValue = 1n

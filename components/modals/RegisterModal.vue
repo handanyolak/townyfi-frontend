@@ -35,11 +35,11 @@
 </template>
 
 <script setup lang="ts">
-import { encodeBytes32String, ZeroAddress } from 'ethers'
+import { stringToHex, zeroAddress } from 'viem'
 import { TYPE } from 'vue-toastification'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
-import { stringToHex } from '~/utils'
+import { addHexPrefix } from '~/utils'
 import { getAddressRule, getBytes32Rule } from '~/composables/useYupRules'
 
 // --------[ Props & Emits ]-------- //
@@ -76,8 +76,8 @@ const userRegister = async () => {
     'write',
     'register',
     [
-      encodeBytes32String(name.value),
-      referrer.value === '' ? ZeroAddress : stringToHex(referrer.value),
+      stringToHex(name.value, { size: 32 }),
+      referrer.value === '' ? zeroAddress : addHexPrefix(referrer.value),
     ],
     false,
   )

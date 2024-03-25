@@ -1,4 +1,4 @@
-import type { Address } from 'viem'
+import type { Address, Hex } from 'viem'
 
 export type CoordinateStruct = {
   _x: bigint
@@ -11,7 +11,7 @@ export type BlockNumberStruct = {
 
 export type Town = {
   coordinate: CoordinateStruct
-  name: string
+  name: Hex
   leader: string
   exp: bigint
   levelId: bigint
@@ -48,7 +48,7 @@ export type User = {
   energy: bigint
   armor: bigint
   coordinate: CoordinateStruct
-  name: string
+  name: Hex
   exp: bigint
   levelId: bigint
   referrer: Address

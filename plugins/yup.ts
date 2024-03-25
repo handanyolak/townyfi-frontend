@@ -1,5 +1,4 @@
-import { toUtf8Bytes, isAddress } from 'ethers'
-import { zeroAddress, type Address } from 'viem'
+import { zeroAddress, type Address, toBytes, isAddress } from 'viem'
 import { addMethod, string, StringSchema } from 'yup'
 
 export default defineNuxtPlugin(() => {
@@ -11,7 +10,7 @@ export default defineNuxtPlugin(() => {
     'bytes32',
     function (message = 'string must be less than 32 bytes') {
       return this.test('bytes32', message, (value) => {
-        const bytes = toUtf8Bytes(value)
+        const bytes = toBytes(value)
 
         return !(bytes.length > 31)
       })

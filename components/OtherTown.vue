@@ -135,8 +135,7 @@
 </template>
 
 <script setup lang="ts">
-import { decodeBytes32String, ZeroAddress } from 'ethers'
-import type { Address } from 'viem'
+import { type Address, hexToString, zeroAddress } from 'viem'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ScrollableList from '~/components/sidebar-items/ScrollableList.vue'
@@ -158,6 +157,7 @@ const { getKta, getKtaCaller } = storeToRefs(contractStore)
 const town = ref(userGameStore.town)
 
 const addresses = ref<readonly Address[]>([])
+// TODO: hardcoded for now
 const attacker = ref(1)
 const defender = ref(2)
 const attackable = ref(3743879)
@@ -170,12 +170,13 @@ const citizenAddresses = computed(() =>
   addresses.value.map((address) => middleCropping(address)),
 )
 
-const townName = computed(() => decodeBytes32String(town.value.name))
+const townName = computed(() => hexToString(town.value.name, { size: 32 }))
 
 // --------[ Hooks ]-------- //
 onMounted(async () => {
   town.value = transformTown(await getKta.value.read.townById([props.id]))
-  if (town.value.leader !== ZeroAddress) {
+
+  if (!areAddressesEqual(town.value.leader, zeroAddress)) {
     addresses.value = await getKta.value.read.getCitizensByTownId([props.id])
   }
 })
