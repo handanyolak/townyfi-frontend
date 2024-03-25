@@ -102,6 +102,8 @@ import SidebarDropdown from '~/components/SidebarDropdown.vue'
 import OtherTown from '~/components/OtherTown.vue'
 import OtherUser from '~/components/OtherUser.vue'
 import TheLoading from '~/components/TheLoading.vue'
+import Accordion from '~/components/common/Accordion.vue'
+
 import { SearchType, FindOptions } from '~/enums'
 import {
   idValidationSchema,

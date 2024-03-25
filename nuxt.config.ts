@@ -28,7 +28,9 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
-  components: true,
+  components: {
+    dirs: ['~/components', '~/components/common'],
+  },
 
   imports: {
     autoImport: true,

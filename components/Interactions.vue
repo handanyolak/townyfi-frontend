@@ -86,6 +86,7 @@
 
 <script setup lang="ts">
 import ListItem from '~/components/common/ListItem.vue'
+import Accordion from '~/components/common/Accordion.vue'
 import { useUserGameStore } from '~/stores/userGame'
 import { Direction } from '~/enums'
 

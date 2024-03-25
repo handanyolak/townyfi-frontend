@@ -14,6 +14,8 @@
 </template>
 
 <script setup lang="ts">
+import AppButton from '~/components/common/AppButton.vue'
+
 // --------[ Stores ]-------- //
 const appOptionStore = useAppOptionsStore()
 

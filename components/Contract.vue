@@ -42,6 +42,7 @@
 import { TYPE } from 'vue-toastification'
 import ListTitle from '~/components/common/ListTitle.vue'
 import ListItem from '~/components/common/ListItem.vue'
+import AppButton from '~/components/common/AppButton.vue'
 
 const contractStore = useContractStore()
 const userWalletStore = useUserWalletStore()

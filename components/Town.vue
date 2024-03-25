@@ -180,7 +180,7 @@ import ListTitle from '~/components/common/ListTitle.vue'
 import ListItem from '~/components/common/ListItem.vue'
 import ScrollableList from '~/components/common/ScrollableList.vue'
 import HasNotTown from '~/components/HasNotTown.vue'
-import AppButton from '~/components/AppButton.vue'
+import AppButton from '~/components/common/AppButton.vue'
 import { TownStatus } from '~/enums'
 import { getBytes32Rule } from '~/composables/useYupRules'
 

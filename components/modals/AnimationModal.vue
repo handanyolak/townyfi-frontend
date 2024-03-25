@@ -21,6 +21,7 @@
 </template>
 <script setup lang="ts">
 import { Vue3Lottie } from 'vue3-lottie'
+import AppButton from '~/components/common/AppButton.vue'
 
 const appOptionsStore = useAppOptionsStore()
 const { isConfirmed } = storeToRefs(appOptionsStore)

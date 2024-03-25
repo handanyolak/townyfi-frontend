@@ -34,6 +34,7 @@
 
 <script setup lang="ts">
 import ListItem from '~/components/common/ListItem.vue'
+import AppButton from '~/components/common/AppButton.vue'
 
 // --------[ Props & Emits ]-------- //
 interface ScrollableListProps {

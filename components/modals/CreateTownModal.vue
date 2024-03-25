@@ -34,6 +34,7 @@
 import { stringToHex } from 'viem'
 import { object } from 'yup'
 import ListItem from '~/components/common/ListItem.vue'
+import AppButton from '~/components/common/AppButton.vue'
 import { getBytes32Rule, getUintRule } from '~/composables/useYupRules'
 
 // --------[ Stores ]-------- //

@@ -59,6 +59,7 @@
 <script setup lang="ts">
 import { useWindowSize, useStorage } from '@vueuse/core'
 import type { Step, TourData } from '~/types'
+import AppButton from '~/components/common/AppButton.vue'
 
 interface AppTourProps {
   steps: Step[]

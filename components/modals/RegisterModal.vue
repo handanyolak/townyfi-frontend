@@ -40,6 +40,7 @@ import { stringToHex, zeroAddress } from 'viem'
 import { TYPE } from 'vue-toastification'
 import ListItem from '~/components/common/ListItem.vue'
 import ListTitle from '~/components/common/ListTitle.vue'
+import AppButton from '~/components/common/AppButton.vue'
 import { addHexPrefix } from '~/utils'
 import { getAddressRule, getBytes32Rule } from '~/composables/useYupRules'
 
