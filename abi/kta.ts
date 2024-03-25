@@ -651,6 +651,12 @@ export const ktaAbi = [
       {
         indexed: false,
         internalType: 'address',
+        name: 'attacker',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'address',
         name: 'defender',
         type: 'address',
       },
@@ -790,6 +796,12 @@ export const ktaAbi = [
       {
         indexed: false,
         internalType: 'address',
+        name: 'attacker',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'address',
         name: 'defender',
         type: 'address',
       },
@@ -867,7 +879,14 @@ export const ktaAbi = [
   },
   {
     anonymous: false,
-    inputs: [],
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'user',
+        type: 'address',
+      },
+    ],
     name: 'UserRegistered',
     type: 'event',
   },

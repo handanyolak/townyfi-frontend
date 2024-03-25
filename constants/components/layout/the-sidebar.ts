@@ -12,6 +12,7 @@ const {
     ktaTokenAddress,
   },
 } = useRuntimeConfig()
+
 const chain =
   runtimeChain !== 'custom'
     ? (chains[

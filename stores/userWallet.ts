@@ -5,6 +5,7 @@ import {
   custom,
   publicActions,
   createWalletClient,
+  formatUnits,
 } from 'viem'
 import * as chains from 'viem/chains'
 import { TYPE } from 'vue-toastification'
@@ -39,6 +40,8 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
       account: address.value,
     }).extend(publicActions),
   )
+  const ktaSymbol = ref('')
+  const ktaDecimals = ref(0)
   const ktaAllowance = ref(0n)
   const ktaBalance = ref(0n)
   const currentBlockNumber = ref(BigInt(0))
@@ -57,12 +60,20 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
     currentBlockNumber.value = newBlockNumber
   }
 
+  const setKtaSymbol = (newKtaSymbol: string) => {
+    ktaSymbol.value = newKtaSymbol
+  }
+
+  const setKtaDecimals = (newKtaDecimals: number) => {
+    ktaDecimals.value = newKtaDecimals
+  }
+
   const setKtaAllowance = (newKtaAllowance: bigint) => {
-    ktaAllowance.value = newKtaAllowance
+    ktaAllowance.value = BigInt(formatUnits(newKtaAllowance, ktaDecimals.value))
   }
 
   const setKtaBalance = (newKtaBalance: bigint) => {
-    ktaBalance.value = newKtaBalance
+    ktaBalance.value = BigInt(formatUnits(newKtaBalance, ktaDecimals.value))
   }
 
   const connect = async () => {
@@ -131,7 +142,10 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
     balance,
     chain,
     walletClient,
+    ktaSymbol,
+    ktaDecimals,
     ktaAllowance,
+    ktaBalance,
     currentBlockNumber,
     connect,
     setAddress,
@@ -139,6 +153,8 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
     connectWeb3,
     startEthEvents,
     disconnectWeb3,
+    setKtaSymbol,
+    setKtaDecimals,
     setKtaAllowance,
     setKtaBalance,
     handleDisconnect,

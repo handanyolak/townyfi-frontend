@@ -31,6 +31,7 @@
     <AppButton class="my-3" @click="addKtaTokenToWallet()"
       >Add Token to Metamask</AppButton
     >
+    <AppButton class="my-3" @click="mintKtaToken()">Mint Token</AppButton>
   </div>
 </template>
 
@@ -59,7 +60,8 @@ const contractStore = useContractStore()
 const { clearModalInfo } = appOptionsStore
 const { getKtaToken, getKtaTokenCaller, getKtaCaller } =
   storeToRefs(contractStore)
-const { ktaAllowance, address } = storeToRefs(userWalletStore)
+const { walletClient, ktaSymbol, ktaDecimals, ktaAllowance, address } =
+  storeToRefs(userWalletStore)
 const { settings } = storeToRefs(userGameStore)
 
 // --------[ Data ]-------- //
@@ -111,17 +113,27 @@ const userApprove = async () => {
 
 const addKtaTokenToWallet = async () => {
   try {
-    await window.ethereum.request({
-      method: 'wallet_watchAsset',
-      params: {
-        type: 'ERC20',
-        options: {
-          address: getKtaToken.value.address,
-          symbol: await getKtaToken.value.read.symbol(),
-          decimals: (await getKtaToken.value.read.decimals()).toString(),
-        },
+    await walletClient.value.watchAsset({
+      type: 'ERC20',
+      options: {
+        address: getKtaToken.value.address,
+        symbol: ktaSymbol.value,
+        decimals: ktaDecimals.value,
       },
     })
+  } catch (error) {
+    useAppToast(TYPE.ERROR, 'Something went wrong')
+  }
+}
+
+const mintKtaToken = async () => {
+  try {
+    await getKtaTokenCaller.value.callFunction(
+      'write',
+      'mint',
+      [address.value, 1000n],
+      false,
+    )
   } catch (error) {
     useAppToast(TYPE.ERROR, 'Something went wrong')
   }

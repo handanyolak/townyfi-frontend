@@ -138,6 +138,14 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
 
         setOriginCoordinate(userInfo.coordinate)
 
+        userWalletStore.setKtaSymbol(
+          await contractStore.getKtaToken.read.symbol(),
+        )
+
+        userWalletStore.setKtaDecimals(
+          await contractStore.getKtaToken.read.decimals(),
+        )
+
         userWalletStore.setKtaAllowance(
           await contractStore.getKtaToken.read.allowance([
             userWalletStore.address,
@@ -201,22 +209,24 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                     const oldY = oldCoordinate._y.toString()
                     const newX = newCoordinate._x.toString()
                     const newY = newCoordinate._y.toString()
-
                     const oldCoordinateMapKey = `${oldX},${oldY}`
-                    if (
-                      userGameStore.userCountByCoordinate.has(
-                        oldCoordinateMapKey,
-                      )
-                    ) {
-                      userGameStore.userCountByCoordinate.set(
-                        oldCoordinateMapKey,
-                        userGameStore.userCountByCoordinate.get(
+                    const newCoordinateMapKey = `${newX},${newY}`
+
+                    if (oldCoordinateMapKey !== newCoordinateMapKey) {
+                      if (
+                        userGameStore.userCountByCoordinate.has(
                           oldCoordinateMapKey,
-                        ) ?? 1 - 1,
-                      )
+                        )
+                      ) {
+                        userGameStore.userCountByCoordinate.set(
+                          oldCoordinateMapKey,
+                          userGameStore.userCountByCoordinate.get(
+                            oldCoordinateMapKey,
+                          ) ?? 1 - 1,
+                        )
+                      }
                     }
 
-                    const newCoordinateMapKey = `${newX},${newY}`
                     if (
                       userGameStore.userCountByCoordinate.has(
                         newCoordinateMapKey,
@@ -269,38 +279,18 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                       }
                       isExistByLog[hash] = true
                     }
-                    // TODO: kayit olan kisi icin UserMoved event'i tetiklenmiyor. Eklenince bu silinecek.
-                    const coordinateMapKey = '0,0'
-                    if (
-                      userGameStore.userCountByCoordinate.has(coordinateMapKey)
-                    ) {
-                      userGameStore.userCountByCoordinate.set(
-                        coordinateMapKey,
-                        userGameStore.userCountByCoordinate.get(
-                          coordinateMapKey,
-                        ) ?? 0 + 1,
-                      )
-                    }
 
-                    const { eventName, transactionHash: hash } = log
-                    // TODO: tx'den almak yerine event'ten almaliyiz cunku client'a yuk biniyor
-                    const tx =
-                      await userWalletStore.walletClient.getTransaction({
-                        hash,
-                      })
-                    const registeredAddress = tx.from
+                    const { eventName, args } = log
+                    const { user } = args
 
-                    if (
-                      !areAddressesEqual(
-                        registeredAddress,
-                        userWalletStore.address,
-                      )
-                    ) {
+                    if (!areAddressesEqual(user, userWalletStore.address)) {
                       continue
                     }
 
                     const toastMsg =
-                      `Welcome to TownyFi!\n` + `Event: ${eventName}\n`
+                      `Welcome to TownyFi!\n` +
+                      `Event: ${eventName}\n` +
+                      `${formatEventArgs(args)}`
 
                     const userInfo = transformUser(
                       await contractStore.getKta.read.userByAddr([
@@ -338,14 +328,8 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                       isExistByLog[hash] = true
                     }
 
-                    const { eventName, transactionHash: hash, args } = log
-                    const { defender } = args
-                    // TODO: tx'den almak yerine event'ten almaliyiz cunku client'a yuk biniyor
-                    const tx =
-                      await userWalletStore.walletClient.getTransaction({
-                        hash,
-                      })
-                    const attacker = tx.from
+                    const { eventName, args } = log
+                    const { attacker, defender } = args
                     const isUserAttacker = areAddressesEqual(
                       attacker,
                       userWalletStore.address,
@@ -392,14 +376,8 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                       isExistByLog[hash] = true
                     }
 
-                    const { eventName, transactionHash: hash, args } = log
-                    const { defender } = args
-                    // TODO: tx'den almak yerine event'ten almaliyiz cunku client'a yuk biniyor
-                    const tx =
-                      await userWalletStore.walletClient.getTransaction({
-                        hash,
-                      })
-                    const attacker = tx.from
+                    const { eventName, args } = log
+                    const { attacker, defender } = args
                     const isUserAttacker = areAddressesEqual(
                       attacker,
                       userWalletStore.address,
@@ -511,7 +489,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
 
                     const valueFormat = formatUnits(
                       value,
-                      await contractStore.getKtaToken.read.decimals(),
+                      userWalletStore.ktaDecimals,
                     )
 
                     const toastMsg =

@@ -28,6 +28,13 @@
     >
       <span>Add Token to Metamask</span>
     </AppButton>
+    <AppButton
+      v-if="data.contractName === 'TownyFi Token'"
+      class="my-2 w-full"
+      @click="mintKtaToken()"
+    >
+      <span>Mint Token</span>
+    </AppButton>
   </div>
 </template>
 
@@ -39,8 +46,9 @@ import ListItem from '~/components/sidebar-items/ListItem.vue'
 const contractStore = useContractStore()
 const userWalletStore = useUserWalletStore()
 
-const { getKtaToken } = storeToRefs(contractStore)
-const { walletClient } = storeToRefs(userWalletStore)
+const { getKtaToken, getKtaTokenCaller } = storeToRefs(contractStore)
+const { walletClient, ktaSymbol, ktaDecimals, address } =
+  storeToRefs(userWalletStore)
 
 interface ContractProps {
   data: {
@@ -53,17 +61,27 @@ defineProps<ContractProps>()
 
 const addKtaTokenToWallet = async () => {
   try {
-    await window.ethereum.request({
-      method: 'wallet_watchAsset',
-      params: {
-        type: 'ERC20',
-        options: {
-          address: getKtaToken.value.address,
-          symbol: await getKtaToken.value.read.symbol(),
-          decimals: (await getKtaToken.value.read.decimals()).toString(),
-        },
+    await walletClient.value.watchAsset({
+      type: 'ERC20',
+      options: {
+        address: getKtaToken.value.address,
+        symbol: ktaSymbol.value,
+        decimals: ktaDecimals.value,
       },
     })
+  } catch (error) {
+    useAppToast(TYPE.ERROR, 'Something went wrong')
+  }
+}
+
+const mintKtaToken = async () => {
+  try {
+    await getKtaTokenCaller.value.callFunction(
+      'write',
+      'mint',
+      [address.value, 1000n],
+      false,
+    )
   } catch (error) {
     useAppToast(TYPE.ERROR, 'Something went wrong')
   }
