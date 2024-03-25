@@ -62,7 +62,7 @@ import { onClickOutside } from '@vueuse/core'
 import { useDrag } from '@vueuse/gesture'
 import Mapbox from '~/components/map/Mapbox.vue'
 import { MAX_PIXEL_VALUE } from '~/constants'
-import MapNavigation from '~/components/MapNavigation.vue'
+import MapNavigation from '~/components/map/MapNavigation.vue'
 import { NavigateDirection } from '~/enums'
 
 // --------[ Stores ]-------- //
