@@ -52,7 +52,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     modalComponentName.value = newModalComponentName
     modalComponentProps.value = newModalComponentProps
     isAnimation.value = Object.prototype.hasOwnProperty.call(
-      modalComponentProps.value,
+      modalComponentProps.value ?? {},
       'animation',
     )
     sideLeave()
@@ -357,11 +357,12 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                       continue
                     }
 
-                    const toastMsg = isUserAttacker
-                      ? 'Your attack was dodged!\n'
-                      : 'You dodged the attack!\n' +
-                        `Event: ${eventName}\n` +
-                        `${formatEventArgs(args)}`
+                    const toastMsg =
+                      (isUserAttacker
+                        ? 'Your attack was dodged!\n'
+                        : 'You dodged the attack!\n') +
+                      `Event: ${eventName}\n` +
+                      `${formatEventArgs(args)}`
 
                     useAppToast(TYPE.INFO, toastMsg)
                   }
@@ -410,11 +411,12 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                       continue
                     }
 
-                    const toastMsg = isUserAttacker
-                      ? 'You attacked!\n'
-                      : 'You were attacked!\n' +
-                        `Event: ${eventName}\n` +
-                        `${formatEventArgs(args)}`
+                    const toastMsg =
+                      (isUserAttacker
+                        ? 'You attacked!\n'
+                        : 'You were attacked!\n') +
+                      `Event: ${eventName}\n` +
+                      `${formatEventArgs(args)}`
 
                     useAppToast(TYPE.INFO, toastMsg)
                   }
@@ -512,11 +514,12 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                       await contractStore.getKtaToken.read.decimals(),
                     )
 
-                    const toastMsg = isUserSender
-                      ? `You sent ${valueFormat} Game Token!\n`
-                      : `You received ${valueFormat} Game Token!\n` +
-                        `Event: ${eventName}\n` +
-                        `${formatEventArgs(args)}`
+                    const toastMsg =
+                      (isUserSender
+                        ? `You sent ${valueFormat} Game Token!\n`
+                        : `You received ${valueFormat} Game Token!\n`) +
+                      `Event: ${eventName}\n` +
+                      `${formatEventArgs(args)}`
 
                     useAppToast(TYPE.INFO, toastMsg)
                   }
