@@ -105,9 +105,9 @@ const pulseColor = computed(() => {
   let color = ''
   if (userByCountByCoordinate <= 1) {
     color = 'bg-green-500'
-  } else if (userByCountByCoordinate >= 2 && userByCountByCoordinate <= 3) {
+  } else if (userByCountByCoordinate >= 2 && userByCountByCoordinate <= 10) {
     color = 'bg-yellow-600'
-  } else if (userByCountByCoordinate >= 4) {
+  } else if (userByCountByCoordinate > 10) {
     color = 'bg-red-500'
   }
 
