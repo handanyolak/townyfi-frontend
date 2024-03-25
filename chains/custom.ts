@@ -1,6 +1,7 @@
 import { defineChain } from 'viem'
 
-export const custom = defineChain({
+// eslint-disable-next-line spaced-comment
+export const custom = /*#__PURE__*/ defineChain({
   id: 3_058_598,
   name: 'Paribu Network',
   nativeCurrency: { name: 'Paribu', symbol: 'PRB', decimals: 18 },

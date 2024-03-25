@@ -1,9 +1,16 @@
+import { zeroAddress } from 'viem'
 import * as chains from 'viem/chains'
 import { custom } from '~/chains/custom'
 import type { Tab } from '~/types'
 
 const {
-  public: { chain: runtimeChain },
+  public: {
+    chain: runtimeChain,
+    ktaAddress,
+    ktaGameChatAddress,
+    ktaGamePassNftAddress,
+    ktaTokenAddress,
+  },
 } = useRuntimeConfig()
 const chain =
   runtimeChain !== 'custom'
@@ -57,7 +64,7 @@ export const TABS: Record<string, Tab[]> = {
       data: {
         contractName: 'TownyFi',
         contractDesc: 'The main contract of the game. Used for game logic.',
-        contractAddress: '0xC77EBD078Bb8c8C81D4C338364A21a7fb089D0Bf',
+        contractAddress: ktaAddress,
       },
     },
     {
@@ -68,7 +75,7 @@ export const TABS: Record<string, Tab[]> = {
         contractName: 'TownyFi Token',
         contractDesc:
           'The token contract of the game. Used for rewards and payments. The token is a standard ERC20 token.',
-        contractAddress: '0xdcd0f1eB0Fdc6CDa180339323c7686321ff3F147',
+        contractAddress: ktaTokenAddress,
       },
     },
     {
@@ -79,7 +86,7 @@ export const TABS: Record<string, Tab[]> = {
         contractName: 'TownyFiNFT',
         contractDesc:
           'The NFT contract of the game. Used for NFTs and Game Passes. The NFT is a standard ERC721 token.',
-        contractAddress: '0x9D2e2C7F2cB2B7b9F4c6B9c7cF5F3D9fBdD9f9D9',
+        contractAddress: ktaGamePassNftAddress,
       },
     },
     {
@@ -90,7 +97,7 @@ export const TABS: Record<string, Tab[]> = {
         contractName: 'TownyFiChat',
         contractDesc:
           'The chat contract of the game. Used for chat messages and official announcements.',
-        contractAddress: '0x8fF5c9C5d4bB3c0c0D9Bb3E9fC9b8c7D5F6aFF00',
+        contractAddress: ktaGameChatAddress,
       },
     },
     {
@@ -100,7 +107,7 @@ export const TABS: Record<string, Tab[]> = {
       data: {
         contractName: 'TownyFiPass_0',
         contractDesc: 'The example Game Pass contract of the game.',
-        contractAddress: '0x7a3c4dF2b7Ee8aF3f2C4f6c3bA4D3cFb6eF6D3E5',
+        contractAddress: ktaGamePassNftAddress,
       },
     },
     {
@@ -111,7 +118,7 @@ export const TABS: Record<string, Tab[]> = {
         contractName: 'Multicall3',
         contractDesc:
           'The multicall contract of the game. Used for batch calls in the Frontend App.',
-        contractAddress: chain.contracts!.multicall3!.address,
+        contractAddress: chain.contracts!.multicall3!.address || zeroAddress,
       },
     },
   ],
