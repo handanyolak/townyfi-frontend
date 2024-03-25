@@ -2,8 +2,8 @@
   <div>
     <div class="relative flex items-center">
       <div class="relative w-full">
-        <VForm class="flex flex-col items-center">
-          <VField
+        <VeeForm class="flex flex-col items-center">
+          <VeeField
             name="name"
             type="text"
             class="block w-full rounded-lg border border-towni-brown-dark-100 bg-towni-brown-dark-300 bg-opacity-20 p-2.5 px-1 pl-3 text-sm text-towni-brown-dark-600 outline-none backdrop-blur focus:border-towni-brown-dark-300"
@@ -12,8 +12,8 @@
             @input="updateValue($event)"
             @keydown.enter.prevent="searched()"
           />
-          <VErrorMessage class="text-red-800" name="name" />
-        </VForm>
+          <VeeErrorMessage class="text-red-800" name="name" />
+        </VeeForm>
       </div>
       <button
         :disabled="!isDisable"

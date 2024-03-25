@@ -24,23 +24,23 @@
         </template>
       </ListItem>
     </div>
-    <VForm class="flex w-3/4 flex-col items-center" @submit.prevent>
+    <VeeForm class="flex w-3/4 flex-col items-center" @submit.prevent>
       <ListItem class="w-full" :title="`${selectedItem}:`" input>
         <template #item>
-          <VField
+          <VeeField
             v-model="searchFormInput[findOptions[selectedItem]]"
             :name="findOptions[selectedItem]"
             :placeholder="placeholders[findOptions[selectedItem]]"
             :rules="rules[findOptions[selectedItem]]"
             @input="search()"
           />
-          <VErrorMessage
+          <VeeErrorMessage
             class="text-red-800"
             :name="findOptions[selectedItem]"
           />
         </template>
       </ListItem>
-    </VForm>
+    </VeeForm>
     <TheLoading v-if="isDataLoading" />
     <OtherTown
       v-if="

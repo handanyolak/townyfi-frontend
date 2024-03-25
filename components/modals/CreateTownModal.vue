@@ -3,24 +3,24 @@
     <div
       class="flex w-full flex-col items-center space-y-4 bg-towni-brown-light-100 bg-opacity-20 p-1 backdrop-blur-sm"
     >
-      <VForm class="flex w-full flex-col items-center">
+      <VeeForm class="flex w-full flex-col items-center">
         <ListItem title="Name:" class="w-full bg-towni-brown-light-100" input>
           <template #item>
-            <VField v-model="formInput.name" name="name" :rules="nameRules" />
-            <VErrorMessage class="text-red-800" name="name" />
+            <VeeField v-model="formInput.name" name="name" :rules="nameRules" />
+            <VeeErrorMessage class="text-red-800" name="name" />
           </template>
         </ListItem>
         <ListItem title="Price:" class="w-full bg-towni-brown-light-100" input>
           <template #item>
-            <VField
+            <VeeField
               v-model="formInput.price"
               name="price"
               :rules="priceRules"
             />
-            <VErrorMessage class="text-red-800" name="price" />
+            <VeeErrorMessage class="text-red-800" name="price" />
           </template>
         </ListItem>
-      </VForm>
+      </VeeForm>
       <div class="my-3 rounded-full bg-towni-brown-light-100">
         <AppButton :disabled="!formIsValid" @click="createTown()"
           >Create Town</AppButton

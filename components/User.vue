@@ -3,10 +3,10 @@
     <ListTitle>General</ListTitle>
     <ListItem title="Name:" editable tooltip @saved="() => onSaved()">
       <template #item>
-        <VForm class="flex flex-col items-center">
-          <VField v-model="name" name="name" :rules="nameRules" />
-          <VErrorMessage class="text-red-800" name="name" />
-        </VForm>
+        <VeeForm class="flex flex-col items-center">
+          <VeeField v-model="name" name="name" :rules="nameRules" />
+          <VeeErrorMessage class="text-red-800" name="name" />
+        </VeeForm>
       </template>
       <span>{{ hexToString(user.name, { size: 32 }) }}</span>
       <template #tooltip>

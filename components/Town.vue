@@ -3,10 +3,10 @@
     <ListTitle>General</ListTitle>
     <ListItem title="Name:" editable tooltip>
       <template #item>
-        <VForm class="flex flex-col items-center">
-          <VField v-model="townName" name="name" :rules="nameRules" />
-          <VErrorMessage class="text-red-800" name="name" />
-        </VForm>
+        <VeeForm class="flex flex-col items-center">
+          <VeeField v-model="townName" name="name" :rules="nameRules" />
+          <VeeErrorMessage class="text-red-800" name="name" />
+        </VeeForm>
       </template>
       <span>{{ townName }}</span>
       <template #tooltip>

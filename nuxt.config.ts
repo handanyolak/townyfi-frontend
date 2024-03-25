@@ -22,7 +22,7 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: ['@pinia/nuxt', '@vueuse/nuxt', 'nuxt-icon'],
+  modules: ['@pinia/nuxt', '@vueuse/nuxt', '@vee-validate/nuxt', 'nuxt-icon'],
 
   css: ['~/assets/css/main.css'],
 
@@ -57,6 +57,16 @@ export default defineNuxtConfig({
 
   pinia: {
     storesDirs: ['~/stores/**', '#/stores/**', '@/stores/**'],
+  },
+
+  veeValidate: {
+    autoImports: true,
+    componentNames: {
+      Form: 'VeeForm',
+      Field: 'VeeField',
+      ErrorMessage: 'VeeErrorMessage',
+    },
+    typedSchemaPackage: 'yup',
   },
 
   devtools: {

@@ -3,22 +3,22 @@
     <ListTitle class="w-full">Register</ListTitle>
     <ListItem title="Name:" class="w-full" input>
       <template #item>
-        <VForm class="flex flex-col items-center">
-          <VField v-model="name" name="name" :rules="nameRules" />
-          <VErrorMessage class="text-red-800" name="name" />
-        </VForm>
+        <VeeForm class="flex flex-col items-center">
+          <VeeField v-model="name" name="name" :rules="nameRules" />
+          <VeeErrorMessage class="text-red-800" name="name" />
+        </VeeForm>
       </template>
     </ListItem>
     <ListItem title="Referrer:" class="w-full" input>
       <template #item>
-        <VForm class="flex flex-col items-center">
-          <VField
+        <VeeForm class="flex flex-col items-center">
+          <VeeField
             v-model="referrer"
             name="referrer"
             :rules="referrer && referrerRules"
           />
-          <VErrorMessage class="text-red-800" name="referrer" />
-        </VForm>
+          <VeeErrorMessage class="text-red-800" name="referrer" />
+        </VeeForm>
       </template>
     </ListItem>
     <AppButton
