@@ -107,14 +107,9 @@ import Dropdown from '~/components/Dropdown.vue'
 import AppButton from '~/components/AppButton.vue'
 import AppTour from '~/components/AppTour.vue'
 import { $t } from '~/composables/useLang'
-import { numberToHex } from '~/utils'
 import { getAddressRule } from '~/composables/useYupRules'
 import Harp from '~/assets/lotties/harp.json'
 import type { Step } from '~/types'
-
-// --------[ Nuxt ]-------- //
-const { chainId, networkName, networkSymbol, chainExplorers, chainRpcs } =
-  useRuntimeConfig().public
 
 // --------[ Store ]-------- //
 const connectionStore = useConnectionStore()
@@ -130,9 +125,11 @@ const { setLanguage } = useUserOptions
 
 const { onValidNetwork, isConnected } = storeToRefs(connectionStore)
 const { connectWeb3, disconnectWeb3 } = userWalletStore
+const { walletClient } = storeToRefs(userWalletStore)
 const { isRegistered } = storeToRefs(userGameStore)
 const { audio } = storeToRefs(appOptionStore)
 const { language } = storeToRefs(useUserOptions)
+
 const isAnimating = ref(false)
 useTour()
 
@@ -207,30 +204,12 @@ onMounted(() => {
 // --------[ Method ]-------- //
 const switchOrAddNetwork = async () => {
   try {
-    await window.ethereum.request({
-      method: 'wallet_switchEthereumChain',
-      params: [
-        {
-          chainId: numberToHex(chainId),
-        },
-      ],
+    await walletClient.value.switchChain({
+      id: walletClient.value.chain.id,
     })
   } catch (error) {
-    await window.ethereum.request({
-      method: 'wallet_addEthereumChain',
-      params: [
-        {
-          chainId: numberToHex(chainId),
-          chainName: networkName,
-          nativeCurrency: {
-            name: networkSymbol,
-            symbol: networkSymbol,
-            decimals: 18,
-          },
-          rpcUrls: Array.from(chainRpcs),
-          blockExplorerUrls: Array.from(chainExplorers),
-        },
-      ],
+    await walletClient.value.addChain({
+      chain: walletClient.value.chain,
     })
   }
 }

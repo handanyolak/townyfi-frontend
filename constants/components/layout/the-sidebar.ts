@@ -1,6 +1,16 @@
-import { createPublicClient, http } from 'viem'
-import { sepolia } from 'viem/chains'
+import * as chains from 'viem/chains'
+import { custom } from '~/chains/custom'
 import type { Tab } from '~/types'
+
+const {
+  public: { chain: runtimeChain },
+} = useRuntimeConfig()
+const chain =
+  runtimeChain !== 'custom'
+    ? (chains[
+        runtimeChain as keyof typeof chains // eslint-disable-line import/namespace
+      ] as chains.Chain)
+    : custom
 
 export const TABS: Record<string, Tab[]> = {
   gameInfo: [
@@ -101,10 +111,7 @@ export const TABS: Record<string, Tab[]> = {
         contractName: 'Multicall3',
         contractDesc:
           'The multicall contract of the game. Used for batch calls in the Frontend App.',
-        contractAddress: createPublicClient({
-          chain: sepolia,
-          transport: http(),
-        }).chain.contracts.multicall3.address,
+        contractAddress: chain.contracts!.multicall3!.address,
       },
     },
   ],

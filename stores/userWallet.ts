@@ -6,12 +6,18 @@ import {
   publicActions,
   createWalletClient,
 } from 'viem'
-import { sepolia } from 'viem/chains'
+import * as chains from 'viem/chains'
 import { TYPE } from 'vue-toastification'
 import { useAppToast } from '~/composables/useAppToast'
+import { custom as customChain } from '~/chains/custom'
 import { $t } from '~/composables/useLang'
 
 export const useUserWalletStore = defineStore('userWalletStore', () => {
+  // --------[ Nuxt ]-------- //
+  const {
+    public: { chain: runtimeChain },
+  } = useRuntimeConfig()
+
   // --------[ Stores ]-------- //
   const connectionStore = useConnectionStore()
   const userGameStore = useUserGameStore()
@@ -19,9 +25,16 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
   // --------[ States ]-------- //
   const ethereum = window.ethereum
   const address = ref(zeroAddress as Address)
+  const chain =
+    runtimeChain !== 'custom'
+      ? (chains[
+          runtimeChain as keyof typeof chains // eslint-disable-line import/namespace
+        ] as chains.Chain)
+      : customChain
+
   const walletClient = computed(() =>
     createWalletClient({
-      chain: sepolia,
+      chain,
       transport: custom(ethereum),
       account: address.value,
     }).extend(publicActions),
@@ -116,6 +129,7 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
   return {
     address,
     balance,
+    chain,
     walletClient,
     ktaAllowance,
     currentBlockNumber,

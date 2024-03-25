@@ -1,5 +1,5 @@
 import { createResolver } from '@nuxt/kit'
-import { convertToInteger, convertToArray } from './utils'
+import { convertToInteger } from './utils'
 const { resolve } = createResolver(import.meta.url)
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
@@ -44,11 +44,7 @@ export default defineNuxtConfig({
     public: {
       ktaAddress: process.env.NUXT_KTA_ADDRESS,
       ktaTokenAddress: process.env.NUXT_KTA_TOKEN_ADDRESS,
-      networkName: process.env.NUXT_NETWORK_NAME,
-      networkSymbol: process.env.NUXT_NETWORK_SYMBOL,
-      chainRpcs: convertToArray(process.env.NUXT_CHAIN_RPCS),
-      chainExplorers: convertToArray(process.env.NUXT_CHAIN_EXPLORERS),
-      chainId: convertToInteger(process.env.NUXT_CHAIN_ID, 11155111),
+      chain: process.env.NUXT_CHAIN,
       chainBlockTime: convertToInteger(process.env.NUXT_CHAIN_BLOCK_TIME, 10),
       minNearLevel: convertToInteger(process.env.NUXT_MIN_NEAR_LEVEL, 2),
       maxNearLevel: convertToInteger(process.env.NUXT_MAX_NEAR_LEVEL, 5),

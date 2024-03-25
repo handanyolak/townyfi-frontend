@@ -1,10 +1,8 @@
-import { numberToHex } from '~/utils'
+import { numberToHex } from 'viem'
 
 export const useConnectionStore = defineStore('connectionStore', () => {
-  // --------[ Nuxt Imports ]-------- //
-  const {
-    public: { chainId },
-  } = useRuntimeConfig()
+  // --------[ Stores ]-------- //
+  const userWalletStore = useUserWalletStore()
 
   // --------[ States ]-------- //
   const ethereum = window.ethereum
@@ -27,7 +25,7 @@ export const useConnectionStore = defineStore('connectionStore', () => {
       method: 'eth_chainId',
       params: [],
     })
-    setOnValidNetwork(chainIdFromRpc === numberToHex(chainId))
+    setOnValidNetwork(chainIdFromRpc === numberToHex(userWalletStore.chain.id))
   }
 
   return {

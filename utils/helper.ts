@@ -12,10 +12,6 @@ export const middleCropping = (str: string) => {
   return str.substring(0, 5) + '...' + str.substring(str.length - 5)
 }
 
-export const numberToHex = (num: number) => {
-  return '0x' + num.toString(16)
-}
-
 export const addHexPrefix = (str: string) => {
   return str.startsWith('0x') ? str : '0x' + str
 }
@@ -55,16 +51,6 @@ export const convertToInteger = (
 
   if (!result && error) {
     throw new Error('Missing environment in your ".env" file.')
-  }
-
-  return result
-}
-
-export const convertToArray = (variable: any, defaultValue?: any[]) => {
-  let result = typeof variable === 'string' ? variable.split(',') : undefined
-
-  if (!result && defaultValue) {
-    result = defaultValue
   }
 
   return result

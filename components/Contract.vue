@@ -11,7 +11,7 @@
       <span>{{ data.contractDesc }}</span>
     </ListItem>
     <a
-      :href="`${chainExplorers[0]}/address/${data.contractAddress}`"
+      :href="`${walletClient.chain.blockExplorers?.default.url}/address/${data.contractAddress}`"
       target="_blank"
     >
       <AppButton class="my-2 flex w-full justify-center">
@@ -36,12 +36,11 @@ import { TYPE } from 'vue-toastification'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 
-const {
-  public: { chainExplorers },
-} = useRuntimeConfig()
 const contractStore = useContractStore()
+const userWalletStore = useUserWalletStore()
 
 const { getKtaToken } = storeToRefs(contractStore)
+const { walletClient } = storeToRefs(userWalletStore)
 
 interface ContractProps {
   data: {
