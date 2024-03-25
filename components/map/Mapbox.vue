@@ -62,6 +62,7 @@
 <script setup lang="ts">
 import type { CoordinateItem } from '~/types'
 import { useUserGameStore } from '~/stores/userGame'
+import Banner from '~/components/map/Banner.vue'
 
 // --------[ Props & Emits ]-------- //
 interface MapboxProps {
@@ -81,13 +82,6 @@ const {
   isRegistered,
 } = storeToRefs(userGameStore)
 
-// --------[ Composable ]-------- //
-const isDark = useDark({
-  storageKey: 'theme',
-  valueDark: 'dark',
-  valueLight: 'light',
-})
-
 // --------[ Computed ]-------- //
 const isCoordinateOfUser = computed(
   () =>
@@ -97,10 +91,6 @@ const isCoordinateOfUser = computed(
 
 const getMapKey = computed(
   () => `${props.item._x.toString()},${props.item._y.toString()}`,
-)
-
-const soldierIcon = computed(() =>
-  useSvg(isDark.value ? 'cavalry-night' : 'cavalry'),
 )
 
 const pulseColor = computed(() => {
