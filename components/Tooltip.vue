@@ -23,15 +23,14 @@
 import { onClickOutside } from '@vueuse/core'
 
 // --------[ Props & Emits ]-------- //
-const props = defineProps({
-  autoClose: {
-    type: Boolean,
-    default: false,
-  },
-  iconName: {
-    type: String,
-    default: 'uil:info-circle',
-  },
+interface TooltipProps {
+  autoClose?: boolean
+  iconName?: string
+}
+
+const props = withDefaults(defineProps<TooltipProps>(), {
+  autoClose: false,
+  iconName: 'uil:info-circle',
 })
 
 // --------[ Data ]-------- //
