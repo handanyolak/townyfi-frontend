@@ -2,8 +2,7 @@ import { useToggle, useStorage } from '@vueuse/core'
 import { formatUnits, type WatchContractEventReturnType } from 'viem'
 import { TYPE } from 'vue-toastification'
 import { transformSettings, transformTown, transformUser } from '~/transformers'
-import type { User } from '~/types/contract'
-import type { Coordinates } from '~/types/typechain/contracts/game/IKillThemAll'
+import type { CoordinateStruct, User } from '~/types/contract'
 
 export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   // --------[ Stores ]-------- //
@@ -24,7 +23,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const isGameInfo = ref(false)
   const isOptions = ref(false)
   const music = ref(false)
-  const originCoordinate = ref<Coordinates.CoordinateStruct>({
+  const originCoordinate = ref<CoordinateStruct>({
     _x: BigInt(0),
     _y: BigInt(0),
   })
@@ -88,9 +87,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     })
   }
 
-  const setOriginCoordinate = (
-    newOriginCoordinate: Coordinates.CoordinateStruct,
-  ) => {
+  const setOriginCoordinate = (newOriginCoordinate: CoordinateStruct) => {
     originCoordinate.value = newOriginCoordinate
   }
 

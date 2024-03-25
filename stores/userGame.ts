@@ -1,8 +1,7 @@
 import { useStorage } from '@vueuse/core'
 import type { CoordinateItem, MultiCallData } from '~/types'
 import { middleElement } from '~/utils'
-import type { Coordinates } from '~/types/typechain/contracts/game/KillThemAll'
-import type { Settings, Town, User } from '~/types/contract'
+import type { CoordinateStruct, Settings, Town, User } from '~/types/contract'
 import { useMultiCall } from '~/composables/useMultiCall'
 
 export const useUserGameStore = defineStore('userGameStore', () => {
@@ -74,7 +73,7 @@ export const useUserGameStore = defineStore('userGameStore', () => {
   }
 
   const setUserCoordinate = (
-    coordinates: Coordinates.CoordinateStruct,
+    coordinates: CoordinateStruct,
     getDataFromChain = true,
   ) => {
     isLoading.value = true
