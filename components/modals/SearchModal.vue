@@ -96,7 +96,7 @@
 import { zeroAddress, type Address } from 'viem'
 import { useDebounceFn } from '@vueuse/core'
 import { object } from 'yup'
-import ListItem from '~/components/sidebar-items/ListItem.vue'
+import ListItem from '~/components/common/ListItem.vue'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import SidebarDropdown from '~/components/SidebarDropdown.vue'
 import OtherTown from '~/components/OtherTown.vue'

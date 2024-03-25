@@ -137,7 +137,7 @@
 <script setup lang="ts">
 import { type Address, hexToString, zeroAddress } from 'viem'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
-import ListItem from '~/components/sidebar-items/ListItem.vue'
+import ListItem from '~/components/common/ListItem.vue'
 import ScrollableList from '~/components/sidebar-items/ScrollableList.vue'
 import { transformTown } from '~/transformers'
 

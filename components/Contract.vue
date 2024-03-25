@@ -41,7 +41,7 @@
 <script setup lang="ts">
 import { TYPE } from 'vue-toastification'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
-import ListItem from '~/components/sidebar-items/ListItem.vue'
+import ListItem from '~/components/common/ListItem.vue'
 
 const contractStore = useContractStore()
 const userWalletStore = useUserWalletStore()

@@ -117,7 +117,7 @@
 
 <script setup lang="ts">
 import { NavigateDirection } from '~/enums'
-import ListItem from '~/components/sidebar-items/ListItem.vue'
+import ListItem from '~/components/common/ListItem.vue'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import MoveArrow from '~/components/MoveArrow.vue'
 import AppButton from '~/components/AppButton.vue'

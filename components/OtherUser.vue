@@ -126,7 +126,7 @@
 import moment from 'moment'
 import { type Address, hexToString } from 'viem'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
-import ListItem from '~/components/sidebar-items/ListItem.vue'
+import ListItem from '~/components/common/ListItem.vue'
 import { toCapitalizedWords, middleCropping } from '~/utils'
 import { transformUser } from '~/transformers'
 import type { UserTimer } from '~/types/contract'

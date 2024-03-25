@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import ListItem from '~/components/sidebar-items/ListItem.vue'
+import ListItem from '~/components/common/ListItem.vue'
 
 // --------[ Props & Emits ]-------- //
 interface ScrollableListProps {

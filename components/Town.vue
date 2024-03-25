@@ -177,7 +177,7 @@
 <script setup lang="ts">
 import { hexToString } from 'viem'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
-import ListItem from '~/components/sidebar-items/ListItem.vue'
+import ListItem from '~/components/common/ListItem.vue'
 import ScrollableList from '~/components/sidebar-items/ScrollableList.vue'
 import HasNotTown from '~/components/HasNotTown.vue'
 import AppButton from '~/components/AppButton.vue'

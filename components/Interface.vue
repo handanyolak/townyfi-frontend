@@ -44,7 +44,7 @@
 <script setup lang="ts">
 import { useDark, useToggle } from '@vueuse/core'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
-import ListItem from '~/components/sidebar-items/ListItem.vue'
+import ListItem from '~/components/common/ListItem.vue'
 import SidebarDropdown from '~/components/SidebarDropdown.vue'
 import Switch from '~/components/Switch.vue'
 

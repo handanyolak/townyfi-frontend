@@ -33,7 +33,7 @@
 <script setup lang="ts">
 import { stringToHex } from 'viem'
 import { object } from 'yup'
-import ListItem from '~/components/sidebar-items/ListItem.vue'
+import ListItem from '~/components/common/ListItem.vue'
 import { getBytes32Rule, getUintRule } from '~/composables/useYupRules'
 
 // --------[ Stores ]-------- //

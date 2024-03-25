@@ -38,7 +38,7 @@
 <script setup lang="ts">
 import { stringToHex, zeroAddress } from 'viem'
 import { TYPE } from 'vue-toastification'
-import ListItem from '~/components/sidebar-items/ListItem.vue'
+import ListItem from '~/components/common/ListItem.vue'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import { addHexPrefix } from '~/utils'
 import { getAddressRule, getBytes32Rule } from '~/composables/useYupRules'

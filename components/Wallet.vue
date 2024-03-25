@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
-import ListItem from '~/components/sidebar-items/ListItem.vue'
+import ListItem from '~/components/common/ListItem.vue'
 
 // --------[ Nuxt ]-------- //
 const userWalletStore = useUserWalletStore()
