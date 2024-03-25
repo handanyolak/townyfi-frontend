@@ -26,16 +26,19 @@ export const TABS: Record<string, Tab[]> = {
       id: 'user-info',
       name: 'User',
       component: 'User',
+      folder: 'game',
     },
     {
       id: 'town-info',
       name: 'Town',
       component: 'Town',
+      folder: 'game',
     },
     {
       id: 'interactions-info',
       name: 'Interactions',
       component: 'Interactions',
+      folder: 'game',
     },
   ],
   userOptions: [
@@ -43,6 +46,7 @@ export const TABS: Record<string, Tab[]> = {
       id: 'options-info',
       name: 'Interface',
       component: 'Interface',
+      folder: 'options',
     },
   ],
   blockchainInfo: [
@@ -50,11 +54,13 @@ export const TABS: Record<string, Tab[]> = {
       id: 'chain-info',
       name: 'Chain',
       component: 'Chain',
+      folder: 'blockchain',
     },
     {
       id: 'wallet-info',
       name: 'Wallet',
       component: 'Wallet',
+      folder: 'blockchain',
     },
   ],
   contractInfo: [
@@ -62,6 +68,7 @@ export const TABS: Record<string, Tab[]> = {
       id: 'game-contract',
       name: 'Game',
       component: 'Contract',
+      folder: 'contract',
       data: {
         contractName: 'TownyFi',
         contractDesc: 'The main contract of the game. Used for game logic.',
@@ -72,6 +79,7 @@ export const TABS: Record<string, Tab[]> = {
       id: 'token-contract',
       name: 'Token',
       component: 'Contract',
+      folder: 'contract',
       data: {
         contractName: 'TownyFi Token',
         contractDesc:
@@ -83,6 +91,7 @@ export const TABS: Record<string, Tab[]> = {
       id: 'nft-contract',
       name: 'NFT',
       component: 'Contract',
+      folder: 'contract',
       data: {
         contractName: 'TownyFiNFT',
         contractDesc:
@@ -94,6 +103,7 @@ export const TABS: Record<string, Tab[]> = {
       id: 'chat-contract',
       name: 'Chat',
       component: 'Contract',
+      folder: 'contract',
       data: {
         contractName: 'TownyFiChat',
         contractDesc:
@@ -105,6 +115,7 @@ export const TABS: Record<string, Tab[]> = {
       id: 'pass-contract',
       name: 'Pass',
       component: 'Contract',
+      folder: 'contract',
       data: {
         contractName: 'TownyFiPass_0',
         contractDesc: 'The example Game Pass contract of the game.',
@@ -115,6 +126,7 @@ export const TABS: Record<string, Tab[]> = {
       id: 'multicall-contract',
       name: 'Multicall',
       component: 'Contract',
+      folder: 'contract',
       data: {
         contractName: 'Multicall3',
         contractDesc:
@@ -128,6 +140,7 @@ export const TABS: Record<string, Tab[]> = {
       id: 'unregistered-fallback',
       name: 'Unregistered',
       component: 'Unregistered',
+      folder: 'common',
     },
   ],
 }

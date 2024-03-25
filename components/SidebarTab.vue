@@ -54,6 +54,7 @@ const props = defineProps<SidebarTabProps>()
 const currentTabName = ref(props.tabs[0].name)
 const currentTabComponent = ref(props.tabs[0].component)
 const currentTabData = ref(props.tabs[0].data)
+const currentTabFolder = ref(props.tabs[0].folder)
 const scrollContainerRef = ref<HTMLElement | null>(null)
 const { y } = useScroll(scrollContainerRef)
 
@@ -62,7 +63,10 @@ const currentComponent = computed(() => {
   const _currentTabComponent = currentTabComponent.value
 
   return defineAsyncComponent(
-    () => import(`../components/${_currentTabComponent}.vue`),
+    () =>
+      import(
+        `../components/tabs/${currentTabFolder.value}/${_currentTabComponent}.vue`
+      ),
   )
 })
 
@@ -74,6 +78,7 @@ const changeTab = (tab: Tab) => {
   currentTabName.value = tab.name
   currentTabComponent.value = tab.component
   currentTabData.value = tab.data
+  currentTabFolder.value = tab.folder
 }
 </script>
 
