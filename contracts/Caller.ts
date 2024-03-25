@@ -44,11 +44,14 @@ export class Caller<K> {
     )
 
     const toast = useToast()
-    toast(`Sending transaction of '${String(fnName)}' function...`, {
-      ...defaultToastificationConfig,
-      timeout: 0,
-      icon,
-    })
+    const toastId = toast(
+      `Sending transaction of '${String(fnName)}' function...`,
+      {
+        ...defaultToastificationConfig,
+        timeout: 0,
+        icon,
+      },
+    )
 
     try {
       const tx = await this.contract[fnType][fnName](fnArgs)
@@ -61,14 +64,15 @@ export class Caller<K> {
         throw new Error('Transaction failed')
       }
 
-      toast.clear()
+      toast.dismiss(toastId)
+
       useAppToast(
         TYPE.SUCCESS,
         `Transaction of '${String(fnName)}' function confirmed successfully`,
       )
       return true
     } catch (error) {
-      toast.clear()
+      toast.dismiss(toastId)
       useAppToast(TYPE.ERROR, 'Transaction failed: Something went wrong')
       return false
     }
