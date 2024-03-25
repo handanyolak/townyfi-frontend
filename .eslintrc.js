@@ -12,6 +12,7 @@ module.exports = {
   ],
   plugins: [],
   rules: {
+    'vue/no-undef-components': 'error',
     'vue/multi-word-component-names': 0,
     'no-console': 'off',
     'no-useless-constructor': 'off',
