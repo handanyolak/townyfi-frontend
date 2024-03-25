@@ -40,7 +40,7 @@ export class Caller<K> {
     }
 
     const icon = defineAsyncComponent(
-      () => import(`../components/Toastification/Loading.vue`),
+      () => import(`../components/toast/Loading.vue`),
     )
 
     const toast = useToast()

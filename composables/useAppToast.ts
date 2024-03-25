@@ -9,8 +9,7 @@ export const useAppToast = (
   message: string,
 ) => {
   const icon = defineAsyncComponent(
-    () =>
-      import(`../components/Toastification/${uppercaseFirstChar(type)}.vue`),
+    () => import(`../components/toast/${uppercaseFirstChar(type)}.vue`),
   )
 
   return (useToast()[type] as ToastFunction)(message, {
