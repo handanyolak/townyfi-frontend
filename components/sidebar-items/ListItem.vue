@@ -31,18 +31,18 @@
       </div>
       <div v-if="editable">
         <Icon
-          @click="isEdit ? save() : edit()"
           :name="isEdit ? 'uil:check-circle' : 'uil:edit'"
           class="h-4 w-4 cursor-pointer text-towni-brown-dark-300 opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
+          @click="isEdit ? save() : edit()"
         />
       </div>
       <div>
         <slot name="action" />
       </div>
       <div
-        @click="convert()"
         v-if="convertable"
         class="mr-2 h-3 w-3 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
+        @click="convert()"
       >
         <client-only>
           <Vue3Lottie
@@ -60,10 +60,10 @@
 </template>
 
 <script setup lang="ts">
-import Tooltip from '~/components/Tooltip.vue'
 import { Vue3Lottie } from 'vue3-lottie'
-import Convert from '~/assets/lotties/convert.json'
 import { useClipboard } from '@vueuse/core'
+import Tooltip from '~/components/Tooltip.vue'
+import Convert from '~/assets/lotties/convert.json'
 
 const { copy, copied, isSupported } = useClipboard({
   legacy: true,
@@ -83,6 +83,8 @@ interface ContentListItemProps {
 }
 
 withDefaults(defineProps<ContentListItemProps>(), {
+  item: '',
+  title: '',
   copyValue: '',
 })
 

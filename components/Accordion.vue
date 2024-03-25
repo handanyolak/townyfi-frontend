@@ -38,7 +38,7 @@ interface AccordionProps {
   tooltip?: boolean
 }
 
-const props = defineProps<AccordionProps>()
+defineProps<AccordionProps>()
 
 // --------[ Data ]-------- //
 const isOpen = ref(false)

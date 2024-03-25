@@ -51,7 +51,10 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   ) => {
     modalComponentName.value = newModalComponentName
     modalComponentProps.value = newModalComponentProps
-    isAnimation.value = modalComponentProps.value?.hasOwnProperty('animation')
+    isAnimation.value = Object.prototype.hasOwnProperty.call(
+      modalComponentProps.value,
+      'animation',
+    )
     sideLeave()
     return new Promise((resolve) => {
       modalResultResolver.value = resolve
@@ -536,10 +539,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     userGameStore.setUserCoordinate(userInfo.coordinate)
     userGameStore.setTown(
       transformTown(
-        // TODO: avoid any
-        await contractStore.getKta.read.townById([
-          userInfo.townInfo.townId as any,
-        ]),
+        await contractStore.getKta.read.townById([userInfo.townInfo.townId]),
       ),
     )
   }

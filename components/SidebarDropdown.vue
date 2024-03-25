@@ -54,7 +54,7 @@ interface DropdownProps {
 }
 
 interface DropdownExpose {
-  selectedItem: string | null
+  selectedItem: Ref<string>
 }
 
 const props = defineProps<DropdownProps>()
@@ -62,7 +62,7 @@ const emit = defineEmits(['selected'])
 
 // --------[ Data ]-------- //
 const showDropdown = ref(false)
-const selectedItem = ref<string | null>(null)
+const selectedItem = ref(props.dropdownItems[0])
 
 // --------[ Computed ]-------- //
 const dropdownIcon = computed(
@@ -90,7 +90,7 @@ const selectItem = (item: string) => {
   toggleDropdown()
 }
 
-defineExpose({
+defineExpose<DropdownExpose>({
   selectedItem,
 })
 </script>

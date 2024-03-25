@@ -175,7 +175,7 @@ const convert = (isConvert: boolean, propertyName: keyof UserTimer) => {
   if (isConvert) {
     timer.value[propertyName] =
       BigInt(timer.value[propertyName]) - currentBlockNumber.value > 0
-        ? moment
+        ? moment // eslint-disable-line import/no-named-as-default-member
             .duration(
               (timer.value[propertyName] - Number(currentBlockNumber.value)) *
                 chainBlockTime *

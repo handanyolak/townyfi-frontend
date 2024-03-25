@@ -6,7 +6,7 @@
       <slot name="parchment-header" />
     </div>
     <div
-      class="parchment scrollbar-gutter-stable overflow-auto bg-white py-8 px-2 text-towni-brown-dark-600"
+      class="parchment scrollbar-gutter-stable overflow-auto bg-white px-2 py-8 text-towni-brown-dark-600"
     >
       <div class="animate-fadein">
         <slot />
@@ -23,13 +23,18 @@
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Bilbo&display=swap');
 .round-parchment {
-  box-shadow: 2px 3px 20px #3f2007, 0px -10px 40px #8a4d0f inset;
+  box-shadow:
+    2px 3px 20px #3f2007,
+    0px -10px 40px #8a4d0f inset;
   font-family: 'Bilbo', cursive;
 }
+
 .parchment {
   height: 50vh;
   animation: height 4s 1;
-  box-shadow: 2px 3px 20px #3f2007, 0 0 60px #8a4d0f inset;
+  box-shadow:
+    2px 3px 20px #3f2007,
+    0 0 60px #8a4d0f inset;
 }
 
 @keyframes height {

@@ -1,25 +1,25 @@
 <template>
   <div class="relative" style="width: 55% !important">
     <div
-      ref="mapElement"
-      @wheel="onWheel($event)"
       v-if="hasMetamask && onValidNetwork"
+      ref="mapElement"
       class="relative z-50 outline-none"
       tabindex="0"
       @keyup.up="navigateByArrowKeys(NavigateDirection.Up)"
       @keyup.right="navigateByArrowKeys(NavigateDirection.Right)"
       @keyup.down="navigateByArrowKeys(NavigateDirection.Down)"
       @keyup.left="navigateByArrowKeys(NavigateDirection.Left)"
+      @wheel="onWheel($event)"
     >
       <button
         ref="toggleButton"
-        @click="handleNavigationToggle"
         :class="[
           'absolute -right-6 -top-1 cursor-pointer transition-all  ease-in-out',
           isMapNavigationVisible
             ? 'translate-x-48 delay-300 duration-500 '
             : 'duration-300',
         ]"
+        @click="handleNavigationToggle"
       >
         <Icon
           :class="[
@@ -41,8 +41,8 @@
         <Mapbox
           v-for="(item, index) in addressesByCoordinate"
           :key="index"
-          :item="item"
           v-memo="[item]"
+          :item="item"
           :emit-ready-event="index === 0"
           class="select-none"
           @dblclick="setModalInfo('MapboxModal', { coordinate: item })"

@@ -55,6 +55,8 @@ interface DropdownProps {
 
 const props = withDefaults(defineProps<DropdownProps>(), {
   select: 'en',
+  // @ts-expect-error
+  iconNames: [], // eslint-disable-line vue/require-valid-default-prop
 })
 const emit = defineEmits(['selected'])
 

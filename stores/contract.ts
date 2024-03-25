@@ -9,6 +9,7 @@ export const useContractStore = defineStore('contractStore', () => {
 
   // --------[ Stores ]-------- //
   const userWalletStore = useUserWalletStore()
+
   const { walletClient } = storeToRefs(userWalletStore)
 
   // --------[ States ]-------- //

@@ -6,8 +6,8 @@
         :select="language"
         :dropdown-items="languages"
         :icon-names="languages"
-        @selected="(item) => selectLanguage(item)"
         rounded
+        @selected="(item) => selectLanguage(item)"
       />
     </ListItem>
     <ListItem title="Theme:">
@@ -33,8 +33,8 @@
       <SidebarDropdown
         :select="nearLevel.toString()"
         :dropdown-items="createNumberArray(minNearLevel, maxNearLevel)"
-        @selected="(item) => selectNearLevel(item)"
         rounded
+        @selected="(item) => selectNearLevel(item)"
       ></SidebarDropdown>
     </ListItem>
   </div>

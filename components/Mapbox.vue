@@ -81,14 +81,14 @@ const {
   isRegistered,
 } = storeToRefs(userGameStore)
 
-// --------[ Composables ]-------- //
+// --------[ Composable ]-------- //
 const isDark = useDark({
   storageKey: 'theme',
   valueDark: 'dark',
   valueLight: 'light',
 })
 
-//--------[ Computeds ]--------//
+// --------[ Computed ]-------- //
 const isCoordinateOfUser = computed(
   () =>
     props.item._x.toString() === user.value.coordinate._x.toString() &&
@@ -115,9 +115,9 @@ const pulseColor = computed(() => {
   let color = ''
   if (userByCountByCoordinate <= 1) {
     color = 'bg-green-500'
-  } else if (userByCountByCoordinate!! >= 2 && userByCountByCoordinate!! <= 3) {
+  } else if (userByCountByCoordinate >= 2 && userByCountByCoordinate <= 3) {
     color = 'bg-yellow-600'
-  } else if (userByCountByCoordinate!! >= 4) {
+  } else if (userByCountByCoordinate >= 4) {
     color = 'bg-red-500'
   }
 

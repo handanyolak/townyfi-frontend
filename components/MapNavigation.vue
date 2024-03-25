@@ -16,36 +16,36 @@
             >
             <div class="relative mt-6 flex items-center justify-center p-10">
               <MoveArrow
-                @click="navigateByArrow(NavigateDirection.Down)"
                 class="rotate-90"
+                @click="navigateByArrow(NavigateDirection.Down)"
               />
               <MoveArrow
-                @click="navigateByArrow(NavigateDirection.Up)"
                 class="-rotate-90"
+                @click="navigateByArrow(NavigateDirection.Up)"
               />
               <MoveArrow
-                @click="navigateByArrow(NavigateDirection.Right)"
                 class="rotate-0"
+                @click="navigateByArrow(NavigateDirection.Right)"
               />
               <MoveArrow
-                @click="navigateByArrow(NavigateDirection.Left)"
                 class="rotate-180"
+                @click="navigateByArrow(NavigateDirection.Left)"
               />
               <MoveArrow
-                @click="navigateByArrow(NavigateDirection.RightDown)"
                 class="rotate-45"
+                @click="navigateByArrow(NavigateDirection.RightDown)"
               />
               <MoveArrow
-                @click="navigateByArrow(NavigateDirection.UpRight)"
                 class="-rotate-45"
+                @click="navigateByArrow(NavigateDirection.UpRight)"
               />
               <MoveArrow
-                @click="navigateByArrow(NavigateDirection.DownLeft)"
                 class="rotate-[135deg]"
+                @click="navigateByArrow(NavigateDirection.DownLeft)"
               />
               <MoveArrow
-                @click="navigateByArrow(NavigateDirection.LeftUp)"
                 class="-rotate-[135deg]"
+                @click="navigateByArrow(NavigateDirection.LeftUp)"
               />
             </div>
           </div>
@@ -76,8 +76,8 @@
           </div>
           <div class="return-back">
             <AppButton
-              @click="goBackToInitialPosition()"
               class="my-2 w-full rounded-md bg-towni-brown-dark-400 text-towni-brown-light-400"
+              @click="goBackToInitialPosition()"
             >
               Recenter!
             </AppButton>
@@ -101,8 +101,8 @@
                   <span>{{ coordinateY }}</span>
                 </ListItem>
                 <AppButton
-                  @click="navigate()"
                   class="w-full rounded-md bg-towni-brown-dark-400 text-towni-brown-light-400"
+                  @click="navigate()"
                 >
                   Go!
                 </AppButton>
