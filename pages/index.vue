@@ -34,6 +34,8 @@ import TheLoading from '~/components/common/TheLoading.vue'
 import Map from '~/components/map/Map.vue'
 import AppModal from '~/components/common/AppModal.vue'
 import ChatBox from '~/components/chat/ChatBox.vue'
+import GamePreview from '~/components/GamePreview.vue'
+import SidebarMenu from '~/components/SidebarMenu.vue'
 
 // --------[ Stores ]-------- //
 const appOptionsStore = useAppOptionsStore()
