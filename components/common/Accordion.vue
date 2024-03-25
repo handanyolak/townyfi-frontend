@@ -31,6 +31,7 @@
 <script setup lang="ts">
 import { onClickOutside } from '@vueuse/core'
 import ListTitle from '~/components/common/ListTitle.vue'
+import Tooltip from '~/components/common/Tooltip.vue'
 
 // --------[ Props & Emits ]-------- //
 interface AccordionProps {

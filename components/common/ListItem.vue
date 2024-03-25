@@ -62,7 +62,7 @@
 <script setup lang="ts">
 import { Vue3Lottie } from 'vue3-lottie'
 import { useClipboard } from '@vueuse/core'
-import Tooltip from '~/components/Tooltip.vue'
+import Tooltip from '~/components/common/Tooltip.vue'
 import Convert from '~/assets/lotties/convert.json'
 
 const { copy, copied, isSupported } = useClipboard({
