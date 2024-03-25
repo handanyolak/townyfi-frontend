@@ -103,7 +103,7 @@
 <script setup lang="ts">
 import { useDark, useToggle } from '@vueuse/core'
 import { Vue3Lottie } from 'vue3-lottie'
-import Dropdown from '~/components/Dropdown.vue'
+import Dropdown from '~/components/common/Dropdown.vue'
 import AppButton from '~/components/common/AppButton.vue'
 import AppTour from '~/components/AppTour.vue'
 import { $t } from '~/composables/useLang'
