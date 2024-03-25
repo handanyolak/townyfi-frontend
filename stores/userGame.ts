@@ -26,7 +26,7 @@ export const useUserGameStore = defineStore('userGameStore', () => {
   const nearLevel = useStorage('nearLevel', 3)
   const userCountByCoordinate = ref(new Map<string, number>())
   const hasTownByCoordinate = ref(new Map<string, boolean>())
-  // TODO: this is not addresses. it's coordinates :D
+  // TODO: this is not addresses. rename it
   const addressesByCoordinate = ref<CoordinateItem[]>([])
 
   // --------[ Getters ]-------- //

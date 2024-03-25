@@ -2605,7 +2605,7 @@ atob@^2.1.2:
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
 
-autoprefixer@^10.4.18:
+autoprefixer@^10.4.18, autoprefixer@^10.4.19:
   version "10.4.19"
   resolved "https://registry.yarnpkg.com/autoprefixer/-/autoprefixer-10.4.19.tgz#ad25a856e82ee9d7898c59583c1afeb3fa65f89f"
   integrity sha512-BaENR2+zBZ8xXhM4pUaKUxlVdxZ0EZhjvbopwnXmxRUfqDmwSpC2lAi/QXvx7NRdPCo1WKEcEF6mV64si1z4Ew==
@@ -6741,7 +6741,7 @@ nuxt-icon@^0.6.8:
     "@nuxt/devtools-kit" "^1.1.1"
     "@nuxt/kit" "^3.11.1"
 
-nuxt@^3.10.3:
+nuxt@^3.11.1:
   version "3.11.1"
   resolved "https://registry.yarnpkg.com/nuxt/-/nuxt-3.11.1.tgz#82f0d90c00af64295dbed1c7316ff431266893a7"
   integrity sha512-CsncE1dxP0cmOYT+PBdjMD0bOK8eZizG5tgNWUOJAAAtU45sO38maoBumYYL2kUpT/SC/dMP+831DAcVPvi9pQ==

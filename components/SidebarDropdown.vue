@@ -62,7 +62,7 @@ const emit = defineEmits(['selected'])
 
 // --------[ Data ]-------- //
 const showDropdown = ref(false)
-const selectedItem = ref(props.dropdownItems[0])
+const selectedItem = ref(props.select ?? props.dropdownItems[0])
 
 // --------[ Computed ]-------- //
 const dropdownIcon = computed(

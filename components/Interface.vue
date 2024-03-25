@@ -31,6 +31,7 @@
     <ListTitle>Interface</ListTitle>
     <ListItem title="Near Level:">
       <SidebarDropdown
+        :key="nearLevel"
         :select="nearLevel.toString()"
         :dropdown-items="createNumberArray(minNearLevel, maxNearLevel)"
         rounded

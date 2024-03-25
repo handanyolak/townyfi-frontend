@@ -85,8 +85,6 @@ const {
 
 // --------[ Data ]-------- //
 const mapElement = ref(null)
-const zoomOut = ref(0)
-const zoomIn = ref(0)
 const isMapNavigationVisible = ref(false)
 const navigation = ref<HTMLElement | null>(null)
 const toggleButton = ref<HTMLElement | null>(null)
@@ -112,27 +110,8 @@ const mapStyle = computed(() => {
 
 // --------[ Methods ]-------- //
 const onWheel = (event: WheelEvent) => {
-  let newNearLevel: number
-
-  if (event.deltaY < 0) {
-    if (zoomIn.value < 5) {
-      zoomIn.value++
-
-      return
-    }
-
-    zoomIn.value = 0
-    newNearLevel = nearLevel.value - 1
-  } else {
-    if (zoomOut.value < 5) {
-      zoomOut.value++
-
-      return
-    }
-
-    zoomOut.value = 0
-    newNearLevel = nearLevel.value + 1
-  }
+  const newNearLevel =
+    event.deltaY < 0 ? nearLevel.value - 1 : nearLevel.value + 1
 
   setNearLevelByCalculatingCoordinates(newNearLevel)
 }
