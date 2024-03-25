@@ -40,7 +40,7 @@
 
 <script setup lang="ts">
 import { TYPE } from 'vue-toastification'
-import ListTitle from '~/components/sidebar-items/ListTitle.vue'
+import ListTitle from '~/components/common/ListTitle.vue'
 import ListItem from '~/components/common/ListItem.vue'
 
 const contractStore = useContractStore()

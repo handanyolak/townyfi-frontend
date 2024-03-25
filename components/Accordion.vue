@@ -30,7 +30,7 @@
 
 <script setup lang="ts">
 import { onClickOutside } from '@vueuse/core'
-import ListTitle from '~/components/sidebar-items/ListTitle.vue'
+import ListTitle from '~/components/common/ListTitle.vue'
 
 // --------[ Props & Emits ]-------- //
 interface AccordionProps {

@@ -149,7 +149,7 @@
 import moment from 'moment'
 import { Vue3Lottie } from 'vue3-lottie'
 import { hexToString, stringToHex } from 'viem'
-import ListTitle from '~/components/sidebar-items/ListTitle.vue'
+import ListTitle from '~/components/common/ListTitle.vue'
 import ListItem from '~/components/common/ListItem.vue'
 import { toCapitalizedWords, middleCropping } from '~/utils'
 import { getBytes32Rule } from '~/composables/useYupRules'

@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import ListTitle from '~/components/sidebar-items/ListTitle.vue'
+import ListTitle from '~/components/common/ListTitle.vue'
 import ListItem from '~/components/common/ListItem.vue'
 
 // --------[ Nuxt ]-------- //
