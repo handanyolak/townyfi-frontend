@@ -1,46 +1,17 @@
-import type { KillThemAll, KtaToken, MultiCall } from '~/types/typechain'
-import { BrowserProvider } from 'ethers'
-import { numberToHex } from '~/utils'
-import { Caller } from '~/contracts'
+import { numberToHex } from 'viem'
 
 export const useConnectionStore = defineStore('connectionStore', () => {
-  //--------[ Nuxt Imports ]--------//
-  const { chainId } = useRuntimeConfig().public
+  // --------[ Stores ]-------- //
+  const userWalletStore = useUserWalletStore()
 
-  //--------[ States ]--------//
+  // --------[ States ]-------- //
   const ethereum = window.ethereum
-  const provider = new BrowserProvider(ethereum)
-  const hasMetamask = Boolean(window.ethereum)
+  const hasMetamask = Boolean(ethereum)
   const isConnected = ref(false)
   const onValidNetwork = ref(false)
 
-  // NOTE: The reason for doing it this way is due to the bugs in the "ethers" library.
-  let ktaToken: KtaToken = {} as KtaToken
-  let kta: KillThemAll = {} as KillThemAll
-  let multiCall: MultiCall = {} as MultiCall
-
-  //--------[ Getters ]--------//
-  const signer = computed(async () => await getProvider.value.getSigner())
-  const getProvider = computed(() => provider)
-  const getKtaToken = computed(() => ktaToken)
-  const getKtaTokenCaller = computed(() => new Caller(getKtaToken.value))
-  const getKta = computed(() => kta)
-  const getKtaCaller = computed(() => new Caller(getKta.value))
-  const getMultiCall = computed(() => multiCall)
-
-  //--------[ Actions ]--------//
-  const setKtaToken = (newValue: KtaToken) => {
-    ktaToken = newValue
-  }
-
-  const setKta = (newValue: KillThemAll) => {
-    kta = newValue
-  }
-
-  const setMultiCall = (newValue: MultiCall) => {
-    multiCall = newValue
-  }
-
+  // --------[ Getters ]-------- //
+  // --------[ Actions ]-------- //
   const setOnValidNetwork = (newValue: boolean) => {
     onValidNetwork.value = hasMetamask && newValue
   }
@@ -54,23 +25,13 @@ export const useConnectionStore = defineStore('connectionStore', () => {
       method: 'eth_chainId',
       params: [],
     })
-    setOnValidNetwork(chainIdFromRpc === numberToHex(chainId))
+    setOnValidNetwork(chainIdFromRpc === numberToHex(userWalletStore.chain.id))
   }
 
   return {
-    signer,
-    getKta,
-    getKtaCaller,
-    getKtaTokenCaller,
-    getProvider,
     isConnected,
-    getKtaToken,
-    getMultiCall,
     hasMetamask,
     onValidNetwork,
-    setKta,
-    setKtaToken,
-    setMultiCall,
     setIsConnected,
     setOnValidNetwork,
     checkOnValidNetwork,

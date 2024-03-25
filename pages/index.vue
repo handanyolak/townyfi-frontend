@@ -9,11 +9,11 @@
     >
       <Map ref="mapElement" />
     </div>
-    <TheLoading v-show="isLoading" fullScreen />
+    <TheLoading v-show="isLoading" full-screen />
     <AppModal
-      :modalSize="(width + 20).toString()"
-      :modalActive="Boolean(modalComponentName)"
-      @modalClosed="clearModalInfo()"
+      :modal-size="(width + 20).toString()"
+      :modal-active="Boolean(modalComponentName)"
+      @modal-closed="clearModalInfo()"
     >
       <Component
         :is="currentComponent"
@@ -34,7 +34,7 @@ import TheLoading from '~/components/TheLoading.vue'
 import Map from '~/components/Map.vue'
 import AppModal from '~/components/AppModal.vue'
 
-//--------[ Stores ]--------//
+// --------[ Stores ]-------- //
 const appOptionsStore = useAppOptionsStore()
 const connectionStore = useConnectionStore()
 const userGameStore = useUserGameStore()
@@ -46,21 +46,21 @@ const { modalComponentName, modalComponentProps } = storeToRefs(appOptionsStore)
 const { onValidNetwork } = storeToRefs(connectionStore)
 const { isLoading } = storeToRefs(userGameStore)
 
-//--------[ Data ]--------//
-//TODO: map'de hesaplanan width buraya emit ile gonderilecek
+// --------[ Data ]-------- //
+// TODO: map'de hesaplanan width buraya emit ile gonderilecek
 const mapElement = ref(null)
 const { width } = useElementSize(mapElement)
 
-//--------[ Hooks ]--------//
+// --------[ Hooks ]-------- //
 onMounted(async () => {
   await initializeApp()
 })
 
-//--------[ Computed ]--------//
+// --------[ Computed ]-------- //
 const currentComponent = computed(() => {
   const _modalComponentName = modalComponentName.value
   return defineAsyncComponent(
-    () => import(`../components/modals/${_modalComponentName}.vue`)
+    () => import(`../components/modals/${_modalComponentName}.vue`),
   )
 })
 </script>

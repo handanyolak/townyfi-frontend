@@ -40,11 +40,11 @@
                   />
                   <p
                     style="font-size: 12px"
-                    class="message-box relative z-10 my-2 inline-block rounded-[10px] p-2 after:absolute after:-left-4 after:-z-10 after:origin-top-right after:skew-x-65 after:rounded-l-xl after:rounded-r-sm after:border-r-[32px] after:border-b-[14px]"
+                    class="message-box relative z-10 my-2 inline-block rounded-[10px] p-2 after:absolute after:-left-4 after:-z-10 after:origin-top-right after:skew-x-65 after:rounded-l-xl after:rounded-r-sm after:border-b-[14px] after:border-r-[32px]"
                     :class="{
-                      'bg-towni-brown-dark-300 text-white after:border-y-transparent after:border-r-towni-brown-dark-300 after:border-l-transparent':
+                      'bg-towni-brown-dark-300 text-white after:border-y-transparent after:border-l-transparent after:border-r-towni-brown-dark-300':
                         message.author === 'you',
-                      'bg-towni-brown-light-200 after:border-y-transparent after:border-r-towni-brown-light-200 after:border-l-transparent':
+                      'bg-towni-brown-light-200 after:border-y-transparent after:border-l-transparent after:border-r-towni-brown-light-200':
                         message.author !== 'you',
                     }"
                   >
@@ -104,7 +104,7 @@
 <script setup lang="ts">
 import { onClickOutside } from '@vueuse/core'
 
-//--------[ Data ]--------//
+// --------[ Data ]-------- //
 const youMessage = ref('')
 const isChat = ref(false)
 const chatBox = ref(null)
@@ -125,7 +125,7 @@ const messages: any = [
   },
 ]
 
-//--------[ Methods ]--------//
+// --------[ Methods ]-------- //
 const toggleChatTabs = (tabNumber: number) => {
   if (!isChat.value) {
     toggleChat()

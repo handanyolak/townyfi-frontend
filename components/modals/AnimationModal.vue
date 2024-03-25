@@ -13,8 +13,8 @@
         {{ props.message }}
       </p>
       <div class="flex space-x-3">
-        <AppButton @click="confirm()" class="px-6" basicHover>Yes</AppButton>
-        <AppButton @click="decline()" class="px-6" basicHover>No</AppButton>
+        <AppButton class="px-6" basic-hover @click="confirm()">Yes</AppButton>
+        <AppButton class="px-6" basic-hover @click="decline()">No</AppButton>
       </div>
     </div>
   </div>
@@ -26,7 +26,7 @@ const appOptionsStore = useAppOptionsStore()
 const { isConfirmed } = storeToRefs(appOptionsStore)
 const { closeModalWithResponse, clearModalInfo } = useAppOptionsStore()
 
-//--------[ Props & Emits ]--------//
+// --------[ Props & Emits ]-------- //
 interface AnimationModalProps {
   animation: string
   message: string

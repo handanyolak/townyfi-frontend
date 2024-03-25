@@ -1,28 +1,51 @@
-import { formatEther, JsonRpcSigner, ZeroAddress } from 'ethers'
+import {
+  type Address,
+  formatEther,
+  zeroAddress,
+  custom,
+  publicActions,
+  createWalletClient,
+} from 'viem'
+import * as chains from 'viem/chains'
 import { TYPE } from 'vue-toastification'
 import { useAppToast } from '~/composables/useAppToast'
+import { custom as customChain } from '~/chains/custom'
 import { $t } from '~/composables/useLang'
 
 export const useUserWalletStore = defineStore('userWalletStore', () => {
-  //--------[ Stores ]--------//
+  // --------[ Nuxt ]-------- //
+  const {
+    public: { chain: runtimeChain },
+  } = useRuntimeConfig()
+
+  // --------[ Stores ]-------- //
   const connectionStore = useConnectionStore()
   const userGameStore = useUserGameStore()
-  const { getProvider } = storeToRefs(connectionStore)
 
-  //--------[ States ]--------//
-  const address = ref(ZeroAddress)
+  // --------[ States ]-------- //
+  const ethereum = window.ethereum
+  const address = ref(zeroAddress as Address)
+  const chain =
+    runtimeChain !== 'custom'
+      ? (chains[
+          runtimeChain as keyof typeof chains // eslint-disable-line import/namespace
+        ] as chains.Chain)
+      : customChain
+
+  const walletClient = computed(() =>
+    createWalletClient({
+      chain,
+      transport: custom(ethereum),
+      account: address.value,
+    }).extend(publicActions),
+  )
   const ktaAllowance = ref(0n)
   const ktaBalance = ref(0n)
-  const currentBlockNumber = ref(0)
+  const currentBlockNumber = ref(BigInt(0))
   const balance = ref('')
 
-  //--------[ Getters ]--------//
-  const getSigner = computed(
-    () => new JsonRpcSigner(getProvider.value, address.value)
-  )
-
-  //--------[ Actions ]--------//
-  const setAddress = (newAddress: string) => {
+  // --------[ Actions ]-------- //
+  const setAddress = (newAddress: Address) => {
     address.value = newAddress
   }
 
@@ -30,7 +53,7 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
     balance.value = newBalance
   }
 
-  const setCurrentBlockNumber = (newBlockNumber: number) => {
+  const setCurrentBlockNumber = (newBlockNumber: bigint) => {
     currentBlockNumber.value = newBlockNumber
   }
 
@@ -43,27 +66,30 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
   }
 
   const connect = async () => {
-    const accounts = await getProvider.value.listAccounts()
+    const accounts = await walletClient.value.getAddresses()
     const isConnected = accounts.length > 0
     connectionStore.setIsConnected(isConnected)
     // TODO: Is this code block necessary?
-    if (isConnected) await updateUserWalletInfo()
+    if (isConnected) await updateUserWalletInfo(accounts[0])
   }
 
-  const updateUserWalletInfo = async (_address = null) => {
-    await updateUserAddress(_address)
-    await updateUserBalance()
+  const updateUserWalletInfo = async (_address: Address) => {
+    updateUserAddress(_address)
+    await updateUserBalance(_address)
   }
 
-  const updateUserAddress = async (_address = null) => {
-    setAddress(
-      _address ||
-        (await (await getProvider.value.listAccounts())[0].getAddress())
+  const updateUserAddress = (_address: Address) => {
+    setAddress(_address)
+  }
+
+  const updateUserBalance = async (_address: Address) => {
+    setBalance(
+      formatEther(
+        await walletClient.value.getBalance({
+          address: _address,
+        }),
+      ),
     )
-  }
-
-  const updateUserBalance = async () => {
-    setBalance(formatEther(await getProvider.value.getBalance(address.value)))
   }
 
   const startEthEvents = () => {
@@ -92,7 +118,7 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
 
   const connectWeb3 = async () => {
     try {
-      await getProvider.value.send('eth_requestAccounts', [])
+      await walletClient.value.requestAddresses()
       handleAccountsChanged()
       await connect()
     } catch (error) {
@@ -103,7 +129,8 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
   return {
     address,
     balance,
-    getSigner,
+    chain,
+    walletClient,
     ktaAllowance,
     currentBlockNumber,
     connect,

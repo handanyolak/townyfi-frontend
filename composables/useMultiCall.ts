@@ -1,75 +1,65 @@
-import {
-  BaseContract,
-  type BytesLike,
-  FunctionFragment,
-  checkResultErrors,
-} from 'ethers'
+import type { Abi, Address } from 'viem'
 import type { MultiCallData, ResultInfo } from '~/types'
 
 export const useMultiCall = async (
-  multicallData: MultiCallData[]
-): Promise<Map<string, ResultInfo[]>> => {
-  const connectionStore = useConnectionStore()
-  const { getMultiCall } = storeToRefs(connectionStore)
+  multicallData: MultiCallData[],
+): Promise<Map<Address, ResultInfo[]>> => {
+  const userWalletStore = useUserWalletStore()
 
-  const contracts: BaseContract[] = []
-  const fragments: FunctionFragment[] = []
-  const targets: string[] = []
-  const data: BytesLike[] = []
+  const { walletClient } = storeToRefs(userWalletStore)
+
+  const contracts: {
+    address: Address
+    abi: Abi
+    functionName: string
+    args: any[]
+  }[] = []
+  const targets: Address[] = []
   const names: string[] = []
   const inputs: any[] = []
 
   for (const item of multicallData) {
-    const functionsData = item.functionsData
+    const { address, abi, functionsData } = item
+    const contract = {
+      address,
+      abi,
+    } as const
+
     for (const functionData of functionsData) {
-      const input = functionData.inputs || []
-      inputs.push(input)
-      const name = functionData.name
+      const { name, inputs: fnInputs = [] } = functionData
+      inputs.push(fnInputs)
       names.push(name)
-      const contract = item.contract
-      contracts.push(contract)
-      targets.push(contract.target as string)
-      const fragment: FunctionFragment = (contract as any)[name].fragment
-      fragments.push(fragment)
-
-      const types: string[] = []
-      for (const input of fragment.inputs) {
-        types.push(input.type)
+      const multicallContracts = {
+        ...contract,
+        functionName: name,
+        args: fnInputs,
       }
+      targets.push(address)
 
-      if (fragment.inputs.length !== input.length) {
-        throw new Error(`wrong inputs length for function: ${name}`)
-      }
-
-      const functionInputData = contract.interface.encodeFunctionData(
-        fragment,
-        input
-      )
-
-      data.push(functionInputData)
+      contracts.push(multicallContracts)
     }
   }
 
-  const allRawData = await getMultiCall.value.multiCall(targets, data)
-  const result = new Map<string, ResultInfo[]>()
-  for (let i = 0; i < allRawData.length; i++) {
-    const data = contracts[i].interface.decodeFunctionResult(
-      fragments[i],
-      allRawData[i]
-    )
+  const data = await walletClient.value.multicall({
+    contracts,
+    allowFailure: true,
+  })
+
+  const result = new Map<Address, ResultInfo[]>()
+  for (let i = 0; i < data.length; i++) {
+    const { result: multicallRes, error, status } = data[i]
 
     const key = targets[i]
     if (!result.has(key)) {
       result.set(key, [])
     }
 
-    const errors = checkResultErrors(data)
-    result.get(key)!!.push({
+    result.get(key)!.push({
       name: names[i],
       inputs: inputs[i],
-      result: data,
-      errors,
-      hasError: errors.length > 0,
+      result: multicallRes,
+      error,
+      hasError: status !== 'success',
     })
   }
 

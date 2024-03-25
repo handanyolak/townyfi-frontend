@@ -1,5 +1,7 @@
-import { convertToInteger, convertToArray } from './utils'
 import { createResolver } from '@nuxt/kit'
+import { zeroAddress } from 'viem'
+import { convertToInteger } from './utils'
+
 const { resolve } = createResolver(import.meta.url)
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
@@ -22,9 +24,7 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: ['@pinia/nuxt', '@vueuse/nuxt', 'nuxt-icon'],
-
-  plugins: ['@/plugins/vue-toastification', '@/plugins/vue3-lottie'],
+  modules: ['@pinia/nuxt', '@vueuse/nuxt', '@vee-validate/nuxt', 'nuxt-icon'],
 
   css: ['~/assets/css/main.css'],
 
@@ -44,15 +44,13 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      ktaAddress: process.env.NUXT_KTA_ADDRESS,
-      ktaTokenAddress: process.env.NUXT_KTA_TOKEN_ADDRESS,
-      multiCallAddress: process.env.NUXT_MULTICALL_ADDRESS,
-      networkName: process.env.NUXT_NETWORK_NAME,
-      networkSymbol: process.env.NUXT_NETWORK_SYMBOL,
-      chainRpcs: convertToArray(process.env.NUXT_CHAIN_RPCS),
-      chainExplorers: convertToArray(process.env.NUXT_CHAIN_EXPLORERS),
-      chainId: convertToInteger(process.env.NUXT_CHAIN_ID, 11155111),
-      chainBlockTime: convertToInteger(process.env.NUXT_CHAIN_BLOCK_TIME, 10),
+      ktaTokenAddress: process.env.NUXT_KTA_TOKEN_ADDRESS || zeroAddress,
+      ktaGamePassNftAddress:
+        process.env.NUXT_KTA_GAME_PASS_NFT_ADDRESS || zeroAddress,
+      ktaAddress: process.env.NUXT_KTA_ADDRESS || zeroAddress,
+      ktaGameChatAddress: process.env.NUXT_KTA_GAME_CHAT_ADDRESS || zeroAddress,
+      chain: process.env.NUXT_CHAIN,
+      chainBlockTime: convertToInteger(process.env.NUXT_CHAIN_BLOCK_TIME, 5),
       minNearLevel: convertToInteger(process.env.NUXT_MIN_NEAR_LEVEL, 2),
       maxNearLevel: convertToInteger(process.env.NUXT_MAX_NEAR_LEVEL, 5),
     },
@@ -60,6 +58,16 @@ export default defineNuxtConfig({
 
   pinia: {
     storesDirs: ['~/stores/**', '#/stores/**', '@/stores/**'],
+  },
+
+  veeValidate: {
+    autoImports: true,
+    componentNames: {
+      Form: 'VeeForm',
+      Field: 'VeeField',
+      ErrorMessage: 'VeeErrorMessage',
+    },
+    typedSchemaPackage: 'yup',
   },
 
   devtools: {

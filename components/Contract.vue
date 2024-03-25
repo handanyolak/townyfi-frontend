@@ -11,7 +11,7 @@
       <span>{{ data.contractDesc }}</span>
     </ListItem>
     <a
-      :href="`${chainExplorers[0]}/address/${data.contractAddress}`"
+      :href="`${walletClient.chain.blockExplorers?.default.url}/address/${data.contractAddress}`"
       target="_blank"
     >
       <AppButton class="my-2 flex w-full justify-center">
@@ -32,14 +32,15 @@
 </template>
 
 <script setup lang="ts">
+import { TYPE } from 'vue-toastification'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
-import { TYPE } from 'vue-toastification'
 
-const { chainExplorers } = useRuntimeConfig().public
-const connectionStore = useConnectionStore()
+const contractStore = useContractStore()
+const userWalletStore = useUserWalletStore()
 
-const { getKtaToken } = storeToRefs(connectionStore)
+const { getKtaToken } = storeToRefs(contractStore)
+const { walletClient } = storeToRefs(userWalletStore)
 
 interface ContractProps {
   data: {
@@ -57,9 +58,9 @@ const addKtaTokenToWallet = async () => {
       params: {
         type: 'ERC20',
         options: {
-          address: await getKtaToken.value.getAddress(),
-          symbol: await getKtaToken.value.symbol(),
-          decimals: (await getKtaToken.value.decimals()).toString(),
+          address: getKtaToken.value.address,
+          symbol: await getKtaToken.value.read.symbol(),
+          decimals: (await getKtaToken.value.read.decimals()).toString(),
         },
       },
     })

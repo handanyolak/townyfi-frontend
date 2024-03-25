@@ -1,47 +1,21 @@
 import { useToggle, useStorage } from '@vueuse/core'
-import { ethers } from 'ethers'
+import { formatUnits, type WatchContractEventReturnType } from 'viem'
 import { TYPE } from 'vue-toastification'
-import {
-  KillThemAll__factory,
-  KtaToken__factory,
-  MultiCall__factory,
-} from '~/types'
-import type { Coordinates } from '~/types/typechain/contracts/game/IKillThemAll'
-import type { IKillThemAll } from '~/types/typechain/contracts/game/KillThemAll'
+import { transformSettings, transformTown, transformUser } from '~/transformers'
+import type { CoordinateStruct, User } from '~/types/contract'
 
 export const useAppOptionsStore = defineStore('appOptionsStore', () => {
-  //--------[ Nuxt Imports ]--------//
-  const { ktaAddress, ktaTokenAddress, multiCallAddress } =
-    useRuntimeConfig().public
-
-  //--------[ Stores ]--------//
+  // --------[ Stores ]-------- //
   const userWalletStore = useUserWalletStore()
   const userGameStore = useUserGameStore()
   const connectionStore = useConnectionStore()
+  const contractStore = useContractStore()
 
-  const { setCurrentBlockNumber, connect, setKtaAllowance, setKtaBalance } =
-    userWalletStore
-  const {
-    hasMetamask,
-    setKtaToken,
-    setKta,
-    setMultiCall,
-    checkOnValidNetwork,
-  } = connectionStore
-  const {
-    setUser,
-    setSetting,
-    setUserProperty,
-    setIsRegistered,
-    setUserCoordinate,
-    setTown,
-  } = userGameStore
+  const { hasMetamask, checkOnValidNetwork } = connectionStore
 
-  const { onValidNetwork, getKta, getProvider } = storeToRefs(connectionStore)
-  const { address, getSigner } = storeToRefs(userWalletStore)
-  const { userCountByCoordinate } = storeToRefs(userGameStore)
+  const { onValidNetwork } = storeToRefs(connectionStore)
 
-  //--------[ States ]--------//
+  // --------[ States ]-------- //
   const isBlockchainInfo = ref(false)
   const isContractInfo = ref(false)
   const initialized = ref(false)
@@ -49,7 +23,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const isGameInfo = ref(false)
   const isOptions = ref(false)
   const music = ref(false)
-  const originCoordinate = ref<Coordinates.CoordinateStruct>({
+  const originCoordinate = ref<CoordinateStruct>({
     _x: BigInt(0),
     _y: BigInt(0),
   })
@@ -63,16 +37,24 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const isConfirmed = ref(false)
   const modalResultResolver = ref<((value: unknown) => void) | null>(null)
   const isAttackSuccess = ref(false)
+  const userMovedEvent = ref<WatchContractEventReturnType | null>(null)
+  const userRegisteredEvent = ref<WatchContractEventReturnType | null>(null)
+  const userMissedEvent = ref<WatchContractEventReturnType | null>(null)
+  const userAttackedEvent = ref<WatchContractEventReturnType | null>(null)
+  const approvalEvent = ref<WatchContractEventReturnType | null>(null)
+  const transferEvent = ref<WatchContractEventReturnType | null>(null)
 
-  //--------[ Actions ]--------//
-
+  // --------[ Actions ]-------- //
   const setModalInfo = (
     newModalComponentName: string,
-    newModalComponentProps?: any
+    newModalComponentProps?: any,
   ) => {
     modalComponentName.value = newModalComponentName
     modalComponentProps.value = newModalComponentProps
-    isAnimation.value = modalComponentProps.value?.hasOwnProperty('animation')
+    isAnimation.value = Object.prototype.hasOwnProperty.call(
+      modalComponentProps.value ?? {},
+      'animation',
+    )
     sideLeave()
     return new Promise((resolve) => {
       modalResultResolver.value = resolve
@@ -108,35 +90,17 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     })
   }
 
-  const setOriginCoordinate = (
-    newOriginCoordinate: Coordinates.CoordinateStruct
-  ) => {
+  const setOriginCoordinate = (newOriginCoordinate: CoordinateStruct) => {
     originCoordinate.value = newOriginCoordinate
   }
 
   const initializeApp = async () => {
     if (hasMetamask) {
-      await connect()
+      await userWalletStore.connect()
       await checkOnValidNetwork()
 
       if (onValidNetwork.value && !initialized.value) {
         initialized.value = true
-
-        const ktaToken = KtaToken__factory.connect(
-          ktaTokenAddress,
-          getSigner.value
-        )
-
-        const kta = KillThemAll__factory.connect(ktaAddress, getSigner.value)
-
-        const multiCall = MultiCall__factory.connect(
-          multiCallAddress,
-          getSigner.value
-        )
-
-        setKtaToken(ktaToken)
-        setKta(kta)
-        setMultiCall(multiCall)
 
         const {
           health,
@@ -151,7 +115,9 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
           townInfo,
           timer,
           charPoint,
-        } = await kta.userByAddr(address.value)
+        } = transformUser(
+          await contractStore.getKta.read.userByAddr([userWalletStore.address]),
+        )
 
         const userInfo = {
           health,
@@ -172,218 +138,413 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
 
         setOriginCoordinate(userInfo.coordinate)
 
-        setKtaAllowance(await ktaToken.allowance(address.value, ktaAddress))
-        setKtaBalance(await ktaToken.balanceOf(address.value))
+        userWalletStore.setKtaAllowance(
+          await contractStore.getKtaToken.read.allowance([
+            userWalletStore.address,
+            contractStore.getKta.address,
+          ]),
+        )
+        userWalletStore.setKtaBalance(
+          await contractStore.getKtaToken.read.balanceOf([
+            userWalletStore.address,
+          ]),
+        )
 
-        const {
-          max,
-          price,
-          rate,
-          time,
-          min,
-          exp: settingExp,
-          multiplier,
-          numberDigits,
-        } = await kta.settings()
+        const settings = transformSettings(
+          await contractStore.getKta.read.settings(),
+        )
 
-        const setting = {
-          max,
-          price,
-          rate,
-          time,
-          min,
-          exp: settingExp,
-          multiplier,
-          numberDigits,
+        userGameStore.setSettings(settings)
+
+        userWalletStore.walletClient.watchBlockNumber({
+          onBlockNumber: (blockNumber) => {
+            userWalletStore.setCurrentBlockNumber(blockNumber)
+          },
+        })
+
+        // TODO: eventler startGameEvents fonksiyonunda eklenecek
+        const ktaContractEventFilter = {
+          address: contractStore.getKta.address,
+          abi: contractStore.getKta.abi,
+          strict: true,
+        } as const
+
+        const ktaTokenContractEventFilter = {
+          address: contractStore.getKtaToken.address,
+          abi: contractStore.getKtaToken.abi,
+          strict: true,
+        } as const
+
+        if (!userMovedEvent.value) {
+          userMovedEvent.value =
+            userWalletStore.walletClient.watchContractEvent({
+              ...ktaContractEventFilter,
+              eventName: 'UserMoved',
+              onLogs: async (logs) => {
+                try {
+                  const isExistByLog: Record<string, boolean> = {}
+                  const logsLen = logs.length
+
+                  for (const log of logs) {
+                    if (logsLen > 1) {
+                      const hash = await createSha256Hash(JSON.stringify(log))
+                      if (isExistByLog[hash]) {
+                        continue
+                      }
+                      isExistByLog[hash] = true
+                    }
+
+                    const { eventName, args } = log
+                    const { user, oldCoordinate, newCoordinate } = args
+
+                    const oldX = oldCoordinate._x.toString()
+                    const oldY = oldCoordinate._y.toString()
+                    const newX = newCoordinate._x.toString()
+                    const newY = newCoordinate._y.toString()
+
+                    const oldCoordinateMapKey = `${oldX},${oldY}`
+                    if (
+                      userGameStore.userCountByCoordinate.has(
+                        oldCoordinateMapKey,
+                      )
+                    ) {
+                      userGameStore.userCountByCoordinate.set(
+                        oldCoordinateMapKey,
+                        userGameStore.userCountByCoordinate.get(
+                          oldCoordinateMapKey,
+                        ) ?? 1 - 1,
+                      )
+                    }
+
+                    const newCoordinateMapKey = `${newX},${newY}`
+                    if (
+                      userGameStore.userCountByCoordinate.has(
+                        newCoordinateMapKey,
+                      )
+                    ) {
+                      userGameStore.userCountByCoordinate.set(
+                        newCoordinateMapKey,
+                        userGameStore.userCountByCoordinate.get(
+                          newCoordinateMapKey,
+                        ) ?? 0 + 1,
+                      )
+                    }
+
+                    if (!areAddressesEqual(user, userWalletStore.address)) {
+                      continue
+                    }
+
+                    userGameStore.setUserProperty('coordinate', newCoordinate)
+                    userGameStore.setUserCoordinate(userInfo.coordinate)
+
+                    const toastMsg =
+                      `You moved to new coordinate!\n` +
+                      `Event: ${eventName}\n` +
+                      `${formatEventArgs(args)}`
+
+                    useAppToast(TYPE.INFO, toastMsg)
+                  }
+                } catch (error) {
+                  console.error(`${logs[0].eventName} error`, error)
+                }
+              },
+            })
         }
 
-        setSetting(setting)
+        if (!userRegisteredEvent.value) {
+          userRegisteredEvent.value =
+            userWalletStore.walletClient.watchContractEvent({
+              ...ktaContractEventFilter,
+              eventName: 'UserRegistered',
+              onLogs: async (logs) => {
+                try {
+                  const isExistByLog: Record<string, boolean> = {}
+                  const logsLen = logs.length
 
-        setCurrentBlockNumber(await getProvider.value.getBlockNumber())
+                  for (const log of logs) {
+                    if (logsLen > 1) {
+                      const hash = await createSha256Hash(JSON.stringify(log))
+                      if (isExistByLog[hash]) {
+                        continue
+                      }
+                      isExistByLog[hash] = true
+                    }
+                    // TODO: kayit olan kisi icin UserMoved event'i tetiklenmiyor. Eklenince bu silinecek.
+                    const coordinateMapKey = '0,0'
+                    if (
+                      userGameStore.userCountByCoordinate.has(coordinateMapKey)
+                    ) {
+                      userGameStore.userCountByCoordinate.set(
+                        coordinateMapKey,
+                        userGameStore.userCountByCoordinate.get(
+                          coordinateMapKey,
+                        ) ?? 0 + 1,
+                      )
+                    }
 
-        getProvider.value.on('block', (blockNumber: number) => {
-          setCurrentBlockNumber(blockNumber)
-        })
+                    const { eventName, transactionHash: hash } = log
+                    // TODO: tx'den almak yerine event'ten almaliyiz cunku client'a yuk biniyor
+                    const tx =
+                      await userWalletStore.walletClient.getTransaction({
+                        hash,
+                      })
+                    const registeredAddress = tx.from
 
-        // TODO: Ethers v6 events not working yet
-        // TODO: startGameEvents fonksiyonunda eklenecek
-        kta.on(
-          kta.filters.UserMoved,
-          async (
-            user,
-            oldCoordinate, // oldCoordinate: Coordinates.CoordinateStruct,
-            newCoordinate,
-            event
-          ) => {
-            const oldCoordinateMapKey = `${oldCoordinate._x.toString()},${oldCoordinate._y.toString()}`
-            if (userCountByCoordinate.value.has(oldCoordinateMapKey)) {
-              const oldCoordinateUserLength = userCountByCoordinate.value.get(
-                oldCoordinateMapKey
-              ) as number
+                    if (
+                      !areAddressesEqual(
+                        registeredAddress,
+                        userWalletStore.address,
+                      )
+                    ) {
+                      continue
+                    }
 
-              userCountByCoordinate.value.set(
-                oldCoordinateMapKey,
-                oldCoordinateUserLength - 1
-              )
-            }
+                    const toastMsg =
+                      `Welcome to TownyFi!\n` + `Event: ${eventName}\n`
 
-            const newCoordinateMapKey = `${newCoordinate._x.toString()},${newCoordinate._y.toString()}`
-            if (userCountByCoordinate.value.has(newCoordinateMapKey)) {
-              const newCoordinateUserLength = userCountByCoordinate.value.get(
-                newCoordinateMapKey
-              ) as number
+                    const userInfo = transformUser(
+                      await contractStore.getKta.read.userByAddr([
+                        userWalletStore.address,
+                      ]),
+                    )
 
-              userCountByCoordinate.value.set(
-                newCoordinateMapKey,
-                newCoordinateUserLength + 1
-              )
-            }
+                    await setUserInfo(userInfo)
 
-            let toastMsg = ''
-            if (user === address.value) {
-              setUserProperty('coordinate', newCoordinate)
-              userGameStore.setUserCoordinate(userInfo.coordinate)
-
-              toastMsg += `You moved!\n` + `Event: ${event.eventName}\n`
-
-              const argsEntries = Object.entries(event.args.toObject())
-              argsEntries.forEach(([key, value], index) => {
-                toastMsg += `${toCapitalizedWords(key)}: ${value}`
-                if (index !== argsEntries.length - 1) {
-                  toastMsg += '\n'
+                    useAppToast(TYPE.INFO, toastMsg)
+                  }
+                } catch (error) {
+                  console.error(`${logs[0].eventName} error`, error)
                 }
-              })
+              },
+            })
+        }
 
-              useAppToast(TYPE.INFO, toastMsg)
-            }
-          }
-        )
+        if (!userMissedEvent.value) {
+          userMissedEvent.value =
+            userWalletStore.walletClient.watchContractEvent({
+              ...ktaContractEventFilter,
+              eventName: 'UserMissed',
+              onLogs: async (logs) => {
+                try {
+                  const isExistByLog: Record<string, boolean> = {}
+                  const logsLen = logs.length
 
-        // TODO: bu bilgiyi transaction'dan almak yerine parametre olarak alacagiz cunku frontend'e yuk biniyor.
-        kta.on(kta.filters.UserRegistered, async (event) => {
-          const tx = await event.getTransaction()
-          const registeredAddress = tx.from
+                  for (const log of logs) {
+                    if (logsLen > 1) {
+                      const hash = await createSha256Hash(JSON.stringify(log))
+                      if (isExistByLog[hash]) {
+                        continue
+                      }
+                      isExistByLog[hash] = true
+                    }
 
-          let toastMsg = ''
-          if (registeredAddress === address.value) {
-            const userInfo = await kta.userByAddr(address.value)
-            await setUserInfo(userInfo)
+                    const { eventName, transactionHash: hash, args } = log
+                    const { defender } = args
+                    // TODO: tx'den almak yerine event'ten almaliyiz cunku client'a yuk biniyor
+                    const tx =
+                      await userWalletStore.walletClient.getTransaction({
+                        hash,
+                      })
+                    const attacker = tx.from
+                    const isUserAttacker = areAddressesEqual(
+                      attacker,
+                      userWalletStore.address,
+                    )
+                    if (
+                      !isUserAttacker &&
+                      !areAddressesEqual(defender, userWalletStore.address)
+                    ) {
+                      continue
+                    }
 
-            toastMsg += `Welcome to TownyFi!\n` + `Event: ${event.eventName}\n`
+                    const toastMsg =
+                      (isUserAttacker
+                        ? 'Your attack was dodged!\n'
+                        : 'You dodged the attack!\n') +
+                      `Event: ${eventName}\n` +
+                      `${formatEventArgs(args)}`
 
-            useAppToast(TYPE.INFO, toastMsg)
-          }
-        })
-
-        kta.on(kta.filters.UserMissed, async (defender, event) => {
-          const tx = await event.getTransaction()
-          const fromAddress = tx.from
-          let toastMsg = ''
-
-          if (fromAddress === address.value) {
-            toastMsg += `Your attack was dodged!\n`
-          }
-
-          if (defender === address.value) {
-            toastMsg += `You dodged the attack!\n`
-          }
-
-          if (toastMsg) {
-            toastMsg += `Event: ${event.eventName}\n`
-          }
-
-          const argsEntries = Object.entries(event.args.toObject())
-          argsEntries.forEach(([key, value], index) => {
-            toastMsg += `${toCapitalizedWords(key)}: ${value}`
-            if (index !== argsEntries.length - 1) {
-              toastMsg += '\n'
-            }
-          })
-
-          if (toastMsg) {
-            useAppToast(TYPE.INFO, toastMsg)
-          }
-        })
-
-        kta.on(kta.filters.UserAttacked, async (defender, _, __, event) => {
-          const tx = await event.getTransaction()
-          const fromAddress = tx.from
-          let toastMsg = ''
-
-          if (fromAddress === address.value) {
-            toastMsg += `You attacked!\n`
-          }
-
-          if (defender === address.value) {
-            toastMsg += `You were attacked!\n`
-          }
-
-          if (toastMsg) {
-            toastMsg += `Event: ${event.eventName}\n`
-          }
-
-          const argsEntries = Object.entries(event.args.toObject())
-          argsEntries.forEach(([key, value], index) => {
-            toastMsg += `${toCapitalizedWords(key)}: ${value}`
-            if (index !== argsEntries.length - 1) {
-              toastMsg += '\n'
-            }
-          })
-
-          if (toastMsg) {
-            useAppToast(TYPE.INFO, toastMsg)
-          }
-        })
-
-        ktaToken.on(ktaToken.filters.Approval, (owner, spender, value) => {
-          if (spender === ktaAddress && owner === address.value) {
-            setKtaAllowance(value)
-          }
-        })
-
-        ktaToken.on(
-          ktaToken.filters.Transfer,
-          async (from, to, value, event) => {
-            if (from === address.value || to === address.value) {
-              setKtaBalance(await ktaToken.balanceOf(address.value))
-
-              const valueFormat = ethers.formatUnits(
-                value,
-                await ktaToken.decimals()
-              )
-
-              let toastMsg = ''
-              if (from === address.value) {
-                toastMsg += `You sent ${valueFormat} Game Token!\n`
-              }
-
-              if (to === address.value) {
-                toastMsg += `You received ${valueFormat} Game Token!\n`
-              }
-
-              toastMsg += `Event: ${event.eventName}\n`
-
-              const argsEntries = Object.entries(event.args.toObject())
-              argsEntries.forEach(([key, value], index) => {
-                toastMsg += `${toCapitalizedWords(key)}: ${value}`
-                if (index !== argsEntries.length - 1) {
-                  toastMsg += '\n'
+                    useAppToast(TYPE.INFO, toastMsg)
+                  }
+                } catch (error) {
+                  console.error(`${logs[0].eventName} error`, error)
                 }
-              })
+              },
+            })
+        }
 
-              useAppToast(TYPE.INFO, toastMsg)
-            }
-          }
-        )
+        if (!userAttackedEvent.value) {
+          userAttackedEvent.value =
+            userWalletStore.walletClient.watchContractEvent({
+              ...ktaContractEventFilter,
+              eventName: 'UserAttacked',
+              onLogs: async (logs) => {
+                try {
+                  const isExistByLog: Record<string, boolean> = {}
+                  const logsLen = logs.length
+
+                  for (const log of logs) {
+                    if (logsLen > 1) {
+                      const hash = await createSha256Hash(JSON.stringify(log))
+                      if (isExistByLog[hash]) {
+                        continue
+                      }
+                      isExistByLog[hash] = true
+                    }
+
+                    const { eventName, transactionHash: hash, args } = log
+                    const { defender } = args
+                    // TODO: tx'den almak yerine event'ten almaliyiz cunku client'a yuk biniyor
+                    const tx =
+                      await userWalletStore.walletClient.getTransaction({
+                        hash,
+                      })
+                    const attacker = tx.from
+                    const isUserAttacker = areAddressesEqual(
+                      attacker,
+                      userWalletStore.address,
+                    )
+                    if (
+                      !isUserAttacker &&
+                      !areAddressesEqual(defender, userWalletStore.address)
+                    ) {
+                      continue
+                    }
+
+                    const toastMsg =
+                      (isUserAttacker
+                        ? 'You attacked!\n'
+                        : 'You were attacked!\n') +
+                      `Event: ${eventName}\n` +
+                      `${formatEventArgs(args)}`
+
+                    useAppToast(TYPE.INFO, toastMsg)
+                  }
+                } catch (error) {
+                  console.error(`${logs[0].eventName} error`, error)
+                }
+              },
+            })
+        }
+
+        if (!approvalEvent.value) {
+          approvalEvent.value = userWalletStore.walletClient.watchContractEvent(
+            {
+              ...ktaTokenContractEventFilter,
+              eventName: 'Approval',
+              args: {
+                owner: userWalletStore.address,
+                spender: contractStore.getKta.address,
+              },
+              onLogs: async (logs) => {
+                try {
+                  const isExistByLog: Record<string, boolean> = {}
+                  const logsLen = logs.length
+
+                  for (const log of logs) {
+                    if (logsLen > 1) {
+                      const hash = await createSha256Hash(JSON.stringify(log))
+                      if (isExistByLog[hash]) {
+                        continue
+                      }
+                      isExistByLog[hash] = true
+                    }
+
+                    const { eventName, args } = log
+                    const { value } = args
+
+                    userWalletStore.setKtaAllowance(value)
+
+                    const toastMsg =
+                      `You approved Game Token!\n` +
+                      `Event: ${eventName}\n` +
+                      `${formatEventArgs(args)}`
+
+                    useAppToast(TYPE.INFO, toastMsg)
+                  }
+                } catch (error) {
+                  console.error(`${logs[0].eventName} error`, error)
+                }
+              },
+            },
+          )
+        }
+
+        if (!transferEvent.value) {
+          transferEvent.value = userWalletStore.walletClient.watchContractEvent(
+            {
+              ...ktaTokenContractEventFilter,
+              eventName: 'Transfer',
+              onLogs: async (logs) => {
+                try {
+                  const isExistByLog: Record<string, boolean> = {}
+                  const logsLen = logs.length
+
+                  for (const log of logs) {
+                    if (logsLen > 1) {
+                      const hash = await createSha256Hash(JSON.stringify(log))
+                      if (isExistByLog[hash]) {
+                        continue
+                      }
+                      isExistByLog[hash] = true
+                    }
+
+                    const { eventName, args } = log
+                    const { from, to, value } = args
+                    const isUserSender = areAddressesEqual(
+                      from,
+                      userWalletStore.address,
+                    )
+
+                    if (
+                      !isUserSender &&
+                      !areAddressesEqual(to, userWalletStore.address)
+                    ) {
+                      continue
+                    }
+
+                    userWalletStore.setKtaBalance(
+                      await contractStore.getKtaToken.read.balanceOf([
+                        userWalletStore.address,
+                      ]),
+                    )
+
+                    const valueFormat = formatUnits(
+                      value,
+                      await contractStore.getKtaToken.read.decimals(),
+                    )
+
+                    const toastMsg =
+                      (isUserSender
+                        ? `You sent ${valueFormat} Game Token!\n`
+                        : `You received ${valueFormat} Game Token!\n`) +
+                      `Event: ${eventName}\n` +
+                      `${formatEventArgs(args)}`
+
+                    useAppToast(TYPE.INFO, toastMsg)
+                  }
+                } catch (error) {
+                  console.error(`${logs[0].eventName} error`, error)
+                }
+              },
+            },
+          )
+        }
       }
     }
   }
 
-  const setUserInfo = async (userInfo: IKillThemAll.UserStruct) => {
-    setIsRegistered(await getKta.value.isRegistered(address.value))
-    setUser(userInfo)
-    setUserCoordinate(userInfo.coordinate)
-    setTown((await getKta.value.townById(userInfo.townInfo.townId)) as any)
+  const setUserInfo = async (userInfo: User) => {
+    userGameStore.setIsRegistered(
+      await contractStore.getKta.read.isRegistered([userWalletStore.address]),
+    )
+    userGameStore.setUser(userInfo)
+    userGameStore.setUserCoordinate(userInfo.coordinate)
+    userGameStore.setTown(
+      transformTown(
+        await contractStore.getKta.read.townById([userInfo.townInfo.townId]),
+      ),
+    )
   }
 
   const toggleAudio = () => {
@@ -408,7 +569,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     if (!mainThemeAudio.value) {
       mainThemeAudio.value = new Audio(
         // @ts-ignore
-        (await import('~/assets/sound/in-dreams.mp3')).default
+        (await import('~/assets/sound/in-dreams.mp3')).default,
       )
       mainThemeAudio.value.loop = true
     }

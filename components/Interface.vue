@@ -6,8 +6,8 @@
         :select="language"
         :dropdown-items="languages"
         :icon-names="languages"
-        @selected="(item) => selectLanguage(item)"
         rounded
+        @selected="(item) => selectLanguage(item)"
       />
     </ListItem>
     <ListItem title="Theme:">
@@ -31,10 +31,11 @@
     <ListTitle>Interface</ListTitle>
     <ListItem title="Near Level:">
       <SidebarDropdown
+        :key="nearLevel"
         :select="nearLevel.toString()"
         :dropdown-items="createNumberArray(minNearLevel, maxNearLevel)"
-        @selected="(item) => selectNearLevel(item)"
         rounded
+        @selected="(item) => selectNearLevel(item)"
       ></SidebarDropdown>
     </ListItem>
   </div>
@@ -47,10 +48,12 @@ import ListItem from '~/components/sidebar-items/ListItem.vue'
 import SidebarDropdown from '~/components/SidebarDropdown.vue'
 import Switch from '~/components/Switch.vue'
 
-//--------[ Nuxt Imports ]--------//
-const { minNearLevel, maxNearLevel } = useRuntimeConfig().public
+// --------[ Nuxt Imports ]-------- //
+const {
+  public: { minNearLevel, maxNearLevel },
+} = useRuntimeConfig()
 
-//--------[ Stores ]--------//
+// --------[ Stores ]-------- //
 const appOptionStore = useAppOptionsStore()
 const userGameStore = useUserGameStore()
 const useUserOptions = useUserOptionsStore()
@@ -62,7 +65,7 @@ const { setLanguage } = useUserOptions
 const { nearLevel } = storeToRefs(userGameStore)
 const { language } = storeToRefs(useUserOptions)
 
-//--------[ Data ]--------//
+// --------[ Data ]-------- //
 const isDark = useDark({
   storageKey: 'theme',
   valueDark: 'dark',
@@ -70,14 +73,14 @@ const isDark = useDark({
 })
 const toggleTheme = useToggle(isDark)
 
-//--------[ Computed ]--------//
+// --------[ Computed ]-------- //
 const languages = computed(() => {
   const allLanguages = ['en', 'tr', 'de']
 
   return allLanguages.filter((item) => item !== language.value)
 })
 
-//--------[ Methods ]--------//
+// --------[ Methods ]-------- //
 const selectLanguage = (item: string) => {
   setLanguage(item)
 }

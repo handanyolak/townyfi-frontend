@@ -56,14 +56,18 @@
 </template>
 
 <script setup lang="ts">
-//--------[ Stores ]--------//
+// --------[ Stores ]-------- //
 const appOptionStore = useAppOptionsStore()
 const { isGameInfo, isContractInfo, isBlockchainInfo, isOptions } =
   storeToRefs(appOptionStore)
 
-//--------[ Methods ]--------//
+// --------[ Methods ]-------- //
 const sideOver = (
-  drawerName: 'isGameInfo' | 'isContractInfo' | 'isBlockchainInfo' | 'isOptions'
+  drawerName:
+    | 'isGameInfo'
+    | 'isContractInfo'
+    | 'isBlockchainInfo'
+    | 'isOptions',
 ) => {
   requestAnimationFrame(() => {
     appOptionStore[drawerName] = true

@@ -5,7 +5,7 @@ export const useSound = async (soundName: string, type: 'wav' | 'mp3') => {
 
   if (audio.value) {
     new Audio(
-      (await import(`~/assets/sound/${soundName}.${type}`)).default
+      (await import(`~/assets/sound/${soundName}.${type}`)).default,
     ).play()
   }
 }

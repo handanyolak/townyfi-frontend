@@ -1,8 +1,8 @@
 <template>
   <svg
+    id="ribbon"
     xmlns="http://www.w3.org/2000/svg"
     enable-background="new 0 0 2000 2000"
-    id="ribbon"
     viewBox="202.3 751.82 1595.39 497.06"
   >
     <path
@@ -113,17 +113,19 @@
       text-anchor="middle"
       fill="#6b360b"
     >
-      {{ TownName }}
+      {{ townName }}
     </text>
   </svg>
 </template>
 
 <script setup lang="ts">
-defineProps({
-  TownName: {
-    type: String,
-    default: 'Town',
-  },
+// --------[ Props & Emits ]-------- //
+interface BannerProps {
+  townName?: string
+}
+
+withDefaults(defineProps<BannerProps>(), {
+  townName: 'Town',
 })
 </script>
 

@@ -16,9 +16,9 @@
       <template #action>
         <AppButton
           v-if="actionable"
-          @click="actionValue?.action(copyValue[index], item)"
-          basicHover
+          basic-hover
           class="w-[120px]"
+          @click="actionValue?.action(copyValue[index], item)"
           >{{ actionValue?.name }}
         </AppButton>
       </template>
@@ -35,7 +35,7 @@
 <script setup lang="ts">
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 
-//--------[ Props & Emits ]--------//
+// --------[ Props & Emits ]-------- //
 interface ScrollableListProps {
   items?: string[]
   copyValue?: string | string[]
@@ -49,6 +49,8 @@ interface ScrollableListProps {
 }
 
 withDefaults(defineProps<ScrollableListProps>(), {
+  // @ts-expect-error
+  items: [], // eslint-disable-line vue/require-valid-default-prop
   copyValue: '',
 })
 </script>

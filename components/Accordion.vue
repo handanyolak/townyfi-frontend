@@ -32,19 +32,19 @@
 import { onClickOutside } from '@vueuse/core'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 
-//--------[ Props & Emits ]--------//
+// --------[ Props & Emits ]-------- //
 interface AccordionProps {
   dropdown?: boolean
   tooltip?: boolean
 }
 
-const props = defineProps<AccordionProps>()
+defineProps<AccordionProps>()
 
-//--------[ Data ]--------//
+// --------[ Data ]-------- //
 const isOpen = ref(false)
 const accordion = ref(null)
 
-//--------[ Methods ]--------//
+// --------[ Methods ]-------- //
 const toggleAccordion = () => {
   isOpen.value = !isOpen.value
 }

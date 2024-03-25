@@ -5,7 +5,12 @@
       <span>{{ middleCropping(address) }}</span>
     </ListItem>
     <ListItem title="Balance:">
-      <span>{{ balance }} {{ onValidNetwork ? networkSymbol : '' }}</span>
+      <span
+        >{{ balance }}
+        {{
+          onValidNetwork ? walletClient.chain.nativeCurrency.symbol : ''
+        }}</span
+      >
     </ListItem>
     <ListTitle>Miscellaneous</ListTitle>
     <ListItem title="Game Token Balance:">
@@ -19,13 +24,10 @@
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 
-//--------[ Nuxt ]--------//
-const { networkSymbol } = useRuntimeConfig().public
-
-//--------[ Nuxt ]--------//
+// --------[ Nuxt ]-------- //
 const userWalletStore = useUserWalletStore()
 const connectionStore = useConnectionStore()
 
-const { address, balance } = storeToRefs(userWalletStore)
+const { address, balance, walletClient } = storeToRefs(userWalletStore)
 const { onValidNetwork, isConnected } = storeToRefs(connectionStore)
 </script>

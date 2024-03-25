@@ -1,9 +1,9 @@
 <template>
   <span ref="tooltip" class="relative" @click.stop="toggleTooltip()">
     <Icon
-      @click="actionTooltip()"
       :name="iconName"
       class="mr-1 h-4 w-4 cursor-pointer text-towni-brown-dark-300 opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
+      @click="actionTooltip()"
     />
     <span
       :class="[
@@ -22,23 +22,22 @@
 <script setup lang="ts">
 import { onClickOutside } from '@vueuse/core'
 
-//--------[ Props & Emits ]--------//
-const props = defineProps({
-  autoClose: {
-    type: Boolean,
-    default: false,
-  },
-  iconName: {
-    type: String,
-    default: 'uil:info-circle',
-  },
+// --------[ Props & Emits ]-------- //
+interface TooltipProps {
+  autoClose?: boolean
+  iconName?: string
+}
+
+const props = withDefaults(defineProps<TooltipProps>(), {
+  autoClose: false,
+  iconName: 'uil:info-circle',
 })
 
-//--------[ Data ]--------//
+// --------[ Data ]-------- //
 const tooltip = ref(null)
 const isShowTooltip = ref(false)
 
-//--------[ Methods ]--------//
+// --------[ Methods ]-------- //
 const toggleTooltip = () => {
   isShowTooltip.value = !isShowTooltip.value
   if (props.autoClose) {

@@ -1,22 +1,24 @@
 // @ts-nocheck
 
-import { defaultToastificationConfig } from '~/config'
 import { TYPE, useToast } from 'vue-toastification'
-import { ExtractContractFnArgs } from '~/types/contract'
+import { defaultToastificationConfig } from '~/config'
 
 export class Caller<K> {
   constructor(private readonly contract: K) {}
 
-  async callFunction<T extends keyof K>(
-    fnName: T,
-    fnArgs: ExtractContractFnArgs<K[T]> = [],
-    needRegister = true
-  ): Promise<boolean> {
+  async callFunction<FT extends 'read' | 'write', FN extends keyof K[FT]>(
+    fnType: FT,
+    fnName: FN,
+    fnArgs: any[] = [], // K[FT][FN],
+    needRegister = true,
+  ) {
     const connectionStore = useConnectionStore()
     const userGameStore = useUserGameStore()
+    const userWalletStore = useUserWalletStore()
 
     const { isConnected } = storeToRefs(connectionStore)
     const { isRegistered } = storeToRefs(userGameStore)
+    const { walletClient } = storeToRefs(userWalletStore)
 
     if (!isConnected.value) {
       useAppToast(TYPE.ERROR, 'Connect your wallet first')
@@ -28,8 +30,7 @@ export class Caller<K> {
       return false
     }
 
-    const staticCallRes = await this.contract[fnName]
-      .staticCall(...fnArgs)
+    const staticCallRes = await this.contract.simulate[fnName](fnArgs)
       .then((res) => res)
       .catch((e) => e)
 
@@ -39,7 +40,7 @@ export class Caller<K> {
     }
 
     const icon = defineAsyncComponent(
-      () => import(`../components/Toastification/Loading.vue`)
+      () => import(`../components/Toastification/Loading.vue`),
     )
 
     const toast = useToast()
@@ -50,12 +51,20 @@ export class Caller<K> {
     })
 
     try {
-      const tx = await this.contract[fnName](...fnArgs)
-      await tx.wait()
+      const tx = await this.contract[fnType][fnName](fnArgs)
+
+      const receipt = await walletClient.value.waitForTransactionReceipt({
+        hash: tx,
+      })
+
+      if (receipt.status !== 'success') {
+        throw new Error('Transaction failed')
+      }
+
       toast.clear()
       useAppToast(
         TYPE.SUCCESS,
-        `Transaction of '${String(fnName)}' function confirmed successfully`
+        `Transaction of '${String(fnName)}' function confirmed successfully`,
       )
       return true
     } catch (error) {

@@ -100,9 +100,9 @@
     </ListItem>
     <ListTitle>Timers</ListTitle>
     <ListItem
-      :title="`${toCapitalizedWords(item)}:`"
       v-for="(item, index) in timers"
       :key="index"
+      :title="`${toCapitalizedWords(item)}:`"
       :item="item"
       convertable
       tooltip
@@ -124,61 +124,62 @@
 
 <script setup lang="ts">
 import moment from 'moment'
-import { decodeBytes32String } from 'ethers'
+import { type Address, hexToString } from 'viem'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
-import { type IKillThemAll } from '~/types/typechain/contracts/game/KillThemAll'
 import { toCapitalizedWords, middleCropping } from '~/utils'
+import { transformUser } from '~/transformers'
+import type { UserTimer } from '~/types/contract'
 
-const { chainBlockTime } = useRuntimeConfig().public
+const {
+  public: { chainBlockTime },
+} = useRuntimeConfig()
 
-//--------[ Props & Emits ]--------//
+// --------[ Props & Emits ]-------- //
 interface UserProps {
-  address: string
+  address: Address
 }
 const props = defineProps<UserProps>()
 
-//--------[ Stores ]--------//
-const connectionStore = useConnectionStore()
+// --------[ Stores ]-------- //
 const userGameStore = useUserGameStore()
+const contractStore = useContractStore()
 const userWalletStore = useUserWalletStore()
 
-const { getKta } = storeToRefs(connectionStore)
+const { getKta } = storeToRefs(contractStore)
 const { currentBlockNumber } = storeToRefs(userWalletStore)
 
-//--------[ Data ]--------//
-// TODO: Buraya bos deger koyunca template'de hata ciktigi icin burayi onmounted'ta eziyoruz.
+// --------[ Data ]-------- //
 const user = ref(userGameStore.user)
-const timer = ref<any>(user.value.timer.toObject())
+const timer = ref<any>(user.value.timer)
 const timers = ref(
-  Object.keys(user.value.timer).filter((item: any) => isNaN(item))
+  Object.keys(user.value.timer).filter((item: any) => isNaN(item)),
 )
 const referrerAddress = user.value.referrer as string
 
-//--------[ Computed ]--------//
-const userName = computed(() => decodeBytes32String(user.value.name))
+// --------[ Computed ]-------- //
+const userName = computed(() => hexToString(user.value.name, { size: 32 }))
 const referrer = computed(() => middleCropping(referrerAddress))
 
-//--------[ Hooks ]--------//
+// --------[ Hooks ]-------- //
 onMounted(async () => {
-  user.value = await getKta.value.userByAddr(props.address)
-  timer.value = user.value.timer.toObject()
+  user.value = transformUser(
+    await getKta.value.read.userByAddr([props.address]),
+  )
+  timer.value = { ...user.value.timer }
   timers.value = Object.keys(timer.value).filter((item: any) => isNaN(item))
 })
 
-//--------[ Methods ]--------//
-const convert = (
-  isConvert: boolean,
-  propertyName: keyof IKillThemAll.UserTimerStruct
-) => {
+// --------[ Methods ]-------- //
+const convert = (isConvert: boolean, propertyName: keyof UserTimer) => {
   if (isConvert) {
     timer.value[propertyName] =
-      timer.value[propertyName] - currentBlockNumber.value > 0
-        ? moment
+      BigInt(timer.value[propertyName]) - currentBlockNumber.value > 0
+        ? moment // eslint-disable-line import/no-named-as-default-member
             .duration(
-              (timer.value[propertyName] - currentBlockNumber.value) *
+              (timer.value[propertyName] - Number(currentBlockNumber.value)) *
                 chainBlockTime *
-                1000
+                1000,
             )
             .humanize()
         : 0

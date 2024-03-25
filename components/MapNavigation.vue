@@ -5,7 +5,7 @@
         v-show="isMapNavigationVisible"
         :style="`height: ${height}px`"
         :class="[
-          'absolute top-0 -right-52 transition-all duration-300 ease-in-out',
+          'absolute -right-52 top-0 transition-all duration-300 ease-in-out',
           isMapNavigationVisible ? '' : '-translate-x-52',
         ]"
       >
@@ -16,36 +16,36 @@
             >
             <div class="relative mt-6 flex items-center justify-center p-10">
               <MoveArrow
-                @click="navigateByArrow(NavigateDirection.Down)"
                 class="rotate-90"
+                @click="navigateByArrow(NavigateDirection.Down)"
               />
               <MoveArrow
-                @click="navigateByArrow(NavigateDirection.Up)"
                 class="-rotate-90"
+                @click="navigateByArrow(NavigateDirection.Up)"
               />
               <MoveArrow
-                @click="navigateByArrow(NavigateDirection.Right)"
                 class="rotate-0"
+                @click="navigateByArrow(NavigateDirection.Right)"
               />
               <MoveArrow
-                @click="navigateByArrow(NavigateDirection.Left)"
                 class="rotate-180"
+                @click="navigateByArrow(NavigateDirection.Left)"
               />
               <MoveArrow
-                @click="navigateByArrow(NavigateDirection.RightDown)"
                 class="rotate-45"
+                @click="navigateByArrow(NavigateDirection.RightDown)"
               />
               <MoveArrow
-                @click="navigateByArrow(NavigateDirection.UpRight)"
                 class="-rotate-45"
+                @click="navigateByArrow(NavigateDirection.UpRight)"
               />
               <MoveArrow
-                @click="navigateByArrow(NavigateDirection.DownLeft)"
                 class="rotate-[135deg]"
+                @click="navigateByArrow(NavigateDirection.DownLeft)"
               />
               <MoveArrow
-                @click="navigateByArrow(NavigateDirection.LeftUp)"
                 class="-rotate-[135deg]"
+                @click="navigateByArrow(NavigateDirection.LeftUp)"
               />
             </div>
           </div>
@@ -76,8 +76,8 @@
           </div>
           <div class="return-back">
             <AppButton
-              @click="goBackToInitialPosition()"
               class="my-2 w-full rounded-md bg-towni-brown-dark-400 text-towni-brown-light-400"
+              @click="goBackToInitialPosition()"
             >
               Recenter!
             </AppButton>
@@ -101,8 +101,8 @@
                   <span>{{ coordinateY }}</span>
                 </ListItem>
                 <AppButton
-                  @click="navigate()"
                   class="w-full rounded-md bg-towni-brown-dark-400 text-towni-brown-light-400"
+                  @click="navigate()"
                 >
                   Go!
                 </AppButton>
@@ -122,7 +122,7 @@ import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import MoveArrow from '~/components/MoveArrow.vue'
 import AppButton from '~/components/AppButton.vue'
 
-//--------[ Props & Emits ]--------//
+// --------[ Props & Emits ]-------- //
 defineProps({
   height: {
     type: String,
@@ -131,7 +131,7 @@ defineProps({
   isMapNavigationVisible: Boolean,
 })
 
-//--------[ Stores ]--------//
+// --------[ Stores ]-------- //
 const appOptionsStore = useAppOptionsStore()
 const userGameStore = useUserGameStore()
 
@@ -141,11 +141,11 @@ const { setUserCoordinate, setNearLevelByCalculatingCoordinates } =
 const { originCoordinate } = storeToRefs(appOptionsStore)
 const { nearLevel, user } = storeToRefs(userGameStore)
 
-//--------[ Data ]--------//
+// --------[ Data ]-------- //
 const coordinateX = ref('')
 const coordinateY = ref('')
 
-//--------[ Methods ]--------//
+// --------[ Methods ]-------- //
 const navigate = () => {
   setUserCoordinate({
     _x: BigInt(coordinateX.value),
@@ -161,7 +161,6 @@ const goBackToInitialPosition = () => {
 }
 
 const navigateByArrow = (direction: NavigateDirection) => {
-  // TODO: Ethers try this
   let { _x, _y } = originCoordinate.value
   const navigateValue = 1n
 

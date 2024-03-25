@@ -6,10 +6,11 @@ import type { ToastFunction } from '~/types'
 // TODO: change useAppToast
 export const useAppToast = (
   type: Exclude<TYPE, TYPE.DEFAULT>,
-  message: string
+  message: string,
 ) => {
   const icon = defineAsyncComponent(
-    () => import(`../components/Toastification/${uppercaseFirstChar(type)}.vue`)
+    () =>
+      import(`../components/Toastification/${uppercaseFirstChar(type)}.vue`),
   )
 
   return (useToast()[type] as ToastFunction)(message, {

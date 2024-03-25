@@ -1,25 +1,25 @@
 <template>
   <div class="relative" style="width: 55% !important">
     <div
-      ref="mapElement"
-      @wheel="onWheel($event)"
       v-if="hasMetamask && onValidNetwork"
+      ref="mapElement"
       class="relative z-50 outline-none"
       tabindex="0"
       @keyup.up="navigateByArrowKeys(NavigateDirection.Up)"
       @keyup.right="navigateByArrowKeys(NavigateDirection.Right)"
       @keyup.down="navigateByArrowKeys(NavigateDirection.Down)"
       @keyup.left="navigateByArrowKeys(NavigateDirection.Left)"
+      @wheel="onWheel($event)"
     >
       <button
         ref="toggleButton"
-        @click="handleNavigationToggle"
         :class="[
           'absolute -right-6 -top-1 cursor-pointer transition-all  ease-in-out',
           isMapNavigationVisible
             ? 'translate-x-48 delay-300 duration-500 '
             : 'duration-300',
         ]"
+        @click="handleNavigationToggle"
       >
         <Icon
           :class="[
@@ -41,8 +41,8 @@
         <Mapbox
           v-for="(item, index) in addressesByCoordinate"
           :key="index"
-          :item="item"
           v-memo="[item]"
+          :item="item"
           :emit-ready-event="index === 0"
           class="select-none"
           @dblclick="setModalInfo('MapboxModal', { coordinate: item })"
@@ -58,13 +58,13 @@
 </template>
 
 <script setup lang="ts">
-import { MAX_PIXEL_VALUE } from '~/constants'
 import { onClickOutside } from '@vueuse/core'
 import { useDrag } from '@vueuse/gesture'
+import { MAX_PIXEL_VALUE } from '~/constants'
 import MapNavigation from '~/components/MapNavigation.vue'
 import { NavigateDirection } from '~/enums'
 
-//--------[ Stores ]--------//
+// --------[ Stores ]-------- //
 const connectionStore = useConnectionStore()
 const userGameStore = useUserGameStore()
 const appOptionsStore = useAppOptionsStore()
@@ -78,19 +78,19 @@ const { onValidNetwork } = storeToRefs(connectionStore)
 const { addressesByCoordinate, nearLevel } = storeToRefs(userGameStore)
 const { originCoordinate } = storeToRefs(appOptionsStore)
 
-//--------[ Nuxt ]--------//
-const { maxNearLevel } = useRuntimeConfig().public
+// --------[ Nuxt ]-------- //
+const {
+  public: { maxNearLevel },
+} = useRuntimeConfig()
 
-//--------[ Data ]--------//
+// --------[ Data ]-------- //
 const mapElement = ref(null)
-const zoomOut = ref(0)
-const zoomIn = ref(0)
 const isMapNavigationVisible = ref(false)
 const navigation = ref<HTMLElement | null>(null)
 const toggleButton = ref<HTMLElement | null>(null)
 const { width } = useElementSize(mapElement)
 
-//--------[ Computed ]--------//
+// --------[ Computed ]-------- //
 const getGridColsByNearLevel = computed(() => nearLevel.value * 2 + 1)
 
 const mapStyle = computed(() => {
@@ -108,35 +108,15 @@ const mapStyle = computed(() => {
   }
 })
 
-//--------[ Methods ]--------//
+// --------[ Methods ]-------- //
 const onWheel = (event: WheelEvent) => {
-  let newNearLevel: number
-
-  if (event.deltaY < 0) {
-    if (zoomIn.value < 5) {
-      zoomIn.value++
-
-      return
-    }
-
-    zoomIn.value = 0
-    newNearLevel = nearLevel.value - 1
-  } else {
-    if (zoomOut.value < 5) {
-      zoomOut.value++
-
-      return
-    }
-
-    zoomOut.value = 0
-    newNearLevel = nearLevel.value + 1
-  }
+  const newNearLevel =
+    event.deltaY < 0 ? nearLevel.value - 1 : nearLevel.value + 1
 
   setNearLevelByCalculatingCoordinates(newNearLevel)
 }
 
 const navigateByArrowKeys = (direction: NavigateDirection) => {
-  // TODO: Ethers try this
   let { _x, _y } = originCoordinate.value
 
   const navigateValue = 1n
@@ -162,7 +142,7 @@ const navigateByArrowKeys = (direction: NavigateDirection) => {
   setUserCoordinate({ _x, _y })
 }
 
-const dragHandler = async ({
+const dragHandler = ({
   movement: [x, y],
   last,
 }: {
@@ -183,7 +163,7 @@ const dragHandler = async ({
       _x: newX,
       _y: newY,
     },
-    last
+    last,
   )
 }
 

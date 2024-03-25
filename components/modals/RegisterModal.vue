@@ -3,26 +3,26 @@
     <ListTitle class="w-full">Register</ListTitle>
     <ListItem title="Name:" class="w-full" input>
       <template #item>
-        <VForm class="flex flex-col items-center">
-          <VField v-model="name" name="name" :rules="nameRules" />
-          <VErrorMessage class="text-red-800" name="name" />
-        </VForm>
+        <VeeForm class="flex flex-col items-center">
+          <VeeField v-model="name" name="name" :rules="nameRules" />
+          <VeeErrorMessage class="text-red-800" name="name" />
+        </VeeForm>
       </template>
     </ListItem>
     <ListItem title="Referrer:" class="w-full" input>
       <template #item>
-        <VForm class="flex flex-col items-center">
-          <VField
+        <VeeForm class="flex flex-col items-center">
+          <VeeField
             v-model="referrer"
             name="referrer"
             :rules="referrer && referrerRules"
           />
-          <VErrorMessage class="text-red-800" name="referrer" />
-        </VForm>
+          <VeeErrorMessage class="text-red-800" name="referrer" />
+        </VeeForm>
       </template>
     </ListItem>
     <AppButton
-      v-if="ktaAllowance <= BigInt(setting?.price.register ?? 0)"
+      v-if="ktaAllowance <= BigInt(settings.price.register ?? 0)"
       class="my-3"
       @click="userApprove()"
       >Approve
@@ -35,32 +35,34 @@
 </template>
 
 <script setup lang="ts">
-import { encodeBytes32String, ZeroAddress } from 'ethers'
+import { stringToHex, zeroAddress } from 'viem'
+import { TYPE } from 'vue-toastification'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
-import { stringToHex } from '~/utils'
+import { addHexPrefix } from '~/utils'
 import { getAddressRule, getBytes32Rule } from '~/composables/useYupRules'
-import { TYPE } from 'vue-toastification'
 
-//--------[ Props & Emits ]--------//
-const emit = defineEmits(['registerClosed'])
+// --------[ Props & Emits ]-------- //
+defineEmits(['registerClosed'])
 
-//--------[ Nuxt Imports ]--------//
-const { ktaAddress } = useRuntimeConfig().public
+// --------[ Nuxt Imports ]-------- //
+const {
+  public: { ktaAddress },
+} = useRuntimeConfig()
 
-//--------[ Stores ]--------//
-const connectionStore = useConnectionStore()
+// --------[ Stores ]-------- //
 const userWalletStore = useUserWalletStore()
 const userGameStore = useUserGameStore()
 const appOptionsStore = useAppOptionsStore()
+const contractStore = useContractStore()
 
 const { clearModalInfo } = appOptionsStore
-const { getKtaToken, getKtaCaller, getKtaTokenCaller } =
-  storeToRefs(connectionStore)
+const { getKtaToken, getKtaTokenCaller, getKtaCaller } =
+  storeToRefs(contractStore)
 const { ktaAllowance, address } = storeToRefs(userWalletStore)
-const { setting } = storeToRefs(userGameStore)
+const { settings } = storeToRefs(userGameStore)
 
-//--------[ Data ]--------//
+// --------[ Data ]-------- //
 const name = ref('')
 const referrer = ref('')
 const nameRules = getBytes32Rule({
@@ -68,15 +70,16 @@ const nameRules = getBytes32Rule({
 })
 const referrerRules = getAddressRule()
 
-//--------[ Methods ]--------//
+// --------[ Methods ]-------- //
 const userRegister = async () => {
   const result = await getKtaCaller.value.callFunction(
+    'write',
     'register',
     [
-      encodeBytes32String(name.value),
-      referrer.value === '' ? ZeroAddress : stringToHex(referrer.value),
+      stringToHex(name.value, { size: 32 }),
+      referrer.value === '' ? zeroAddress : addHexPrefix(referrer.value),
     ],
-    false
+    false,
   )
 
   if (result) {
@@ -85,18 +88,24 @@ const userRegister = async () => {
 }
 
 const userApprove = async () => {
-  const ktaTokenBalance = await getKtaToken.value.balanceOf(address.value)
-  if (ktaTokenBalance < BigInt(setting.value?.price.register ?? 0)) {
+  const ktaTokenBalance = await getKtaToken.value.read.balanceOf([
+    address.value,
+  ])
+
+  if (ktaTokenBalance < BigInt(settings.value.price.register ?? 0)) {
     useAppToast(
       TYPE.ERROR,
-      `You don't have enough tokens (${setting.value?.price.register}) to register for the game`
+      `You don't have enough tokens (${settings.value.price.register}) to register for the game`,
     )
+
     return
   }
+
   await getKtaTokenCaller.value.callFunction(
+    'write',
     'approve',
     [ktaAddress, ktaTokenBalance],
-    false
+    false,
   )
 }
 
@@ -107,9 +116,9 @@ const addKtaTokenToWallet = async () => {
       params: {
         type: 'ERC20',
         options: {
-          address: await getKtaToken.value.getAddress(),
-          symbol: await getKtaToken.value.symbol(),
-          decimals: (await getKtaToken.value.decimals()).toString(),
+          address: getKtaToken.value.address,
+          symbol: await getKtaToken.value.read.symbol(),
+          decimals: (await getKtaToken.value.read.decimals()).toString(),
         },
       },
     })

@@ -1,31 +1,42 @@
 <template>
   <div>
     <ListTitle>General</ListTitle>
-    <ListItem v-if="onValidNetwork" title="Name:">
-      <span>{{ networkName }}</span>
+    <ListItem title="Name:">
+      <span>{{ walletClient.chain.name }}</span>
     </ListItem>
     <ListItem title="Chain ID:">
-      <span>{{ chainId }}</span>
+      <span>{{ walletClient.chain.id }}</span>
     </ListItem>
-    <ListItem v-if="onValidNetwork" title="Symbol:">
-      <span>{{ networkSymbol }}</span>
+    <ListItem title="Currency:">
+      <span>{{ walletClient.chain.nativeCurrency.name }}</span>
+    </ListItem>
+    <ListItem title="Symbol:">
+      <span>{{ walletClient.chain.nativeCurrency.symbol }}</span>
+    </ListItem>
+    <ListItem title="Decimals:">
+      <span>{{ walletClient.chain.nativeCurrency.decimals }}</span>
     </ListItem>
     <ListTitle v-if="onValidNetwork">Explorer URLs</ListTitle>
     <ScrollableList
-      v-if="onValidNetwork"
-      :items="chainExplorers"
-      :copy-value="chainExplorers"
+      :items="
+        Object.values(walletClient.chain.blockExplorers ?? []).map(
+          (explorer) => explorer.url,
+        )
+      "
       linkable
     />
     <ListTitle>Miscellaneous</ListTitle>
-    <ListItem title="Current Block Number:">
+    <ListItem v-if="currentBlockNumber > 0" title="Current Block Number:">
       <span>{{ currentBlockNumber }}</span>
+    </ListItem>
+    <ListItem v-if="walletClient.chain.testnet" title="Testnet:">
+      <span>{{ walletClient.chain.testnet }}</span>
     </ListItem>
     <AppButton
       class="my-2 flex w-full justify-center"
       @click="switchOrAddNetwork()"
     >
-      Add {{ networkName }} Chain to Metamask
+      Switch or Add {{ walletClient.chain.name }} Chain to Metamask
     </AppButton>
   </div>
 </template>
@@ -35,44 +46,22 @@ import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ScrollableList from '~/components/sidebar-items/ScrollableList.vue'
 
-//--------[ Nuxt ]--------//
-const { networkName, networkSymbol, chainExplorers, chainId, chainRpcs } =
-  useRuntimeConfig().public
-
-//--------[ Stores ]--------//
+// --------[ Stores ]-------- //
 const userWalletStore = useUserWalletStore()
 const connectionStore = useConnectionStore()
 
 const { onValidNetwork } = storeToRefs(connectionStore)
-const { currentBlockNumber } = storeToRefs(userWalletStore)
+const { currentBlockNumber, walletClient } = storeToRefs(userWalletStore)
 
-//--------[ Methods ]--------//
+// --------[ Methods ]-------- //
 const switchOrAddNetwork = async () => {
   try {
-    await window.ethereum.request({
-      method: 'wallet_switchEthereumChain',
-      params: [
-        {
-          chainId: numberToHex(chainId),
-        },
-      ],
+    await walletClient.value.switchChain({
+      id: walletClient.value.chain.id,
     })
   } catch (error) {
-    await window.ethereum.request({
-      method: 'wallet_addEthereumChain',
-      params: [
-        {
-          chainId: numberToHex(chainId),
-          chainName: networkName,
-          nativeCurrency: {
-            name: networkSymbol,
-            symbol: networkSymbol,
-            decimals: 18,
-          },
-          rpcUrls: Array.from(chainRpcs),
-          blockExplorerUrls: Array.from(chainExplorers),
-        },
-      ],
+    await walletClient.value.addChain({
+      chain: walletClient.value.chain,
     })
   }
 }
