@@ -95,7 +95,7 @@
 <script setup lang="ts">
 import { zeroAddress, type Address } from 'viem'
 import { useDebounceFn } from '@vueuse/core'
-import * as yup from 'yup'
+import { object } from 'yup'
 import ListItem from '~/components/sidebar-items/ListItem.vue'
 import ListTitle from '~/components/sidebar-items/ListTitle.vue'
 import SidebarDropdown from '~/components/SidebarDropdown.vue'
@@ -209,7 +209,7 @@ const selectedItemSchema = computed(() => {
     case 'Coordinate':
       return coordinateValidationSchema
     default:
-      return yup.object()
+      return object()
   }
 })
 

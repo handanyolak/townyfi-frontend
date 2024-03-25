@@ -1,18 +1,18 @@
-import * as yup from 'yup'
+import { object } from 'yup'
 import {
   getAddressRule,
   getUintRule,
   getCoordinateRule,
 } from '~/composables/useYupRules'
 
-export const idValidationSchema = yup.object({
+export const idValidationSchema = object({
   ID: getUintRule({ required: true }),
 })
 
-export const addressValidationSchema = yup.object({
+export const addressValidationSchema = object({
   Address: getAddressRule({ required: true }),
 })
 
-export const coordinateValidationSchema = yup.object({
+export const coordinateValidationSchema = object({
   Coordinate: getCoordinateRule({ required: true }),
 })
