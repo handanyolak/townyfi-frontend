@@ -138,7 +138,7 @@
 import { type Address, hexToString, zeroAddress } from 'viem'
 import ListTitle from '~/components/common/ListTitle.vue'
 import ListItem from '~/components/common/ListItem.vue'
-import ScrollableList from '~/components/sidebar-items/ScrollableList.vue'
+import ScrollableList from '~/components/common/ScrollableList.vue'
 import { transformTown } from '~/transformers'
 
 // --------[ Props & Emits ]-------- //

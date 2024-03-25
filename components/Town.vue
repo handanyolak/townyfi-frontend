@@ -178,7 +178,7 @@
 import { hexToString } from 'viem'
 import ListTitle from '~/components/common/ListTitle.vue'
 import ListItem from '~/components/common/ListItem.vue'
-import ScrollableList from '~/components/sidebar-items/ScrollableList.vue'
+import ScrollableList from '~/components/common/ScrollableList.vue'
 import HasNotTown from '~/components/HasNotTown.vue'
 import AppButton from '~/components/AppButton.vue'
 import { TownStatus } from '~/enums'
