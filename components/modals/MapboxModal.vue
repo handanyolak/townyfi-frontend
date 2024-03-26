@@ -3,7 +3,11 @@
     <template #parchment-header> Addresses </template>
     <div class="flex flex-col">
       <SearchBar v-model="search" :rules="searchRules" />
-      <Accordion v-for="(_address, index) in filteredList" :key="index">
+      <Accordion
+        v-for="(_address, index) in filteredList"
+        :key="index"
+        @click="clickedAddress = _address"
+      >
         <template #title>
           <div class="flex items-center">
             <div
@@ -13,7 +17,7 @@
               {{ isOwnAddress(_address) ? 'Self' : 'Attack' }}
             </div>
 
-            <div class="text-xs" @click="clickedAddress = _address">
+            <div class="text-xs">
               {{ _address }}
             </div>
           </div>
