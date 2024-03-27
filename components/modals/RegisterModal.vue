@@ -61,8 +61,14 @@ const contractStore = useContractStore()
 const { clearModalInfo } = appOptionsStore
 const { getKtaToken, getKtaTokenCaller, getKtaCaller } =
   storeToRefs(contractStore)
-const { walletClient, ktaSymbol, ktaDecimals, ktaAllowance, address } =
-  storeToRefs(userWalletStore)
+const {
+  walletClient,
+  ktaSymbol,
+  ktaDecimals,
+  ktaBalance,
+  ktaAllowance,
+  address,
+} = storeToRefs(userWalletStore)
 const { settings } = storeToRefs(userGameStore)
 
 // --------[ Data ]-------- //
@@ -91,11 +97,7 @@ const userRegister = async () => {
 }
 
 const userApprove = async () => {
-  const ktaTokenBalance = await getKtaToken.value.read.balanceOf([
-    address.value,
-  ])
-
-  if (ktaTokenBalance < BigInt(settings.value.price.register ?? 0)) {
+  if (ktaBalance.value < BigInt(settings.value.price.register ?? 0)) {
     useAppToast(
       TYPE.ERROR,
       `You don't have enough tokens (${settings.value.price.register}) to register for the game`,
@@ -107,7 +109,7 @@ const userApprove = async () => {
   await getKtaTokenCaller.value.callFunction(
     'write',
     'approve',
-    [ktaAddress, ktaTokenBalance],
+    [ktaAddress, ktaBalance.value],
     false,
   )
 }
