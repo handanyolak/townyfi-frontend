@@ -12,7 +12,10 @@ module.exports = {
   ],
   plugins: [],
   rules: {
-    'vue/no-undef-components': ['error', { ignorePatterns: ['Icon'] }],
+    'vue/no-undef-components': [
+      'error',
+      { ignorePatterns: ['Icon', 'VeeForm', 'VeeField', 'VeeErrorMessage'] },
+    ],
     'vue/multi-word-component-names': 0,
     'no-console': 'off',
     'no-useless-constructor': 'off',
