@@ -127,7 +127,11 @@ const userGameStore = useUserGameStore()
 const { town } = storeToRefs(userGameStore)
 
 // --------[ Computed ]-------- //
-const townName = computed(() => hexToString(town.value.name, { size: 32 }))
+const townName = computed(() => {
+  return town.value?.name
+    ? hexToString(town.value.name, { size: 32 })
+    : 'Loading...'
+})
 </script>
 
 <style scoped>
