@@ -72,6 +72,7 @@ module.exports = {
       },
       backgroundImage: {
         map: "url('@/assets/img/map3.jpeg')",
+        knight: "url('@/assets/img/cavalry.svg')",
       },
       keyframes: {
         fadein: {
