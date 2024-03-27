@@ -30,17 +30,21 @@
 </template>
 
 <script setup lang="ts">
+// import { get } from '@vueuse/core'
 import TheLoading from '~/components/common/TheLoading.vue'
 import Map from '~/components/map/Map.vue'
 import AppModal from '~/components/common/AppModal.vue'
 import ChatBox from '~/components/chat/ChatBox.vue'
 import GamePreview from '~/components/GamePreview.vue'
 import SidebarMenu from '~/components/SidebarMenu.vue'
+// import { transformSettings } from '~/transformers'
 
 // --------[ Stores ]-------- //
 const appOptionsStore = useAppOptionsStore()
 const connectionStore = useConnectionStore()
 const userGameStore = useUserGameStore()
+// const contractStore = useContractStore()
+// const { getKta } = storeToRefs(contractStore)
 
 const { initializeApp, clearModalInfo } = appOptionsStore
 const { hasMetamask } = connectionStore
@@ -57,6 +61,72 @@ const { width } = useElementSize(mapElement)
 // --------[ Hooks ]-------- //
 onMounted(async () => {
   await initializeApp()
+  // const settings_ = {
+  //   max: {
+  //     health: 100,
+  //     mana: 125,
+  //     energy: 150,
+  //     armor: 200,
+  //     teleportDistance: 50,
+  //     killArmorRewardLimit: 3,
+  //     safeTownDistance: 100,
+  //     safeTownDifference: 100,
+  //     safeZoneDistance: 4,
+  //     safeZoneDifference: 10000,
+  //     attackDistance: 1,
+  //     levelDifference: 2,
+  //   },
+  //   price: {
+  //     health: 5,
+  //     mana: 50,
+  //     energy: 3,
+  //     armor: 15,
+  //     revive: 50,
+  //     register: 500,
+  //     teleport: 1,
+  //     createTown: 0,
+  //     settleTown: 2500,
+  //     teleportToTown: 250,
+  //     prepareAttack: 100,
+  //     prepareDefend: 50,
+  //   },
+  //   rate: {
+  //     getHealth: 90,
+  //     getMana: 60,
+  //     getEnergy: 30,
+  //     registerReferralReward: 10,
+  //     armorAbsorption: 2,
+  //     attack: 5,
+  //     movement: 1,
+  //   },
+  //   time: {
+  //     revive: 17280,
+  //     teleport: 60,
+  //     teleportToTown: 720,
+  //     attackableAt: 720,
+  //     warExpiredAt: 360,
+  //     protectionAt: 720,
+  //     prepareToAttack: 30,
+  //   },
+  //   min: {
+  //     levelToCreateTown: 0,
+  //     townAreaRadius: 1,
+  //   },
+  //   exp: {
+  //     kill: 50,
+  //     referrerKill: 1,
+  //   },
+  //   multiplier: {
+  //     attack: 5,
+  //     resistance: 2,
+  //   },
+  //   numberDigits: 1,
+  // }
+  // setTimeout(async () => {
+  //   await getKta.value.write.updateSettings([settings_ as any])
+  // }, 1000)
+  // const deneme = await getKta.value.read.settings()
+  // console.log('settings', transformSettings(deneme))
 })
 
 // --------[ Computed ]-------- //
