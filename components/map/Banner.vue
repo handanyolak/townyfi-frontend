@@ -119,14 +119,15 @@
 </template>
 
 <script setup lang="ts">
-// --------[ Props & Emits ]-------- //
-interface BannerProps {
-  townName?: string
-}
+import { hexToString } from 'viem'
 
-withDefaults(defineProps<BannerProps>(), {
-  townName: 'Town',
-})
+// --------[ Store ]-------- //
+const userGameStore = useUserGameStore()
+
+const { town } = storeToRefs(userGameStore)
+
+// --------[ Computed ]-------- //
+const townName = computed(() => hexToString(town.value.name, { size: 32 }))
 </script>
 
 <style scoped>
