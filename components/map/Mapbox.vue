@@ -1,11 +1,17 @@
 <template>
-  <div class="group relative shadow-towni-400">
+  <div
+    class="relative cursor-pointer shadow-towni-400"
+    @mouseover="showCoordinates"
+    @mouseleave="hideCoordinates"
+  >
     <div class="relative flex h-full flex-col items-center">
       <div
         :class="[
-          ' flex h-full w-full ',
+          'flex h-full w-full',
           hasTown ? 'flex-col items-center' : '',
-          isRegistered && isCoordinateOfUser ? 'knight' : '',
+          isRegistered && isCoordinateOfUser
+            ? 'bg-knight knight bg-no-repeat'
+            : '',
         ]"
       >
         <Banner v-if="hasTown" class="w-full" />
@@ -17,21 +23,22 @@
       />
     </div>
     <div>
-      <div
-        class="duration-400 absolute left-0 top-0 z-50 flex w-16 items-center justify-between bg-towni-brown-dark-600 bg-opacity-60 px-1 py-1 opacity-0 transition-opacity delay-1000 group-hover:opacity-100"
-      >
-        <div class="inline cursor-pointer">
-          <img
-            class="pointer-events-none h-4 w-4"
-            src="@/assets/img/information.svg"
+      <Transition name="fade">
+        <div
+          v-if="isHovering"
+          class="absolute left-0 top-0 z-50 flex w-16 items-center justify-between bg-towni-brown-dark-600 bg-opacity-70 p-1"
+        >
+          <Icon
+            name="oui:vis-map-coordinate"
+            class="pointer-events-none mr-1 h-4 w-4 text-towni-brown-dark-300"
           />
+          <div class="select-none text-xs text-towni-brown-light-200">
+            <span>({{ item._x.toString() }}</span>
+            <span>,</span>
+            <span>{{ item._y.toString() }})</span>
+          </div>
         </div>
-        <div class="select-none text-xs text-towni-brown-light-200">
-          <span>({{ item._x.toString() }}</span>
-          <span>,</span>
-          <span>{{ item._y.toString() }})</span>
-        </div>
-      </div>
+      </Transition>
       <div v-if="pulseColor" class="absolute right-1 top-1">
         <span class="relative flex">
           <span
@@ -77,6 +84,11 @@ const {
   isRegistered,
 } = storeToRefs(userGameStore)
 
+// --------[ Data ]-------- //
+const isHovering = ref(false)
+const coordinateX = ref('')
+const coordinateY = ref('')
+
 // --------[ Computed ]-------- //
 const isCoordinateOfUser = computed(
   () =>
@@ -103,13 +115,30 @@ const determinePulseColor = (userCount: number): string => {
   if (userCount <= 10) return 'bg-yellow-600'
   return 'bg-red-500'
 }
+
+const showCoordinates = () => {
+  isHovering.value = true
+  coordinateX.value = props.item._x.toString()
+  coordinateY.value = props.item._y.toString()
+}
+
+const hideCoordinates = () => {
+  isHovering.value = false
+}
 </script>
 
 <style scoped>
 .knight {
-  background-image: url('~/assets/img/cavalry.svg');
-  background-repeat: no-repeat;
   background-position: 50% 110%;
   background-size: 80%;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
