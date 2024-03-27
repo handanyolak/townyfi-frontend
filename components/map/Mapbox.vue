@@ -2,24 +2,19 @@
   <div class="group relative shadow-towni-400">
     <div class="relative flex h-full flex-col items-center">
       <div
-        v-if="
-          isRegistered &&
-          isCoordinateOfUser &&
-          getHasTownByCoordinate.get(getMapKey)
-        "
-        class="knight flex h-full w-full flex-col items-center"
+        :class="[
+          ' flex h-full w-full ',
+          hasTown ? 'flex-col items-center' : '',
+          isRegistered && isCoordinateOfUser ? 'knight' : '',
+        ]"
       >
-        <Banner class="w-full" />
+        <Banner v-if="hasTown" class="w-full" />
       </div>
-      <Banner
-        v-else-if="getHasTownByCoordinate.get(getMapKey)"
-        class="w-full"
+      <img
+        v-if="!(isRegistered && isCoordinateOfUser)"
+        src="@/assets/img/skeleton-castle.png"
+        class="invisible"
       />
-      <div
-        v-else-if="isRegistered && isCoordinateOfUser"
-        class="knight h-full w-full"
-      ></div>
-      <img v-else src="@/assets/img/skeleton-castle.png" class="invisible" />
     </div>
     <div>
       <div
@@ -71,7 +66,7 @@ interface MapboxProps {
 
 const props = defineProps<MapboxProps>()
 
-// --------[ Stores ]-------- //
+// --------[ Store ]-------- //
 const userGameStore = useUserGameStore()
 
 const {
@@ -89,30 +84,25 @@ const isCoordinateOfUser = computed(
     props.item._y.toString() === user.value.coordinate._y.toString(),
 )
 
+const hasTown = computed(() =>
+  getHasTownByCoordinate.value.get(getMapKey.value),
+)
+
 const getMapKey = computed(
   () => `${props.item._x.toString()},${props.item._y.toString()}`,
 )
 
 const pulseColor = computed(() => {
-  const userByCountByCoordinate = getUserCountByCoordinate.value.get(
-    getMapKey.value,
-  )
-
-  if (!userByCountByCoordinate) {
-    return ''
-  }
-
-  let color = ''
-  if (userByCountByCoordinate <= 1) {
-    color = 'bg-green-500'
-  } else if (userByCountByCoordinate >= 2 && userByCountByCoordinate <= 10) {
-    color = 'bg-yellow-600'
-  } else if (userByCountByCoordinate > 10) {
-    color = 'bg-red-500'
-  }
-
-  return color
+  const count = getUserCountByCoordinate.value.get(getMapKey.value)
+  return count ? determinePulseColor(count) : ''
 })
+
+// --------[ Method ]-------- //
+const determinePulseColor = (userCount: number): string => {
+  if (userCount <= 1) return 'bg-green-500'
+  if (userCount <= 10) return 'bg-yellow-600'
+  return 'bg-red-500'
+}
 </script>
 
 <style scoped>
