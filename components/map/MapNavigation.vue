@@ -9,7 +9,7 @@
     <div class="flex h-full w-52 flex-col justify-between bg-[#5a3006] p-2">
       <div class="move">
         <ListTitle class="shadow-md shadow-towni-brown-dark-400"
-          ><span class="text-sm">{{ height }}</span></ListTitle
+          ><span class="text-sm">Move</span></ListTitle
         >
         <div class="relative mt-6 flex items-center justify-center p-10">
           <MoveArrow
