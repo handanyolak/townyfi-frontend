@@ -31,6 +31,13 @@
     <AppButton
       v-if="data.contractName === 'TownyFi Token'"
       class="my-2 w-full"
+      @click="approveKtaToken()"
+    >
+      <span>Approve Token</span>
+    </AppButton>
+    <AppButton
+      v-if="data.contractName === 'TownyFi Token'"
+      class="my-2 w-full"
       @click="mintKtaToken()"
     >
       <span>Mint Token</span>
@@ -48,7 +55,7 @@ const contractStore = useContractStore()
 const userWalletStore = useUserWalletStore()
 
 const { getKtaToken, getKtaTokenCaller } = storeToRefs(contractStore)
-const { walletClient, ktaSymbol, ktaDecimals, address } =
+const { walletClient, ktaSymbol, ktaDecimals, ktaBalance, address } =
   storeToRefs(userWalletStore)
 
 interface ContractProps {
@@ -59,6 +66,10 @@ interface ContractProps {
   }
 }
 defineProps<ContractProps>()
+
+const {
+  public: { ktaAddress },
+} = useRuntimeConfig()
 
 const addKtaTokenToWallet = async () => {
   try {
@@ -81,6 +92,19 @@ const mintKtaToken = async () => {
       'write',
       'mint',
       [address.value, 1000n],
+      false,
+    )
+  } catch (error) {
+    useAppToast(TYPE.ERROR, 'Something went wrong')
+  }
+}
+
+const approveKtaToken = async () => {
+  try {
+    await getKtaTokenCaller.value.callFunction(
+      'write',
+      'approve',
+      [ktaAddress, ktaBalance.value],
       false,
     )
   } catch (error) {
