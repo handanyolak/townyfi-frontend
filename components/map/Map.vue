@@ -49,11 +49,14 @@
         />
       </div>
     </div>
-    <MapNavigation
-      ref="navigation"
-      :is-map-navigation-visible="isMapNavigationVisible"
-      :height="width.toString()"
-    />
+    <Transition name="map-navigation">
+      <MapNavigation
+        v-if="isMapNavigationVisible"
+        ref="navigation"
+        :is-map-navigation-visible="isMapNavigationVisible"
+        :height="width.toString()"
+      />
+    </Transition>
   </div>
 </template>
 
@@ -187,3 +190,16 @@ onClickOutside(navigation, (event) => {
   isMapNavigationVisible.value = false
 })
 </script>
+
+<style scoped>
+.map-navigation-enter-active,
+.map-navigation-leave-active {
+  transition: transform 0.8s ease;
+}
+
+.map-navigation-enter-from,
+.map-navigation-leave-to {
+  transform: translateX(-100%);
+  transition: all 0.3s ease-out;
+}
+</style>
