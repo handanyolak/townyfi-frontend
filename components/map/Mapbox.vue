@@ -4,23 +4,12 @@
     @mouseover="showCoordinates"
     @mouseleave="hideCoordinates"
   >
-    <div class="relative flex h-full flex-col items-center">
-      <div
-        :class="[
-          'flex h-full w-full',
-          hasTown ? 'flex-col items-center' : '',
-          isRegistered && isCoordinateOfUser
-            ? 'bg-knight knight bg-no-repeat'
-            : '',
-        ]"
-      >
-        <Banner v-if="hasTown" class="w-full" />
-      </div>
-      <img
-        v-if="!(isRegistered && isCoordinateOfUser)"
-        src="@/assets/img/skeleton-castle.png"
-        class="invisible"
-      />
+    <div
+      :class="['relative flex h-full flex-col items-center', backgroundClass]"
+    >
+      <Banner v-if="hasTown" class="w-full" />
+
+      <img v-else src="@/assets/img/skeleton-castle.png" class="invisible" />
     </div>
     <div>
       <Transition name="fade">
@@ -109,6 +98,15 @@ const pulseColor = computed(() => {
   return count ? determinePulseColor(count) : ''
 })
 
+const backgroundClass = computed(() => {
+  if (isRegistered.value && isCoordinateOfUser.value && hasTown.value) {
+    return 'knight bg-knight'
+  } else if (isRegistered.value && isCoordinateOfUser.value) {
+    return 'knight bg-knight'
+  }
+  return hasTown.value ? 'items-start' : ''
+})
+
 // --------[ Method ]-------- //
 const determinePulseColor = (userCount: number): string => {
   if (userCount <= 1) return 'bg-green-500'
@@ -131,6 +129,7 @@ const hideCoordinates = () => {
 .knight {
   background-position: 50% 110%;
   background-size: 80%;
+  background-repeat: no-repeat;
 }
 
 .fade-enter-active,
