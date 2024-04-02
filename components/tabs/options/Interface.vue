@@ -2,7 +2,7 @@
   <div>
     <ListTitle>General</ListTitle>
     <ListItem title="Coordinate:">
-      <SidebarDropdown
+      <AppDropdown
         :select="language"
         :dropdown-items="languages"
         :icon-names="languages"
@@ -30,13 +30,13 @@
     </ListItem>
     <ListTitle>Interface</ListTitle>
     <ListItem title="Near Level:">
-      <SidebarDropdown
+      <AppDropdown
         :key="nearLevel"
         :select="nearLevel.toString()"
         :dropdown-items="createNumberArray(minNearLevel, maxNearLevel)"
         rounded
         @selected="(item) => selectNearLevel(item)"
-      ></SidebarDropdown>
+      ></AppDropdown>
     </ListItem>
   </div>
 </template>
@@ -45,7 +45,7 @@
 import { useDark, useToggle } from '@vueuse/core'
 import ListTitle from '~/components/common/ListTitle.vue'
 import ListItem from '~/components/common/ListItem.vue'
-import SidebarDropdown from '~/components/common/SidebarDropdown.vue'
+import AppDropdown from '~/components/common/AppDropdown.vue'
 import Switch from '~/components/common/Switch.vue'
 
 // --------[ Nuxt Imports ]-------- //

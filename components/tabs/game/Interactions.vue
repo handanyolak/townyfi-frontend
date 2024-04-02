@@ -65,7 +65,7 @@
         <div class="flex">
           <ListItem input title="Direction:">
             <template #item>
-              <SidebarDropdown
+              <AppDropdown
                 :dropdown-items="enumKeys(Direction)"
                 rounded
                 @selected="(item: string) => onDropdownChanged(item)"
@@ -87,7 +87,7 @@
 <script setup lang="ts">
 import ListItem from '~/components/common/ListItem.vue'
 import Accordion from '~/components/common/Accordion.vue'
-import SidebarDropdown from '~/components/common/SidebarDropdown.vue'
+import AppDropdown from '~/components/common/AppDropdown.vue'
 import { useUserGameStore } from '~/stores/userGame'
 import { Direction } from '~/enums'
 

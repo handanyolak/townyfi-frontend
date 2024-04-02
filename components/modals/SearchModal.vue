@@ -6,7 +6,7 @@
     <div class="flex w-full space-x-2">
       <ListItem class="w-full" title="Type:" input>
         <template #item>
-          <SidebarDropdown
+          <AppDropdown
             ref="searchTypeDropdown"
             :dropdown-items="Object.values(searchOptions)"
             @selected="handleSearchTypeChange"
@@ -16,7 +16,7 @@
 
       <ListItem class="w-full" title="By:" input>
         <template #item>
-          <SidebarDropdown
+          <AppDropdown
             ref="sidebarDropdown"
             :dropdown-items="dynamicFindOptions"
             @selected="handleDropdownChange()"
@@ -98,7 +98,7 @@ import { useDebounceFn } from '@vueuse/core'
 import { object } from 'yup'
 import ListItem from '~/components/common/ListItem.vue'
 import ListTitle from '~/components/common/ListTitle.vue'
-import SidebarDropdown from '~/components/common/SidebarDropdown.vue'
+import AppDropdown from '~/components/common/AppDropdown.vue'
 import OtherTown from '~/components/OtherTown.vue'
 import OtherUser from '~/components/OtherUser.vue'
 import TheLoading from '~/components/common/TheLoading.vue'
@@ -123,7 +123,7 @@ const contractStore = useContractStore()
 const { getKta } = storeToRefs(contractStore)
 
 // --------[ Data ]-------- //
-const sidebarDropdown = ref<InstanceType<typeof SidebarDropdown> | null>(null)
+const sidebarDropdown = ref<InstanceType<typeof AppDropdown> | null>(null)
 const currentSearchType = ref<SearchType>(SearchType.Town)
 const currentUserAddress = ref<Address | null>(null)
 const selectedAddress = ref<string | null>(null)
