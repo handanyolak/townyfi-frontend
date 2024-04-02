@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center justify-center">
+  <div class="flex min-w-6 items-center justify-center">
     <div class="relative z-10 w-full">
       <button
         class="flex w-full items-center justify-between bg-towni-brown-dark-300 bg-opacity-20 px-3 py-1 text-towni-brown-dark-300 outline-none backdrop-blur"
@@ -23,10 +23,10 @@
           class="scrollbar-gutter-stable absolute left-0 right-0 mb-4 h-20 overflow-auto bg-towni-brown-dark-300 bg-opacity-20 backdrop-blur"
           :class="!showDropdown ? 'rounded-md' : 'rounded-b-2xl'"
         >
-          <span
+          <ul
             v-for="(item, index) in props.dropdownItems"
             :key="index"
-            class="flex h-10 cursor-pointer items-center py-2 duration-300 hover:brightness-200"
+            class="flex h-10 cursor-pointer items-center py-2 duration-300 hover:brightness-150"
             @mousedown.prevent="selectItem(item)"
           >
             <img
@@ -34,10 +34,10 @@
               class="mr-2 h-5 w-5"
               :src="dropdownIcon(iconNames[index])"
             />
-            <p class="text-sm capitalize text-towni-brown-dark-300">
+            <li class="text-sm capitalize text-towni-brown-dark-300">
               {{ item }}
-            </p>
-          </span>
+            </li>
+          </ul>
         </div>
       </Transition>
     </div>
