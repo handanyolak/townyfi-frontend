@@ -18,6 +18,7 @@
       ]"
     >
       <slot />
+      <Icon v-if="isLoading" class="ml-1" name="svg-spinners:ring-resize" />
     </div>
   </button>
 </template>
@@ -29,6 +30,7 @@ interface ButtonThemeProps {
   borderHover?: boolean
   basicHover?: boolean
   inlineClass?: string
+  isLoading?: boolean
 }
 
 defineProps<ButtonThemeProps>()
