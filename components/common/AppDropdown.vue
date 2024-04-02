@@ -8,13 +8,13 @@
         @blur="showDropdown = false"
       >
         <img v-if="iconNames" class="mr-2 h-4 w-4" :src="dropdownIcon()" />
-        <span class="capitalize">{{
+        <span class="text-sm capitalize">{{
           selectedItem || select || dropdownItems[0]
         }}</span>
-        <img
+        <Icon
           class="ml-2 block h-4 w-4 transform transition-transform duration-200 ease-in-out"
           :class="showDropdown ? 'rotate-180' : 'rotate-0'"
-          src="@/assets/img/arrow-down.svg"
+          name="material-symbols:keyboard-arrow-down-rounded"
         />
       </button>
       <Transition name="dropdown">
@@ -26,7 +26,7 @@
           <span
             v-for="(item, index) in props.dropdownItems"
             :key="index"
-            class="flex h-10 cursor-pointer items-center px-4 py-2 duration-300 hover:brightness-200"
+            class="flex h-10 cursor-pointer items-center py-2 duration-300 hover:brightness-200"
             @mousedown.prevent="selectItem(item)"
           >
             <img
@@ -34,7 +34,7 @@
               class="mr-2 h-5 w-5"
               :src="dropdownIcon(iconNames[index])"
             />
-            <p class="capitalize text-towni-brown-dark-300">
+            <p class="text-sm capitalize text-towni-brown-dark-300">
               {{ item }}
             </p>
           </span>
