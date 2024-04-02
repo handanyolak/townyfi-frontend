@@ -1,5 +1,7 @@
 <template>
-  <div class="flex flex-col items-center space-y-4 p-12">
+  <div
+    class="flex flex-col items-center space-y-4 rounded-sm bg-towni-brown-light-100 p-12"
+  >
     <ListTitle class="w-full">Register</ListTitle>
     <ListItem title="Name:" class="w-full" input>
       <template #item>
@@ -23,15 +25,30 @@
     </ListItem>
     <AppButton
       v-if="ktaAllowance <= BigInt(settings.price.register ?? 0)"
+      :is-loading="currentLoadingState === LoadingState.Approving"
       class="my-3"
       @click="userApprove()"
       >Approve
     </AppButton>
-    <AppButton v-else class="my-3" @click="userRegister()">Register</AppButton>
-    <AppButton class="my-3" @click="addKtaTokenToWallet()"
+    <AppButton
+      v-else
+      :is-loading="currentLoadingState === LoadingState.Registering"
+      class="my-3"
+      @click="userRegister()"
+      >Register
+    </AppButton>
+    <AppButton
+      :is-loading="currentLoadingState === LoadingState.AddingToken"
+      class="my-3"
+      @click="addKtaTokenToWallet()"
       >Add Token to Metamask</AppButton
     >
-    <AppButton class="my-3" @click="mintKtaToken()">Mint Token</AppButton>
+    <AppButton
+      :is-loading="currentLoadingState === LoadingState.Minting"
+      class="my-3"
+      @click="mintKtaToken()"
+      >Mint Token</AppButton
+    >
   </div>
 </template>
 
@@ -42,6 +59,7 @@ import ListItem from '~/components/common/ListItem.vue'
 import ListTitle from '~/components/common/ListTitle.vue'
 import AppButton from '~/components/common/AppButton.vue'
 import { addHexPrefix } from '~/utils'
+import { LoadingState } from '~/enums'
 import { getAddressRule, getBytes32Rule } from '~/composables/useYupRules'
 
 // --------[ Props & Emits ]-------- //
@@ -74,48 +92,63 @@ const { settings } = storeToRefs(userGameStore)
 // --------[ Data ]-------- //
 const name = ref('')
 const referrer = ref('')
+const currentLoadingState = ref(LoadingState.Idle)
+const referrerRules = getAddressRule()
 const nameRules = getBytes32Rule({
   required: true,
 })
-const referrerRules = getAddressRule()
 
 // --------[ Methods ]-------- //
 const userRegister = async () => {
-  const result = await getKtaCaller.value.callFunction(
-    'write',
-    'register',
-    [
-      stringToHex(name.value, { size: 32 }),
-      referrer.value === '' ? zeroAddress : addHexPrefix(referrer.value),
-    ],
-    false,
-  )
+  currentLoadingState.value = LoadingState.Registering
+  try {
+    const result = await getKtaCaller.value.callFunction(
+      'write',
+      'register',
+      [
+        stringToHex(name.value, { size: 32 }),
+        referrer.value === '' ? zeroAddress : addHexPrefix(referrer.value),
+      ],
+      false,
+    )
 
-  if (result) {
-    clearModalInfo()
+    if (result) {
+      clearModalInfo()
+    }
+  } catch (error) {
+    useAppToast(TYPE.ERROR, 'Something went wrong')
+  } finally {
+    currentLoadingState.value = LoadingState.Idle
   }
 }
 
 const userApprove = async () => {
-  if (ktaBalance.value < BigInt(settings.value.price.register ?? 0)) {
-    useAppToast(
-      TYPE.ERROR,
-      `You don't have enough tokens (${settings.value.price.register}) to register for the game`,
+  currentLoadingState.value = LoadingState.Approving
+  try {
+    if (ktaBalance.value < BigInt(settings.value.price.register ?? 0)) {
+      useAppToast(
+        TYPE.ERROR,
+        `You don't have enough tokens (${settings.value.price.register}) to register for the game`,
+      )
+      return
+    }
+
+    await getKtaTokenCaller.value.callFunction(
+      'write',
+      'approve',
+      [ktaAddress, ktaBalance.value],
+      false,
     )
-
-    return
+  } catch (error) {
+    useAppToast(TYPE.ERROR, 'Something went wrong')
+  } finally {
+    currentLoadingState.value = LoadingState.Idle
   }
-
-  await getKtaTokenCaller.value.callFunction(
-    'write',
-    'approve',
-    [ktaAddress, ktaBalance.value],
-    false,
-  )
 }
 
 const addKtaTokenToWallet = async () => {
   try {
+    currentLoadingState.value = LoadingState.AddingToken
     await walletClient.value.watchAsset({
       type: 'ERC20',
       options: {
@@ -126,10 +159,13 @@ const addKtaTokenToWallet = async () => {
     })
   } catch (error) {
     useAppToast(TYPE.ERROR, 'Something went wrong')
+  } finally {
+    currentLoadingState.value = LoadingState.Idle
   }
 }
 
 const mintKtaToken = async () => {
+  currentLoadingState.value = LoadingState.Minting
   try {
     await getKtaTokenCaller.value.callFunction(
       'write',
@@ -139,6 +175,8 @@ const mintKtaToken = async () => {
     )
   } catch (error) {
     useAppToast(TYPE.ERROR, 'Something went wrong')
+  } finally {
+    currentLoadingState.value = LoadingState.Idle
   }
 }
 </script>
