@@ -14,7 +14,15 @@ module.exports = {
   rules: {
     'vue/no-undef-components': [
       'error',
-      { ignorePatterns: ['Icon', 'VeeForm', 'VeeField', 'VeeErrorMessage'] },
+      {
+        ignorePatterns: [
+          'Icon',
+          'VeeForm',
+          'VeeField',
+          'VeeErrorMessage',
+          'ClientOnly',
+        ],
+      },
     ],
     'vue/multi-word-component-names': 0,
     'no-console': 'off',
