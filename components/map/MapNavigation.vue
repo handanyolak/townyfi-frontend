@@ -163,7 +163,7 @@ const goBackToInitialPosition = () => {
 
 const teleportToTown = async () => {
   const confirmed = await setModalInfo('AnimationModal', {
-    animation: 'teleport',
+    animation: 'travel-map',
     message: `Are you sure want to teleport to Town (${town.value.coordinate._x}, ${town.value.coordinate._y})?`,
   })
 

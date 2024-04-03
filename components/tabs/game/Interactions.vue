@@ -113,7 +113,7 @@ const directionTarget = ref('Up')
 // TODO: notification will be made after the transaction is confirmed
 const onClickTeleport = async () => {
   const confirmed = await setModalInfo('AnimationModal', {
-    animation: 'teleport',
+    animation: 'travel-map',
     message: `Are you sure want to teleport to (${coordinateX.value}, ${coordinateY.value})?`,
   })
 
