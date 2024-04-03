@@ -48,6 +48,12 @@ export const TABS: Record<string, Tab[]> = {
       component: 'Interface',
       folder: 'options',
     },
+    {
+      id: 'game-info',
+      name: 'Game',
+      component: 'Game',
+      folder: 'options',
+    },
   ],
   blockchainInfo: [
     {
