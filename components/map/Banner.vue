@@ -120,17 +120,42 @@
 
 <script setup lang="ts">
 import { hexToString } from 'viem'
+import { transformTown } from '~/transformers'
+
+// --------[ Prop & Emit ]-------- //
+interface BannerProps {
+  coordinates: {
+    x: string
+    y: string
+  }
+}
+
+const props = defineProps<BannerProps>()
 
 // --------[ Store ]-------- //
 const userGameStore = useUserGameStore()
 
-const { town } = storeToRefs(userGameStore)
+const contractStore = useContractStore()
+const { getKta } = storeToRefs(contractStore)
+
+// --------[ Data ]-------- //
+const town = ref(userGameStore.town)
 
 // --------[ Computed ]-------- //
 const townName = computed(() => {
-  return town.value?.name
+  return town.value.name
     ? hexToString(town.value.name, { size: 32 })
     : 'Loading...'
+})
+
+// --------[ Hook ]-------- //
+onMounted(async () => {
+  const townID = await getKta.value.read.townIdByCoordinate([
+    BigInt(props.coordinates.x),
+    BigInt(props.coordinates.y),
+  ])
+
+  town.value = transformTown(await getKta.value.read.townById([townID]))
 })
 </script>
 
