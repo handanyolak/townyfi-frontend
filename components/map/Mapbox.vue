@@ -7,7 +7,11 @@
     <div
       :class="['relative flex h-full flex-col items-center', backgroundClass]"
     >
-      <Banner v-if="hasTown" class="w-full" />
+      <Banner
+        v-if="hasTown"
+        :coordinates="{ x: item._x.toString(), y: item._y.toString() }"
+        class="w-full"
+      />
 
       <img v-else src="@/assets/img/skeleton-castle.png" class="invisible" />
     </div>
