@@ -132,12 +132,12 @@
       <template #action>
         <client-only>
           <Vue3Lottie
-            class="cursor-pointer"
+            :class="getPointIcon(item) === undefined ? '' : 'cursor-pointer'"
             :animation-link="getPointIcon(item)"
             :scale="1.5"
             :height="40"
             :width="40"
-            @click="getSomething(item)"
+            @click="handleClick(item)"
           />
         </client-only>
       </template>
@@ -212,6 +212,32 @@ const getSomething = async (item: string) => {
   const getItem = Get[item.slice(3) as keyof typeof Get]
 
   await getKtaCaller.value.callFunction('write', 'get', [getItem])
+}
+
+const revive = async () => {
+  await getKtaCaller.value.callFunction('write', 'revive')
+}
+const teleportToTown = async () => {
+  await getKtaCaller.value.callFunction('write', 'teleportToTown')
+}
+
+const handleClick = async (item: string) => {
+  switch (item) {
+    case 'getHealth':
+    case 'getMana':
+    case 'getEnergy':
+    case 'getArmor':
+      await getSomething(item)
+      break
+    case 'revive':
+      await revive()
+      break
+    case 'teleportToTown':
+      await teleportToTown()
+      break
+    default:
+      break
+  }
 }
 
 const onSaved = async () => {
