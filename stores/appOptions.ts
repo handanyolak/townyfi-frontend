@@ -35,8 +35,9 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const modalComponentProps = ref({})
   const isAnimation = ref(false)
   const isConfirmed = ref(false)
-  const modalResultResolver = ref<((value: unknown) => void) | null>(null)
   const isAttackSuccess = ref(false)
+  const logMessages = ref<string[]>([])
+  const modalResultResolver = ref<((value: unknown) => void) | null>(null)
   const userMovedEvent = ref<WatchContractEventReturnType | null>(null)
   const userRegisteredEvent = ref<WatchContractEventReturnType | null>(null)
   const userMissedEvent = ref<WatchContractEventReturnType | null>(null)
@@ -240,6 +241,11 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                       )
                     }
 
+                    const eventMessage = `Event: ${eventName}`
+                    const argsMessage = formatEventArgs(args)
+
+                    addLogMessage(`${eventMessage}\n${argsMessage}`)
+
                     if (!areAddressesEqual(user, userWalletStore.address)) {
                       continue
                     }
@@ -247,10 +253,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                     userGameStore.setUserProperty('coordinate', newCoordinate)
                     userGameStore.setUserCoordinate(userInfo.coordinate)
 
-                    const toastMsg =
-                      `You moved to new coordinate!\n` +
-                      `Event: ${eventName}\n` +
-                      `${formatEventArgs(args)}`
+                    const toastMsg = `You moved to new coordinate!\n${eventMessage}\n${argsMessage}`
 
                     useAppToast(TYPE.INFO, toastMsg)
                   }
@@ -283,14 +286,15 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                     const { eventName, args } = log
                     const { user } = args
 
+                    const eventMessage = `Event: ${eventName}`
+                    const argsMessage = formatEventArgs(args)
+
+                    addLogMessage(`${eventMessage}\n${argsMessage}`)
+
                     if (!areAddressesEqual(user, userWalletStore.address)) {
                       continue
                     }
-
-                    const toastMsg =
-                      `Welcome to TownyFi!\n` +
-                      `Event: ${eventName}\n` +
-                      `${formatEventArgs(args)}`
+                    const toastMsg = `Welcome to TownyFi!\n${eventMessage}\n${argsMessage}`
 
                     const userInfo = transformUser(
                       await contractStore.getKta.read.userByAddr([
@@ -334,6 +338,12 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                       attacker,
                       userWalletStore.address,
                     )
+
+                    const eventMessage = `Event: ${eventName}`
+                    const argsMessage = formatEventArgs(args)
+
+                    addLogMessage(`${eventMessage}\n${argsMessage}`)
+
                     if (
                       !isUserAttacker &&
                       !areAddressesEqual(defender, userWalletStore.address)
@@ -345,8 +355,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                       (isUserAttacker
                         ? 'Your attack was dodged!\n'
                         : 'You dodged the attack!\n') +
-                      `Event: ${eventName}\n` +
-                      `${formatEventArgs(args)}`
+                      `${eventMessage}\n${argsMessage}`
 
                     useAppToast(TYPE.INFO, toastMsg)
                   }
@@ -382,6 +391,11 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                       attacker,
                       userWalletStore.address,
                     )
+
+                    const eventMessage = `Event: ${eventName}`
+                    const argsMessage = formatEventArgs(args)
+
+                    addLogMessage(`${eventMessage}\n${argsMessage}`)
                     if (
                       !isUserAttacker &&
                       !areAddressesEqual(defender, userWalletStore.address)
@@ -393,8 +407,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                       (isUserAttacker
                         ? 'You attacked!\n'
                         : 'You were attacked!\n') +
-                      `Event: ${eventName}\n` +
-                      `${formatEventArgs(args)}`
+                      `${eventMessage}\n${argsMessage}`
 
                     useAppToast(TYPE.INFO, toastMsg)
                   }
@@ -525,6 +538,13 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     )
   }
 
+  const addLogMessage = (message: string) => {
+    if (logMessages.value.length >= 5000) {
+      logMessages.value.shift()
+    }
+    logMessages.value.push(message)
+  }
+
   const toggleAudio = () => {
     _toggleAudio()
 
@@ -584,5 +604,6 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     setModalInfo,
     clearModalInfo,
     closeModalWithResponse,
+    logMessages,
   }
 })
