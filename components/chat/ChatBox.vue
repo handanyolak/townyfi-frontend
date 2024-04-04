@@ -1,9 +1,9 @@
 <template>
   <ClientOnly>
-    <div ref="chatBox">
+    <div ref="chatBox" class="z-[99999999]">
       <div class="fixed bottom-0 right-0">
         <div
-          class="ease flex w-56 flex-col transition-all duration-700"
+          class="ease flex w-72 flex-col transition-all duration-700"
           :class="isChat ? 'max-h-80' : 'max-h-9'"
         >
           <div
@@ -84,14 +84,30 @@
               :class="{ hidden: openChatTab !== 2, block: openChatTab === 2 }"
               class="h-full overflow-auto bg-towni-brown-light-300 p-3"
             >
-              <div v-for="item in 9" :key="item" class="my-2 flex">
-                <span
-                  class="mr-1 inline-block h-1 w-1 rounded-full bg-red-600 p-1"
-                ></span>
-                <p class="text-xs">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Inventore, blanditiis?
-                </p>
+              <div v-if="logMessages.length > 0">
+                <div
+                  v-for="(item, index) in logMessages"
+                  :key="`log-${index}`"
+                  class="my-2 flex rounded-xl p-2 transition-colors duration-300 ease-out hover:bg-[#dcd0b7]"
+                >
+                  <div class="mr-2 flex flex-col justify-center">
+                    <span
+                      class="inline-block h-1 w-1 rounded-full bg-orange-500 p-1"
+                    ></span>
+                  </div>
+                  <div class="flex flex-col">
+                    <div
+                      v-for="(line, lineIndex) in splitLogMessage(item)"
+                      :key="`line-${lineIndex}`"
+                      class="break-all text-xs"
+                    >
+                      {{ line }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div v-else class="text-center text-sm text-towni-brown-dark-300">
+                No activities yet
               </div>
             </div>
           </div>
@@ -103,6 +119,10 @@
 
 <script setup lang="ts">
 import { onClickOutside } from '@vueuse/core'
+
+// --------[ Stores ]-------- //
+const appOptionStore = useAppOptionsStore()
+const { logMessages } = storeToRefs(appOptionStore)
 
 // --------[ Data ]-------- //
 const youMessage = ref('')
@@ -145,6 +165,10 @@ const sendMessage = () => {
       behavior: 'smooth',
     })
   })
+}
+
+const splitLogMessage = (message: string) => {
+  return message.split('\n')
 }
 
 const toggleChat = () => {
