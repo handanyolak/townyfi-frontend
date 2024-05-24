@@ -64,10 +64,13 @@ watch(formInput, (newFormInput) => {
 
 // --------[ Methods ]-------- //
 const createTown = async () => {
-  await getKtaCaller.value.callFunction('write', 'createTown', [
-    stringToHex(formInput.name, { size: 32 }),
-    BigInt(formInput.price),
-  ])
+  await getKtaCaller.value.callFunction({
+    fnType: 'write',
+    fnName: 'createTown',
+    fnArgs: [
+      [stringToHex(formInput.name, { size: 32 }), BigInt(formInput.price)],
+    ],
+  })
 }
 </script>
 

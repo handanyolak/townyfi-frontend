@@ -1,3 +1,5 @@
+import type { Address } from 'viem'
+
 export const uppercaseFirstChar = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1)
 }
@@ -13,7 +15,7 @@ export const middleCropping = (str: string) => {
 }
 
 export const addHexPrefix = (str: string) => {
-  return str.startsWith('0x') ? str : '0x' + str
+  return (str.startsWith('0x') ? str : '0x' + str) as Address
 }
 
 const capitalize = (word: string) => {

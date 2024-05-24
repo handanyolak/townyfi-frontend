@@ -53,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import { stringToHex, zeroAddress } from 'viem'
+import { stringToHex, zeroAddress, type Address } from 'viem'
 import { TYPE } from 'vue-toastification'
 import ListItem from '~/components/common/ListItem.vue'
 import ListTitle from '~/components/common/ListTitle.vue'
@@ -102,15 +102,17 @@ const nameRules = getBytes32Rule({
 const userRegister = async () => {
   currentLoadingState.value = LoadingState.Registering
   try {
-    const result = await getKtaCaller.value.callFunction(
-      'write',
-      'register',
-      [
-        stringToHex(name.value, { size: 32 }),
-        referrer.value === '' ? zeroAddress : addHexPrefix(referrer.value),
+    const result = await getKtaCaller.value.callFunction({
+      fnType: 'write',
+      fnName: 'register',
+      fnArgs: [
+        [
+          stringToHex(name.value, { size: 32 }),
+          referrer.value === '' ? zeroAddress : addHexPrefix(referrer.value),
+        ],
       ],
-      false,
-    )
+      needRegister: false,
+    })
 
     if (result) {
       clearModalInfo()
@@ -133,12 +135,12 @@ const userApprove = async () => {
       return
     }
 
-    await getKtaTokenCaller.value.callFunction(
-      'write',
-      'approve',
-      [ktaAddress, ktaBalance.value],
-      false,
-    )
+    await getKtaTokenCaller.value.callFunction({
+      fnType: 'write',
+      fnName: 'approve',
+      fnArgs: [[ktaAddress as Address, ktaBalance.value]], // FIXME: type casting
+      needRegister: false,
+    })
   } catch (error) {
     useAppToast(TYPE.ERROR, 'Something went wrong')
   } finally {
@@ -167,12 +169,12 @@ const addKtaTokenToWallet = async () => {
 const mintKtaToken = async () => {
   currentLoadingState.value = LoadingState.Minting
   try {
-    await getKtaTokenCaller.value.callFunction(
-      'write',
-      'mint',
-      [address.value, 1000n],
-      false,
-    )
+    await getKtaTokenCaller.value.callFunction({
+      fnType: 'write',
+      fnName: 'mint',
+      fnArgs: [[address.value, 1000n]],
+      needRegister: false,
+    })
   } catch (error) {
     useAppToast(TYPE.ERROR, 'Something went wrong')
   } finally {

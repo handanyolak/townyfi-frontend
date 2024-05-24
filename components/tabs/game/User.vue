@@ -211,14 +211,24 @@ const getSomething = async (item: string) => {
 
   const getItem = Get[item.slice(3) as keyof typeof Get]
 
-  await getKtaCaller.value.callFunction('write', 'get', [getItem])
+  await getKtaCaller.value.callFunction({
+    fnType: 'write',
+    fnName: 'get',
+    fnArgs: [[getItem]],
+  })
 }
 
 const revive = async () => {
-  await getKtaCaller.value.callFunction('write', 'revive')
+  await getKtaCaller.value.callFunction({
+    fnType: 'write',
+    fnName: 'revive',
+  })
 }
 const teleportToTown = async () => {
-  await getKtaCaller.value.callFunction('write', 'teleportToTown')
+  await getKtaCaller.value.callFunction({
+    fnType: 'write',
+    fnName: 'teleportToTown',
+  })
 }
 
 const handleClick = async (item: string) => {
@@ -246,9 +256,12 @@ const onSaved = async () => {
     return
   }
   const encodedName = stringToHex(tempName, { size: 32 })
-  const result = await getKtaCaller.value.callFunction('write', 'changeName', [
-    encodedName,
-  ])
+  const result = await getKtaCaller.value.callFunction({
+    fnType: 'write',
+    fnName: 'changeName',
+    fnArgs: [[encodedName]],
+  })
+
   if (result) {
     user.value.name = encodedName
   }

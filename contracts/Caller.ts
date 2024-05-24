@@ -2,16 +2,22 @@
 
 import { TYPE, useToast } from 'vue-toastification'
 import { defaultToastificationConfig } from '~/config'
+import type { Mutable, ParamType } from '~/types'
 
-export class Caller<K> {
+export class ContractCaller<K> {
   constructor(private readonly contract: K) {}
 
-  async callFunction<FT extends 'read' | 'write', FN extends keyof K[FT]>(
-    fnType: FT,
-    fnName: FN,
-    fnArgs: any[] = [], // K[FT][FN],
+  async callFunction<FT extends 'read' | 'write', FN extends keyof K[FT]>({
+    fnType,
+    fnName,
     needRegister = true,
-  ) {
+    fnArgs = [],
+  }: {
+    fnType: FT
+    fnName: FN
+    needRegister?: boolean
+    fnArgs?: Mutable<ParamType<K[FT][FN]>> | []
+  }) {
     const connectionStore = useConnectionStore()
     const userGameStore = useUserGameStore()
     const userWalletStore = useUserWalletStore()
@@ -30,7 +36,7 @@ export class Caller<K> {
       return false
     }
 
-    const staticCallRes = await this.contract.simulate[fnName](fnArgs)
+    const staticCallRes = await this.contract.simulate[fnName](...fnArgs)
       .then((res) => res)
       .catch((e) => e)
 
@@ -54,7 +60,7 @@ export class Caller<K> {
     )
 
     try {
-      const tx = await this.contract[fnType][fnName](fnArgs)
+      const tx = await this.contract[fnType][fnName](...fnArgs)
 
       const receipt = await walletClient.value.waitForTransactionReceipt({
         hash: tx,

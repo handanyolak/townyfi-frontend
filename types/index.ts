@@ -4,6 +4,12 @@ export * from './composables'
 export * from './components'
 export * from './toastification'
 
+export type ParamType<T> = T extends (...args: infer P) => any ? P : never
+
+export type Mutable<T> = T extends object
+  ? { -readonly [K in keyof T]: Mutable<T[K]> }
+  : T
+
 declare module 'yup' {
   interface StringSchema {
     bytes32(message?: Message<any>): this

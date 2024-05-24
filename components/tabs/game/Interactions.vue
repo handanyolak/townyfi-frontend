@@ -85,6 +85,7 @@
 </template>
 
 <script setup lang="ts">
+import type { Address } from 'viem'
 import ListItem from '~/components/common/ListItem.vue'
 import Accordion from '~/components/common/Accordion.vue'
 import AppDropdown from '~/components/common/AppDropdown.vue'
@@ -122,12 +123,18 @@ const onClickTeleport = async () => {
   }
 
   try {
-    await getKtaCaller.value.callFunction('write', 'teleport', [
-      {
-        _x: coordinateX.value,
-        _y: coordinateY.value,
-      },
-    ])
+    await getKtaCaller.value.callFunction({
+      fnType: 'write',
+      fnName: 'teleport',
+      fnArgs: [
+        [
+          {
+            _x: coordinateX.value,
+            _y: coordinateY.value,
+          },
+        ],
+      ],
+    })
   } catch (error) {
     console.error('Teleport transaction failed: ', error)
   } finally {
@@ -152,9 +159,11 @@ const onClickAttack = async () => {
   }
 
   try {
-    await getKtaCaller.value.callFunction('write', 'attack', [
-      targetAddress.value,
-    ])
+    await getKtaCaller.value.callFunction({
+      fnType: 'write',
+      fnName: 'attack',
+      fnArgs: [[targetAddress.value as Address]], // FIXME: type casting
+    })
   } catch (error) {
     console.error('Attack transaction failed: ', error)
   } finally {
@@ -174,7 +183,11 @@ const onClickMove = async () => {
   }
 
   try {
-    await getKtaCaller.value.callFunction('write', 'move', [direction.value])
+    await getKtaCaller.value.callFunction({
+      fnType: 'write',
+      fnName: 'move',
+      fnArgs: [[direction.value]],
+    })
   } catch (error) {
     console.error('Move transaction failed: ', error)
   } finally {

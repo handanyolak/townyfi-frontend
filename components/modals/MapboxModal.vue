@@ -103,12 +103,18 @@ const isOwnAddress = computed(
 
 // --------[ Methods ]-------- //
 const teleport = async () => {
-  const result = await getKtaCaller.value.callFunction('write', 'teleport', [
-    {
-      _x: props.coordinate._x,
-      _y: props.coordinate._y,
-    },
-  ])
+  const result = await getKtaCaller.value.callFunction({
+    fnType: 'write',
+    fnName: 'teleport',
+    fnArgs: [
+      [
+        {
+          _x: props.coordinate._x,
+          _y: props.coordinate._y,
+        },
+      ],
+    ],
+  })
 
   if (result) {
     clearModalInfo()
@@ -127,7 +133,11 @@ const attack = async (address: string) => {
   }
 
   try {
-    await getKtaCaller.value.callFunction('write', 'attack', [address])
+    await getKtaCaller.value.callFunction({
+      fnType: 'write',
+      fnName: 'attack',
+      fnArgs: [[address as Address]], // FIXME: type casting
+    })
   } catch (error) {
     console.error('Attack transaction failed: ', error)
   } finally {
@@ -150,7 +160,11 @@ const move = async () => {
     direction = Direction.Up
   }
 
-  await getKtaCaller.value.callFunction('write', 'move', [BigInt(direction)])
+  await getKtaCaller.value.callFunction({
+    fnType: 'write',
+    fnName: 'move',
+    fnArgs: [[direction]],
+  })
 }
 
 const isMoveable = () => {

@@ -46,6 +46,7 @@
 </template>
 
 <script setup lang="ts">
+import type { Address } from 'viem'
 import { TYPE } from 'vue-toastification'
 import ListTitle from '~/components/common/ListTitle.vue'
 import ListItem from '~/components/common/ListItem.vue'
@@ -88,12 +89,12 @@ const addKtaTokenToWallet = async () => {
 
 const mintKtaToken = async () => {
   try {
-    await getKtaTokenCaller.value.callFunction(
-      'write',
-      'mint',
-      [address.value, 1000n],
-      false,
-    )
+    await getKtaTokenCaller.value.callFunction({
+      fnType: 'write',
+      fnName: 'mint',
+      fnArgs: [[address.value, 1000n]],
+      needRegister: false,
+    })
   } catch (error) {
     useAppToast(TYPE.ERROR, 'Something went wrong')
   }
@@ -101,12 +102,12 @@ const mintKtaToken = async () => {
 
 const approveKtaToken = async () => {
   try {
-    await getKtaTokenCaller.value.callFunction(
-      'write',
-      'approve',
-      [ktaAddress, ktaBalance.value],
-      false,
-    )
+    await getKtaTokenCaller.value.callFunction({
+      fnType: 'write',
+      fnName: 'approve',
+      fnArgs: [[ktaAddress as Address, ktaBalance.value]], // FIXME: type casting
+      needRegister: false,
+    })
   } catch (error) {
     useAppToast(TYPE.ERROR, 'Something went wrong')
   }

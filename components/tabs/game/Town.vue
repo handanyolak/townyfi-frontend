@@ -175,7 +175,7 @@
 </template>
 
 <script setup lang="ts">
-import { hexToString } from 'viem'
+import { hexToString, type Address } from 'viem'
 import ListTitle from '~/components/common/ListTitle.vue'
 import ListItem from '~/components/common/ListItem.vue'
 import ScrollableList from '~/components/common/ScrollableList.vue'
@@ -221,18 +221,31 @@ const buttonLabel = computed(() =>
 
 // --------[ Methods ]-------- //
 const settleTown = async () => {
-  await getKtaCaller.value.callFunction('write', 'settleTown')
+  await getKtaCaller.value.callFunction({
+    fnType: 'write',
+    fnName: 'settleTown',
+  })
 }
 
 const toggleRecruitment = async () => {
-  await getKtaCaller.value.callFunction('write', 'changeTownRecruitment')
+  await getKtaCaller.value.callFunction({
+    fnType: 'write',
+    fnName: 'changeTownRecruitment',
+  })
 }
 
 const leaveTown = async () => {
-  await getKtaCaller.value.callFunction('write', 'leaveTown')
+  await getKtaCaller.value.callFunction({
+    fnType: 'write',
+    fnName: 'leaveTown',
+  })
 }
 
 const kickCitizen = async (item: string) => {
-  await getKtaCaller.value.callFunction('write', 'exileCitizen', [item])
+  await getKtaCaller.value.callFunction({
+    fnType: 'write',
+    fnName: 'exileCitizen',
+    fnArgs: [[item as Address]], // FIXME: type casting
+  })
 }
 </script>

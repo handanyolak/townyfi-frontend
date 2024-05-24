@@ -1,6 +1,6 @@
 import { getContract, type Address } from 'viem'
 import { ktaTokenAbi, ktaAbi } from '~/abi'
-import { Caller } from '~/contracts'
+import { ContractCaller } from '~/contracts'
 
 export const useContractStore = defineStore('contractStore', () => {
   const {
@@ -27,8 +27,10 @@ export const useContractStore = defineStore('contractStore', () => {
       client: walletClient.value,
     }),
   )
-  const getKtaTokenCaller = computed(() => new Caller(getKtaToken.value))
-  const getKtaCaller = computed(() => new Caller(getKta.value))
+  const getKtaTokenCaller = computed(
+    () => new ContractCaller(getKtaToken.value),
+  )
+  const getKtaCaller = computed(() => new ContractCaller(getKta.value))
 
   return {
     getKtaToken,

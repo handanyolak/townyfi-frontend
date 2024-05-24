@@ -172,12 +172,18 @@ const teleportToTown = async () => {
   }
 
   try {
-    await getKtaCaller.value.callFunction('write', 'teleport', [
-      {
-        _x: town.value.coordinate._x,
-        _y: town.value.coordinate._y,
-      },
-    ])
+    await getKtaCaller.value.callFunction({
+      fnType: 'write',
+      fnName: 'teleport',
+      fnArgs: [
+        [
+          {
+            _x: town.value.coordinate._x,
+            _y: town.value.coordinate._y,
+          },
+        ],
+      ],
+    })
   } catch (error) {
     console.error('Teleport transaction failed: ', error)
   } finally {
