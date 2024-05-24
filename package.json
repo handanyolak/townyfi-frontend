@@ -9,6 +9,9 @@
     "prepare": "nuxt prepare",
     "typecheck": "nuxt typecheck"
   },
+  "resolutions": {
+    "string-width": "4.2.3"
+  },
   "dependencies": {
     "@vee-validate/nuxt": "^4.12.6",
     "@vueuse/components": "^9.13.0",
