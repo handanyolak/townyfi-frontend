@@ -103,9 +103,9 @@ const userRegister = async () => {
   currentLoadingState.value = LoadingState.Registering
   try {
     const result = await getKtaCaller.value.callFunction({
-      fnType: 'write',
-      fnName: 'register',
-      fnArgs: [
+      type: 'write',
+      name: 'register',
+      args: [
         [
           stringToHex(name.value, { size: 32 }),
           referrer.value === '' ? zeroAddress : addHexPrefix(referrer.value),
@@ -136,9 +136,9 @@ const userApprove = async () => {
     }
 
     await getKtaTokenCaller.value.callFunction({
-      fnType: 'write',
-      fnName: 'approve',
-      fnArgs: [[ktaAddress as Address, ktaBalance.value]], // FIXME: type casting
+      type: 'write',
+      name: 'approve',
+      args: [[ktaAddress as Address, ktaBalance.value]], // FIXME: type casting
       needRegister: false,
     })
   } catch (error) {
@@ -170,9 +170,9 @@ const mintKtaToken = async () => {
   currentLoadingState.value = LoadingState.Minting
   try {
     await getKtaTokenCaller.value.callFunction({
-      fnType: 'write',
-      fnName: 'mint',
-      fnArgs: [[address.value, 1000n]],
+      type: 'write',
+      name: 'mint',
+      args: [[address.value, 1000n]],
       needRegister: false,
     })
   } catch (error) {

@@ -104,9 +104,9 @@ const isOwnAddress = computed(
 // --------[ Methods ]-------- //
 const teleport = async () => {
   const result = await getKtaCaller.value.callFunction({
-    fnType: 'write',
-    fnName: 'teleport',
-    fnArgs: [
+    type: 'write',
+    name: 'teleport',
+    args: [
       [
         {
           _x: props.coordinate._x,
@@ -134,9 +134,9 @@ const attack = async (address: string) => {
 
   try {
     await getKtaCaller.value.callFunction({
-      fnType: 'write',
-      fnName: 'attack',
-      fnArgs: [[address as Address]], // FIXME: type casting
+      type: 'write',
+      name: 'attack',
+      args: [[address as Address]], // FIXME: type casting
     })
   } catch (error) {
     console.error('Attack transaction failed: ', error)
@@ -161,9 +161,9 @@ const move = async () => {
   }
 
   await getKtaCaller.value.callFunction({
-    fnType: 'write',
-    fnName: 'move',
-    fnArgs: [[direction]],
+    type: 'write',
+    name: 'move',
+    args: [[direction]],
   })
 }
 

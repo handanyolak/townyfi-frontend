@@ -184,9 +184,9 @@ onMounted(async () => {
 
 const joinTown = async () => {
   await getKtaCaller.value.callFunction({
-    fnType: 'write',
-    fnName: 'joinTown',
-    fnArgs: [[BigInt(props.id)]],
+    type: 'write',
+    name: 'joinTown',
+    args: [[BigInt(props.id)]],
   })
 }
 </script>

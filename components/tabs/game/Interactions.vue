@@ -124,9 +124,9 @@ const onClickTeleport = async () => {
 
   try {
     await getKtaCaller.value.callFunction({
-      fnType: 'write',
-      fnName: 'teleport',
-      fnArgs: [
+      type: 'write',
+      name: 'teleport',
+      args: [
         [
           {
             _x: coordinateX.value,
@@ -160,9 +160,9 @@ const onClickAttack = async () => {
 
   try {
     await getKtaCaller.value.callFunction({
-      fnType: 'write',
-      fnName: 'attack',
-      fnArgs: [[targetAddress.value as Address]], // FIXME: type casting
+      type: 'write',
+      name: 'attack',
+      args: [[targetAddress.value as Address]], // FIXME: type casting
     })
   } catch (error) {
     console.error('Attack transaction failed: ', error)
@@ -184,9 +184,9 @@ const onClickMove = async () => {
 
   try {
     await getKtaCaller.value.callFunction({
-      fnType: 'write',
-      fnName: 'move',
-      fnArgs: [[direction.value]],
+      type: 'write',
+      name: 'move',
+      args: [[direction.value]],
     })
   } catch (error) {
     console.error('Move transaction failed: ', error)

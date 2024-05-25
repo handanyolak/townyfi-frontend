@@ -173,9 +173,9 @@ const teleportToTown = async () => {
 
   try {
     await getKtaCaller.value.callFunction({
-      fnType: 'write',
-      fnName: 'teleport',
-      fnArgs: [
+      type: 'write',
+      name: 'teleport',
+      args: [
         [
           {
             _x: town.value.coordinate._x,

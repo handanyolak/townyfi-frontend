@@ -222,30 +222,30 @@ const buttonLabel = computed(() =>
 // --------[ Methods ]-------- //
 const settleTown = async () => {
   await getKtaCaller.value.callFunction({
-    fnType: 'write',
-    fnName: 'settleTown',
+    type: 'write',
+    name: 'settleTown',
   })
 }
 
 const toggleRecruitment = async () => {
   await getKtaCaller.value.callFunction({
-    fnType: 'write',
-    fnName: 'changeTownRecruitment',
+    type: 'write',
+    name: 'changeTownRecruitment',
   })
 }
 
 const leaveTown = async () => {
   await getKtaCaller.value.callFunction({
-    fnType: 'write',
-    fnName: 'leaveTown',
+    type: 'write',
+    name: 'leaveTown',
   })
 }
 
 const kickCitizen = async (item: string) => {
   await getKtaCaller.value.callFunction({
-    fnType: 'write',
-    fnName: 'exileCitizen',
-    fnArgs: [[item as Address]], // FIXME: type casting
+    type: 'write',
+    name: 'exileCitizen',
+    args: [[item as Address]], // FIXME: type casting
   })
 }
 </script>

@@ -212,22 +212,22 @@ const getSomething = async (item: string) => {
   const getItem = Get[item.slice(3) as keyof typeof Get]
 
   await getKtaCaller.value.callFunction({
-    fnType: 'write',
-    fnName: 'get',
-    fnArgs: [[getItem]],
+    type: 'write',
+    name: 'get',
+    args: [[getItem]],
   })
 }
 
 const revive = async () => {
   await getKtaCaller.value.callFunction({
-    fnType: 'write',
-    fnName: 'revive',
+    type: 'write',
+    name: 'revive',
   })
 }
 const teleportToTown = async () => {
   await getKtaCaller.value.callFunction({
-    fnType: 'write',
-    fnName: 'teleportToTown',
+    type: 'write',
+    name: 'teleportToTown',
   })
 }
 
@@ -257,9 +257,9 @@ const onSaved = async () => {
   }
   const encodedName = stringToHex(tempName, { size: 32 })
   const result = await getKtaCaller.value.callFunction({
-    fnType: 'write',
-    fnName: 'changeName',
-    fnArgs: [[encodedName]],
+    type: 'write',
+    name: 'changeName',
+    args: [[encodedName]],
   })
 
   if (result) {

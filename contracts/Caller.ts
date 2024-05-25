@@ -8,15 +8,15 @@ export class ContractCaller<K> {
   constructor(private readonly contract: K) {}
 
   async callFunction<FT extends 'read' | 'write', FN extends keyof K[FT]>({
-    fnType,
-    fnName,
+    type,
+    name,
     needRegister = true,
-    fnArgs = [],
+    args = [],
   }: {
-    fnType: FT
-    fnName: FN
+    type: FT
+    name: FN
     needRegister?: boolean
-    fnArgs?: Mutable<ParamType<K[FT][FN]>> | []
+    args?: Mutable<ParamType<K[FT][FN]>> | []
   }) {
     const connectionStore = useConnectionStore()
     const userGameStore = useUserGameStore()
@@ -36,7 +36,7 @@ export class ContractCaller<K> {
       return false
     }
 
-    const staticCallRes = await this.contract.simulate[fnName](...fnArgs)
+    const staticCallRes = await this.contract.simulate[name](...args)
       .then((res) => res)
       .catch((e) => e)
 
@@ -51,7 +51,7 @@ export class ContractCaller<K> {
 
     const toast = useToast()
     const toastId = toast(
-      `Sending transaction of '${String(fnName)}' function...`,
+      `Sending transaction of '${String(name)}' function...`,
       {
         ...defaultToastificationConfig,
         timeout: 0,
@@ -60,7 +60,7 @@ export class ContractCaller<K> {
     )
 
     try {
-      const tx = await this.contract[fnType][fnName](...fnArgs)
+      const tx = await this.contract[type][name](...args)
 
       const receipt = await walletClient.value.waitForTransactionReceipt({
         hash: tx,
@@ -74,7 +74,7 @@ export class ContractCaller<K> {
 
       useAppToast(
         TYPE.SUCCESS,
-        `Transaction of '${String(fnName)}' function confirmed successfully`,
+        `Transaction of '${String(name)}' function confirmed successfully`,
       )
       return true
     } catch (error) {
