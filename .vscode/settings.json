@@ -8,5 +8,6 @@
   "vue.autoInsert.dotValue": true,
   "vue.inlayHints.inlineHandlerLeading": true,
   "vue.inlayHints.missingProps": true,
-  "vue.inlayHints.optionsWrapper": true
+  "vue.inlayHints.optionsWrapper": true,
+  "liveServer.settings.AdvanceCustomBrowserCmdLine": "chrome",
 }

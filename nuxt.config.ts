@@ -72,6 +72,14 @@ export default defineNuxtConfig({
     typedSchemaPackage: 'yup',
   },
 
+  typescript: {
+    tsConfig: {
+      compilerOptions: {
+        sourceMap: true,
+      },
+    },
+  },
+
   devtools: {
     timeline: {
       enabled: true,
