@@ -13,7 +13,7 @@ export const useConnectionStore = defineStore('connectionStore', () => {
   // --------[ Getters ]-------- //
   // --------[ Actions ]-------- //
   const setOnValidNetwork = (newValue: boolean) => {
-    onValidNetwork.value = hasMetamask && newValue
+    onValidNetwork.value = newValue
   }
 
   const setIsConnected = (newValue: boolean) => {
@@ -21,11 +21,15 @@ export const useConnectionStore = defineStore('connectionStore', () => {
   }
 
   const checkOnValidNetwork = async () => {
-    const chainIdFromRpc = await window.ethereum.request({
-      method: 'eth_chainId',
-      params: [],
-    })
-    setOnValidNetwork(chainIdFromRpc === numberToHex(userWalletStore.chain.id))
+    if (!hasMetamask) {
+      setOnValidNetwork(true)
+    } else {
+      const chainId: string = await window.ethereum.request({
+        method: 'eth_chainId',
+        params: [],
+      })
+      setOnValidNetwork(chainId === numberToHex(userWalletStore.chain.id))
+    }
   }
 
   return {

@@ -1,13 +1,12 @@
 <template>
   <div class="container flex h-screen items-center justify-center">
-    <GamePreview v-if="!hasMetamask || !onValidNetwork" />
-    <SidebarMenu v-if="hasMetamask" />
-    <ChatBox v-if="hasMetamask && onValidNetwork" />
+    <SidebarMenu />
+    <ChatBox v-if="onValidNetwork" />
     <div
-      v-if="hasMetamask && onValidNetwork"
+      v-if="onValidNetwork"
       class="map-frame flex items-center justify-center p-14"
     >
-      <Map ref="mapElement" />
+      <Map v-if="onValidNetwork" ref="mapElement" />
     </div>
     <TheLoading v-show="isLoading" full-screen />
     <AppModal
@@ -30,24 +29,18 @@
 </template>
 
 <script setup lang="ts">
-// import { get } from '@vueuse/core'
 import TheLoading from '~/components/common/TheLoading.vue'
 import Map from '~/components/map/Map.vue'
 import AppModal from '~/components/common/AppModal.vue'
 import ChatBox from '~/components/chat/ChatBox.vue'
-import GamePreview from '~/components/GamePreview.vue'
 import SidebarMenu from '~/components/SidebarMenu.vue'
-// import { transformSettings } from '~/transformers'
 
 // --------[ Stores ]-------- //
 const appOptionsStore = useAppOptionsStore()
 const connectionStore = useConnectionStore()
 const userGameStore = useUserGameStore()
-// const contractStore = useContractStore()
-// const { getKta } = storeToRefs(contractStore)
 
 const { initializeApp, clearModalInfo } = appOptionsStore
-const { hasMetamask } = connectionStore
 
 const { modalComponentName, modalComponentProps } = storeToRefs(appOptionsStore)
 const { onValidNetwork } = storeToRefs(connectionStore)

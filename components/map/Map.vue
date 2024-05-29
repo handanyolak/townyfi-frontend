@@ -1,7 +1,6 @@
 <template>
   <div class="relative" style="width: 55% !important">
     <div
-      v-if="hasMetamask && onValidNetwork"
       ref="mapElement"
       class="relative z-50 outline-none"
       tabindex="0"
@@ -72,16 +71,13 @@ import MapNavigation from '~/components/map/MapNavigation.vue'
 import { NavigateDirection } from '~/enums'
 
 // --------[ Stores ]-------- //
-const connectionStore = useConnectionStore()
 const userGameStore = useUserGameStore()
 const appOptionsStore = useAppOptionsStore()
 
-const { hasMetamask } = connectionStore
 const { setModalInfo } = appOptionsStore
 const { setUserCoordinate, setNearLevelByCalculatingCoordinates } =
   userGameStore
 
-const { onValidNetwork } = storeToRefs(connectionStore)
 const { addressesByCoordinate, nearLevel } = storeToRefs(userGameStore)
 const { originCoordinate } = storeToRefs(appOptionsStore)
 

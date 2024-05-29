@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isConnected">
+  <div v-if="hasMetamask && isConnected">
     <ListTitle>General</ListTitle>
     <ListItem title="Address:" copiable :copy-value="address">
       <span>{{ middleCropping(address) }}</span>
@@ -8,7 +8,7 @@
       <span
         >{{ balance }}
         {{
-          onValidNetwork ? walletClient.chain.nativeCurrency.symbol : ''
+          onValidNetwork ? chainClient.chain.nativeCurrency.symbol : ''
         }}</span
       >
     </ListItem>
@@ -28,7 +28,8 @@ import ListItem from '~/components/common/ListItem.vue'
 const userWalletStore = useUserWalletStore()
 const connectionStore = useConnectionStore()
 
-const { address, balance, walletClient, ktaBalance, ktaSymbol } =
+const { address, balance, chainClient, ktaBalance, ktaSymbol } =
   storeToRefs(userWalletStore)
-const { onValidNetwork, isConnected } = storeToRefs(connectionStore)
+const { onValidNetwork, isConnected, hasMetamask } =
+  storeToRefs(connectionStore)
 </script>

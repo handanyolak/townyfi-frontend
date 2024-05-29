@@ -5,7 +5,9 @@ import {
   custom,
   publicActions,
   createWalletClient,
+  createPublicClient,
   formatUnits,
+  http,
 } from 'viem'
 import * as chains from 'viem/chains'
 import { TYPE } from 'vue-toastification'
@@ -40,6 +42,18 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
       account: address.value,
     }).extend(publicActions),
   )
+
+  const publicClient = computed(() =>
+    createPublicClient({
+      chain,
+      transport: http(chain.rpcUrls.default.http[0]),
+      batch: {
+        multicall: true,
+      },
+    }),
+  )
+
+  const chainClient = connectionStore.hasMetamask ? walletClient : publicClient
   const ktaSymbol = ref('')
   const ktaDecimals = ref(0)
   const ktaAllowance = ref(0n)
@@ -96,7 +110,7 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
   const updateUserBalance = async (_address: Address) => {
     setBalance(
       formatEther(
-        await walletClient.value.getBalance({
+        await chainClient.value.getBalance({
           address: _address,
         }),
       ),
@@ -141,6 +155,7 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
     address,
     balance,
     chain,
+    chainClient,
     walletClient,
     ktaSymbol,
     ktaDecimals,

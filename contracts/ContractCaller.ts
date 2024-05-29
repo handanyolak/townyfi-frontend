@@ -24,9 +24,9 @@ export class ContractCaller<K> {
 
     const { isConnected } = storeToRefs(connectionStore)
     const { isRegistered } = storeToRefs(userGameStore)
-    const { walletClient } = storeToRefs(userWalletStore)
+    const { chainClient } = storeToRefs(userWalletStore)
 
-    if (!isConnected.value) {
+    if (type === 'write' && !isConnected.value) {
       useAppToast(TYPE.ERROR, 'Connect your wallet first')
       return false
     }
@@ -62,7 +62,7 @@ export class ContractCaller<K> {
     try {
       const tx = await this.contract[type][name](...args)
 
-      const receipt = await walletClient.value.waitForTransactionReceipt({
+      const receipt = await chainClient.value.waitForTransactionReceipt({
         hash: tx,
       })
 

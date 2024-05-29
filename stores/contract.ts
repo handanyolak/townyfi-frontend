@@ -10,21 +10,21 @@ export const useContractStore = defineStore('contractStore', () => {
   // --------[ Stores ]-------- //
   const userWalletStore = useUserWalletStore()
 
-  const { walletClient } = storeToRefs(userWalletStore)
+  const { chainClient } = storeToRefs(userWalletStore)
 
   // --------[ States ]-------- //
   const getKtaToken = computed(() =>
     getContract({
       address: ktaTokenAddress as Address,
       abi: ktaTokenAbi,
-      client: walletClient.value,
+      client: chainClient.value,
     }),
   )
   const getKta = computed(() =>
     getContract({
       address: ktaAddress as Address,
       abi: ktaAbi,
-      client: walletClient.value,
+      client: chainClient.value,
     }),
   )
   const getKtaTokenCaller = computed(

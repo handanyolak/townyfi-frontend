@@ -2,24 +2,24 @@
   <div>
     <ListTitle>General</ListTitle>
     <ListItem title="Name:">
-      <span>{{ walletClient.chain.name }}</span>
+      <span>{{ chainClient.chain.name }}</span>
     </ListItem>
     <ListItem title="Chain ID:">
-      <span>{{ walletClient.chain.id }}</span>
+      <span>{{ chainClient.chain.id }}</span>
     </ListItem>
     <ListItem title="Currency:">
-      <span>{{ walletClient.chain.nativeCurrency.name }}</span>
+      <span>{{ chainClient.chain.nativeCurrency.name }}</span>
     </ListItem>
     <ListItem title="Symbol:">
-      <span>{{ walletClient.chain.nativeCurrency.symbol }}</span>
+      <span>{{ chainClient.chain.nativeCurrency.symbol }}</span>
     </ListItem>
     <ListItem title="Decimals:">
-      <span>{{ walletClient.chain.nativeCurrency.decimals }}</span>
+      <span>{{ chainClient.chain.nativeCurrency.decimals }}</span>
     </ListItem>
     <ListTitle v-if="onValidNetwork">Explorer URLs</ListTitle>
     <ScrollableList
       :items="
-        Object.values(walletClient.chain.blockExplorers ?? []).map(
+        Object.values(chainClient.chain.blockExplorers ?? []).map(
           (explorer) => explorer.url,
         )
       "
@@ -29,14 +29,14 @@
     <ListItem v-if="currentBlockNumber > 0" title="Current Block Number:">
       <span>{{ currentBlockNumber }}</span>
     </ListItem>
-    <ListItem v-if="walletClient.chain.testnet" title="Testnet:">
-      <span>{{ walletClient.chain.testnet }}</span>
+    <ListItem v-if="chainClient.chain.testnet" title="Testnet:">
+      <span>{{ chainClient.chain.testnet }}</span>
     </ListItem>
     <AppButton
       class="my-2 flex w-full justify-center"
       @click="switchOrAddNetwork()"
     >
-      Switch or Add {{ walletClient.chain.name }} Chain to Metamask
+      Switch or Add {{ chainClient.chain.name }} Chain to Metamask
     </AppButton>
   </div>
 </template>
@@ -52,7 +52,8 @@ const userWalletStore = useUserWalletStore()
 const connectionStore = useConnectionStore()
 
 const { onValidNetwork } = storeToRefs(connectionStore)
-const { currentBlockNumber, walletClient } = storeToRefs(userWalletStore)
+const { currentBlockNumber, walletClient, chainClient } =
+  storeToRefs(userWalletStore)
 
 // --------[ Methods ]-------- //
 const switchOrAddNetwork = async () => {

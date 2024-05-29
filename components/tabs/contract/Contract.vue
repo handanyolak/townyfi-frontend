@@ -11,7 +11,8 @@
       <span>{{ data.contractDesc }}</span>
     </ListItem>
     <a
-      :href="`${walletClient.chain.blockExplorers?.default.url}/address/${data.contractAddress}`"
+      v-if="chainClient.chain.blockExplorers?.default.url"
+      :href="`${chainClient.chain.blockExplorers.default.url}/address/${data.contractAddress}`"
       target="_blank"
     >
       <AppButton class="my-2 flex w-full justify-center">
@@ -56,8 +57,14 @@ const contractStore = useContractStore()
 const userWalletStore = useUserWalletStore()
 
 const { getKtaToken, getKtaTokenCaller } = storeToRefs(contractStore)
-const { walletClient, ktaSymbol, ktaDecimals, ktaBalance, address } =
-  storeToRefs(userWalletStore)
+const {
+  walletClient,
+  ktaSymbol,
+  ktaDecimals,
+  ktaBalance,
+  address,
+  chainClient,
+} = storeToRefs(userWalletStore)
 
 interface ContractProps {
   data: {

@@ -6,7 +6,7 @@ export const useMultiCall = async (
 ): Promise<Map<Address, ResultInfo[]>> => {
   const userWalletStore = useUserWalletStore()
 
-  const { walletClient } = storeToRefs(userWalletStore)
+  const { chainClient } = storeToRefs(userWalletStore)
 
   const contracts: {
     address: Address
@@ -40,9 +40,10 @@ export const useMultiCall = async (
     }
   }
 
-  const data = await walletClient.value.multicall({
+  const data = await chainClient.value.multicall({
     contracts,
     allowFailure: true,
+    batchSize: 16384,
   })
 
   const result = new Map<Address, ResultInfo[]>()
