@@ -102,6 +102,23 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
 
     await checkOnValidNetwork()
 
+    if (hasMetamask && !onValidNetwork.value) {
+      try {
+        await userWalletStore.walletClient.switchChain({
+          id: userWalletStore.chainClient.chain.id,
+        })
+      } catch (error: any) {
+        const isUserRejected = error?.message
+          .toLowerCase()
+          .includes('user reject')
+        if (!isUserRejected) {
+          await userWalletStore.walletClient.addChain({
+            chain: userWalletStore.chainClient.chain,
+          })
+        }
+      }
+    }
+
     if (onValidNetwork.value && !initialized.value) {
       initialized.value = true
 
