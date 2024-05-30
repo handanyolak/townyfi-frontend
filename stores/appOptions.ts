@@ -1,6 +1,8 @@
 import { useToggle, useStorage } from '@vueuse/core'
 import { formatUnits, type WatchContractEventReturnType } from 'viem'
 import { TYPE } from 'vue-toastification'
+import { Get } from '~/enums'
+import { getEnumKeyByEnumValue } from '~/utils'
 import { transformSettings, transformTown, transformUser } from '~/transformers'
 import type { CoordinateStruct, User } from '~/types/contract'
 
@@ -42,6 +44,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const userRegisteredEvent = ref<WatchContractEventReturnType | null>(null)
   const userMissedEvent = ref<WatchContractEventReturnType | null>(null)
   const userAttackedEvent = ref<WatchContractEventReturnType | null>(null)
+  const userGotEvent = ref<WatchContractEventReturnType | null>(null)
   const approvalEvent = ref<WatchContractEventReturnType | null>(null)
   const transferEvent = ref<WatchContractEventReturnType | null>(null)
 
@@ -244,9 +247,9 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                       ) {
                         userGameStore.userCountByCoordinate.set(
                           oldCoordinateMapKey,
-                          userGameStore.userCountByCoordinate.get(
+                          (userGameStore.userCountByCoordinate.get(
                             oldCoordinateMapKey,
-                          ) ?? 1 - 1,
+                          ) ?? 1) - 1,
                         )
                       }
                     }
@@ -258,9 +261,9 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                     ) {
                       userGameStore.userCountByCoordinate.set(
                         newCoordinateMapKey,
-                        userGameStore.userCountByCoordinate.get(
+                        (userGameStore.userCountByCoordinate.get(
                           newCoordinateMapKey,
-                        ) ?? 0 + 1,
+                        ) ?? 0) + 1,
                       )
                     }
 
@@ -273,7 +276,13 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                       continue
                     }
 
-                    userGameStore.setUserProperty('coordinate', newCoordinate)
+                    const userInfo = transformUser(
+                      await contractStore.getKta.read.userByAddr([
+                        userWalletStore.address,
+                      ]),
+                    )
+                    await setUserInfo(userInfo)
+
                     userGameStore.setUserCoordinate(userInfo.coordinate)
 
                     const toastMsg = `You moved to new coordinate!\n${eventMessage}\n${argsMessage}`
@@ -375,6 +384,13 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                       continue
                     }
 
+                    const userInfo = transformUser(
+                      await contractStore.getKta.read.userByAddr([
+                        userWalletStore.address,
+                      ]),
+                    )
+                    await setUserInfo(userInfo)
+
                     const toastMsg =
                       (isUserAttacker
                         ? 'Your attack was dodged!\n'
@@ -388,6 +404,64 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                 }
               },
             })
+        }
+
+        if (!userGotEvent.value) {
+          userGotEvent.value = userWalletStore.chainClient.watchContractEvent({
+            ...ktaContractEventFilter,
+            eventName: 'UserGot',
+            onLogs: async (logs) => {
+              try {
+                const isExistByLog: Record<string, boolean> = {}
+                const logsLen = logs.length
+
+                for (const log of logs) {
+                  if (logsLen > 1) {
+                    const hash = await createSha256Hash(JSON.stringify(log))
+                    if (isExistByLog[hash]) {
+                      continue
+                    }
+                    isExistByLog[hash] = true
+                  }
+
+                  const { eventName, transactionHash: hash, args } = log
+                  // TODO: tx'den almak yerine event'ten almaliyiz cunku client'a yuk biniyor
+                  const tx = await userWalletStore.walletClient.getTransaction({
+                    hash,
+                  })
+                  const eventAddress = tx.from
+
+                  const eventMessage = `Event: ${eventName}`
+                  const argsMessage = formatEventArgs(args)
+                  const msg = `${eventMessage}\n${argsMessage}`
+
+                  addLogMessage(msg)
+
+                  if (
+                    !areAddressesEqual(eventAddress, userWalletStore.address)
+                  ) {
+                    continue
+                  }
+
+                  const userInfo = transformUser(
+                    await contractStore.getKta.read.userByAddr([
+                      userWalletStore.address,
+                    ]),
+                  )
+                  await setUserInfo(userInfo)
+
+                  const { something } = args
+                  const somethingStr = getEnumKeyByEnumValue(Get, something)
+                  const toastMsg =
+                    `You got ${somethingStr ?? 'something'}!\n` + msg
+
+                  useAppToast(TYPE.INFO, toastMsg)
+                }
+              } catch (error) {
+                console.error(`${logs[0].eventName} error`, error)
+              }
+            },
+          })
         }
 
         if (!userAttackedEvent.value) {
@@ -426,6 +500,13 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                     ) {
                       continue
                     }
+
+                    const userInfo = transformUser(
+                      await contractStore.getKta.read.userByAddr([
+                        userWalletStore.address,
+                      ]),
+                    )
+                    await setUserInfo(userInfo)
 
                     const toastMsg =
                       (isUserAttacker
@@ -559,7 +640,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   }
 
   const addLogMessage = (message: string) => {
-    if (logMessages.value.length >= 5000) {
+    if (logMessages.value.length >= 100) {
       logMessages.value.shift()
     }
     logMessages.value.push(message)

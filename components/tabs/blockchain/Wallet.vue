@@ -30,6 +30,6 @@ const connectionStore = useConnectionStore()
 
 const { address, balance, chainClient, ktaBalance, ktaSymbol } =
   storeToRefs(userWalletStore)
-const { onValidNetwork, isConnected, hasMetamask } =
-  storeToRefs(connectionStore)
+const { onValidNetwork, isConnected } = storeToRefs(connectionStore)
+const { hasMetamask } = connectionStore
 </script>

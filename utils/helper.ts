@@ -70,3 +70,12 @@ export const replaceAtKeys = (inputObj: { [key: string]: any }): any => {
   }
   return outputObj
 }
+
+export function getEnumKeyByEnumValue<
+  R extends string | number,
+  T extends { [key: string]: R },
+>(myEnum: T, enumValue: T[keyof T]) {
+  const keys = Object.keys(myEnum).filter((x) => myEnum[x] === enumValue)
+
+  return keys.length > 0 ? keys[0] : null
+}
