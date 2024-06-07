@@ -30,14 +30,9 @@
     <template #parchment-footer>
       <div>
         <AppButton
-          v-if="
-            !(
-              user.coordinate._x === coordinate._x &&
-              user.coordinate._y === coordinate._y
-            )
-          "
+          v-if="!isAtSameCoordinate"
           class="px-4 text-xl"
-          @click="isMoveable() ? move() : teleport()"
+          @click="handleMovement"
           >{{ isMoveable() ? 'Move' : 'Teleport' }}</AppButton
         >
       </div>
@@ -58,14 +53,14 @@ import { getAddressRule } from '~/composables/useYupRules'
 import type { CoordinateItem } from '~/types'
 import { Direction } from '~/enums'
 
-// --------[ Props & Emits ]-------- //
+// --------[ Prop & Emit ]-------- //
 interface MapboxModalProps {
   coordinate: CoordinateItem
 }
 
 const props = defineProps<MapboxModalProps>()
 
-// --------[ Stores ]-------- //
+// --------[ Store ]-------- //
 const contractStore = useContractStore()
 const appOptionsStore = useAppOptionsStore()
 
@@ -84,13 +79,14 @@ const addresses = ref<readonly Address[]>([])
 const searchRules = getAddressRule()
 const searchDebounced = useDebounce(search, 1000)
 
-// --------[ Hooks ]-------- //
+// --------[ Hook ]-------- //
 onMounted(async () => {
   addresses.value = await getKta.value.read.getAddressesByCoordinate([
     props.coordinate,
   ])
 })
 
+// --------[ Computed ]-------- //
 const filteredList = computed(() => {
   return addresses.value.filter((address: string) =>
     address.toLowerCase().includes(searchDebounced.value.toLowerCase()),
@@ -101,22 +97,30 @@ const isOwnAddress = computed(
   () => (_address: string) => address.value === _address,
 )
 
-// --------[ Methods ]-------- //
-const teleport = async () => {
-  const result = await getKtaCaller.value.callFunction({
-    type: 'write',
-    name: 'teleport',
-    args: [
-      [
-        {
-          _x: props.coordinate._x,
-          _y: props.coordinate._y,
-        },
-      ],
-    ],
-  })
+const isAtSameCoordinate = computed(
+  () =>
+    user.value.coordinate._x === props.coordinate._x &&
+    user.value.coordinate._y === props.coordinate._y,
+)
 
-  if (result) {
+// --------[ Method ]-------- //
+const teleport = async () => {
+  try {
+    await getKtaCaller.value.callFunction({
+      type: 'write',
+      name: 'teleport',
+      args: [
+        [
+          {
+            _x: props.coordinate._x,
+            _y: props.coordinate._y,
+          },
+        ],
+      ],
+    })
+  } catch (error) {
+    console.error('Teleport transaction failed:', error)
+  } finally {
     clearModalInfo()
   }
 }
@@ -160,11 +164,17 @@ const move = async () => {
     direction = Direction.Up
   }
 
-  await getKtaCaller.value.callFunction({
-    type: 'write',
-    name: 'move',
-    args: [[direction]],
-  })
+  try {
+    await getKtaCaller.value.callFunction({
+      type: 'write',
+      name: 'move',
+      args: [[direction]],
+    })
+  } catch (error) {
+    console.error('Move transaction failed: ', error)
+  } finally {
+    clearModalInfo()
+  }
 }
 
 const isMoveable = () => {
@@ -172,5 +182,9 @@ const isMoveable = () => {
   const deltaY = abs(props.coordinate._y - BigInt(user.value.coordinate._y))
 
   return deltaX + deltaY <= 1
+}
+
+const handleMovement = () => {
+  isMoveable() ? move() : teleport()
 }
 </script>
