@@ -23,7 +23,7 @@ export class ContractCaller<K> {
     const userWalletStore = useUserWalletStore()
 
     const { isConnected } = storeToRefs(connectionStore)
-    const { isRegistered } = storeToRefs(userGameStore)
+    const { isRegistered, user } = storeToRefs(userGameStore)
     const { chainClient } = storeToRefs(userWalletStore)
 
     if (type === 'write' && !isConnected.value) {
@@ -33,6 +33,20 @@ export class ContractCaller<K> {
 
     if (needRegister && !isRegistered.value) {
       useAppToast(TYPE.ERROR, 'Register your account first')
+      return false
+    }
+
+    if (
+      type === 'write' &&
+      (name === 'teleport' || name === 'move') &&
+      user.value.energy === 0
+    ) {
+      useAppToast(TYPE.ERROR, 'You do not have enough energy')
+      return false
+    }
+
+    if (type === 'write' && name === 'attack' && user.value.mana === 0) {
+      useAppToast(TYPE.ERROR, 'You do not have enough mana')
       return false
     }
 
