@@ -56,7 +56,7 @@
           </div>
           <AppButton
             v-else
-            href="https://metamask.io/download/"
+            :href="'https://metamask.io/download/'"
             target="_blank"
             fill-hover
           >
