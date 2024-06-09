@@ -1,7 +1,13 @@
 import { useStorage } from '@vueuse/core'
-import type { CoordinateItem, MultiCallData } from '~/types'
+import type {
+  CoordinateItem,
+  MultiCallData,
+  CoordinateStruct,
+  Settings,
+  Town,
+  User,
+} from '~/types'
 import { middleElement } from '~/utils'
-import type { CoordinateStruct, Settings, Town, User } from '~/types/contract'
 import { useMultiCall } from '~/composables/useMultiCall'
 
 export const useUserGameStore = defineStore('userGameStore', () => {

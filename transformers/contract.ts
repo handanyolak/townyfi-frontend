@@ -1,6 +1,6 @@
-import { TownMode, TownStatus } from '~/enums'
-import type { Settings, Town, User } from '~/types/contract'
-import { replaceAtKeys } from '~/utils'
+import { replaceAtKeys } from '../utils'
+import { TownMode, TownStatus } from '../enums'
+import type { Settings, Town, User } from '../types'
 
 export function transformTown(values: any): Town {
   return {

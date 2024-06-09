@@ -1,10 +1,10 @@
 import { getContract, type Address } from 'viem'
-import { ktaTokenAbi, ktaAbi } from '~/abi'
+import { ktaTokenAbi, ktaAbi, ktaGameChatAbi } from '~/abi'
 import { ContractCaller } from '~/contracts'
 
 export const useContractStore = defineStore('contractStore', () => {
   const {
-    public: { ktaTokenAddress, ktaAddress },
+    public: { ktaTokenAddress, ktaAddress, ktaGameChatAddress },
   } = useRuntimeConfig()
 
   // --------[ Stores ]-------- //
@@ -27,15 +27,27 @@ export const useContractStore = defineStore('contractStore', () => {
       client: chainClient.value,
     }),
   )
+  const getKtaGameChat = computed(() =>
+    getContract({
+      address: ktaGameChatAddress as Address,
+      abi: ktaGameChatAbi,
+      client: chainClient.value,
+    }),
+  )
   const getKtaTokenCaller = computed(
     () => new ContractCaller(getKtaToken.value),
   )
   const getKtaCaller = computed(() => new ContractCaller(getKta.value))
+  const getKtaGameChatCaller = computed(
+    () => new ContractCaller(getKtaGameChat.value),
+  )
 
   return {
     getKtaToken,
     getKtaTokenCaller,
     getKta,
     getKtaCaller,
+    getKtaGameChat,
+    getKtaGameChatCaller,
   }
 })

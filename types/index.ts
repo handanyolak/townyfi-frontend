@@ -3,6 +3,7 @@ import { type Message } from 'yup'
 export * from './composables'
 export * from './components'
 export * from './toastification'
+export * from './contract'
 
 export type ParamType<T> = T extends (...args: infer P) => any ? P : never
 

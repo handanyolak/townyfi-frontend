@@ -154,7 +154,7 @@ import ListItem from '~/components/common/ListItem.vue'
 import { toCapitalizedWords, middleCropping } from '~/utils'
 import { getBytes32Rule } from '~/composables/useYupRules'
 import { Get } from '~/enums'
-import type { UserTimer } from '~/types/contract'
+import type { UserTimer } from '~/types'
 
 const {
   public: { chainBlockTime },
