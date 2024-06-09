@@ -25,7 +25,8 @@
             },
           ]"
         >
-          {{ message.body }}
+          <!-- eslint-disable-next-line -->
+          <span v-html="message.body" />
         </p>
       </div>
     </div>

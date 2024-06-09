@@ -1,5 +1,6 @@
 import { useToggle, useStorage } from '@vueuse/core'
 import { formatUnits, hexToString } from 'viem'
+import DOMPurify from 'dompurify'
 import { Get } from '~/enums'
 import { getEnumKeyByEnumValue, processAndPrintLog } from '~/utils'
 import { transformSettings, transformTown, transformUser } from '~/transformers'
@@ -449,16 +450,28 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
               for (const { eventName, args } of uniqueLogs) {
                 const { user: author, message } = args
                 const messageStr = hexToString(message, { size: 32 })
+                let sanitizedMessage = DOMPurify.sanitize(messageStr, {
+                  ALLOWED_TAGS: [],
+                  ALLOWED_ATTR: [],
+                })
+                const userMention = `@${hexToString(userGameStore.user.name, {
+                  size: 32,
+                })}`
+                const isUserMentioned = messageStr.includes(userMention)
+                if (isUserMentioned) {
+                  const boldUserMention = `<b>${userMention}</b>`
+                  sanitizedMessage = sanitizedMessage.replace(
+                    userMention,
+                    boldUserMention,
+                  )
+                }
+
                 gameChatStore.addChatMessages({
-                  body: messageStr,
+                  body: sanitizedMessage,
                   author,
                   date: new Date(),
                 })
-                const isUserMentioned = messageStr.includes(
-                  ` @${hexToString(userGameStore.user.name, {
-                    size: 32,
-                  })}`,
-                )
+
                 const isUserAuthor = areAddressesEqual(
                   author,
                   userWalletStore.address,
