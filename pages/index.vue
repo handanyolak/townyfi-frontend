@@ -1,7 +1,7 @@
 <template>
   <div class="container flex h-screen items-center justify-center">
     <SidebarMenu />
-    <ChatBox v-if="onValidNetwork" />
+    <ChatAndLogBox v-if="onValidNetwork" />
     <div
       v-if="onValidNetwork"
       class="map-frame flex items-center justify-center p-14"
@@ -32,7 +32,7 @@
 import TheLoading from '~/components/common/TheLoading.vue'
 import Map from '~/components/map/Map.vue'
 import AppModal from '~/components/common/AppModal.vue'
-import ChatBox from '~/components/chat/ChatBox.vue'
+import ChatAndLogBox from '~/components/chatAndLog/ChatAndLogBox.vue'
 import SidebarMenu from '~/components/SidebarMenu.vue'
 
 // --------[ Stores ]-------- //
