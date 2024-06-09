@@ -129,8 +129,10 @@
       </template>
     </ListItem>
     <AppButton v-if="town.recruitment" class="my-3" @click="joinTown()"
-      >Join {{ townName }}</AppButton
+      >Join to {{ townName }}</AppButton
     >
+    <AppButton class="my-3" @click="declareWar()">Declare War</AppButton>
+    <AppButton class="my-3" @click="townWar()">Town War</AppButton>
   </div>
 </template>
 
@@ -187,6 +189,21 @@ const joinTown = async () => {
     type: 'write',
     name: 'joinTown',
     args: [[BigInt(props.id)]],
+  })
+}
+
+const declareWar = async () => {
+  await getKtaCaller.value.callFunction({
+    type: 'write',
+    name: 'declareWar',
+    args: [[BigInt(props.id)]],
+  })
+}
+
+const townWar = async () => {
+  await getKtaCaller.value.callFunction({
+    type: 'write',
+    name: 'townWar',
   })
 }
 </script>

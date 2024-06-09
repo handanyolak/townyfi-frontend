@@ -47,6 +47,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const userGotEvent = ref<WatchContractEventReturnType | null>(null)
   const approvalEvent = ref<WatchContractEventReturnType | null>(null)
   const transferEvent = ref<WatchContractEventReturnType | null>(null)
+  const townWarDetailsEvent = ref<WatchContractEventReturnType | null>(null)
 
   // --------[ Actions ]-------- //
   const setModalInfo = (
@@ -424,12 +425,8 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                     isExistByLog[hash] = true
                   }
 
-                  const { eventName, transactionHash: hash, args } = log
-                  // TODO: tx'den almak yerine event'ten almaliyiz cunku client'a yuk biniyor
-                  const tx = await userWalletStore.walletClient.getTransaction({
-                    hash,
-                  })
-                  const eventAddress = tx.from
+                  const { eventName, transactionHash: args } = log
+                  const { user, something } = args
 
                   const eventMessage = `Event: ${eventName}`
                   const argsMessage = formatEventArgs(args)
@@ -437,9 +434,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
 
                   addLogMessage(msg)
 
-                  if (
-                    !areAddressesEqual(eventAddress, userWalletStore.address)
-                  ) {
+                  if (!areAddressesEqual(user, userWalletStore.address)) {
                     continue
                   }
 
@@ -450,7 +445,6 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                   )
                   await setUserInfo(userInfo)
 
-                  const { something } = args
                   const somethingStr = getEnumKeyByEnumValue(Get, something)
                   const toastMsg =
                     `You got ${somethingStr ?? 'something'}!\n` + msg
@@ -513,6 +507,49 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                         ? 'You attacked!\n'
                         : 'You were attacked!\n') +
                       `${eventMessage}\n${argsMessage}`
+
+                    useAppToast(TYPE.INFO, toastMsg)
+                  }
+                } catch (error) {
+                  console.error(`${logs[0].eventName} error`, error)
+                }
+              },
+            })
+        }
+
+        if (!townWarDetailsEvent.value) {
+          townWarDetailsEvent.value =
+            userWalletStore.chainClient.watchContractEvent({
+              ...ktaContractEventFilter,
+              eventName: 'TownWarDetailsEvent',
+              onLogs: async (logs) => {
+                try {
+                  const isExistByLog: Record<string, boolean> = {}
+                  const logsLen = logs.length
+
+                  for (const log of logs) {
+                    if (logsLen > 1) {
+                      const hash = await createSha256Hash(JSON.stringify(log))
+                      if (isExistByLog[hash]) {
+                        continue
+                      }
+                      isExistByLog[hash] = true
+                    }
+
+                    const { eventName, args } = log
+                    const { warLogs } = args
+
+                    const eventMessage = `Event: ${eventName}`
+                    const argsMessage = formatEventArgs(args)
+                    const msg = `${eventMessage}\n${argsMessage}`
+
+                    console.log(warLogs)
+                    console.log(JSON.stringify(warLogs))
+                    console.log(argsMessage)
+
+                    addLogMessage(msg)
+
+                    const toastMsg = `You got war details!\n` + msg
 
                     useAppToast(TYPE.INFO, toastMsg)
                   }

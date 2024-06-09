@@ -23,30 +23,18 @@ export class ContractCaller<K> {
     const userWalletStore = useUserWalletStore()
 
     const { isConnected } = storeToRefs(connectionStore)
-    const { isRegistered, user } = storeToRefs(userGameStore)
+    const { isRegistered, user, settings } = storeToRefs(userGameStore)
     const { chainClient } = storeToRefs(userWalletStore)
 
     if (type === 'write' && !isConnected.value) {
       useAppToast(TYPE.ERROR, 'Connect your wallet first')
+
       return false
     }
 
     if (needRegister && !isRegistered.value) {
       useAppToast(TYPE.ERROR, 'Register your account first')
-      return false
-    }
 
-    if (
-      type === 'write' &&
-      (name === 'teleport' || name === 'move') &&
-      user.value.energy === 0
-    ) {
-      useAppToast(TYPE.ERROR, 'You do not have enough energy')
-      return false
-    }
-
-    if (type === 'write' && name === 'attack' && user.value.mana === 0) {
-      useAppToast(TYPE.ERROR, 'You do not have enough mana')
       return false
     }
 
@@ -55,7 +43,28 @@ export class ContractCaller<K> {
       .catch((e) => e)
 
     if (staticCallRes instanceof Error) {
+      if (
+        type === 'write' &&
+        (name === 'teleport' || name === 'move') &&
+        user.value.energy < settings.value.rate.movement
+      ) {
+        useAppToast(TYPE.ERROR, 'You do not have enough energy')
+
+        return false
+      }
+
+      if (
+        type === 'write' &&
+        name === 'attack' &&
+        user.value.mana < settings.value.rate.attack
+      ) {
+        useAppToast(TYPE.ERROR, 'You do not have enough mana')
+
+        return false
+      }
+
       useAppToast(TYPE.ERROR, staticCallRes.message)
+
       return false
     }
 

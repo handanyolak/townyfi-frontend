@@ -172,7 +172,7 @@ const mintKtaToken = async () => {
     await getKtaTokenCaller.value.callFunction({
       type: 'write',
       name: 'mint',
-      args: [[address.value, 1000n]],
+      args: [[address.value, 10000n]],
       needRegister: false,
     })
   } catch (error) {

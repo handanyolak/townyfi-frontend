@@ -364,7 +364,42 @@ export const ktaAbi = [
   },
   {
     inputs: [],
+    name: 'AlreadyHasTownNearby',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'CitizenDoesNotBelongToTown',
+    type: 'error',
+  },
+  {
+    inputs: [],
     name: 'FailedInnerCall',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'GamePassAlreadyClaimed',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'GamePassDelegateCallFailed',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'GamePassPhaseLimitsMustBeInAscOrder',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'GamePassPhaseNotFound',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'GamePassPhaseNotReached',
     type: 'error',
   },
   {
@@ -375,6 +410,38 @@ export const ktaAbi = [
   {
     inputs: [],
     name: 'LimitExceeded',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'value',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'equal',
+        type: 'uint256',
+      },
+    ],
+    name: 'MustEqual',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'value',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'greaterThan',
+        type: 'uint256',
+      },
+    ],
+    name: 'MustGreaterThan',
     type: 'error',
   },
   {
@@ -468,6 +535,11 @@ export const ktaAbi = [
     type: 'error',
   },
   {
+    inputs: [],
+    name: 'TownMaxUserReached',
+    type: 'error',
+  },
+  {
     inputs: [
       {
         internalType: 'uint256',
@@ -487,6 +559,11 @@ export const ktaAbi = [
       },
     ],
     name: 'TownMustSettled',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'TownRecruitmentClosed',
     type: 'error',
   },
   {
@@ -516,6 +593,16 @@ export const ktaAbi = [
     type: 'error',
   },
   {
+    inputs: [],
+    name: 'UserMustBeAlive',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'UserMustBeDead',
+    type: 'error',
+  },
+  {
     inputs: [
       {
         internalType: 'address',
@@ -524,6 +611,11 @@ export const ktaAbi = [
       },
     ],
     name: 'UserMustCitizen',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'UserMustHaveGamePass',
     type: 'error',
   },
   {
@@ -605,6 +697,12 @@ export const ktaAbi = [
   {
     anonymous: false,
     inputs: [],
+    name: 'SettingsUpdated',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [],
     name: 'TownCreated',
     type: 'event',
   },
@@ -637,6 +735,63 @@ export const ktaAbi = [
     anonymous: false,
     inputs: [],
     name: 'TownVoyaged',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'winnerTownId',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'loserTownId',
+        type: 'uint256',
+      },
+      {
+        components: [
+          {
+            internalType: 'address',
+            name: 'attacker',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'defender',
+            type: 'address',
+          },
+          {
+            internalType: 'uint256',
+            name: 'healthDamage',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'armorDamage',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'remainingHealth',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'remainingArmor',
+            type: 'uint256',
+          },
+        ],
+        indexed: false,
+        internalType: 'struct IKillThemAll.TownWarLog[]',
+        name: 'warLogs',
+        type: 'tuple[]',
+      },
+    ],
+    name: 'TownWarDetailsEvent',
     type: 'event',
   },
   {
@@ -755,6 +910,12 @@ export const ktaAbi = [
   {
     anonymous: false,
     inputs: [
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'user',
+        type: 'address',
+      },
       {
         indexed: false,
         internalType: 'enum IKillThemAll.Get',
@@ -1389,7 +1550,7 @@ export const ktaAbi = [
     inputs: [
       {
         internalType: 'enum IKillThemAll.Prepare',
-        name: 'to',
+        name: 'prepare',
         type: 'uint8',
       },
       {
@@ -2364,6 +2525,54 @@ export const ktaAbi = [
     name: 'voyageTown',
     outputs: [],
     stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    name: 'warByTownId',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: 'attackerTownId',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'defenderTownId',
+        type: 'uint256',
+      },
+      {
+        components: [
+          {
+            internalType: 'uint256',
+            name: '_at',
+            type: 'uint256',
+          },
+        ],
+        internalType: 'struct Timers.BlockNumber',
+        name: 'attackableAt',
+        type: 'tuple',
+      },
+      {
+        components: [
+          {
+            internalType: 'uint256',
+            name: '_at',
+            type: 'uint256',
+          },
+        ],
+        internalType: 'struct Timers.BlockNumber',
+        name: 'expiredAt',
+        type: 'tuple',
+      },
+    ],
+    stateMutability: 'view',
     type: 'function',
   },
 ] as const

@@ -118,7 +118,7 @@
         >
       </template>
     </ListItem>
-    <OtherTown v-if="user.townInfo.townId" :id="user.townInfo.townId" />
+    <OtherTown v-if="townId" :id="townId" />
   </div>
 </template>
 
@@ -152,6 +152,7 @@ const { currentBlockNumber } = storeToRefs(userWalletStore)
 
 // --------[ Data ]-------- //
 const user = ref(userGameStore.user)
+const townId = ref(0n)
 const timer = ref<any>(user.value.timer)
 const timers = ref(
   Object.keys(user.value.timer).filter((item: any) => isNaN(item)),
@@ -167,6 +168,7 @@ onMounted(async () => {
   user.value = transformUser(
     await getKta.value.read.userByAddr([props.address]),
   )
+  townId.value = user.value.townInfo.townId
   timer.value = { ...user.value.timer }
   timers.value = Object.keys(timer.value).filter((item: any) => isNaN(item))
 })
