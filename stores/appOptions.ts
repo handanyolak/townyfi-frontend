@@ -11,6 +11,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const userGameStore = useUserGameStore()
   const connectionStore = useConnectionStore()
   const contractStore = useContractStore()
+  const gameChatStore = useGameChatStore()
 
   const { hasMetamask, checkOnValidNetwork } = connectionStore
 
@@ -37,7 +38,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const isAnimation = ref(false)
   const isConfirmed = ref(false)
   const isAttackSuccess = ref(false)
-  const logMessages = ref<string[]>([])
+
   const modalResultResolver = ref<((value: unknown) => void) | null>(null)
 
   // --------[ Actions ]-------- //
@@ -448,6 +449,11 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
               for (const { eventName, args } of uniqueLogs) {
                 const { user: author, message } = args
                 const messageStr = hexToString(message, { size: 32 })
+                gameChatStore.addChatMessages({
+                  body: messageStr,
+                  author,
+                  date: new Date(),
+                })
                 const isUserMentioned = messageStr.includes(
                   ` @${hexToString(userGameStore.user.name, {
                     size: 32,
@@ -570,14 +576,6 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     )
   }
 
-  const addLogMessage = (message: string) => {
-    if (logMessages.value.length >= 1000) {
-      logMessages.value.shift()
-    }
-
-    logMessages.value.push(message)
-  }
-
   const toggleAudio = () => {
     _toggleAudio()
 
@@ -637,7 +635,5 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     setModalInfo,
     clearModalInfo,
     closeModalWithResponse,
-    logMessages,
-    addLogMessage,
   }
 })

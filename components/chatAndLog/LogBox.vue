@@ -29,8 +29,8 @@
 </template>
 
 <script setup lang="ts">
-const appOptionStore = useAppOptionsStore()
-const { logMessages } = storeToRefs(appOptionStore)
+const gameChatStore = useGameChatStore()
+const { logMessages } = storeToRefs(gameChatStore)
 
 const splitLogMessage = (message: string) => {
   return message.split('\n')

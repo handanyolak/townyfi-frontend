@@ -53,13 +53,14 @@ export const processAndPrintLog = async ({
   const appOptionsStore = useAppOptionsStore()
   const contractStore = useContractStore()
   const userWalletStore = useUserWalletStore()
+  const gameChatStore = useGameChatStore()
 
   const eventNameMessage = `Event: ${logName}`
   const argsMessage = formatEventArgs(logArgs)
   const eventMessage = `${eventNameMessage}\n${argsMessage}`
 
   if (addToLogMessages) {
-    appOptionsStore.addLogMessage(eventMessage)
+    gameChatStore.addLogMessage(eventMessage)
   }
 
   if (refreshUserInfo) {

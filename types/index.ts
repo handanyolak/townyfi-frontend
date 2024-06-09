@@ -4,6 +4,7 @@ export * from './composables'
 export * from './components'
 export * from './toastification'
 export * from './contract'
+export * from './store'
 
 export type ParamType<T> = T extends (...args: infer P) => any ? P : never
 
