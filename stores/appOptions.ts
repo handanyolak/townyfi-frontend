@@ -449,9 +449,15 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
               for (const { eventName, args } of uniqueLogs) {
                 const { user: author, message } = args
                 const messageStr = hexToString(message, { size: 32 })
+                // TODO: Can provided by the contract
+                const { name } = transformUser(
+                  await contractStore.getKta.read.userByAddr([author]),
+                )
+                const nameStr = hexToString(name, { size: 32 })
                 gameChatStore.addChatMessages({
                   body: messageStr,
                   author,
+                  name: nameStr,
                   date: new Date(),
                 })
                 const isUserMentioned = messageStr.includes(
