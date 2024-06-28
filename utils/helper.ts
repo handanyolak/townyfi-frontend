@@ -31,8 +31,14 @@ export const middleElement = <T>(array: T[]): T => {
 export const sleep = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
+
 export const enumKeys = (enumValue: any) => {
   return Object.keys(enumValue).filter((key) => isNaN(Number(key)))
+}
+
+export const formattedDate = (dateValue: any) => {
+  const date = new Date(dateValue)
+  return `${date.toLocaleString('default', { month: 'short' })}-${date.getDate()}-${date.getFullYear()}-${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
 }
 
 export const convertToInteger = (
