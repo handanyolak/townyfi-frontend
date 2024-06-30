@@ -38,22 +38,31 @@
         @selected="(item) => selectNearLevel(item)"
       ></AppDropdown>
     </ListItem>
+    <ListItem title="Map Size:">
+      <AppDropdown
+        :key="selectedMapSize"
+        :select="selectedMapSize"
+        :dropdown-items="mapSizes"
+        rounded
+        @selected="(item) => selectMapSize(item)"
+      ></AppDropdown>
+    </ListItem>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useDark, useToggle } from '@vueuse/core'
+import { useDark, useToggle, useLocalStorage } from '@vueuse/core'
 import ListTitle from '~/components/common/ListTitle.vue'
 import ListItem from '~/components/common/ListItem.vue'
 import AppDropdown from '~/components/common/AppDropdown.vue'
 import Switch from '~/components/common/Switch.vue'
 
-// --------[ Nuxt Imports ]-------- //
+// --------[ Nuxt Import ]-------- //
 const {
   public: { minNearLevel, maxNearLevel },
 } = useRuntimeConfig()
 
-// --------[ Stores ]-------- //
+// --------[ Store ]-------- //
 const appOptionStore = useAppOptionsStore()
 const userGameStore = useUserGameStore()
 const useUserOptions = useUserOptionsStore()
@@ -71,7 +80,11 @@ const isDark = useDark({
   valueDark: 'dark',
   valueLight: 'light',
 })
+
 const toggleTheme = useToggle(isDark)
+
+const mapSizes = Array.from({ length: 13 }, (_, i) => (i + 1).toString())
+const mapSize = useLocalStorage('mapSize', 50)
 
 // --------[ Computed ]-------- //
 const languages = computed(() => {
@@ -80,7 +93,12 @@ const languages = computed(() => {
   return allLanguages.filter((item) => item !== language.value)
 })
 
-// --------[ Methods ]-------- //
+const selectedMapSize = computed(() => {
+  const size = (mapSize.value - 25) / 5
+  return mapSizes.includes(size.toString()) ? size.toString() : mapSizes[0]
+})
+
+// --------[ Method ]-------- //
 const selectLanguage = (item: string) => {
   setLanguage(item)
 }
@@ -95,5 +113,9 @@ const createNumberArray = (start: number, end: number) => {
 
 const selectNearLevel = (item: any) => {
   setNearLevelByCalculatingCoordinates(item)
+}
+
+const selectMapSize = (item: string) => {
+  mapSize.value = 25 + parseInt(item) * 5
 }
 </script>
