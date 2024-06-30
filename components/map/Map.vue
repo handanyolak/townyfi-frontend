@@ -1,5 +1,5 @@
 <template>
-  <div class="relative" style="width: 50% !important">
+  <div class="relative" :style="`width: ${mapSize}%`">
     <div
       ref="mapElement"
       class="relative z-50 outline-none"
@@ -92,6 +92,7 @@ const isMapNavigationVisible = ref(false)
 const navigation = ref<HTMLElement | null>(null)
 const toggleButton = ref<HTMLElement | null>(null)
 const { width } = useElementSize(mapElement)
+const mapSize = useLocalStorage('mapSize', 50)
 
 // --------[ Computed ]-------- //
 const getGridColsByNearLevel = computed(() => nearLevel.value * 2 + 1)
