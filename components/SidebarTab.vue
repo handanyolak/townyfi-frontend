@@ -1,5 +1,5 @@
 <template>
-  <div ref="scrollContainerRef" class="mx-4 max-h-screen overflow-y-auto p-4">
+  <div ref="scrollContainerRef" class="mx-4 h-screen overflow-y-auto p-4">
     <ul
       :class="[
         'sticky top-0 z-50 my-3 grid gap-y-1',

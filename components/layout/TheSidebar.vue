@@ -21,11 +21,11 @@
       <div>
         <div
           :class="[
-            'torn-edges-paper absolute -top-3 w-full bg-white [filter:url(#wavy)]',
+            'torn-edges-paper absolute -top-3 h-full w-full bg-white [filter:url(#wavy)]',
             isBlockchainInfo || isContractInfo ? 'rotate-180 transform' : '',
           ]"
         ></div>
-        <div class="relative">
+        <div class="relative h-full">
           <SidebarTab v-if="isGameInfo && isRegistered" :tabs="TABS.gameInfo" />
           <SidebarTab
             v-else-if="isGameInfo && !isRegistered"
@@ -98,7 +98,6 @@ onClickOutside(sideBar, () => sideLeave())
 }
 
 .torn-edges-paper {
-  height: 110vh;
   box-shadow:
     2px 3px 20px #854819,
     30px 65px 200px #91510ffc inset;

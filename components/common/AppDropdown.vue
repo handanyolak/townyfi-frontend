@@ -1,6 +1,6 @@
 <template>
   <div class="flex min-w-6 items-center justify-center">
-    <div class="relative z-10 w-full">
+    <div class="relative w-full">
       <button
         class="flex w-full items-center justify-between bg-towni-brown-dark-300 bg-opacity-20 px-3 py-1 text-towni-brown-dark-300 outline-none backdrop-blur"
         :class="isRounded"
@@ -20,7 +20,7 @@
       <Transition name="dropdown">
         <div
           v-show="showDropdown"
-          class="scrollbar-gutter-stable absolute left-0 right-0 mb-4 h-20 overflow-auto bg-towni-brown-dark-300 bg-opacity-20 backdrop-blur"
+          class="scrollbar-gutter-stable absolute left-0 right-0 z-10 mb-4 h-20 overflow-auto bg-towni-brown-dark-300 bg-opacity-20 backdrop-blur"
           :class="!showDropdown ? 'rounded-md' : 'rounded-b-2xl'"
         >
           <ul
