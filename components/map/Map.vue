@@ -1,5 +1,5 @@
 <template>
-  <div class="relative" style="width: 55% !important">
+  <div class="relative" style="width: 50% !important">
     <div
       ref="mapElement"
       class="relative z-50 outline-none"
