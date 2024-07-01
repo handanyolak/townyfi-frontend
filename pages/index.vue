@@ -8,7 +8,7 @@
     >
       <Map v-if="onValidNetwork" ref="mapElement" />
     </div>
-    <TheLoading v-show="isLoading" full-screen />
+    <TheLoading v-if="isLoading" full-screen />
     <AppModal
       :modal-size="(width + 20).toString()"
       :modal-active="Boolean(modalComponentName)"
@@ -53,6 +53,7 @@ const { width } = useElementSize(mapElement)
 
 // --------[ Hooks ]-------- //
 onMounted(async () => {
+  console.log('isLoading', isLoading.value)
   await initializeApp()
   // const settings_ = {
   //   max: {

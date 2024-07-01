@@ -22,7 +22,7 @@ export const useUserGameStore = defineStore('userGameStore', () => {
 
   // --------[ States ]-------- //
   const isRegistered = ref(false)
-  const isLoading = ref(false)
+  const isLoading = ref(true)
   // TODO: solve this
   const user = ref<User>(null as unknown as User)
   const town = ref<Town>(null as unknown as Town)
@@ -86,8 +86,6 @@ export const useUserGameStore = defineStore('userGameStore', () => {
     coordinates: CoordinateStruct,
     getDataFromChain = true,
   ) => {
-    isLoading.value = true
-
     const x = BigInt(coordinates._x)
     const y = BigInt(coordinates._y)
     const nearLevelValue = BigInt(nearLevel.value)

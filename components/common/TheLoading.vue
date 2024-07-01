@@ -14,6 +14,7 @@
 import { Vue3Lottie } from 'vue3-lottie'
 import Loading from '~/assets/lotties/loading.json'
 
+// --------[ Prop & Emit ]-------- //
 const props = defineProps({
   fullScreen: {
     type: Boolean,
@@ -21,9 +22,10 @@ const props = defineProps({
   },
 })
 
+// --------[ Computed ]-------- //
 const containerClass = computed(() => {
   return props.fullScreen
-    ? 'fixed inset-0 bg-[#362419] bg-opacity-40 backdrop-blur-sm z-50 flex justify-center items-center'
+    ? 'fixed inset-0 bg-[#362419] bg-opacity-40 backdrop-blur-sm z-[120] flex justify-center items-center'
     : 'flex justify-center items-center'
 })
 </script>
