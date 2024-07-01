@@ -8,6 +8,7 @@
         <template #item>
           <AppDropdown
             ref="searchTypeDropdown"
+            :key="currentSearchType"
             :dropdown-items="Object.values(searchOptions)"
             @selected="handleSearchTypeChange"
           />
@@ -18,8 +19,9 @@
         <template #item>
           <AppDropdown
             ref="sidebarDropdown"
+            :key="currentSearchType"
             :dropdown-items="dynamicFindOptions"
-            @selected="handleDropdownChange()"
+            @selected="handleDropdownChange"
           />
         </template>
       </ListItem>
@@ -68,6 +70,7 @@
         selectedItem === 'Coordinate' &&
         userAddressList.length > 0
       "
+      class="w-full"
     >
       <Accordion
         v-for="(_address, index) in userAddressList"
@@ -117,7 +120,7 @@ import {
 } from '~/composables/useYupRules'
 import { transformTown, transformUser } from '~/transformers'
 
-// --------[ Stores ]-------- //
+// --------[ Store ]-------- //
 const contractStore = useContractStore()
 
 const { getKta } = storeToRefs(contractStore)
@@ -126,8 +129,8 @@ const { getKta } = storeToRefs(contractStore)
 const sidebarDropdown = ref<InstanceType<typeof AppDropdown> | null>(null)
 const currentSearchType = ref<SearchType>(SearchType.Town)
 const currentUserAddress = ref<Address | null>(null)
-const selectedAddress = ref<string | null>(null)
 const userAddressList = ref<readonly Address[]>([])
+const selectedAddress = ref<string | null>(null)
 const selectedItemId = ref<bigint | null>(null)
 const searchOptions = SearchType
 const findOptions = FindOptions
@@ -157,6 +160,7 @@ const searchFormInput = reactive({
   [FindOptions.Coordinate]: '',
 })
 
+// --------[ Computed ]-------- //
 const selectedItem = computed<FindOptions>(() => {
   if (currentSearchType.value === SearchType.User) {
     return (
@@ -169,17 +173,6 @@ const selectedItem = computed<FindOptions>(() => {
     )
   }
 })
-
-const isTownUnavailable = computed(() => selectedItemId.value === BigInt(0))
-
-const handleSearchTypeChange = (selectedValue: SearchType) => {
-  resetSearchCriteria()
-  currentSearchType.value = selectedValue
-  Object.keys(searchFormInput).forEach((key) => {
-    const formKey = key as keyof typeof searchFormInput
-    searchFormInput[formKey] = ''
-  })
-}
 
 const dynamicFindOptions = computed(() => {
   if (currentSearchType.value === SearchType.Town) {
@@ -196,11 +189,6 @@ const dynamicFindOptions = computed(() => {
   }
   return []
 })
-
-const handleDropdownChange = () => {
-  resetSearchCriteria()
-  searchFormInput[findOptions[selectedItem.value]] = ''
-}
 
 const selectedItemSchema = computed(() => {
   switch (selectedItem.value) {
@@ -224,6 +212,23 @@ const formIsValid = computed(() => {
     return false
   }
 })
+
+const isTownUnavailable = computed(() => selectedItemId.value === BigInt(0))
+
+// --------[ Method ]-------- //
+const handleSearchTypeChange = (selectedValue: SearchType) => {
+  resetSearchCriteria()
+  currentSearchType.value = selectedValue
+  Object.keys(searchFormInput).forEach((key) => {
+    const formKey = key as keyof typeof searchFormInput
+    searchFormInput[formKey] = ''
+  })
+}
+
+const handleDropdownChange = () => {
+  resetSearchCriteria()
+  searchFormInput[findOptions[selectedItem.value]] = ''
+}
 
 const getTownDetailsById = async (value: string) => {
   const townInfo = transformTown(
@@ -295,6 +300,7 @@ const search = () => {
   resetSearchCriteria()
   debouncedSearch()
 }
+
 const resetSearchCriteria = () => {
   selectedItemId.value = null
   currentUserAddress.value = null
