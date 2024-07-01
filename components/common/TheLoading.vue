@@ -5,6 +5,7 @@
         :animation-data="Loading"
         :height="fullScreen ? '400px' : '100px'"
         :width="fullScreen ? '400px' : '100px'"
+        :speed="1.5"
       />
     </client-only>
   </div>
