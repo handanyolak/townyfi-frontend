@@ -1,5 +1,6 @@
 <template>
-  <div class="p-5">
+  <TheLoading v-if="isDataLoading" />
+  <div v-else class="p-5">
     <ListTitle>General</ListTitle>
     <ListItem title="Name:" tooltip>
       <span>{{ userName }}</span>
@@ -127,6 +128,7 @@ import moment from 'moment'
 import { type Address, hexToString } from 'viem'
 import ListTitle from '~/components/common/ListTitle.vue'
 import ListItem from '~/components/common/ListItem.vue'
+import TheLoading from '~/components/common/TheLoading.vue'
 import OtherTown from '~/components/OtherTown.vue'
 import { toCapitalizedWords, middleCropping } from '~/utils'
 import { transformUser } from '~/transformers'
@@ -154,6 +156,7 @@ const { currentBlockNumber } = storeToRefs(userWalletStore)
 const user = ref(userGameStore.user)
 const townId = ref(0n)
 const timer = ref<any>(user.value.timer)
+const isDataLoading = ref(false)
 const timers = ref(
   Object.keys(user.value.timer).filter((item: any) => isNaN(item)),
 )
@@ -165,12 +168,14 @@ const referrer = computed(() => middleCropping(referrerAddress))
 
 // --------[ Hooks ]-------- //
 onMounted(async () => {
+  isDataLoading.value = true
   user.value = transformUser(
     await getKta.value.read.userByAddr([props.address]),
   )
   townId.value = user.value.townInfo.townId
   timer.value = { ...user.value.timer }
   timers.value = Object.keys(timer.value).filter((item: any) => isNaN(item))
+  isDataLoading.value = false
 })
 
 // --------[ Methods ]-------- //
@@ -191,3 +196,15 @@ const convert = (isConvert: boolean, propertyName: keyof UserTimer) => {
   }
 }
 </script>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.1s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>
