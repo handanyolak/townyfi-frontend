@@ -79,8 +79,11 @@
         tooltip
       >
         <template #title>
-          <div class="flex items-center py-1">
-            <div class="text-xs" @click="selectedAddress = _address">
+          <div
+            class="flex w-full items-center py-1"
+            @click="selectedAddress = _address"
+          >
+            <div class="text-xs">
               {{ _address }}
             </div>
           </div>
