@@ -53,7 +53,6 @@ const { width } = useElementSize(mapElement)
 
 // --------[ Hooks ]-------- //
 onMounted(async () => {
-  console.log('isLoading', isLoading.value)
   await initializeApp()
   // const settings_ = {
   //   max: {

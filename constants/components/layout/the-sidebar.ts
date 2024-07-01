@@ -34,12 +34,6 @@ export const TABS: Record<string, Tab[]> = {
       component: 'Town',
       folder: 'game',
     },
-    {
-      id: 'interactions-info',
-      name: 'Interactions',
-      component: 'Interactions',
-      folder: 'game',
-    },
   ],
   userOptions: [
     {
