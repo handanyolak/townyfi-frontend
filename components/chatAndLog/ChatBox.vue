@@ -68,6 +68,7 @@
           <VeeField
             v-model="youMessage"
             name="name"
+            autocomplete="off"
             autofocus
             :rules="messageRules"
             placeholder="Your message here..."
