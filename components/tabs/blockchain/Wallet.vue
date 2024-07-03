@@ -16,6 +16,9 @@
     <ListItem title="Game Token Balance:">
       <span>{{ ktaBalance }} {{ ktaSymbol }}</span>
     </ListItem>
+    <ListItem title="Game Token Allowance:">
+      <span>{{ ktaAllowance }} {{ ktaSymbol }}</span>
+    </ListItem>
   </div>
   <div v-else>Connect your wallet to see this section.</div>
 </template>
@@ -28,7 +31,7 @@ import ListItem from '~/components/common/ListItem.vue'
 const userWalletStore = useUserWalletStore()
 const connectionStore = useConnectionStore()
 
-const { address, balance, chainClient, ktaBalance, ktaSymbol } =
+const { address, balance, chainClient, ktaBalance, ktaSymbol, ktaAllowance } =
   storeToRefs(userWalletStore)
 const { onValidNetwork, isConnected } = storeToRefs(connectionStore)
 const { hasMetamask } = connectionStore

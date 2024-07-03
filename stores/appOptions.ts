@@ -1,5 +1,6 @@
 import { useToggle, useStorage } from '@vueuse/core'
 import { formatUnits, hexToString } from 'viem'
+import DOMPurify from 'dompurify'
 import { Get } from '~/enums'
 import { getEnumKeyByEnumValue, processAndPrintLog } from '~/utils'
 import { transformSettings, transformTown, transformUser } from '~/transformers'
@@ -454,17 +455,29 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                   await contractStore.getKta.read.userByAddr([author]),
                 )
                 const nameStr = hexToString(name, { size: 32 })
+                let sanitizedMessage = DOMPurify.sanitize(messageStr, {
+                  ALLOWED_TAGS: [],
+                  ALLOWED_ATTR: [],
+                })
+                const userMention = `@${hexToString(userGameStore.user.name, {
+                  size: 32,
+                })}`
+                const isUserMentioned = messageStr.includes(userMention)
+                if (isUserMentioned) {
+                  const boldUserMention = `<b>${userMention}</b>`
+                  sanitizedMessage = sanitizedMessage.replace(
+                    userMention,
+                    boldUserMention,
+                  )
+                }
+
                 gameChatStore.addChatMessages({
-                  body: messageStr,
+                  body: sanitizedMessage,
                   author,
                   name: nameStr,
                   date: new Date(),
                 })
-                const isUserMentioned = messageStr.includes(
-                  ` @${hexToString(userGameStore.user.name, {
-                    size: 32,
-                  })}`,
-                )
+
                 const isUserAuthor = areAddressesEqual(
                   author,
                   userWalletStore.address,

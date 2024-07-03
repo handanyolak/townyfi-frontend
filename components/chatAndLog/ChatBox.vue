@@ -45,9 +45,8 @@
             </p>
           </div>
           <p class="mb-1 text-sm font-semibold">
-            {{ message.body }}
+            <span v-html="message.body" />
           </p>
-
           <span class="float-right text-[10px] italic">{{
             formattedDate(message.date)
           }}</span>
