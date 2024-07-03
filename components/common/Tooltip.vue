@@ -2,7 +2,10 @@
   <span ref="tooltip" class="relative" @click.stop="toggleTooltip()">
     <Icon
       :name="iconName"
-      class="mr-1 h-4 w-4 cursor-pointer text-towni-brown-dark-300 opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
+      :class="[
+        'mr-1 h-4 w-4 cursor-pointer text-towni-brown-dark-300 opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100',
+        iconClasses,
+      ]"
       @click="actionTooltip()"
     />
     <span
@@ -26,11 +29,13 @@ import { onClickOutside } from '@vueuse/core'
 interface TooltipProps {
   autoClose?: boolean
   iconName?: string
+  iconClasses?: string
 }
 
 const props = withDefaults(defineProps<TooltipProps>(), {
   autoClose: false,
   iconName: 'uil:info-circle',
+  iconClasses: '',
 })
 
 // --------[ Data ]-------- //
