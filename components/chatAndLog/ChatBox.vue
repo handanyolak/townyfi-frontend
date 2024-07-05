@@ -21,7 +21,7 @@
           :class="[
             'message-box relative z-10 min-w-14 break-words p-1 text-xs',
             {
-              'rounded-bl-lg rounded-tl-lg rounded-tr-lg bg-towni-brown-dark-300 text-white':
+              'rounded-bl-lg rounded-tl-lg rounded-tr-lg bg-towny-brown-dark-300 text-white':
                 message.author === address,
               'rounded-br-lg rounded-tl-lg rounded-tr-lg bg-[#a1866b] text-white':
                 message.author !== address,
@@ -60,7 +60,7 @@
     </div>
 
     <div
-      class="flex h-20 items-start border-t border-towni-brown-light-200 p-2"
+      class="flex h-20 items-start border-t border-towny-brown-light-200 p-2"
     >
       <div class="mx-2 w-full">
         <VeeForm class="flex flex-col items-center pt-1">
@@ -71,7 +71,7 @@
             autofocus
             :rules="messageRules"
             placeholder="Your message here..."
-            class="bg-towni-brown-light-4000 w-full rounded-lg px-2 py-1 text-xs shadow-lg shadow-towni-brown-light-500 outline-none transition-all duration-300 ease-out focus:shadow-xl"
+            class="bg-towny-brown-light-4000 w-full rounded-lg px-2 py-1 text-xs shadow-lg shadow-towny-brown-light-500 outline-none transition-all duration-300 ease-out focus:shadow-xl"
             @keyup.enter="sendMessage()"
           />
           <VeeErrorMessage class="text-xs text-red-600" name="name" />
@@ -79,7 +79,7 @@
       </div>
 
       <button
-        class="inline-flex rounded-full p-1 outline-none hover:bg-towni-brown-light-400"
+        class="inline-flex rounded-full p-1 outline-none hover:bg-towny-brown-light-400"
         type="button"
         @click="sendMessage()"
       >
@@ -87,7 +87,7 @@
           :name="
             isLoading ? 'svg-spinners:tadpole' : 'mingcute:send-plane-fill'
           "
-          class="h-5 w-5 text-towni-brown-dark-300"
+          class="h-5 w-5 text-towny-brown-dark-300"
         />
       </button>
     </div>

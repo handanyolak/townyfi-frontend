@@ -22,7 +22,7 @@
       >
         <Icon
           :class="[
-            ' transform text-3xl text-towni-brown-dark-400 transition-transform duration-200 ease-in-out',
+            ' transform text-3xl text-towny-brown-dark-400 transition-transform duration-200 ease-in-out',
             isMapNavigationVisible ? 'rotate-180' : '',
           ]"
           name="material-symbols-light:double-arrow"

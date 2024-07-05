@@ -1,6 +1,6 @@
 <template>
   <div
-    class="relative cursor-pointer shadow-towni-400"
+    class="relative cursor-pointer shadow-towny-400"
     @mouseover="showCoordinates"
     @mouseleave="hideCoordinates"
   >
@@ -19,13 +19,13 @@
       <Transition name="fade">
         <div
           v-if="isHovering"
-          class="absolute left-0 top-0 z-50 flex w-16 items-center justify-between bg-towni-brown-dark-600 bg-opacity-70 p-1"
+          class="absolute left-0 top-0 z-50 flex w-16 items-center justify-between bg-towny-brown-dark-600 bg-opacity-70 p-1"
         >
           <Icon
             name="oui:vis-map-coordinate"
-            class="pointer-events-none mr-1 h-4 w-4 text-towni-brown-dark-300"
+            class="pointer-events-none mr-1 h-4 w-4 text-towny-brown-dark-300"
           />
-          <div class="select-none text-xs text-towni-brown-light-200">
+          <div class="select-none text-xs text-towny-brown-light-200">
             <span>({{ item._x.toString() }}</span>
             <span>,</span>
             <span>{{ item._y.toString() }})</span>

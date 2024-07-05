@@ -1,16 +1,16 @@
 <template>
-  <div class="background-town flex items-center bg-towni-brown-light-100 p-4">
+  <div class="background-town flex items-center bg-towny-brown-light-100 p-4">
     <div
-      class="flex w-full flex-col items-center space-y-4 bg-towni-brown-light-100 bg-opacity-20 p-1 backdrop-blur-sm"
+      class="flex w-full flex-col items-center space-y-4 bg-towny-brown-light-100 bg-opacity-20 p-1 backdrop-blur-sm"
     >
       <VeeForm class="flex w-full flex-col items-center">
-        <ListItem title="Name:" class="w-full bg-towni-brown-light-100" input>
+        <ListItem title="Name:" class="w-full bg-towny-brown-light-100" input>
           <template #item>
             <VeeField v-model="formInput.name" name="name" :rules="nameRules" />
             <VeeErrorMessage class="text-red-800" name="name" />
           </template>
         </ListItem>
-        <ListItem title="Price:" class="w-full bg-towni-brown-light-100" input>
+        <ListItem title="Price:" class="w-full bg-towny-brown-light-100" input>
           <template #item>
             <VeeField
               v-model="formInput.price"
@@ -21,7 +21,7 @@
           </template>
         </ListItem>
       </VeeForm>
-      <div class="my-3 rounded-full bg-towni-brown-light-100">
+      <div class="my-3 rounded-full bg-towny-brown-light-100">
         <AppButton :disabled="!formIsValid" @click="createTown()"
           >Create Town</AppButton
         >

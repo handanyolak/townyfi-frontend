@@ -8,7 +8,7 @@
   >
     <div class="flex h-full w-52 flex-col justify-between bg-[#5a3006] p-2">
       <div class="move">
-        <ListTitle class="shadow-md shadow-towni-brown-dark-400"
+        <ListTitle class="shadow-md shadow-towny-brown-dark-400"
           ><span class="text-sm">Move</span></ListTitle
         >
         <div class="relative mt-6 flex items-center justify-center p-10">
@@ -47,7 +47,7 @@
         </div>
       </div>
       <div class="zoom">
-        <ListTitle class="text-sm shadow-md shadow-towni-brown-dark-400"
+        <ListTitle class="text-sm shadow-md shadow-towny-brown-dark-400"
           >Zoom in / out</ListTitle
         >
         <div class="flex justify-around">
@@ -69,21 +69,21 @@
       </div>
       <div class="return-back">
         <AppButton
-          class="my-2 w-full rounded-md bg-towni-brown-dark-400 text-towni-brown-light-400"
+          class="my-2 w-full rounded-md bg-towny-brown-dark-400 text-towny-brown-light-400"
           @click="goBackToInitialPosition()"
         >
           Recenter!
         </AppButton>
         <AppButton
           v-if="hasUserTown && !isUserInTown"
-          class="my-2 w-full rounded-md bg-towni-brown-dark-400 text-towni-brown-light-400"
+          class="my-2 w-full rounded-md bg-towny-brown-dark-400 text-towny-brown-light-400"
           @click="teleportToTown()"
         >
           Teleport to Town!
         </AppButton>
       </div>
       <div class="navigate">
-        <ListTitle class="text-sm shadow-md shadow-towni-brown-dark-400"
+        <ListTitle class="text-sm shadow-md shadow-towny-brown-dark-400"
           >Navigate</ListTitle
         >
         <div class="flex items-center rounded-md p-1">
@@ -101,7 +101,7 @@
               <span>{{ coordinateY }}</span>
             </ListItem>
             <AppButton
-              class="w-full rounded-md bg-towni-brown-dark-400 text-towni-brown-light-400"
+              class="w-full rounded-md bg-towny-brown-dark-400 text-towny-brown-light-400"
               @click="navigate()"
             >
               Go!

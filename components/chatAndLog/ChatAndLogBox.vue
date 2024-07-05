@@ -8,7 +8,7 @@
       ]"
     >
       <div
-        class="grid h-10 w-full grid-cols-2 gap-x-1 rounded-t-2xl border border-b border-towni-brown-light-300 bg-towni-brown-light-300 p-2 shadow-md"
+        class="grid h-10 w-full grid-cols-2 gap-x-1 rounded-t-2xl border border-b border-towny-brown-light-300 bg-towny-brown-light-300 p-2 shadow-md"
       >
         <button class="chat-tab-button" @click="toggleChatTabs(1)">
           Chat Box
@@ -19,7 +19,7 @@
       <div class="h-72">
         <div
           :class="[
-            'h-full overflow-auto bg-towni-brown-light-300',
+            'h-full overflow-auto bg-towny-brown-light-300',
             { hidden: openChatTab !== 1, block: openChatTab === 1 },
           ]"
         >
@@ -28,7 +28,7 @@
 
         <div
           :class="[
-            'h-full overflow-auto bg-towni-brown-light-300',
+            'h-full overflow-auto bg-towny-brown-light-300',
             { hidden: openChatTab !== 2, block: openChatTab === 2 },
           ]"
         >
@@ -69,6 +69,6 @@ onClickOutside(chatBox, () => (isChat.value = false))
 
 <style scoped>
 .chat-tab-button {
-  @apply rounded-t-xl bg-towni-brown-dark-100 px-2 py-1 text-sm font-medium text-white outline-none transition-all duration-300 ease-out hover:bg-[#c99f75];
+  @apply rounded-t-xl bg-towny-brown-dark-100 px-2 py-1 text-sm font-medium text-white outline-none transition-all duration-300 ease-out hover:bg-[#c99f75];
 }
 </style>

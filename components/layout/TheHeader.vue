@@ -1,11 +1,11 @@
 <template>
   <div
-    class="absolute top-0 z-[100] w-full bg-white shadow-lg shadow-towni-brown-light-100 dark:bg-[#0D1117] dark:shadow-[#171e28]"
+    class="absolute top-0 z-[100] w-full bg-white shadow-lg shadow-towny-brown-light-100 dark:bg-[#0D1117] dark:shadow-[#171e28]"
   >
     <div class="mx-5">
       <div class="flex items-center justify-between">
         <span
-          class="step-2 flex select-none items-center bg-gradient-to-r from-towni-brown-dark-400 via-towni-brown-dark-400 to-towni-brown-dark-200 bg-clip-text text-5xl font-extrabold text-transparent"
+          class="step-2 flex select-none items-center bg-gradient-to-r from-towny-brown-dark-400 via-towny-brown-dark-400 to-towny-brown-dark-200 bg-clip-text text-5xl font-extrabold text-transparent"
           style="
             font-family:
               Pirata One,
@@ -36,7 +36,7 @@
                 <AppButton
                   class="step-4"
                   border-hover
-                  inline-class="group-hover:bg-towni-brown-light-100 group-hover:text-towni-brown-dark-200"
+                  inline-class="group-hover:bg-towny-brown-light-100 group-hover:text-towny-brown-dark-200"
                   @click="disconnectWeb3()"
                 >
                   {{ $t('disconnect_wallet') }}

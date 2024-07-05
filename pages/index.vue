@@ -133,7 +133,7 @@ const currentComponent = computed(() => {
 
 <style>
 .toast-theme {
-  @apply flex items-center bg-towni-brown-dark-300 bg-opacity-30 text-towni-brown-light-200 backdrop-blur-sm;
+  @apply flex items-center bg-towny-brown-dark-300 bg-opacity-30 text-towny-brown-light-200 backdrop-blur-sm;
 }
 
 .map-frame {

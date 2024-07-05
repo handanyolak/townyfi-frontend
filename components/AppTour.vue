@@ -38,7 +38,7 @@
       class="z-[99999] flex flex-col justify-between rounded-sm bg-white p-1"
       :style="popoverStyle"
     >
-      <h1 class="my-2 text-center font-bold text-towni-brown-dark-400">
+      <h1 class="my-2 text-center font-bold text-towny-brown-dark-400">
         {{ currentStep.title }}
       </h1>
       <div

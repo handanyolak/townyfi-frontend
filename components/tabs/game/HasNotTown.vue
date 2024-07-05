@@ -6,7 +6,7 @@
       @click="setModalInfo('CreateTownModal')"
       >Create Town</AppButton
     >
-    <p class="my-5 text-center font-bold text-towni-brown-dark-400">OR</p>
+    <p class="my-5 text-center font-bold text-towny-brown-dark-400">OR</p>
     <AppButton basic-hover class="w-full" @click="setModalInfo('SearchModal')"
       >Search Modal</AppButton
     >

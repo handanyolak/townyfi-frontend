@@ -2,7 +2,7 @@
   <div class="flex min-w-6 items-center justify-center">
     <div class="relative w-full">
       <button
-        class="flex w-full items-center justify-between bg-towni-brown-dark-300 bg-opacity-20 px-3 py-1 text-towni-brown-dark-300 outline-none backdrop-blur"
+        class="flex w-full items-center justify-between bg-towny-brown-dark-300 bg-opacity-20 px-3 py-1 text-towny-brown-dark-300 outline-none backdrop-blur"
         :class="isRounded"
         @click="toggleDropdown()"
         @blur="showDropdown = false"
@@ -20,7 +20,7 @@
       <Transition name="dropdown">
         <div
           v-show="showDropdown"
-          class="scrollbar-gutter-stable absolute left-0 right-0 z-10 mb-4 h-20 overflow-auto bg-towni-brown-dark-300 bg-opacity-20 backdrop-blur"
+          class="scrollbar-gutter-stable absolute left-0 right-0 z-10 mb-4 h-20 overflow-auto bg-towny-brown-dark-300 bg-opacity-20 backdrop-blur"
           :class="!showDropdown ? 'rounded-md' : 'rounded-b-2xl'"
         >
           <ul
@@ -34,7 +34,7 @@
               class="mr-2 h-5 w-5"
               :src="dropdownIcon(iconNames[index])"
             />
-            <li class="text-sm capitalize text-towni-brown-dark-300">
+            <li class="text-sm capitalize text-towny-brown-dark-300">
               {{ item }}
             </li>
           </ul>

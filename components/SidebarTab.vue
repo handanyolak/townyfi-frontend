@@ -7,7 +7,7 @@
           tabs.length > 4 ? 3 : tabs.length
         }`,
         {
-          'bg-towni-brown-dark-300 bg-opacity-20  backdrop-blur': hasScrolled,
+          'bg-towny-brown-dark-300 bg-opacity-20  backdrop-blur': hasScrolled,
         },
       ]"
     >
@@ -21,8 +21,8 @@
           :class="[
             'block rounded p-2 text-lg font-bold uppercase leading-normal shadow-lg',
             currentTabName === tab.name
-              ? 'bg-towni-brown-dark-300 text-towni-brown-light-400 '
-              : 'cursor-pointer bg-towni-brown-light-400 text-towni-brown-dark-300 hover:shadow-towni-brown-dark-500',
+              ? 'bg-towny-brown-dark-300 text-towny-brown-light-400 '
+              : 'cursor-pointer bg-towny-brown-light-400 text-towny-brown-dark-300 hover:shadow-towny-brown-dark-500',
           ]"
           @click="changeTab(tab)"
         >

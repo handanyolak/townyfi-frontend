@@ -6,7 +6,7 @@
       @click="sideOver('isGameInfo')"
     >
       <div class="col-start-2 col-end-4">
-        <p class="w-full p-1 text-center text-xs text-towni-brown-dark-300">
+        <p class="w-full p-1 text-center text-xs text-towny-brown-dark-300">
           Game
         </p>
         <img src="@/assets/img/cardboard.svg" class="h-14 w-full" />
@@ -18,7 +18,7 @@
       @click="sideOver('isOptions')"
     >
       <div class="col-start-2 col-end-4">
-        <p class="w-full p-1 text-center text-xs text-towni-brown-dark-300">
+        <p class="w-full p-1 text-center text-xs text-towny-brown-dark-300">
           Options
         </p>
         <img src="@/assets/img/cardboard.svg" class="h-14 w-full" />
@@ -32,7 +32,7 @@
       @click="sideOver('isBlockchainInfo')"
     >
       <div class="col-start-1 col-end-3">
-        <p class="w-full p-1 text-center text-xs text-towni-brown-dark-300">
+        <p class="w-full p-1 text-center text-xs text-towny-brown-dark-300">
           Blockchain
         </p>
         <img src="@/assets/img/cardboard.svg" class="h-14 w-full" />
@@ -46,7 +46,7 @@
       @click="sideOver('isContractInfo')"
     >
       <div class="col-start-1 col-end-3">
-        <p class="w-full p-1 text-center text-xs text-towni-brown-dark-300">
+        <p class="w-full p-1 text-center text-xs text-towny-brown-dark-300">
           Contract
         </p>
         <img src="@/assets/img/cardboard.svg" class="h-14 w-full" />

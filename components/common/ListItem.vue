@@ -1,10 +1,10 @@
 <template>
-  <div class="group my-2 flex p-1 shadow-towni-300">
+  <div class="group my-2 flex p-1 shadow-towny-300">
     <div class="flex items-center">
       <Tooltip v-if="tooltip">
         <slot name="tooltip" />
       </Tooltip>
-      <span class="text-towni-brown-dark-400">
+      <span class="text-towny-brown-dark-400">
         {{ title }}
       </span>
     </div>
@@ -15,7 +15,7 @@
         </div>
         <span
           v-else
-          class="mx-1 flex w-full items-center px-1 text-towni-brown-dark-600"
+          class="mx-1 flex w-full items-center px-1 text-towny-brown-dark-600"
         >
           <slot />
           <div v-if="isSupported && copiable" class="ml-2">
@@ -32,7 +32,7 @@
       <div v-if="editable">
         <Icon
           :name="isEdit ? 'uil:check-circle' : 'uil:edit'"
-          class="h-4 w-4 cursor-pointer text-towni-brown-dark-300 opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
+          class="h-4 w-4 cursor-pointer text-towny-brown-dark-300 opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
           @click="isEdit ? save() : edit()"
         />
       </div>
@@ -114,6 +114,6 @@ const convert = () => {
 
 <style scoped>
 :deep(input) {
-  @apply w-full rounded-sm bg-towni-brown-dark-300 bg-opacity-20 px-1 text-towni-brown-dark-600 outline-none backdrop-blur;
+  @apply w-full rounded-sm bg-towny-brown-dark-300 bg-opacity-20 px-1 text-towny-brown-dark-600 outline-none backdrop-blur;
 }
 </style>

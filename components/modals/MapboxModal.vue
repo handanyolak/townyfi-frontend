@@ -11,7 +11,7 @@
         <template #title>
           <div class="flex items-center">
             <div
-              class="mr-1 rounded-md bg-towni-brown-dark-300 p-1 text-xs text-white"
+              class="mr-1 rounded-md bg-towny-brown-dark-300 p-1 text-xs text-white"
               @click.stop="!isOwnAddress(_address) && attack(_address)"
             >
               {{ isOwnAddress(_address) ? 'Self' : 'Attack' }}

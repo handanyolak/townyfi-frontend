@@ -7,9 +7,9 @@
     </div>
     <div
       v-else
-      class="flex h-full flex-col items-center justify-center space-y-4 rounded-md border-[4px] border-towni-brown-dark-400"
+      class="flex h-full flex-col items-center justify-center space-y-4 rounded-md border-[4px] border-towny-brown-dark-400"
     >
-      <p class="text-center text-xl text-towni-brown-light-100">
+      <p class="text-center text-xl text-towny-brown-light-100">
         {{ props.message }}
       </p>
       <div class="flex space-x-3">

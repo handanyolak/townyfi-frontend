@@ -31,10 +31,10 @@ const props = defineProps<ButtonThemeProps>()
 const tag = computed(() => (props.href ? 'a' : 'button'))
 
 const componentClasses = computed(() => [
-  'mx-auto rounded-full bg-gradient-to-tr from-towni-brown-dark-300 via-towni-brown-dark-200 to-towni-brown-light-400 p-[2px] text-sm transition duration-500 ease-in-out disabled:opacity-50',
+  'mx-auto rounded-full bg-gradient-to-tr from-towny-brown-dark-300 via-towny-brown-dark-200 to-towny-brown-light-400 p-[2px] text-sm transition duration-500 ease-in-out disabled:opacity-50',
   props.fillHover || props.borderHover ? 'group' : '',
   props.basicHover
-    ? 'shadow-lg shadow-towni-brown-dark-200 hover:from-towni-brown-dark-300 hover:via-towni-brown-dark-300 hover:to-towni-brown-light-500 hover:shadow-towni-brown-dark-500'
+    ? 'shadow-lg shadow-towny-brown-dark-200 hover:from-towny-brown-dark-300 hover:via-towny-brown-dark-300 hover:to-towny-brown-light-500 hover:shadow-towny-brown-dark-500'
     : '',
 ])
 
@@ -42,7 +42,7 @@ const divClasses = computed(() => [
   'rounded-full px-4 py-2 duration-500 ease-in-out',
   props.inlineClass,
   props.fillHover
-    ? 'bg-towni-brown-light-100 text-towni-brown-dark-200 group-hover:bg-transparent group-hover:text-white dark:bg-night-blue'
+    ? 'bg-towny-brown-light-100 text-towny-brown-dark-200 group-hover:bg-transparent group-hover:text-white dark:bg-night-blue'
     : 'bg-transparent text-white dark:group-hover:bg-night-blue',
 ])
 

@@ -1,12 +1,12 @@
 <template>
   <div>
     <div
-      class="round-parchment h-[16%] scale-105 transform rounded-xl bg-white py-3 text-center text-5xl font-bold text-towni-brown-dark-400 md:h-[12%]"
+      class="round-parchment h-[16%] scale-105 transform rounded-xl bg-white py-3 text-center text-5xl font-bold text-towny-brown-dark-400 md:h-[12%]"
     >
       <slot name="parchment-header" />
     </div>
     <div
-      class="parchment scrollbar-gutter-stable overflow-auto bg-white px-2 py-8 text-towni-brown-dark-600"
+      class="parchment scrollbar-gutter-stable overflow-auto bg-white px-2 py-8 text-towny-brown-dark-600"
     >
       <div class="animate-fadein">
         <slot />

@@ -28,7 +28,7 @@ module.exports = {
         center: true,
       },
       colors: {
-        'towni-brown-light': {
+        'towny-brown-light': {
           100: '#f7f2ec',
           200: '#ffe8d0',
           300: '#E8D5B2',
@@ -36,7 +36,7 @@ module.exports = {
           500: '#d6b16b',
           600: '#FFD479',
         },
-        'towni-brown-dark': {
+        'towny-brown-dark': {
           100: '#C69666',
           200: '#c68c52',
           300: '#c57b34',
@@ -84,9 +84,9 @@ module.exports = {
         fadein: 'fadein 3s 1',
       },
       boxShadow: {
-        'towni-200': '0px 0px 15px 0px rgba(198, 140, 82, 0.8)',
-        'towni-300': '0px 3px 8px -6px #b44e00',
-        'towni-400': '0px 1px 0px 1px rgba(255, 205, 116, 0.4)',
+        'towny-200': '0px 0px 15px 0px rgba(198, 140, 82, 0.8)',
+        'towny-300': '0px 3px 8px -6px #b44e00',
+        'towny-400': '0px 1px 0px 1px rgba(255, 205, 116, 0.4)',
       },
       zIndex: {
         max: '99999',

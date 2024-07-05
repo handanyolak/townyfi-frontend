@@ -22,7 +22,7 @@
         </div>
       </div>
     </div>
-    <div v-else class="text-center text-sm text-towni-brown-dark-300">
+    <div v-else class="text-center text-sm text-towny-brown-dark-300">
       No activities yet
     </div>
   </div>

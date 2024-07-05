@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col items-center space-y-4 rounded-sm bg-towni-brown-light-100 p-12"
+    class="flex flex-col items-center space-y-4 rounded-sm bg-towny-brown-light-100 p-12"
   >
     <ListTitle class="w-full">Register</ListTitle>
     <ListItem title="Name:" class="w-full" input>
