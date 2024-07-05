@@ -4,7 +4,7 @@
       ref="chatBox"
       :class="[
         isChat ? 'max-h-96' : 'max-h-9',
-        'ease fixed bottom-0 right-0 z-[100] flex w-80 flex-col transition-all duration-700',
+        'ease fixed bottom-0 right-0 z-90 flex w-80 flex-col transition-all duration-700',
       ]"
     >
       <div

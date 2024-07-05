@@ -6,7 +6,7 @@
       v-if="showSidebar"
       ref="sideBar"
       :class="[
-        'fixed -top-3 z-[110] min-h-screen w-96',
+        'fixed -top-3 z-110 min-h-screen w-96',
         isGameInfo || isOptions ? '-left-4' : '-right-4',
       ]"
     >

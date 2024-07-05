@@ -2,7 +2,7 @@
   <Transition name="modal-outer">
     <div
       v-show="modalActive"
-      class="absolute left-0 top-0 z-[120] flex h-screen w-full items-center justify-center bg-[#362419] bg-opacity-40 backdrop-blur-sm"
+      class="absolute left-0 top-0 z-120 flex h-screen w-full items-center justify-center bg-[#362419] bg-opacity-40 backdrop-blur-sm"
     >
       <Transition name="modal-outer">
         <div v-if="modalActive">

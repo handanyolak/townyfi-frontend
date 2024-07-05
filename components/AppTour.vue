@@ -1,7 +1,7 @@
 <template>
   <div
     v-show="isModalVisible"
-    class="fixed left-0 top-0 z-[99999999] flex h-full w-full items-center justify-center bg-transparent"
+    class="fixed left-0 top-0 z-100 flex h-full w-full items-center justify-center bg-transparent"
   >
     <svg
       :width="windowWidth"
@@ -35,7 +35,7 @@
     </svg>
     <div
       v-if="currentStep"
-      class="z-[99999] flex flex-col justify-between rounded-sm bg-white p-1"
+      class="flex flex-col justify-between rounded-sm bg-white p-1"
       :style="popoverStyle"
     >
       <h1 class="my-2 text-center font-bold text-towny-brown-dark-400">

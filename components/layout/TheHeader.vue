@@ -1,6 +1,6 @@
 <template>
   <div
-    class="absolute top-0 z-[100] w-full bg-white shadow-lg shadow-towny-brown-light-100 dark:bg-[#0D1117] dark:shadow-[#171e28]"
+    class="absolute top-0 z-100 w-full bg-white shadow-lg shadow-towny-brown-light-100 dark:bg-[#0D1117] dark:shadow-[#171e28]"
   >
     <div class="mx-5">
       <div class="flex items-center justify-between">
