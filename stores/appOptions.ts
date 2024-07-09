@@ -416,7 +416,8 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
             try {
               const uniqueLogs = getUniqueLogs(logs)
               for (const { eventName, args } of uniqueLogs) {
-                const { winnerTownId, loserTownId } = args
+                const { winnerTownId, loserTownId, warLogs } = args
+                userGameStore.setWarLog(warLogs)
                 const { warLogs: _, ...filteredArgs } = args
                 const userTownId = userGameStore.user.townInfo.townId
                 const isUserWinner = userTownId === winnerTownId

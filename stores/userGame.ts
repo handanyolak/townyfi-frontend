@@ -1,4 +1,5 @@
 import { useStorage } from '@vueuse/core'
+import townWar from '../townWar.json'
 import type {
   CoordinateItem,
   MultiCallData,
@@ -6,6 +7,7 @@ import type {
   Settings,
   Town,
   User,
+  WarLog,
 } from '~/types'
 import { middleElement } from '~/utils'
 import { useMultiCall } from '~/composables/useMultiCall'
@@ -27,6 +29,8 @@ export const useUserGameStore = defineStore('userGameStore', () => {
   const user = ref<User>(null as unknown as User)
   const town = ref<Town>(null as unknown as Town)
   const settings = ref<Settings>(null as unknown as Settings)
+  // TODO: change to ref
+  const warLog = ref<readonly WarLog[]>(townWar as unknown as readonly WarLog[])
 
   // TODO: move to app options store
   const nearLevel = useStorage('nearLevel', 3)
@@ -50,6 +54,10 @@ export const useUserGameStore = defineStore('userGameStore', () => {
 
   const setSettings = (newSetting: Settings) => {
     settings.value = newSetting
+  }
+
+  const setWarLog = (newWarLog: readonly WarLog[]) => {
+    warLog.value = newWarLog
   }
 
   const setNearLevel = (newNearLevel: number) => {
@@ -208,6 +216,8 @@ export const useUserGameStore = defineStore('userGameStore', () => {
     setUser,
     setTown,
     town,
+    warLog,
+    setWarLog,
     setSettings,
     setNearLevel,
     setIsRegistered,
