@@ -31,25 +31,21 @@
 
 <script setup lang="ts">
 import { onClickOutside } from '@vueuse/core'
+import type { Modal } from '~/types'
 
 const appOptionsStore = useAppOptionsStore()
 const { isAnimation } = storeToRefs(appOptionsStore)
 
-// --------[ Props & Emits ]-------- //
-interface AppModalProps {
-  contentClasses?: string
-  modalSize?: string
-  modalActive?: boolean
-}
+// --------[ Prop & Emit ]-------- //
 
-defineProps<AppModalProps>()
+defineProps<Modal>()
 
 const emit = defineEmits(['modalClosed'])
 
 // --------[ Data ]-------- //
 const modal = ref(null)
 
-// --------[ Methods ]-------- //
+// --------[ Method ]-------- //
 const closeModal = () => {
   if (!isAnimation.value) {
     emit('modalClosed')
