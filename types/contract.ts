@@ -132,3 +132,12 @@ export type Settings = {
   multiplier: SettingsMultiplier
   numberDigits: bigint
 }
+
+export type WarLog = {
+  attacker: Address
+  defender: Address
+  healthDamage: bigint
+  armorDamage: bigint
+  remainingHealth: bigint
+  remainingArmor: bigint
+}
