@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="shadow-2xl shadow-towny-brown-dark-400">
     <div v-if="isConfirmed">
       <client-only>
         <Vue3Lottie :animation-link="animationUrl" />
@@ -7,7 +7,7 @@
     </div>
     <div
       v-else
-      class="flex h-full flex-col items-center justify-center space-y-4 rounded-md border-[4px] border-towny-brown-dark-400"
+      class="flex h-full flex-col items-center justify-center space-y-4 rounded-md"
     >
       <p class="text-center text-xl text-towny-brown-light-100">
         {{ props.message }}
