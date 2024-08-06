@@ -141,3 +141,8 @@ export type WarLog = {
   remainingHealth: bigint
   remainingArmor: bigint
 }
+
+export type WarLogInfo = {
+  warLogs: readonly WarLog[]
+  winnerTownId: bigint
+}
