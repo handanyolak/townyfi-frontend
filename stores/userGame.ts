@@ -7,7 +7,7 @@ import type {
   Settings,
   Town,
   User,
-  WarLog,
+  WarLogInfo,
 } from '~/types'
 import { middleElement } from '~/utils'
 import { useMultiCall } from '~/composables/useMultiCall'
@@ -30,7 +30,7 @@ export const useUserGameStore = defineStore('userGameStore', () => {
   const town = ref<Town>(null as unknown as Town)
   const settings = ref<Settings>(null as unknown as Settings)
   // TODO: change to ref
-  const warLog = ref<readonly WarLog[]>(townWar as unknown as readonly WarLog[])
+  const warLogInfo = ref<WarLogInfo>(townWar as unknown as WarLogInfo)
 
   // TODO: move to app options store
   const nearLevel = useStorage('nearLevel', 3)
@@ -56,8 +56,8 @@ export const useUserGameStore = defineStore('userGameStore', () => {
     settings.value = newSetting
   }
 
-  const setWarLog = (newWarLog: readonly WarLog[]) => {
-    warLog.value = newWarLog
+  const setWarLogInfo = (newWarLogInfo: WarLogInfo) => {
+    warLogInfo.value = newWarLogInfo
   }
 
   const setNearLevel = (newNearLevel: number) => {
@@ -216,8 +216,8 @@ export const useUserGameStore = defineStore('userGameStore', () => {
     setUser,
     setTown,
     town,
-    warLog,
-    setWarLog,
+    warLogInfo,
+    setWarLogInfo,
     setSettings,
     setNearLevel,
     setIsRegistered,
