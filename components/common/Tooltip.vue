@@ -13,7 +13,7 @@
         ' absolute bottom-4 transform rounded-md bg-towny-brown-light-400 p-1 py-1 text-center text-sm text-towny-brown-dark-300 shadow-xl transition-all duration-700 ease-out',
         isShowTooltip
           ? 'visible translate-y-0 transform cursor-pointer bg-towny-brown-light-200'
-          : 'invisible -translate-y-12',
+          : 'invisible -translate-y-12 opacity-0',
         autoClose ? '' : 'w-56',
       ]"
     >
