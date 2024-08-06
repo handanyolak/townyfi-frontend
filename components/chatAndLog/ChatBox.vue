@@ -13,7 +13,7 @@
       >
         <img
           v-if="message.author !== address"
-          class="mr-1 h-8 w-8 rounded-full"
+          class="mr-1 h-8 w-8 rounded-full border border-towny-brown-dark-200"
           :src="makeBlockie(message.author)"
         />
 
@@ -53,7 +53,7 @@
         </div>
         <img
           v-if="message.author === address"
-          class="ml-1 h-8 w-8 rounded-full"
+          class="ml-1 h-8 w-8 rounded-full border border-towny-brown-dark-200"
           :src="makeBlockie(message.author)"
         />
       </div>
