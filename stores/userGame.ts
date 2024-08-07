@@ -29,7 +29,6 @@ export const useUserGameStore = defineStore('userGameStore', () => {
   const user = ref<User>(null as unknown as User)
   const town = ref<Town>(null as unknown as Town)
   const settings = ref<Settings>(null as unknown as Settings)
-  // TODO: change to ref
   const warLogInfo = ref<WarLogInfo>(townWar as unknown as WarLogInfo)
 
   // TODO: move to app options store

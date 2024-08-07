@@ -147,7 +147,7 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
       handleAccountsChanged()
       await connect()
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
   }
 
