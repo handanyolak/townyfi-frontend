@@ -43,7 +43,6 @@
 <script setup lang="ts">
 import type { Address } from 'viem'
 import { useDebounce } from '@vueuse/core'
-import { abs } from 'extra-bigint.web'
 import OtherUser from '~/components/OtherUser.vue'
 import Parchment from '~/components/Parchment.vue'
 import Accordion from '~/components/common/Accordion.vue'
@@ -51,6 +50,7 @@ import SearchBar from '~/components/common/SearchBar.vue'
 import AppButton from '~/components/common/AppButton.vue'
 import { getAddressRule } from '~/composables/useYupRules'
 import type { CoordinateItem } from '~/types'
+import { getDifference } from '~/utils'
 import { Direction } from '~/enums'
 
 // --------[ Prop & Emit ]-------- //
@@ -178,10 +178,14 @@ const move = async () => {
 }
 
 const isMoveable = () => {
-  const deltaX = abs(props.coordinate._x - BigInt(user.value.coordinate._x))
-  const deltaY = abs(props.coordinate._y - BigInt(user.value.coordinate._y))
-
-  return deltaX + deltaY <= 1
+  return (
+    getDifference(
+      props.coordinate._x,
+      props.coordinate._y,
+      user.value.coordinate._x,
+      user.value.coordinate._y,
+    ) <= 1
+  )
 }
 
 const handleMovement = () => {
