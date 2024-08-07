@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      class="round-parchment h-[16%] scale-105 transform rounded-xl bg-white py-3 text-center text-5xl font-bold text-towny-brown-dark-400 md:h-[12%]"
+      class="round-parchment h-[16%] scale-105 transform rounded-xl bg-white py-3 text-center text-3xl font-bold text-towny-brown-dark-400 md:h-[12%]"
     >
       <slot name="parchment-header" />
     </div>
@@ -21,7 +21,6 @@
 </template>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Bilbo&display=swap');
 .round-parchment {
   box-shadow:
     2px 3px 20px #3f2007,
