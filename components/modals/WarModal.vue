@@ -80,9 +80,9 @@
             >
               <client-only>
                 <Vue3Lottie
-                  ref="lottie"
+                  ref="lottieInstance"
                   :animation-data="spear"
-                  :speed="1.2"
+                  :speed="1.0"
                   :height="400"
                   :width="300"
                   :auto-play="false"
@@ -154,9 +154,26 @@
               />
             </client-only>
           </div>
-          <AppButton v-else class="w-1/6" @click="toggleBattle">
-            {{ isLottieRunning ? 'Pause' : 'Play' }}
-          </AppButton>
+          <div v-else class="w-1/5 space-y-3">
+            <div
+              class="flex w-full items-center justify-between text-lg text-white"
+            >
+              <AppButton
+                class="app-button h-10 w-10 font-bold"
+                @click="decreaseSpeed"
+                >-</AppButton
+              >
+              <span>Speed</span>
+              <AppButton
+                class="app-button h-10 w-10 font-bold"
+                @click="increaseSpeed"
+                >+</AppButton
+              >
+            </div>
+            <AppButton class="w-full" @click="toggleBattle">
+              {{ isLottieRunning ? 'Pause' : 'Play' }}
+            </AppButton>
+          </div>
         </section>
       </div>
       <div v-if="isBattleOver" class="flex h-full items-center justify-center">
@@ -198,7 +215,7 @@ import { transformTown, transformUser } from '~/transformers'
 // --------[ Store ]-------- //
 const userGameStore = useUserGameStore()
 const { warLogInfo, user } = userGameStore
-const lottie = ref<any>(null)
+const lottieInstance = ref<any>(null)
 const currentIndex = ref(0)
 const currentDamage = ref(
   BigInt(warLogInfo.warLogs[currentIndex.value].healthDamage),
@@ -220,6 +237,7 @@ const warriorr1 = ref<object | undefined>(undefined)
 const warriorr2 = ref<object | undefined>(undefined)
 const isWinnerUser = BigInt(warLogInfo.winnerTownId) === user.townInfo.townId
 const isBattleOver = ref(false)
+const animationSpeed = ref(1.0)
 
 const warriors = ref([
   {
@@ -255,11 +273,12 @@ const warriors = ref([
 ])
 
 // --------[ Method ]-------- //
+
 const updateBattleLog = () => {
   toggleDamage()
   if (!isLottieRunning.value) {
     isLottieRunning.value = true
-    lottie.value.goToAndPlay(1200, false)
+    lottieInstance.value.goToAndPlay(1200, false)
   }
 
   if (warLogInfo.warLogs.length > currentIndex.value) {
@@ -349,12 +368,12 @@ const toggleBattle = () => {
 
 const pauseBattle = () => {
   isLottieRunning.value = false
-  lottie.value.pause()
+  lottieInstance.value.pause()
 }
 
 const playBattle = () => {
   isLottieRunning.value = true
-  lottie.value.play()
+  lottieInstance.value.play()
 }
 
 const toggleAttack = () => {
@@ -362,7 +381,7 @@ const toggleAttack = () => {
 }
 
 const onLottieComplete = () => {
-  lottie.value.goToAndPlay(1200, false)
+  lottieInstance.value.goToAndPlay(1200, false)
   updateBattleLog()
 }
 
@@ -378,6 +397,20 @@ const loadAnimations = async () => {
   ])
   warriorr1.value = warrior1Data.default
   warriorr2.value = warrior2Data.default
+}
+
+const decreaseSpeed = () => {
+  if (animationSpeed.value > 0.25) {
+    animationSpeed.value -= 0.25
+    lottieInstance.value.setSpeed(animationSpeed.value)
+  }
+}
+
+const increaseSpeed = () => {
+  if (animationSpeed.value < 4) {
+    animationSpeed.value += 0.25
+    lottieInstance.value.setSpeed(animationSpeed.value)
+  }
 }
 
 // --------[ Computed ]-------- //
@@ -440,5 +473,15 @@ onMounted(() => {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
+}
+
+.app-button {
+  transition:
+    transform 0.1s ease-in-out,
+    box-shadow 0.1s ease-in-out;
+}
+
+.app-button:active {
+  transform: scale(0.95);
 }
 </style>
