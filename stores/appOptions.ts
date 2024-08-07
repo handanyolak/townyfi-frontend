@@ -2,7 +2,11 @@ import { useToggle, useStorage } from '@vueuse/core'
 import { formatUnits, hexToString } from 'viem'
 import DOMPurify from 'dompurify'
 import { Get } from '~/enums'
-import { getEnumKeyByEnumValue, processAndPrintLog } from '~/utils'
+import {
+  getEnumKeyByEnumValue,
+  processAndPrintLog,
+  getDifference,
+} from '~/utils'
 import { transformSettings, transformTown, transformUser } from '~/transformers'
 import type { CoordinateStruct, User } from '~/types'
 
@@ -189,28 +193,28 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
         },
       })
 
-      // TODO: watchContractEvent json rpc ile calismiyor
+      // TODO: watchContractEvent doesn't work with json rpc
       if (hasMetamask) {
-        // TODO: eventler startGameEvents fonksiyonunda eklenecek
+        // TODO: add startGameEvents function for all events
         const ktaEventFilter = {
           address: contractStore.getKta.address,
           abi: contractStore.getKta.abi,
           strict: true,
-          onError: (error: Error) => console.log(error),
+          onError: (error: Error) => console.error(error),
         } as const
 
         const ktaTokenEventFilter = {
           address: contractStore.getKtaToken.address,
           abi: contractStore.getKtaToken.abi,
           strict: true,
-          onError: (error: Error) => console.log(error),
+          onError: (error: Error) => console.error(error),
         } as const
 
         const ktaGameChatEventFilter = {
           address: contractStore.getKtaGameChat.address,
           abi: contractStore.getKtaGameChat.abi,
           strict: true,
-          onError: (error: Error) => console.log(error),
+          onError: (error: Error) => console.error(error),
         } as const
 
         userWalletStore.chainClient.watchContractEvent({
@@ -258,12 +262,26 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                   userWalletStore.address,
                 )
 
+                const isNear =
+                  getDifference(
+                    oldX,
+                    oldY,
+                    userGameStore.user.coordinate._x,
+                    userGameStore.user.coordinate._y,
+                  ) <= 20n ||
+                  getDifference(
+                    newX,
+                    newY,
+                    userGameStore.user.coordinate._x,
+                    userGameStore.user.coordinate._y,
+                  ) <= 20n
+
                 await processAndPrintLog({
                   logName: eventName,
                   logArgs: args,
                   useToast: isUserAddress,
                   refreshUserInfo: isUserAddress,
-                  addToLogMessages: true,
+                  addToLogMessages: isNear,
                   toastMessage: 'You moved to new coordinate!',
                 })
 
@@ -296,7 +314,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                   logArgs: args,
                   useToast: isUserAddress,
                   refreshUserInfo: isUserAddress,
-                  addToLogMessages: true,
+                  addToLogMessages: isUserAddress,
                   toastMessage: 'Welcome to TownyFi!',
                 })
               }
@@ -332,7 +350,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                   logArgs: args,
                   useToast: isUserInvolved,
                   refreshUserInfo: isUserInvolved,
-                  addToLogMessages: true,
+                  addToLogMessages: isUserInvolved,
                   toastMessage,
                 })
               }
@@ -362,7 +380,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                   logArgs: args,
                   useToast: isUserAddress,
                   refreshUserInfo: isUserAddress,
-                  addToLogMessages: true,
+                  addToLogMessages: isUserAddress,
                   toastMessage: `You got ${somethingStr ?? 'something'}!`,
                 })
               }
@@ -399,7 +417,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                   logArgs: args,
                   useToast: isUserInvolved,
                   refreshUserInfo: isUserInvolved,
-                  addToLogMessages: true,
+                  addToLogMessages: isUserInvolved,
                   toastMessage,
                 })
               }
@@ -417,7 +435,6 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
               const uniqueLogs = getUniqueLogs(logs)
               for (const { eventName, args } of uniqueLogs) {
                 const { winnerTownId, loserTownId, warLogs } = args
-                userGameStore.setWarLogInfo({ warLogs, winnerTownId })
                 const { warLogs: _, ...filteredArgs } = args
                 const userTownId = userGameStore.user.townInfo.townId
                 const isUserWinner = userTownId === winnerTownId
@@ -426,6 +443,10 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                 const toastMessage = isUserWinner
                   ? 'You won the war!'
                   : 'You lost the war!'
+
+                if (isUserInvolved) {
+                  userGameStore.setWarLogInfo({ warLogs, winnerTownId })
+                }
 
                 await processAndPrintLog({
                   logName: eventName,
@@ -514,13 +535,18 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
 
                 userWalletStore.setKtaAllowance(value)
 
+                const valueFormat = formatUnits(
+                  value,
+                  userWalletStore.ktaDecimals,
+                )
+
                 await processAndPrintLog({
                   logName: eventName,
                   logArgs: args,
                   useToast: true,
                   refreshUserInfo: false,
-                  addToLogMessages: false,
-                  toastMessage: 'You approved the Game Token!',
+                  addToLogMessages: true,
+                  toastMessage: `You approved ${valueFormat} ${userWalletStore.ktaSymbol}!`,
                 })
               }
             } catch (error) {
@@ -553,16 +579,16 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                   userWalletStore.ktaDecimals,
                 )
 
-                const toastMessage = isUserSender
-                  ? `You sent ${valueFormat} Game Token!\n`
-                  : `You received ${valueFormat} Game Token!\n`
+                const toastMessage =
+                  (isUserSender ? `You sent ` : `You received`) +
+                  `${valueFormat} ${userWalletStore.ktaSymbol}\n`
 
                 await processAndPrintLog({
                   logName: eventName,
                   logArgs: args,
                   useToast: isUserInvolved,
                   refreshUserInfo: false,
-                  addToLogMessages: false,
+                  addToLogMessages: isUserInvolved,
                   toastMessage,
                 })
 
