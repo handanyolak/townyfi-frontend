@@ -132,6 +132,7 @@
       <template #action>
         <client-only>
           <Vue3Lottie
+            v-if="getPointIcon(item)"
             :class="getPointIcon(item) === undefined ? '' : 'cursor-pointer'"
             :animation-link="getPointIcon(item)"
             :scale="1.5"
