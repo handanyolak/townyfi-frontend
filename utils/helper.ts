@@ -1,4 +1,5 @@
 import type { Address } from 'viem'
+import { abs } from 'extra-bigint.web'
 
 export const uppercaseFirstChar = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1)
@@ -84,4 +85,13 @@ export function getEnumKeyByEnumValue<
   const keys = Object.keys(myEnum).filter((x) => myEnum[x] === enumValue)
 
   return keys.length > 0 ? keys[0] : null
+}
+
+export const getDifference = (
+  x1: number | string | bigint,
+  y1: number | string | bigint,
+  x2: number | string | bigint,
+  y2: number | string | bigint,
+) => {
+  return abs(BigInt(x2) - BigInt(x1)) + abs(BigInt(y2) - BigInt(y1))
 }
