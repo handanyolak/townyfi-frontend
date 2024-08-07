@@ -32,6 +32,7 @@
     >
       <client-only>
         <Vue3Lottie
+          v-if="clanAnimation"
           :animation-data="clanAnimation"
           :speed="item.speed"
           :auto-play="isAnimating"
