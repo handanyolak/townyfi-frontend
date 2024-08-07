@@ -70,8 +70,7 @@ const { copy, copied, isSupported } = useClipboard({
 })
 
 // --------[ Props & Emits ]-------- //
-// TODO: change name to file name (ListItemProps)
-interface ContentListItemProps {
+interface ListItemProps {
   item?: string
   input?: boolean
   title?: string
@@ -82,7 +81,7 @@ interface ContentListItemProps {
   convertable?: boolean
 }
 
-withDefaults(defineProps<ContentListItemProps>(), {
+withDefaults(defineProps<ListItemProps>(), {
   item: '',
   title: '',
   copyValue: '',
