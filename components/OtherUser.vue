@@ -119,6 +119,7 @@
         >
       </template>
     </ListItem>
+    <ListTitle class="py-5">Town Info</ListTitle>
     <OtherTown v-if="townId" :id="townId" />
   </div>
 </template>
