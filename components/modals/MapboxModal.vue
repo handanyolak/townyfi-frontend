@@ -1,8 +1,19 @@
 <template>
   <Parchment>
-    <template #parchment-header> Addresses </template>
+    <template #parchment-header>
+      ({{ coordinate._x }}, {{ coordinate._y }})</template
+    >
     <div class="flex flex-col">
       <SearchBar v-model="search" :rules="searchRules" />
+      <Accordion>
+        <template #title>
+          <p class="w-full text-center font-bold not-italic">Town Info</p>
+        </template>
+        <template #content>
+          <Town class="px-3" />
+        </template>
+      </Accordion>
+      <ListTitle class="text-lg font-bold">User Info</ListTitle>
       <Accordion
         v-for="(_address, index) in filteredList"
         :key="index"
@@ -10,12 +21,13 @@
       >
         <template #title>
           <div class="flex items-center">
-            <div
-              class="mr-1 rounded-md bg-towny-brown-dark-300 p-1 text-xs text-white"
+            <button
+              class="mr-1 flex flex-col items-center rounded-md bg-towny-brown-dark-300 p-1 text-xs text-white"
               @click.stop="!isOwnAddress(_address) && attack(_address)"
             >
-              {{ isOwnAddress(_address) ? 'Self' : 'Attack' }}
-            </div>
+              <span>{{ isOwnAddress(_address) ? 'Self' : 'Attack' }}</span>
+              <img src="@/assets/img/attack.svg" class="h-5 w-5" />
+            </button>
 
             <div class="text-xs">
               {{ _address }}
@@ -48,6 +60,8 @@ import Parchment from '~/components/Parchment.vue'
 import Accordion from '~/components/common/Accordion.vue'
 import SearchBar from '~/components/common/SearchBar.vue'
 import AppButton from '~/components/common/AppButton.vue'
+import ListTitle from '~/components/common/ListTitle.vue'
+import Town from '~/components/tabs/game/Town.vue'
 import { getAddressRule } from '~/composables/useYupRules'
 import type { CoordinateItem } from '~/types'
 import { getDifference } from '~/utils'
@@ -57,7 +71,6 @@ import { Direction } from '~/enums'
 interface MapboxModalProps {
   coordinate: CoordinateItem
 }
-
 const props = defineProps<MapboxModalProps>()
 
 // --------[ Store ]-------- //
