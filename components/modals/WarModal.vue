@@ -289,13 +289,16 @@ const updateBattleLog = () => {
 
     const isAttackerDead = warriors.value[ATTACKER.value].health <= 0n
     if (isAttackerDead) {
-      warriors.value[ATTACKER.value].health =
-        BigInt(warLogInfo.warLogs[currentIndex.value + 1].remainingHealth) +
-        BigInt(warLogInfo.warLogs[currentIndex.value + 1].healthDamage)
+      const isThereNextLog = warLogInfo.warLogs.length > currentIndex.value + 1
+      warriors.value[ATTACKER.value].health = isThereNextLog
+        ? BigInt(warLogInfo.warLogs[currentIndex.value + 1].remainingHealth) +
+          BigInt(warLogInfo.warLogs[currentIndex.value + 1].healthDamage)
+        : 0n
 
-      warriors.value[ATTACKER.value].armor =
-        BigInt(warLogInfo.warLogs[currentIndex.value + 1].remainingArmor) +
-        BigInt(warLogInfo.warLogs[currentIndex.value + 1].armorDamage)
+      warriors.value[ATTACKER.value].armor = isThereNextLog
+        ? BigInt(warLogInfo.warLogs[currentIndex.value + 1].remainingArmor) +
+          BigInt(warLogInfo.warLogs[currentIndex.value + 1].armorDamage)
+        : 0n
     }
 
     warriors.value[DEFENDER.value].health = BigInt(
@@ -319,7 +322,6 @@ const updateBattleLog = () => {
     toggleAttack()
   } else {
     isBattleOver.value = true
-    console.log('End of the battle')
   }
 }
 
