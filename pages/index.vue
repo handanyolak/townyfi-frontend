@@ -1,5 +1,6 @@
 <template>
   <div class="container flex h-screen items-center justify-center">
+    <AppButton @click="startWar()"> War </AppButton>
     <SidebarMenu />
     <ChatAndLogBox v-if="onValidNetwork" />
     <div
@@ -10,7 +11,7 @@
     </div>
     <TheLoading v-if="isLoading" full-screen />
     <AppModal
-      :modal-size="(width + 20).toString()"
+      :modal-size="dynamicModalSize"
       :modal-active="Boolean(modalComponentName)"
       @modal-closed="clearModalInfo()"
     >
@@ -18,7 +19,7 @@
         :is="currentComponent"
         v-bind="modalComponentProps"
         :class="[
-          'tab scrollbar-gutter-stable h-full',
+          'tab h-full',
           modalComponentName === 'MapboxModal'
             ? ''
             : 'overflow-y-auto overflow-x-hidden',
@@ -34,6 +35,8 @@ import Map from '~/components/map/Map.vue'
 import AppModal from '~/components/common/AppModal.vue'
 import ChatAndLogBox from '~/components/chatAndLog/ChatAndLogBox.vue'
 import SidebarMenu from '~/components/SidebarMenu.vue'
+import AppButton from '~/components/common/AppButton.vue'
+import type { Modal } from '~/types'
 
 // --------[ Stores ]-------- //
 const appOptionsStore = useAppOptionsStore()
@@ -45,6 +48,9 @@ const { initializeApp, clearModalInfo } = appOptionsStore
 const { modalComponentName, modalComponentProps } = storeToRefs(appOptionsStore)
 const { onValidNetwork } = storeToRefs(connectionStore)
 const { isLoading } = storeToRefs(userGameStore)
+
+const appOptionStore = useAppOptionsStore()
+const { setModalInfo } = appOptionStore
 
 // --------[ Data ]-------- //
 // TODO: map'de hesaplanan width buraya emit ile gonderilecek
@@ -119,7 +125,6 @@ onMounted(async () => {
   //   await getKta.value.write.updateSettings([settings_ as any])
   // }, 1000)
   // const deneme = await getKta.value.read.settings()
-  // console.log('settings', transformSettings(deneme))
 })
 
 // --------[ Computed ]-------- //
@@ -129,6 +134,15 @@ const currentComponent = computed(() => {
     () => import(`../components/modals/${_modalComponentName}.vue`),
   )
 })
+
+const dynamicModalSize = computed(() => {
+  const props: any = modalComponentProps.value
+  return (width.value * (props?.sizeMultiplier ?? 1) + 20).toString()
+})
+
+const startWar = () => {
+  setModalInfo('WarModal', { sizeMultiplier: 1.4 })
+}
 </script>
 
 <style>
