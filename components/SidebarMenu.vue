@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="overflow-hidden">
     <div
       class="towny-menu-image left-menu top-40 transition"
       :class="isGameInfo ? 'translate-x-0' : '-translate-x-10 duration-1000'"
