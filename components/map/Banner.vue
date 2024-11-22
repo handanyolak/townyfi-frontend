@@ -109,7 +109,6 @@
       x="1000"
       y="970"
       style="font-size: 250px; font-weight: bold; text-anchor: middle"
-      font-family="Pirata One, sans-serif"
       text-anchor="middle"
       fill="#6b360b"
     >
@@ -158,13 +157,3 @@ onMounted(async () => {
   town.value = transformTown(await getKta.value.read.townById([townID]))
 })
 </script>
-
-<style scoped>
-/* TODO: temporarily font */
-@import url('https://fonts.googleapis.com/css?family=Pirata+One|Bilbo+Swash+Caps&display=swap');
-
-@font-face {
-  font-family: Morris;
-  src: url(https://cdn.statically.io/gh/EmmesCodes/Tipografias/dae9f5bb/MorrisInitials.ttf);
-}
-</style>

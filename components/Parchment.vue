@@ -25,7 +25,6 @@
   box-shadow:
     2px 3px 20px #3f2007,
     0px -10px 40px #8a4d0f inset;
-  font-family: 'Bilbo', cursive;
 }
 
 .parchment {
