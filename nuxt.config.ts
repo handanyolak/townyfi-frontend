@@ -85,4 +85,18 @@ export default defineNuxtConfig({
       enabled: true,
     },
   },
+
+  app: {
+    head: {
+      title: 'TownyFi',
+      meta: [
+        {
+          name: 'description',
+          content: 'TownyFi is a Web3 game for managing towns.',
+        },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      ],
+      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.svg' }],
+    },
+  },
 })
