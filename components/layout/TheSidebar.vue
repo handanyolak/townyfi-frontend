@@ -6,19 +6,24 @@
       v-if="showSidebar"
       ref="sideBar"
       :class="[
-        'fixed -top-3 z-110 min-h-screen w-96',
+        'fixed -top-3 z-110 min-h-screen w-[110%] md:w-[45%] lg:w-[40%] xl:w-[30%] 2xl:w-[25%]',
         isGameInfo || isOptions ? '-left-4' : '-right-4',
       ]"
     >
       <img
         :class="[
-          'absolute top-2  z-10 h-10 w-10 cursor-pointer',
-          isGameInfo || isOptions ? '-right-8' : '-left-8',
+          'absolute top-6 z-10 h-10 w-10 cursor-pointer',
+          isGameInfo || isOptions ? 'right-6' : 'left-4',
         ]"
-        src="@/assets/img/exit.svg"
+        src="@/assets/img/close.svg"
         @click="sideLeave()"
       />
-      <div>
+      <img
+        class="absolute left-1/2 top-4 z-50 h-20 -translate-x-1/2 transform select-none"
+        src="@/assets/img/townyfi-logo.svg"
+        alt="logo"
+      />
+      <div class="py-[85px]">
         <div
           :class="[
             'torn-edges-paper absolute -top-3 h-full w-full bg-white [filter:url(#wavy)]',
@@ -57,7 +62,7 @@ import { onClickOutside } from '@vueuse/core'
 import SidebarTab from '~/components/SidebarTab.vue'
 import { TABS } from '~/constants'
 
-// --------[ Stores ]-------- //
+// --------[ Store ]-------- //
 const appOptionStore = useAppOptionsStore()
 const userGameStore = useUserGameStore()
 
@@ -70,7 +75,7 @@ const { isRegistered } = storeToRefs(userGameStore)
 // --------[ Data ]-------- //
 const sideBar = ref(null)
 
-// --------[ Methods ]-------- //
+// --------[ Method ]-------- //
 onClickOutside(sideBar, () => sideLeave())
 </script>
 
