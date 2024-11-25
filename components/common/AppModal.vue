@@ -19,7 +19,7 @@
               class="absolute right-2 top-2 z-50"
               @click="closeModal"
             >
-              <img class="h-10 w-10" src="@/assets/img/exit.svg" />
+              <img class="h-10 w-10" src="@/assets/img/close.svg" />
             </button>
             <slot />
           </div>
