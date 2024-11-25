@@ -1,5 +1,8 @@
 <template>
-  <div ref="scrollContainerRef" class="mx-4 h-screen overflow-y-auto p-4">
+  <div
+    ref="scrollContainerRef"
+    class="mx-4 h-screen overflow-y-auto px-4 pb-32"
+  >
     <ul
       :class="[
         'sticky top-0 z-50 my-3 grid gap-y-1',
@@ -13,16 +16,11 @@
     >
       <li v-for="tab in tabs" :key="tab.id" class="text-center text-xs">
         <a
-          style="
-            font-family:
-              Pirata One,
-              sans-serif;
-          "
           :class="[
-            'block rounded p-2 text-lg font-bold uppercase leading-normal shadow-lg',
+            'block rounded p-2 text-lg font-bold uppercase leading-normal shadow-lg shadow-towny-brown-dark-200 text-shadow md:text-xl',
             currentTabName === tab.name
-              ? 'bg-towny-brown-dark-300 text-towny-brown-light-400 '
-              : 'cursor-pointer bg-towny-brown-light-400 text-towny-brown-dark-300 hover:shadow-towny-brown-dark-500',
+              ? 'bg-towny-brown-dark-300 text-towny-brown-light-400'
+              : 'cursor-pointer bg-towny-brown-light-400 text-towny-brown-dark-300 shadow-lg transition-shadow duration-300 ease-in-out hover:shadow-towny-brown-dark-300',
           ]"
           @click="changeTab(tab)"
         >
@@ -43,7 +41,7 @@
 <script setup lang="ts">
 import type { Tab } from '~/types'
 
-// --------[ Props & Emits ]-------- //
+// --------[ Prop & Emit ]-------- //
 interface SidebarTabProps {
   tabs: Tab[]
 }
@@ -72,7 +70,7 @@ const currentComponent = computed(() => {
 
 const hasScrolled = computed(() => y.value > 0)
 
-// --------[ Methods ]-------- //
+// --------[ Method ]-------- //
 const changeTab = (tab: Tab) => {
   useSound('demo_public_sounds_button', 'wav')
   currentTabName.value = tab.name
@@ -81,12 +79,3 @@ const changeTab = (tab: Tab) => {
   currentTabFolder.value = tab.folder
 }
 </script>
-
-<style scoped>
-@import url('https://fonts.googleapis.com/css?family=Pirata+One|Bilbo+Swash+Caps&display=swap');
-
-@font-face {
-  font-family: Morris;
-  src: url(https://cdn.statically.io/gh/EmmesCodes/Tipografias/dae9f5bb/MorrisInitials.ttf);
-}
-</style>
