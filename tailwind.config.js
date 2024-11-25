@@ -1,4 +1,5 @@
 // const plugin = require('tailwindcss/plugin')
+import plugin from 'tailwindcss/plugin'
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -89,19 +90,19 @@ module.exports = {
         'towny-400': '0px 1px 0px 1px rgba(255, 205, 116, 0.4)',
       },
       zIndex: {
-        '60': 60,
-        '70': 70,
-        '80': 80,
-        '90': 90,
-        '100': 100,
-        '110': 110,
-        '120': 120,
-        '130': 130,
-        '140': 140,
-        '150': 150,
-        '1000': 1000,
-        '10000': 10000,
-        '100000': 100000,
+        60: 60,
+        70: 70,
+        80: 80,
+        90: 90,
+        100: 100,
+        110: 110,
+        120: 120,
+        130: 130,
+        140: 140,
+        150: 150,
+        1000: 1000,
+        10000: 10000,
+        100000: 100000,
       },
       skew: {
         65: '65deg',
@@ -115,4 +116,19 @@ module.exports = {
       30: '30px',
     },
   },
+  plugins: [
+    plugin(function ({ addUtilities }) {
+      addUtilities({
+        '.text-shadow': {
+          'text-shadow': '2px 2px 4px rgba(0, 0, 0, 0.3)',
+        },
+        '.text-shadow-md': {
+          'text-shadow': '3px 3px 6px rgba(0, 0, 0, 0.5)',
+        },
+        '.text-shadow-lg': {
+          'text-shadow': '4px 4px 8px rgba(0, 0, 0, 0.6)',
+        },
+      })
+    }),
+  ],
 }
