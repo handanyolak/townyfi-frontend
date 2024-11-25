@@ -1,10 +1,10 @@
 <template>
-  <div class="group my-2 flex p-1 shadow-towny-300">
+  <div class="group my-4 flex p-1 text-sm shadow-towny-300 md:text-base">
     <div class="flex items-center">
       <Tooltip v-if="tooltip">
         <slot name="tooltip" />
       </Tooltip>
-      <span class="text-towny-brown-dark-400">
+      <span class="font-semibold text-[#8b4513cc]">
         {{ title }}
       </span>
     </div>
@@ -36,7 +36,7 @@
           @click="isEdit ? save() : edit()"
         />
       </div>
-      <div>
+      <div class="">
         <slot name="action" />
       </div>
       <div
@@ -69,7 +69,7 @@ const { copy, copied, isSupported } = useClipboard({
   legacy: true,
 })
 
-// --------[ Props & Emits ]-------- //
+// --------[ Prop & Emit ]-------- //
 interface ListItemProps {
   item?: string
   input?: boolean
@@ -96,7 +96,7 @@ const emit = defineEmits<{
 const isEdit = ref(false)
 const isConvert = ref(false)
 
-// --------[ Methods ]-------- //
+// --------[ Method ]-------- //
 const edit = () => {
   isEdit.value = true
 }
