@@ -5,7 +5,7 @@
     <ChatAndLogBox v-if="onValidNetwork" />
     <div
       v-if="onValidNetwork"
-      class="map-frame flex items-center justify-center p-14"
+      class="map-frame flex items-center justify-center p-3 md:p-12"
     >
       <Map v-if="onValidNetwork" ref="mapElement" />
     </div>
