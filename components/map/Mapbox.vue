@@ -1,6 +1,6 @@
 <template>
   <div
-    class="relative cursor-pointer shadow-towny-400"
+    class="relative cursor-pointer shadow-towny-300"
     @mouseover="showCoordinates"
     @mouseleave="hideCoordinates"
   >

@@ -1,5 +1,5 @@
 <template>
-  <div class="group my-4 flex p-1 text-sm shadow-towny-300 md:text-base">
+  <div class="group my-4 flex p-1 text-sm shadow-towny-400 md:text-base">
     <div class="flex items-center">
       <Tooltip v-if="tooltip">
         <slot name="tooltip" />
