@@ -6,7 +6,9 @@
       @click="sideOver('isGameInfo')"
     >
       <div class="col-start-2 col-end-4">
-        <p class="w-full p-1 text-center text-xs text-towny-brown-dark-300">
+        <p
+          class="w-full p-1 text-center text-[10px] font-bold text-towny-brown-dark-300 md:text-xs"
+        >
           Game
         </p>
         <img src="@/assets/img/cardboard.svg" class="h-14 w-full" />
@@ -18,7 +20,9 @@
       @click="sideOver('isOptions')"
     >
       <div class="col-start-2 col-end-4">
-        <p class="w-full p-1 text-center text-xs text-towny-brown-dark-300">
+        <p
+          class="w-full p-1 text-center text-[10px] font-bold text-towny-brown-dark-300 md:text-xs"
+        >
           Options
         </p>
         <img src="@/assets/img/cardboard.svg" class="h-14 w-full" />
@@ -32,7 +36,9 @@
       @click="sideOver('isBlockchainInfo')"
     >
       <div class="col-start-1 col-end-3">
-        <p class="w-full p-1 text-center text-xs text-towny-brown-dark-300">
+        <p
+          class="w-full p-1 text-center text-[10px] font-bold text-towny-brown-dark-300 md:text-xs"
+        >
           Blockchain
         </p>
         <img src="@/assets/img/cardboard.svg" class="h-14 w-full" />
@@ -46,7 +52,9 @@
       @click="sideOver('isContractInfo')"
     >
       <div class="col-start-1 col-end-3">
-        <p class="w-full p-1 text-center text-xs text-towny-brown-dark-300">
+        <p
+          class="w-full p-1 text-center text-[10px] font-bold text-towny-brown-dark-300 md:text-xs"
+        >
           Contract
         </p>
         <img src="@/assets/img/cardboard.svg" class="h-14 w-full" />
@@ -82,10 +90,10 @@ const sideOver = (
 }
 
 .left-menu {
-  @apply absolute left-0 grid w-[120px] cursor-pointer grid-cols-3 rounded-r-lg shadow-2xl ease-in-out;
+  @apply absolute left-0 grid w-[115px] cursor-pointer grid-cols-3 rounded-r-lg shadow-2xl ease-in-out md:w-[130px];
 }
 
 .right-menu {
-  @apply absolute right-0  grid w-[120px] cursor-pointer grid-cols-3 rounded-l-lg shadow-2xl  ease-in-out;
+  @apply absolute right-0  grid w-[115px] cursor-pointer grid-cols-3 rounded-l-lg shadow-2xl ease-in-out  md:w-[130px];
 }
 </style>
