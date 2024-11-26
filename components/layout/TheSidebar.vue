@@ -26,7 +26,7 @@
       <div class="py-[85px]">
         <div
           :class="[
-            'torn-edges-paper absolute -top-3 h-full w-full bg-white [filter:url(#wavy)]',
+            'shadow-vintage absolute -top-3 h-full w-full bg-white [filter:url(#wavy)]',
             isBlockchainInfo || isContractInfo ? 'rotate-180 transform' : '',
           ]"
         ></div>
@@ -100,11 +100,5 @@ onClickOutside(sideBar, () => sideLeave())
 .slide-right-fade-leave-to {
   transform: translateX(100%);
   transition: all 0.3s ease-out;
-}
-
-.torn-edges-paper {
-  box-shadow:
-    2px 3px 20px #854819,
-    30px 65px 200px #91510ffc inset;
 }
 </style>
