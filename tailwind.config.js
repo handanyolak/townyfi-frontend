@@ -86,8 +86,9 @@ module.exports = {
       },
       boxShadow: {
         'towny-200': '0px 0px 15px 0px rgba(198, 140, 82, 0.8)',
-        'towny-300': '0px 3px 8px -6px #b44e00',
-        'towny-400': '0px 1px 0px 1px rgba(255, 205, 116, 0.4)',
+        'towny-300': '0px 1px 0px 1px rgba(255, 205, 116, 0.4)',
+        'towny-400': '0px 3px 8px -6px #b44e00',
+        vintage: '2px 3px 20px #854819, 30px 65px 200px #91510ffc inset',
       },
       zIndex: {
         60: 60,
