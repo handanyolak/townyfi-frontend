@@ -1,15 +1,13 @@
 <template>
   <div
     ref="mobileMenu"
-    class="shadow-vintage responsive-semi-circle fixed right-0 top-0 z-20 h-[100vw] w-[100vw] bg-white text-3xl text-white"
+    class="responsive-semi-circle fixed right-0 top-0 z-20 h-[125vw] w-[100vw] bg-white text-3xl text-white shadow-vintage"
     :class="menuOpen ? 'menu-open' : 'menu-close'"
   >
-    <div
-      class="absolute right-10 top-10 flex flex-col items-center justify-center"
-    >
+    <div class="mt-10 flex h-full flex-col items-center">
       <div v-if="hasMetamask" class="flex justify-between py-5">
         <div v-if="onValidNetwork">
-          <div v-if="isConnected" class="space-x-1">
+          <div v-if="isConnected" class="flex flex-col space-y-3">
             <AppButton
               v-if="!isRegistered"
               border-hover
@@ -52,24 +50,26 @@
         class="h-14 w-14 cursor-pointer"
         @click="toggleTheme()"
       />
-      <img
-        :src="audioIcon"
-        class="step-1 h-16 w-16 cursor-pointer"
-        @click="toggleAudio()"
-      />
-      <client-only>
-        <Vue3Lottie
-          v-if="audio"
-          class="cursor-pointer"
-          :animation-data="Harp"
-          :height="55"
-          :width="55"
-          :scale="1.4"
-          :auto-play="isAnimating"
-          :pause-animation="!isAnimating"
-          @click="toggleMusicAndAnimation()"
+      <div class="flex items-center justify-center">
+        <img
+          :src="audioIcon"
+          class="step-1 h-16 w-16 cursor-pointer"
+          @click="toggleAudio()"
         />
-      </client-only>
+        <client-only>
+          <Vue3Lottie
+            v-if="audio"
+            class="cursor-pointer"
+            :animation-data="Harp"
+            :height="55"
+            :width="55"
+            :scale="1.4"
+            :auto-play="isAnimating"
+            :pause-animation="!isAnimating"
+            @click="toggleMusicAndAnimation()"
+          />
+        </client-only>
+      </div>
     </div>
   </div>
 </template>
