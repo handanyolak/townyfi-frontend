@@ -170,29 +170,25 @@ const handleKeyNavigation = (event: KeyboardEvent) => {
   }
 }
 
+const calculateNewCoordinates = (movement: [number, number]) => {
+  const { _x, _y } = originCoordinate.value
+  const gridSize = Math.round(width.value / (nearLevel.value * 2 + 1))
+
+  return {
+    _x: _x + BigInt(Math.trunc(-movement[0] / gridSize)),
+    _y: _y + BigInt(Math.trunc(movement[1] / gridSize)),
+  }
+}
+
 const dragHandler = ({
-  movement: [x, y],
+  movement,
   last,
 }: {
   movement: [number, number]
   last: boolean
 }) => {
-  const { _x, _y } = originCoordinate.value
-
-  const newX =
-    _x +
-    BigInt(Math.trunc(-x / Math.round(width.value / (nearLevel.value * 2 + 1))))
-  const newY =
-    _y +
-    BigInt(Math.trunc(y / Math.round(width.value / (nearLevel.value * 2 + 1))))
-
-  setUserCoordinate(
-    {
-      _x: newX,
-      _y: newY,
-    },
-    last,
-  )
+  const newCoordinates = calculateNewCoordinates(movement)
+  setUserCoordinate(newCoordinates, last)
 }
 
 useDrag(dragHandler, {
