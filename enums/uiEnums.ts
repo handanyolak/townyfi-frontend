@@ -16,3 +16,10 @@ export enum LoadingState {
   AddingToken = 'ADDING_TOKEN',
   Minting = 'MINTING',
 }
+
+export enum DrawerName {
+  GameInfo = 'isGameInfo',
+  Options = 'isOptions',
+  BlockchainInfo = 'isBlockchainInfo',
+  ContractInfo = 'isContractInfo',
+}
