@@ -1,6 +1,6 @@
 <template>
   <div class="relative" :style="mapSizeStyle">
-    <div
+    <section
       ref="mapElement"
       class="relative z-50 outline-none"
       tabindex="0"
@@ -8,26 +8,6 @@
       @wheel="onWheel($event)"
       @blur="handleBlur"
     >
-      <button
-        :class="[
-          'absolute -right-6 -top-1 cursor-pointer transition-all  ease-in-out',
-          isMapNavigationVisible
-            ? 'translate-x-48 delay-300 duration-500 '
-            : 'duration-300',
-        ]"
-        @mouseover="isInsideToggleButton = true"
-        @mouseleave="isInsideToggleButton = false"
-        @click="handleNavigationToggle"
-      >
-        <Icon
-          :class="[
-            ' transform text-3xl text-towny-brown-dark-400 transition-transform duration-200 ease-in-out',
-            isMapNavigationVisible ? 'rotate-180' : '',
-          ]"
-          name="material-symbols-light:double-arrow"
-        />
-      </button>
-
       <div
         :class="[
           'relative grid overflow-hidden rounded-lg border-[10px] border-[#5a3006]',
@@ -49,15 +29,36 @@
           @dblclick="setModalInfo('MapboxModal', { coordinate: item })"
         />
       </div>
-    </div>
-    <Transition name="map-navigation">
-      <MapNavigation
-        v-if="isMapNavigationVisible"
-        ref="navigation"
-        :is-map-navigation-visible="isMapNavigationVisible"
-        :height="width.toString()"
-      />
-    </Transition>
+    </section>
+    <section>
+      <button
+        :class="[
+          'absolute -right-6 -top-1 cursor-pointer transition-all ease-in-out',
+          isMapNavigationVisible
+            ? 'translate-x-48 delay-300 duration-500 '
+            : 'duration-300',
+        ]"
+        @mouseover="isInsideToggleButton = true"
+        @mouseleave="isInsideToggleButton = false"
+        @click="handleNavigationToggle"
+      >
+        <Icon
+          :class="[
+            'transform text-3xl text-towny-brown-dark-400 transition-transform duration-200 ease-in-out',
+            isMapNavigationVisible ? 'rotate-180' : '',
+          ]"
+          name="material-symbols-light:double-arrow"
+        />
+      </button>
+      <Transition name="map-navigation">
+        <MapNavigation
+          v-if="isMapNavigationVisible"
+          ref="navigation"
+          :is-map-navigation-visible="isMapNavigationVisible"
+          :height="width.toString()"
+        />
+      </Transition>
+    </section>
   </div>
 </template>
 
@@ -69,6 +70,11 @@ import { MAX_PIXEL_VALUE } from '~/constants'
 import MapNavigation from '~/components/map/MapNavigation.vue'
 import { NavigateDirection } from '~/enums'
 
+// --------[ Nuxt ]-------- //
+const {
+  public: { maxNearLevel },
+} = useRuntimeConfig()
+
 // --------[ Stores ]-------- //
 const userGameStore = useUserGameStore()
 const appOptionsStore = useAppOptionsStore()
@@ -79,11 +85,6 @@ const { setUserCoordinate, setNearLevelByCalculatingCoordinates } =
 
 const { addressesByCoordinate, nearLevel } = storeToRefs(userGameStore)
 const { originCoordinate } = storeToRefs(appOptionsStore)
-
-// --------[ Nuxt ]-------- //
-const {
-  public: { maxNearLevel },
-} = useRuntimeConfig()
 
 // --------[ Data ]-------- //
 const mapElement = ref<HTMLElement | null>(null)
