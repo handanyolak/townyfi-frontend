@@ -1,5 +1,5 @@
 <template>
-  <div class="relative" :style="`width: ${mapSize}%`">
+  <div class="relative" :style="mapSizeStyle">
     <div
       ref="mapElement"
       class="relative z-50 outline-none"
@@ -11,13 +11,14 @@
       @wheel="onWheel($event)"
     >
       <button
-        ref="toggleButton"
         :class="[
           'absolute -right-6 -top-1 cursor-pointer transition-all  ease-in-out',
           isMapNavigationVisible
             ? 'translate-x-48 delay-300 duration-500 '
             : 'duration-300',
         ]"
+        @mouseover="isInsideToggleButton = true"
+        @mouseleave="isInsideToggleButton = false"
         @click="handleNavigationToggle"
       >
         <Icon
@@ -63,7 +64,7 @@
 </template>
 
 <script setup lang="ts">
-import { onClickOutside } from '@vueuse/core'
+import { onClickOutside, useWindowSize } from '@vueuse/core'
 import { useDrag } from '@vueuse/gesture'
 import Mapbox from '~/components/map/Mapbox.vue'
 import { MAX_PIXEL_VALUE } from '~/constants'
@@ -90,9 +91,10 @@ const {
 const mapElement = ref(null)
 const isMapNavigationVisible = ref(false)
 const navigation = ref<HTMLElement | null>(null)
-const toggleButton = ref<HTMLElement | null>(null)
 const { width } = useElementSize(mapElement)
 const mapSize = useLocalStorage('mapSize', 50)
+const { width: windowWidth } = useWindowSize()
+const isInsideToggleButton = ref(false)
 
 // --------[ Computed ]-------- //
 const getGridColsByNearLevel = computed(() => nearLevel.value * 2 + 1)
@@ -112,7 +114,12 @@ const mapStyle = computed(() => {
   }
 })
 
-// --------[ Methods ]-------- //
+const mapSizeStyle = computed(() => {
+  const dynamicWidth = windowWidth.value <= 768 ? '100%' : `${mapSize.value}%`
+  return `width: ${dynamicWidth}`
+})
+
+// --------[ Method ]-------- //
 const onWheel = (event: WheelEvent) => {
   const newNearLevel =
     event.deltaY < 0 ? nearLevel.value - 1 : nearLevel.value + 1
@@ -180,13 +187,8 @@ const handleNavigationToggle = () => {
   isMapNavigationVisible.value = !isMapNavigationVisible.value
 }
 
-onClickOutside(navigation, (event) => {
-  if (
-    !toggleButton.value ||
-    toggleButton.value.contains(event.target as Node)
-  ) {
-    return
-  }
+onClickOutside(navigation, () => {
+  if (isInsideToggleButton.value) return
   isMapNavigationVisible.value = false
 })
 </script>
