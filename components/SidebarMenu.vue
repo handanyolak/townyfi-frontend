@@ -1,99 +1,108 @@
 <template>
   <div class="overflow-hidden">
-    <div
-      class="towny-menu-image left-menu top-40 transition"
-      :class="isGameInfo ? 'translate-x-0' : '-translate-x-10 duration-1000'"
-      @click="sideOver('isGameInfo')"
-    >
-      <div class="col-start-2 col-end-4">
-        <p
-          class="w-full p-1 text-center text-[10px] font-bold text-towny-brown-dark-300 md:text-xs"
-        >
-          Game
-        </p>
-        <img src="@/assets/img/cardboard.svg" class="h-14 w-full" />
-      </div>
+    <div class="hidden md:block">
+      <SidebarButton
+        v-for="menu in desktopMenus"
+        :key="menu.drawerName"
+        :drawer-name="menu.drawerName"
+        :left="menu.left"
+        :right="menu.right"
+        :class="[
+          getTranslateClass(menu, 'x'),
+          menu.class,
+          'transition-transform duration-500 ease-in-out',
+        ]"
+        @toggle="handleToggle"
+      >
+        {{ menu.label }}
+      </SidebarButton>
     </div>
-    <div
-      class="towny-menu-image left-menu bottom-40"
-      :class="isOptions ? 'translate-x-0' : '-translate-x-10 duration-1000'"
-      @click="sideOver('isOptions')"
-    >
-      <div class="col-start-2 col-end-4">
-        <p
-          class="w-full p-1 text-center text-[10px] font-bold text-towny-brown-dark-300 md:text-xs"
+
+    <div class="absolute top-[62px] block w-full md:hidden">
+      <div class="mx-2 grid grid-cols-4 gap-x-2">
+        <SidebarButton
+          v-for="menu in desktopMenus"
+          :key="menu.drawerName"
+          :drawer-name="menu.drawerName"
+          :class="[
+            getTranslateClass(menu, 'y'),
+            'w-full rounded-b-lg transition-transform duration-500 ease-in-out',
+          ]"
+          @toggle="handleToggle"
         >
-          Options
-        </p>
-        <img src="@/assets/img/cardboard.svg" class="h-14 w-full" />
-      </div>
-    </div>
-    <div
-      class="towny-menu-image right-menu top-40 transition"
-      :class="
-        isBlockchainInfo ? 'translate-x-0' : 'translate-x-10 duration-1000'
-      "
-      @click="sideOver('isBlockchainInfo')"
-    >
-      <div class="col-start-1 col-end-3">
-        <p
-          class="w-full p-1 text-center text-[10px] font-bold text-towny-brown-dark-300 md:text-xs"
-        >
-          Blockchain
-        </p>
-        <img src="@/assets/img/cardboard.svg" class="h-14 w-full" />
-      </div>
-    </div>
-    <div
-      class="towny-menu-image right-menu bottom-40 transition"
-      :class="
-        isContractInfo ? 'translate-x-0 ' : 'translate-x-10  duration-1000'
-      "
-      @click="sideOver('isContractInfo')"
-    >
-      <div class="col-start-1 col-end-3">
-        <p
-          class="w-full p-1 text-center text-[10px] font-bold text-towny-brown-dark-300 md:text-xs"
-        >
-          Contract
-        </p>
-        <img src="@/assets/img/cardboard.svg" class="h-14 w-full" />
+          {{ menu.label }}
+        </SidebarButton>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-// --------[ Stores ]-------- //
+import SidebarButton from '@/components/SidebarButton.vue'
+import { DrawerName } from '~/enums'
+
+// --------[ Store ]-------- //
 const appOptionStore = useAppOptionsStore()
 const { isGameInfo, isContractInfo, isBlockchainInfo, isOptions } =
   storeToRefs(appOptionStore)
 
-// --------[ Methods ]-------- //
-const sideOver = (
-  drawerName:
-    | 'isGameInfo'
-    | 'isContractInfo'
-    | 'isBlockchainInfo'
-    | 'isOptions',
-) => {
-  requestAnimationFrame(() => {
-    appOptionStore[drawerName] = true
-    appOptionStore.showSidebar = true
-  })
+// --------[ Data ]-------- //
+const desktopMenus: Array<{
+  label: string
+  drawerName: DrawerName
+  state: any
+  class: string
+  left?: boolean
+  right?: boolean
+}> = [
+  {
+    label: 'Game',
+    drawerName: DrawerName.GameInfo,
+    state: isGameInfo,
+    class: 'absolute left-0 top-40 w-[130px] rounded-r-lg',
+    left: true,
+  },
+  {
+    label: 'Options',
+    drawerName: DrawerName.Options,
+    state: isOptions,
+    class: 'absolute bottom-40 left-0 w-[130px] rounded-r-lg',
+    left: true,
+  },
+  {
+    label: 'Blockchain',
+    drawerName: DrawerName.BlockchainInfo,
+    state: isBlockchainInfo,
+    class: 'absolute right-0 top-40 w-[130px] rounded-l-lg',
+    right: true,
+  },
+  {
+    label: 'Contract',
+    drawerName: DrawerName.ContractInfo,
+    state: isContractInfo,
+    class: 'absolute bottom-40 right-0 w-[130px] rounded-l-lg',
+    right: true,
+  },
+]
+
+// --------[ Method ]-------- //
+const getTranslateClass = (menu: any, axis: 'x' | 'y') => {
+  if (axis === 'x') {
+    if (['isGameInfo', 'isOptions'].includes(menu.drawerName)) {
+      return menu.state.value ? `translate-${axis}-0` : `-translate-${axis}-10`
+    } else if (
+      ['isContractInfo', 'isBlockchainInfo'].includes(menu.drawerName)
+    ) {
+      return menu.state.value ? `translate-${axis}-0` : `translate-${axis}-10`
+    }
+  } else if (axis === 'y') {
+    return menu.state.value ? `translate-y-2` : `translate-y-0`
+  }
+  return `translate-${axis}-0`
+}
+
+const handleToggle = (drawerName: DrawerName) => {
+  appOptionStore[drawerName] = true
+  appOptionStore.showSidebar = true
 }
 </script>
-
-<style scoped>
-.towny-menu-image {
-  background-image: linear-gradient(0deg, #c69666 70%, #e8d5b2 70%);
-}
-
-.left-menu {
-  @apply absolute left-0 grid w-[115px] cursor-pointer grid-cols-3 rounded-r-lg shadow-2xl ease-in-out md:w-[130px];
-}
-
-.right-menu {
-  @apply absolute right-0  grid w-[115px] cursor-pointer grid-cols-3 rounded-l-lg shadow-2xl ease-in-out  md:w-[130px];
-}
-</style>
