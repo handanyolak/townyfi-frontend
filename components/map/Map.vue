@@ -4,11 +4,9 @@
       ref="mapElement"
       class="relative z-50 outline-none"
       tabindex="0"
-      @keyup.up="navigateByArrowKeys(NavigateDirection.Up)"
-      @keyup.right="navigateByArrowKeys(NavigateDirection.Right)"
-      @keyup.down="navigateByArrowKeys(NavigateDirection.Down)"
-      @keyup.left="navigateByArrowKeys(NavigateDirection.Left)"
+      @keyup="handleKeyNavigation"
       @wheel="onWheel($event)"
+      @blur="handleBlur"
     >
       <button
         :class="[
@@ -88,7 +86,7 @@ const {
 } = useRuntimeConfig()
 
 // --------[ Data ]-------- //
-const mapElement = ref(null)
+const mapElement = ref<HTMLElement | null>(null)
 const isMapNavigationVisible = ref(false)
 const navigation = ref<HTMLElement | null>(null)
 const { width } = useElementSize(mapElement)
@@ -153,6 +151,25 @@ const navigateByArrowKeys = (direction: NavigateDirection) => {
   setUserCoordinate({ _x, _y })
 }
 
+const handleKeyNavigation = (event: KeyboardEvent) => {
+  switch (event.key) {
+    case 'ArrowUp':
+      navigateByArrowKeys(NavigateDirection.Up)
+      break
+    case 'ArrowRight':
+      navigateByArrowKeys(NavigateDirection.Right)
+      break
+    case 'ArrowDown':
+      navigateByArrowKeys(NavigateDirection.Down)
+      break
+    case 'ArrowLeft':
+      navigateByArrowKeys(NavigateDirection.Left)
+      break
+    default:
+      console.log('Key not handled:', event.key)
+  }
+}
+
 const dragHandler = ({
   movement: [x, y],
   last,
@@ -185,6 +202,10 @@ useDrag(dragHandler, {
 
 const handleNavigationToggle = () => {
   isMapNavigationVisible.value = !isMapNavigationVisible.value
+}
+
+const handleBlur = () => {
+  mapElement.value?.focus()
 }
 
 onClickOutside(navigation, () => {
