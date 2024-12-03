@@ -1,11 +1,11 @@
 <template>
   <div class="container flex h-screen items-center justify-center">
     <AppButton @click="startWar()"> War </AppButton>
-    <SidebarMenu />
+    <SidebarTriggerButtons />
     <ChatAndLogBox v-if="onValidNetwork" />
     <div
-      v-if="onValidNetwork"
-      class="map-frame flex items-center justify-center p-3 md:p-12"
+      v-if="onValidNetwork && !isLoading"
+      class="map-frame flex items-center justify-center p-2 lg:p-20"
     >
       <Map v-if="onValidNetwork" ref="mapElement" />
     </div>
@@ -34,7 +34,7 @@ import TheLoading from '~/components/common/TheLoading.vue'
 import Map from '~/components/map/Map.vue'
 import AppModal from '~/components/common/AppModal.vue'
 import ChatAndLogBox from '~/components/chatAndLog/ChatAndLogBox.vue'
-import SidebarMenu from '~/components/SidebarMenu.vue'
+import SidebarTriggerButtons from '~/components/SidebarTriggerButtons.vue'
 import AppButton from '~/components/common/AppButton.vue'
 import type { Modal } from '~/types'
 
