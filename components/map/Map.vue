@@ -1,18 +1,18 @@
 <template>
-  <div class="relative" :style="mapSizeStyle">
+  <div
+    class="fire-shadow-box relative overflow-hidden md:max-w-[75%]"
+    :style="mapSizeStyle"
+  >
     <section
       ref="mapElement"
-      class="relative z-50 outline-none"
+      class="relative outline-none"
       tabindex="0"
       @keyup="handleKeyNavigation"
       @wheel="onWheel($event)"
       @blur="handleBlur"
     >
       <div
-        :class="[
-          'relative grid overflow-hidden rounded-lg border-[10px] border-[#5a3006]',
-          isMapNavigationVisible ? 'rounded-r-none' : '',
-        ]"
+        class="relative grid overflow-hidden rounded-lg border-[10px] border-towny-brown-dark-600"
         :style="`grid-template-columns: repeat(${getGridColsByNearLevel}, minmax(0, 1fr));`"
       >
         <div
@@ -31,51 +31,46 @@
       </div>
     </section>
     <section>
-      <button
-        :class="[
-          'absolute -right-6 -top-1 cursor-pointer transition-all ease-in-out',
-          isMapNavigationVisible
-            ? 'translate-x-48 delay-300 duration-500 '
-            : 'duration-300',
-        ]"
-        @mouseover="isInsideToggleButton = true"
-        @mouseleave="isInsideToggleButton = false"
-        @click="handleNavigationToggle"
+      <MapMenuButton
+        v-for="menu in menus"
+        :key="menu.position"
+        :position="menu.position"
+        class="map-menu-toggle-button"
+        :is-visible="menu.isVisible"
+        @toggle="toggleMenuVisibility(menu.position)"
+      />
+      <MapMenu
+        v-for="menu in menus"
+        :key="menu.position"
+        ref="navigation"
+        :position="menu.position"
       >
-        <Icon
-          :class="[
-            'transform text-3xl text-towny-brown-dark-400 transition-transform duration-200 ease-in-out',
-            isMapNavigationVisible ? 'rotate-180' : '',
-          ]"
-          name="material-symbols-light:double-arrow"
-        />
-      </button>
-      <Transition name="map-navigation">
-        <MapNavigation
-          v-if="isMapNavigationVisible"
-          ref="navigation"
-          :is-map-navigation-visible="isMapNavigationVisible"
-          :height="width.toString()"
-        />
-      </Transition>
+        <Transition name="menu">
+          <component
+            :is="menu.component"
+            v-if="menu.isVisible"
+            :size="menuSizeStyle"
+          />
+        </Transition>
+      </MapMenu>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onClickOutside, useWindowSize } from '@vueuse/core'
+import { useWindowSize } from '@vueuse/core'
 import { useDrag } from '@vueuse/gesture'
 import Mapbox from '~/components/map/Mapbox.vue'
 import { MAX_PIXEL_VALUE } from '~/constants'
-import MapNavigation from '~/components/map/MapNavigation.vue'
+import MoveControls from '~/components/map/MoveControls.vue'
+import ZoomControls from '~/components/map/ZoomControls.vue'
+import ReturnBackControls from '~/components/map/ReturnBackControls.vue'
+import NavigateControls from '~/components/map/NavigateControls.vue'
+import MapMenu from '~/components/map/MapMenu.vue'
+import MapMenuButton from '~/components/map/MapMenuButton.vue'
 import { NavigateDirection } from '~/enums'
 
-// --------[ Nuxt ]-------- //
-const {
-  public: { maxNearLevel },
-} = useRuntimeConfig()
-
-// --------[ Stores ]-------- //
+// --------[ Store ]-------- //
 const userGameStore = useUserGameStore()
 const appOptionsStore = useAppOptionsStore()
 
@@ -86,14 +81,42 @@ const { setUserCoordinate, setNearLevelByCalculatingCoordinates } =
 const { addressesByCoordinate, nearLevel } = storeToRefs(userGameStore)
 const { originCoordinate } = storeToRefs(appOptionsStore)
 
+// --------[ Nuxt ]-------- //
+const {
+  public: { maxNearLevel },
+} = useRuntimeConfig()
+
 // --------[ Data ]-------- //
 const mapElement = ref<HTMLElement | null>(null)
-const isMapNavigationVisible = ref(false)
 const navigation = ref<HTMLElement | null>(null)
 const { width } = useElementSize(mapElement)
 const mapSize = useLocalStorage('mapSize', 50)
 const { width: windowWidth } = useWindowSize()
-const isInsideToggleButton = ref(false)
+
+interface Menu {
+  position: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
+  isVisible: boolean
+  component: Component
+}
+
+const menus = ref<Menu[]>([
+  { position: 'top-left', isVisible: false, component: markRaw(MoveControls) },
+  {
+    position: 'top-right',
+    isVisible: false,
+    component: markRaw(ReturnBackControls),
+  },
+  {
+    position: 'bottom-left',
+    isVisible: false,
+    component: markRaw(ZoomControls),
+  },
+  {
+    position: 'bottom-right',
+    isVisible: false,
+    component: markRaw(NavigateControls),
+  },
+])
 
 // --------[ Computed ]-------- //
 const getGridColsByNearLevel = computed(() => nearLevel.value * 2 + 1)
@@ -116,6 +139,30 @@ const mapStyle = computed(() => {
 const mapSizeStyle = computed(() => {
   const dynamicWidth = windowWidth.value <= 768 ? '100%' : `${mapSize.value}%`
   return `width: ${dynamicWidth}`
+})
+
+const menuSizeStyle = computed(() => {
+  const baseWidthDivisor = 1.75
+  const baseHeightDivisor = 1.25
+  const step = 0.25
+
+  const isMobile = window.innerWidth <= 768
+
+  if (isMobile) {
+    return {
+      width: `${width.value / 2}px`,
+      height: `${width.value / 1.5}px`,
+    }
+  }
+
+  const stepsFromBase = (mapSize.value - 30) / 5
+  const widthDivisor = baseWidthDivisor + stepsFromBase * step
+  const heightDivisor = baseHeightDivisor + stepsFromBase * step
+
+  return {
+    width: `${width.value / widthDivisor}px`,
+    height: `${width.value / heightDivisor}px`,
+  }
 })
 
 // --------[ Method ]-------- //
@@ -197,29 +244,58 @@ useDrag(dragHandler, {
   filterTaps: true,
 })
 
-const handleNavigationToggle = () => {
-  isMapNavigationVisible.value = !isMapNavigationVisible.value
-}
-
 const handleBlur = () => {
   mapElement.value?.focus()
 }
 
-onClickOutside(navigation, () => {
-  if (isInsideToggleButton.value) return
-  isMapNavigationVisible.value = false
+const toggleMenuVisibility = (position: string) => {
+  menus.value = menus.value.map((menu) =>
+    menu.position === position
+      ? { ...menu, isVisible: !menu.isVisible }
+      : { ...menu, isVisible: false },
+  )
+}
+
+// --------[ Hook ]-------- //
+onMounted(() => {
+  mapElement.value = markRaw(
+    document.querySelector('.map-container') as HTMLElement,
+  )
 })
 </script>
 
 <style scoped>
-.map-navigation-enter-active,
-.map-navigation-leave-active {
-  transition: transform 0.8s ease;
+.menu-enter-active,
+.menu-leave-active {
+  transition:
+    transform 0.5s ease,
+    opacity 0.5s ease;
 }
 
-.map-navigation-enter-from,
-.map-navigation-leave-to {
-  transform: translateX(-100%);
-  transition: all 0.3s ease-out;
+.menu-enter-from {
+  transform: scale(0.8);
+  opacity: 0;
+}
+
+.menu-leave-to {
+  transform: scale(0.8);
+  opacity: 0;
+}
+
+.fire-shadow-box {
+  background-color: #9b4622;
+  border-radius: 10px;
+  filter: drop-shadow(0 0 30px rgba(155, 70, 34, 0.8));
+  animation: fireEffect 5s infinite alternate ease-in-out;
+}
+
+@keyframes fireEffect {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 10px rgba(155, 70, 34, 0.6));
+  }
+  50% {
+    filter: drop-shadow(0 0 15px rgba(198, 100, 50, 0.8));
+  }
 }
 </style>
