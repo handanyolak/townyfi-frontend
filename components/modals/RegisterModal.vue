@@ -2,7 +2,7 @@
   <div
     class="flex flex-col items-center space-y-4 rounded-sm bg-towny-brown-light-100 p-12"
   >
-    <ListTitle class="w-full">Register</ListTitle>
+    <ListTitle class="my-8 w-full">Register</ListTitle>
     <ListItem title="Name:" class="w-full" input>
       <template #item>
         <VeeForm class="flex flex-col items-center">

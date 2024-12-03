@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ListTitle>General</ListTitle>
+    <ListTitle class="my-8">General</ListTitle>
     <ListItem title="Name:" editable tooltip @saved="() => onSaved()">
       <template #item>
         <VeeForm class="flex flex-col items-center">
@@ -54,7 +54,7 @@
         >
       </template>
     </ListItem>
-    <ListTitle>Stats</ListTitle>
+    <ListTitle class="my-8">Stats</ListTitle>
     <ListItem title="Health:" tooltip>
       <span>{{ user.health }}</span>
       <template #tooltip>
@@ -91,7 +91,7 @@
         >
       </template>
     </ListItem>
-    <ListTitle>Character Points</ListTitle>
+    <ListTitle class="my-8">Character Points</ListTitle>
     <ListItem title="Attack:" tooltip>
       <span>{{ user.charPoint.attack }}</span>
       <template #tooltip>
@@ -110,7 +110,7 @@
         >
       </template>
     </ListItem>
-    <ListTitle>Timers</ListTitle>
+    <ListTitle class="my-8">Timers</ListTitle>
     <ListItem
       v-for="(item, index) in timers"
       :key="index"

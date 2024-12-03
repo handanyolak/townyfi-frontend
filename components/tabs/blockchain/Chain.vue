@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ListTitle>General</ListTitle>
+    <ListTitle class="my-8">General</ListTitle>
     <ListItem title="Name:">
       <span>{{ chainClient.chain.name }}</span>
     </ListItem>
@@ -16,7 +16,7 @@
     <ListItem title="Decimals:">
       <span>{{ chainClient.chain.nativeCurrency.decimals }}</span>
     </ListItem>
-    <ListTitle v-if="onValidNetwork">Explorer URLs</ListTitle>
+    <ListTitle v-if="onValidNetwork" class="my-8">Explorer URLs</ListTitle>
     <ScrollableList
       :items="
         Object.values(chainClient.chain.blockExplorers ?? []).map(
@@ -25,7 +25,7 @@
       "
       linkable
     />
-    <ListTitle>Miscellaneous</ListTitle>
+    <ListTitle class="my-8">Miscellaneous</ListTitle>
     <ListItem v-if="currentBlockNumber > 0" title="Current Block Number:">
       <span>{{ currentBlockNumber }}</span>
     </ListItem>

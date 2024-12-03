@@ -1,6 +1,6 @@
 <template>
   <div v-if="hasMetamask && isConnected">
-    <ListTitle>General</ListTitle>
+    <ListTitle class="my-8">General</ListTitle>
     <ListItem title="Address:" copiable :copy-value="address">
       <span>{{ middleCropping(address) }}</span>
     </ListItem>
@@ -12,7 +12,7 @@
         }}</span
       >
     </ListItem>
-    <ListTitle>Miscellaneous</ListTitle>
+    <ListTitle class="my-8">Miscellaneous</ListTitle>
     <ListItem title="Game Token Balance:">
       <span>{{ ktaBalance }} {{ ktaSymbol }}</span>
     </ListItem>

@@ -1,6 +1,6 @@
 <template>
   <div v-if="user.townInfo.townId">
-    <ListTitle>General</ListTitle>
+    <ListTitle class="my-8">General</ListTitle>
     <ListItem title="Name:" editable tooltip>
       <template #item>
         <VeeForm class="flex flex-col items-center">
@@ -112,7 +112,7 @@
     </ListItem>
 
     <AppButton @click="leaveTown()"> Leave Town </AppButton>
-    <ListTitle>Citizens</ListTitle>
+    <ListTitle class="my-8">Citizens</ListTitle>
     <ScrollableList
       :items="citizenAddresses"
       :copy-value="addresses"
@@ -123,7 +123,7 @@
         action: kickCitizen,
       }"
     />
-    <ListTitle>Timers</ListTitle>
+    <ListTitle class="my-8">Timers</ListTitle>
     <ListItem title="Protection:" tooltip>
       <span>{{ town.protectionAt.toString() }}</span>
       <template #tooltip>
@@ -133,7 +133,7 @@
         >
       </template>
     </ListItem>
-    <ListTitle>War</ListTitle>
+    <ListTitle class="my-8">War</ListTitle>
     <ListItem title="Attacker:" tooltip>
       <span>{{ attacker }}</span>
       <template #tooltip>

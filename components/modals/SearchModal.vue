@@ -2,7 +2,7 @@
   <div
     class="flex flex-col items-center space-y-4 bg-towny-brown-light-100 px-4 py-2"
   >
-    <ListTitle class="w-3/4">Search</ListTitle>
+    <ListTitle class="my-8 w-3/4">Search</ListTitle>
     <div class="flex w-full space-x-2">
       <ListItem class="w-full" title="Type:" input>
         <template #item>

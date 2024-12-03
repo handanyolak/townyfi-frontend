@@ -1,7 +1,7 @@
 <template>
   <div ref="accordion">
     <ListTitle
-      class="cursor-pointer text-lg italic shadow-towny-200"
+      class="my-8 cursor-pointer text-lg italic shadow-towny-200"
       @click="toggleAccordion()"
     >
       <img

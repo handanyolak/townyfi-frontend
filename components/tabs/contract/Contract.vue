@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ListTitle>General</ListTitle>
+    <ListTitle class="my-8">General</ListTitle>
     <ListItem title="Name:">
       <span>{{ data.contractName }}</span>
     </ListItem>

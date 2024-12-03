@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ListTitle>General</ListTitle>
+    <ListTitle class="my-8">General</ListTitle>
     <ListItem title="Coordinate:">
       <AppDropdown
         :select="language"
@@ -28,7 +28,7 @@
         <template #item-2>No</template>
       </Switch>
     </ListItem>
-    <ListTitle>Interface</ListTitle>
+    <ListTitle class="my-8">Interface</ListTitle>
     <ListItem title="Near Level:">
       <AppDropdown
         :key="nearLevel"

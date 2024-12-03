@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ListTitle>General</ListTitle>
+    <ListTitle class="my-8">General</ListTitle>
     <ListItem title="Name:" tooltip>
       <span>{{ townName }}</span>
       <template #tooltip>
@@ -75,13 +75,13 @@
         >
       </template>
     </ListItem>
-    <ListTitle>Citizens</ListTitle>
+    <ListTitle class="my-8">Citizens</ListTitle>
     <ScrollableList
       :items="citizenAddresses"
       :copy-value="addresses"
       copiable
     />
-    <ListTitle>Timers</ListTitle>
+    <ListTitle class="my-8">Timers</ListTitle>
     <ListItem title="Protection:" tooltip>
       <span>{{ town.protectionAt.toString() }}</span>
       <template #tooltip>
@@ -91,7 +91,7 @@
         >
       </template>
     </ListItem>
-    <ListTitle>War</ListTitle>
+    <ListTitle class="my-8">War</ListTitle>
     <ListItem title="Attacker:" tooltip>
       <span>{{ attacker }}</span>
       <template #tooltip>

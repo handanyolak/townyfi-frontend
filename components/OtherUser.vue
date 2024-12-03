@@ -1,7 +1,7 @@
 <template>
   <TheLoading v-if="isDataLoading" />
   <div v-else class="p-5">
-    <ListTitle>General</ListTitle>
+    <ListTitle class="my-8">General</ListTitle>
     <ListItem title="Name:" tooltip>
       <span>{{ userName }}</span>
       <template #tooltip>
@@ -49,7 +49,7 @@
         >
       </template>
     </ListItem>
-    <ListTitle>Stats</ListTitle>
+    <ListTitle class="my-8">Stats</ListTitle>
     <ListItem title="Health:" tooltip>
       <span>{{ user.health }}</span>
       <template #tooltip>
@@ -80,7 +80,7 @@
         >
       </template>
     </ListItem>
-    <ListTitle>Character Points</ListTitle>
+    <ListTitle class="my-8">Character Points</ListTitle>
     <ListItem title="Attack:" tooltip>
       <span>{{ user.charPoint.attack }}</span>
       <template #tooltip>
@@ -99,7 +99,7 @@
         >
       </template>
     </ListItem>
-    <ListTitle>Timers</ListTitle>
+    <ListTitle class="my-8">Timers</ListTitle>
     <ListItem
       v-for="(item, index) in timers"
       :key="index"
@@ -119,7 +119,7 @@
         >
       </template>
     </ListItem>
-    <ListTitle class="py-5">Town Info</ListTitle>
+    <ListTitle class="my-8 py-5">Town Info</ListTitle>
     <OtherTown v-if="townId" :id="townId" />
   </div>
 </template>

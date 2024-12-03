@@ -13,7 +13,7 @@
           <Town class="px-3" />
         </template>
       </Accordion>
-      <ListTitle class="text-lg font-bold">User Info</ListTitle>
+      <ListTitle class="my-8 text-lg font-bold">User Info</ListTitle>
       <Accordion
         v-for="(_address, index) in filteredList"
         :key="index"
