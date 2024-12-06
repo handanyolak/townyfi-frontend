@@ -1,6 +1,6 @@
 <template>
   <div
-    class="fire-shadow-box relative overflow-hidden md:max-w-[75%]"
+    class="fire-shadow-box relative overflow-hidden md:max-w-[70%]"
     :style="mapSizeStyle"
   >
     <section
