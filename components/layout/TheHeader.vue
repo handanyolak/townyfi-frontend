@@ -1,193 +1,82 @@
 <template>
   <div
-    class="absolute top-0 z-100 w-full bg-white shadow-lg shadow-towny-brown-light-100 dark:bg-[#0D1117] dark:shadow-[#171e28]"
+    class="absolute top-0 z-100 w-full bg-white shadow-md shadow-towny-brown-light-100 dark:bg-[#0D1117] dark:shadow-[#171e28]"
   >
-    <div class="mx-1 md:mx-5">
+    <div class="mx-1 flex items-center justify-between md:mx-5">
+      <img
+        class="w-36 select-none md:w-52"
+        src="@/assets/img/townyfi-logo.svg"
+        alt="townyfi-logo"
+      />
       <div class="flex items-center justify-between">
-        <img
-          class="z-50 w-36 select-none md:w-52"
-          src="@/assets/img/townyfi-logo.svg"
-          alt="townyfi-logo"
+        <UserAccessManager v-if="hasMetamask" class="hidden md:block" />
+        <AppButton
+          v-else
+          class="absolute left-1/2 top-32 w-5/6 -translate-x-1/2 text-center text-2xl font-bold md:w-3/6 lg:w-2/6"
+          :href="'https://metamask.io/download/'"
+          target="_blank"
+          border-hover
+        >
+          Install Metamask
+        </AppButton>
+        <button class="step-5" @click="setModalInfo('SearchModal')">
+          <img
+            src="~/assets/img/search.svg"
+            class="h-10 w-10 cursor-pointer"
+            alt="search"
+          />
+        </button>
+        <button class="hidden cursor-pointer md:block">
+          <Icon
+            name="ic:round-settings"
+            class="h-11 w-11 text-towny-brown-dark-300"
+            @click="toggleMenu"
+          />
+        </button>
+        <button class="block cursor-pointer md:hidden">
+          <Icon
+            name="ic:sharp-menu"
+            class="h-11 w-11 text-towny-brown-dark-300"
+            @click="toggleMenu"
+          />
+        </button>
+        <Menu
+          v-model="menuOpen"
+          :menu-open="menuOpen"
+          :has-metamask="hasMetamask"
+          @close="menuOpen = false"
         />
-        <div class="flex items-center justify-between">
-          <div class="flex items-center space-x-2">
-            <button class="step-5" @click="setModalInfo('SearchModal')">
-              <img
-                src="~/assets/img/search.svg"
-                class="h-14 w-14 cursor-pointer"
-                alt="search"
-              />
-            </button>
-            <div v-if="hasMetamask" class="hidden justify-between py-5 md:flex">
-              <div v-if="onValidNetwork">
-                <div v-if="isConnected" class="space-x-1">
-                  <AppButton
-                    v-if="!isRegistered"
-                    border-hover
-                    @click="setModalInfo('RegisterModal')"
-                  >
-                    Register
-                  </AppButton>
-                  <AppButton
-                    class="step-4"
-                    border-hover
-                    @click="disconnectWeb3()"
-                  >
-                    {{ $t('disconnect_wallet') }}
-                  </AppButton>
-                </div>
-                <AppButton v-else fill-hover @click="connectWeb3()">
-                  Connect Wallet
-                </AppButton>
-              </div>
-              <AppButton
-                v-else
-                target="_blank"
-                border
-                border-hover
-                @click="switchOrAddNetwork()"
-              >
-                Switch Network
-              </AppButton>
-            </div>
-            <AppButton
-              v-else
-              class="absolute left-1/2 top-24 w-5/6 -translate-x-1/2 text-center md:w-3/6 lg:w-2/6"
-              :href="'https://metamask.io/download/'"
-              target="_blank"
-              fill-hover
-            >
-              Install Metamask
-            </AppButton>
-            <div class="hidden md:flex">
-              <AppDropdown
-                :select="language"
-                :dropdown-items="languages"
-                :icon-names="languages"
-                class="dropdown-background step-3"
-                @selected="(item) => selected(item)"
-              />
-              <img
-                :src="themeIcon"
-                class="h-14 w-14 cursor-pointer"
-                @click="toggleTheme()"
-              />
-
-              <img
-                :src="audioIcon"
-                class="step-1 h-16 w-16 cursor-pointer"
-                @click="toggleAudio()"
-              />
-              <client-only>
-                <Vue3Lottie
-                  v-if="audio"
-                  class="cursor-pointer"
-                  :animation-data="Harp"
-                  :height="55"
-                  :width="55"
-                  :scale="1.4"
-                  :auto-play="isAnimating"
-                  :pause-animation="!isAnimating"
-                  @click="toggleMusicAndAnimation()"
-                />
-              </client-only>
-            </div>
-          </div>
-          <div class="relative flex md:hidden">
-            <HamburgerButton
-              :is-open="menuOpen"
-              button-class="bg-towny-brown-dark-100"
-              @toggle="toggleMenu"
-            />
-
-            <MobileMenu
-              v-model="menuOpen"
-              :menu-open="menuOpen"
-              :has-metamask="hasMetamask"
-              :on-valid-network="onValidNetwork"
-              :is-connected="isConnected"
-              :is-registered="isRegistered"
-              :language="language"
-              :languages="languages"
-              :selected="selected"
-              :audio="audio"
-              :theme-icon="themeIcon"
-              :audio-icon="audioIcon"
-              :toggle-theme="toggleTheme"
-              :toggle-audio="toggleAudio"
-              :toggle-music-and-animation="toggleMusicAndAnimation"
-              :is-animating="isAnimating"
-              :switch-or-add-network="switchOrAddNetwork"
-              @close-menu="menuOpen = false"
-            />
-          </div>
-        </div>
       </div>
     </div>
-
     <AppTour :steps="STEPS" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { useDark, useToggle } from '@vueuse/core'
-import { Vue3Lottie } from 'vue3-lottie'
-import AppDropdown from '~/components/common/AppDropdown.vue'
-import MobileMenu from '~/components/MobileMenu.vue'
-import HamburgerButton from '~/components/HamburgerButton.vue'
+import Menu from '~/components/Menu.vue'
+import UserAccessManager from '~/components/UserAccessManager.vue'
 import AppButton from '~/components/common/AppButton.vue'
 import AppTour from '~/components/AppTour.vue'
-import { $t } from '~/composables/useLang'
 import { getAddressRule } from '~/composables/useYupRules'
-import Harp from '~/assets/lotties/harp.json'
-import { STEPS } from '~/constants'
+import { STEPS } from '~/constants/tour-steps'
 
 // --------[ Store ]-------- //
 const connectionStore = useConnectionStore()
-const userWalletStore = useUserWalletStore()
-const userGameStore = useUserGameStore()
-const appOptionStore = useAppOptionsStore()
-const useUserOptions = useUserOptionsStore()
-
 const { hasMetamask } = connectionStore
-const { startEthEvents } = userWalletStore
-const { toggleMusic, toggleAudio, setModalInfo } = appOptionStore
-const { setLanguage } = useUserOptions
 
-const { onValidNetwork, isConnected } = storeToRefs(connectionStore)
-const { connectWeb3, disconnectWeb3 } = userWalletStore
-const { walletClient } = storeToRefs(userWalletStore)
-const { isRegistered } = storeToRefs(userGameStore)
-const { audio } = storeToRefs(appOptionStore)
-const { language } = storeToRefs(useUserOptions)
+const userWalletStore = useUserWalletStore()
+const { startEthEvents } = userWalletStore
+
+const appOptionStore = useAppOptionsStore()
+const { setModalInfo } = appOptionStore
 
 useTour()
-
-// --------[ Composable ]-------- //
-const isDark = useDark({
-  storageKey: 'theme',
-  valueDark: 'dark',
-  valueLight: 'light',
-})
 
 // --------[ Data ]-------- //
 const search = ref('')
 const isValid = ref(false)
 const searchRules = getAddressRule()
-const toggleTheme = useToggle(isDark)
 const menuOpen = ref(false)
-const isAnimating = ref(false)
-
-// --------[ Computed ]-------- //
-const audioIcon = computed(() => useSvg(audio.value ? 'sound' : 'sound-mute'))
-
-const themeIcon = computed(() =>
-  useSvg(isDark.value ? 'dark-mode' : 'light-mode'),
-)
-
-const languages = computed(() =>
-  ['en', 'tr', 'de'].filter((item) => item !== language.value),
-)
 
 // --------[ Hook ]-------- //
 watch(search, async (newSearch) => {
@@ -203,27 +92,6 @@ onMounted(() => {
 })
 
 // --------[ Method ]-------- //
-const switchOrAddNetwork = async () => {
-  try {
-    await walletClient.value.switchChain({
-      id: walletClient.value.chain.id,
-    })
-  } catch (error) {
-    await walletClient.value.addChain({
-      chain: walletClient.value.chain,
-    })
-  }
-}
-
-const selected = (item: string) => {
-  setLanguage(item)
-}
-
-const toggleMusicAndAnimation = () => {
-  toggleMusic()
-  isAnimating.value = !isAnimating.value
-}
-
 const toggleMenu = () => {
   menuOpen.value = !menuOpen.value
 }
