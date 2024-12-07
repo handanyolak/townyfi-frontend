@@ -126,7 +126,7 @@ import { transformTown, transformUser } from '~/transformers'
 // --------[ Store ]-------- //
 const contractStore = useContractStore()
 
-const { getKta } = storeToRefs(contractStore)
+const { getKtaPublic } = storeToRefs(contractStore)
 
 // --------[ Data ]-------- //
 const sidebarDropdown = ref<InstanceType<typeof AppDropdown> | null>(null)
@@ -235,13 +235,15 @@ const handleDropdownChange = () => {
 
 const getTownDetailsById = async (value: string) => {
   const townInfo = transformTown(
-    await getKta.value.read.townById([BigInt(value)]),
+    await getKtaPublic.value.read.townById([BigInt(value)]),
   )
   return townInfo.leader === zeroAddress ? BigInt(0) : BigInt(value)
 }
 
 const getUserDetailsByAddress = async (address: Address) => {
-  const userInfo = transformUser(await getKta.value.read.userByAddr([address]))
+  const userInfo = transformUser(
+    await getKtaPublic.value.read.userByAddr([address]),
+  )
   return userInfo.townInfo.townId
 }
 
@@ -252,7 +254,7 @@ const getTownIdByCoordinates = async (value: string) => {
     [bigint, bigint]
   >
 
-  return await getKta.value.read.townIdByCoordinate(coordinates)
+  return await getKtaPublic.value.read.townIdByCoordinate(coordinates)
 }
 
 const loadUserDetailsByAddress = (address: Address) => {
@@ -262,7 +264,7 @@ const loadUserDetailsByAddress = (address: Address) => {
 const getAddressesByCoordinates = async (coordinateValue: string) => {
   const [x, y] = coordinateValue.split(',').map((coord) => BigInt(coord.trim()))
   const coordinates = { _x: x, _y: y }
-  return await getKta.value.read.getAddressesByCoordinate([coordinates])
+  return await getKtaPublic.value.read.getAddressesByCoordinate([coordinates])
 }
 
 const debouncedSearch = useDebounceFn(async () => {

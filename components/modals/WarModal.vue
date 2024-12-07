@@ -228,7 +228,7 @@ const isLottieRunning = ref(false)
 const isBattleStarted = ref(false)
 const isShowDamage = ref(false)
 const contractStore = useContractStore()
-const { getKta } = storeToRefs(contractStore)
+const { getKtaPublic } = storeToRefs(contractStore)
 const userInfoByAddress = ref<any>({})
 const townInfoById = ref<any>({})
 const ATTACKER = ref(1)
@@ -332,7 +332,9 @@ const fetchUserInfos = async (uniqAddressess: string[]) => {
     const {
       name,
       townInfo: { townId },
-    } = transformUser(await getKta.value.read.userByAddr([address as Address]))
+    } = transformUser(
+      await getKtaPublic.value.read.userByAddr([address as Address]),
+    )
 
     townIds.push(townId)
 
@@ -345,7 +347,7 @@ const fetchUserInfos = async (uniqAddressess: string[]) => {
   const uniqTownIds = Array.from(new Set(townIds))
 
   for (const id of uniqTownIds) {
-    const { name } = transformTown(await getKta.value.read.townById([id]))
+    const { name } = transformTown(await getKtaPublic.value.read.townById([id]))
 
     townInfoById.value[id.toString()] = {
       name: hexToString(name, { size: 32 }),

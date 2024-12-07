@@ -154,7 +154,7 @@ const props = defineProps<OtherTownProps>()
 const userGameStore = useUserGameStore()
 const contractStore = useContractStore()
 
-const { getKta, getKtaCaller } = storeToRefs(contractStore)
+const { getKtaPublic, getKtaCaller } = storeToRefs(contractStore)
 
 // --------[ Data ]-------- //
 const town = ref(userGameStore.town)
@@ -177,10 +177,12 @@ const townName = computed(() => hexToString(town.value.name, { size: 32 }))
 
 // --------[ Hooks ]-------- //
 onMounted(async () => {
-  town.value = transformTown(await getKta.value.read.townById([props.id]))
+  town.value = transformTown(await getKtaPublic.value.read.townById([props.id]))
 
   if (!areAddressesEqual(town.value.leader, zeroAddress)) {
-    addresses.value = await getKta.value.read.getCitizensByTownId([props.id])
+    addresses.value = await getKtaPublic.value.read.getCitizensByTownId([
+      props.id,
+    ])
   }
 })
 

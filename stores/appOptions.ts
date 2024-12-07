@@ -137,7 +137,9 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
         timer,
         charPoint,
       } = transformUser(
-        await contractStore.getKta.read.userByAddr([userWalletStore.address]),
+        await contractStore.getKtaPublic.read.userByAddr([
+          userWalletStore.address,
+        ]),
       )
 
       const userInfo = {
@@ -164,16 +166,18 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
         balanceOfVal,
         settingsVal,
       ] = await Promise.all([
-        contractStore.getKta.read.isRegistered([userWalletStore.address]),
-        contractStore.getKta.read.townById([userInfo.townInfo.townId]),
-        contractStore.getKtaToken.read.symbol(),
-        contractStore.getKtaToken.read.decimals(),
-        contractStore.getKtaToken.read.allowance([
+        contractStore.getKtaPublic.read.isRegistered([userWalletStore.address]),
+        contractStore.getKtaPublic.read.townById([userInfo.townInfo.townId]),
+        contractStore.getKtaTokenPublic.read.symbol(),
+        contractStore.getKtaTokenPublic.read.decimals(),
+        contractStore.getKtaTokenPublic.read.allowance([
           userWalletStore.address,
-          contractStore.getKta.address,
+          contractStore.getKtaPublic.address,
         ]),
-        contractStore.getKtaToken.read.balanceOf([userWalletStore.address]),
-        contractStore.getKta.read.settings(),
+        contractStore.getKtaTokenPublic.read.balanceOf([
+          userWalletStore.address,
+        ]),
+        contractStore.getKtaPublic.read.settings(),
       ])
 
       userGameStore.setIsRegistered(isRegisteredVal)
@@ -217,7 +221,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
           onError: (error: Error) => console.error(error),
         } as const
 
-        userWalletStore.chainClient.watchContractEvent({
+        userWalletStore.publicClient.watchContractEvent({
           ...ktaEventFilter,
           eventName: 'UserMoved',
           onLogs: async (logs) => {
@@ -295,7 +299,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
           },
         })
 
-        userWalletStore.chainClient.watchContractEvent({
+        userWalletStore.publicClient.watchContractEvent({
           ...ktaEventFilter,
           eventName: 'UserRegistered',
           onLogs: async (logs) => {
@@ -324,7 +328,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
           },
         })
 
-        userWalletStore.chainClient.watchContractEvent({
+        userWalletStore.publicClient.watchContractEvent({
           ...ktaEventFilter,
           eventName: 'UserMissed',
           onLogs: async (logs) => {
@@ -360,7 +364,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
           },
         })
 
-        userWalletStore.chainClient.watchContractEvent({
+        userWalletStore.publicClient.watchContractEvent({
           ...ktaEventFilter,
           eventName: 'UserGot',
           onLogs: async (logs) => {
@@ -390,7 +394,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
           },
         })
 
-        userWalletStore.chainClient.watchContractEvent({
+        userWalletStore.publicClient.watchContractEvent({
           ...ktaEventFilter,
           eventName: 'UserAttacked',
           onLogs: async (logs) => {
@@ -427,7 +431,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
           },
         })
 
-        userWalletStore.chainClient.watchContractEvent({
+        userWalletStore.publicClient.watchContractEvent({
           ...ktaEventFilter,
           eventName: 'TownWarDetailsEvent',
           onLogs: async (logs) => {
@@ -463,7 +467,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
           },
         })
 
-        userWalletStore.chainClient.watchContractEvent({
+        userWalletStore.publicClient.watchContractEvent({
           ...ktaGameChatEventFilter,
           eventName: 'Message',
           onLogs: async (logs) => {
@@ -474,7 +478,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                 const messageStr = hexToString(message, { size: 32 })
                 // TODO: Can provided by the contract
                 const { name } = transformUser(
-                  await contractStore.getKta.read.userByAddr([author]),
+                  await contractStore.getKtaPublic.read.userByAddr([author]),
                 )
                 const nameStr = hexToString(name, { size: 32 })
                 let sanitizedMessage = DOMPurify.sanitize(messageStr, {
@@ -520,7 +524,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
           },
         })
 
-        userWalletStore.chainClient.watchContractEvent({
+        userWalletStore.publicClient.watchContractEvent({
           ...ktaTokenEventFilter,
           eventName: 'Approval',
           args: {
@@ -555,7 +559,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
           },
         })
 
-        userWalletStore.chainClient.watchContractEvent({
+        userWalletStore.publicClient.watchContractEvent({
           ...ktaTokenEventFilter,
           eventName: 'Transfer',
           onLogs: async (logs) => {
@@ -594,7 +598,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
 
                 if (isUserInvolved) {
                   userWalletStore.setKtaBalance(
-                    await contractStore.getKtaToken.read.balanceOf([
+                    await contractStore.getKtaTokenPublic.read.balanceOf([
                       userWalletStore.address,
                     ]),
                   )
@@ -611,13 +615,16 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
 
   const setUserInfo = async (userInfo: User) => {
     userGameStore.setIsRegistered(
-      await contractStore.getKta.read.isRegistered([userWalletStore.address]),
+      await contractStore.getKtaPublic.read.isRegistered([
+        userWalletStore.address,
+      ]),
     )
     userGameStore.setUser(userInfo)
-    userGameStore.setUserCoordinate(userInfo.coordinate)
     userGameStore.setTown(
       transformTown(
-        await contractStore.getKta.read.townById([userInfo.townInfo.townId]),
+        await contractStore.getKtaPublic.read.townById([
+          userInfo.townInfo.townId,
+        ]),
       ),
     )
   }

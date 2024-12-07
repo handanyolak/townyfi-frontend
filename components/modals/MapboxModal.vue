@@ -77,7 +77,7 @@ const props = defineProps<MapboxModalProps>()
 const contractStore = useContractStore()
 const appOptionsStore = useAppOptionsStore()
 
-const { getKta, getKtaCaller } = storeToRefs(contractStore)
+const { getKtaPublic, getKtaCaller } = storeToRefs(contractStore)
 const { clearModalInfo, setModalInfo } = appOptionsStore
 
 const userGameStore = useUserGameStore()
@@ -94,7 +94,7 @@ const searchDebounced = useDebounce(search, 1000)
 
 // --------[ Hook ]-------- //
 onMounted(async () => {
-  addresses.value = await getKta.value.read.getAddressesByCoordinate([
+  addresses.value = await getKtaPublic.value.read.getAddressesByCoordinate([
     props.coordinate,
   ])
 })

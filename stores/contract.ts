@@ -10,7 +10,7 @@ export const useContractStore = defineStore('contractStore', () => {
   // --------[ Stores ]-------- //
   const userWalletStore = useUserWalletStore()
 
-  const { chainClient } = storeToRefs(userWalletStore)
+  const { chainClient, publicClient } = storeToRefs(userWalletStore)
 
   // --------[ States ]-------- //
   const getKtaToken = computed(() =>
@@ -20,6 +20,13 @@ export const useContractStore = defineStore('contractStore', () => {
       client: chainClient.value,
     }),
   )
+  const getKtaTokenPublic = computed(() =>
+    getContract({
+      address: ktaTokenAddress as Address,
+      abi: ktaTokenAbi,
+      client: publicClient.value,
+    }),
+  )
   const getKta = computed(() =>
     getContract({
       address: ktaAddress as Address,
@@ -27,11 +34,25 @@ export const useContractStore = defineStore('contractStore', () => {
       client: chainClient.value,
     }),
   )
+  const getKtaPublic = computed(() =>
+    getContract({
+      address: ktaAddress as Address,
+      abi: ktaAbi,
+      client: publicClient.value,
+    }),
+  )
   const getKtaGameChat = computed(() =>
     getContract({
       address: ktaGameChatAddress as Address,
       abi: ktaGameChatAbi,
       client: chainClient.value,
+    }),
+  )
+  const getKtaGameChatPublic = computed(() =>
+    getContract({
+      address: ktaGameChatAddress as Address,
+      abi: ktaGameChatAbi,
+      client: publicClient.value,
     }),
   )
   const getKtaTokenCaller = computed(
@@ -44,10 +65,13 @@ export const useContractStore = defineStore('contractStore', () => {
 
   return {
     getKtaToken,
+    getKtaTokenPublic,
     getKtaTokenCaller,
     getKta,
+    getKtaPublic,
     getKtaCaller,
     getKtaGameChat,
+    getKtaGameChatPublic,
     getKtaGameChatCaller,
   }
 })

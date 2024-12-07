@@ -190,13 +190,13 @@ const contractStore = useContractStore()
 const userWalletStore = useUserWalletStore()
 
 const { user, town } = storeToRefs(userGameStore)
-const { getKta, getKtaCaller } = storeToRefs(contractStore)
+const { getKtaPublic, getKtaCaller } = storeToRefs(contractStore)
 const { address } = storeToRefs(userWalletStore)
 
 // --------[ Data ]-------- //
 const nameRules = getBytes32Rule()
 // TODO: avoid any
-const addresses = await getKta.value.read.getCitizensByTownId([
+const addresses = await getKtaPublic.value.read.getCitizensByTownId([
   user.value.townInfo.townId as any,
 ])
 // TODO: avoid hardcoded values

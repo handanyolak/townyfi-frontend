@@ -3,7 +3,7 @@ import { addMethod, string, StringSchema } from 'yup'
 
 export default defineNuxtPlugin(() => {
   const contractStore = useContractStore()
-  const { getKta } = storeToRefs(contractStore)
+  const { getKtaPublic } = storeToRefs(contractStore)
 
   addMethod<StringSchema<string>>(
     string,
@@ -40,7 +40,7 @@ export default defineNuxtPlugin(() => {
   addMethod(string, 'townyIsRegistered', function () {
     return this.test(async (value, context) => {
       try {
-        return await getKta.value.read.isRegistered([
+        return await getKtaPublic.value.read.isRegistered([
           (value as Address) || zeroAddress,
         ])
       } catch (error: any) {

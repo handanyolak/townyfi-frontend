@@ -64,13 +64,29 @@ export const processAndPrintLog = async ({
   }
 
   if (refreshUserInfo) {
-    const userInfo = transformUser(
-      await contractStore.getKta.read.userByAddr([userWalletStore.address]),
+    let userInfo = transformUser(
+      await contractStore.getKtaPublic.read.userByAddr([
+        userWalletStore.address,
+      ]),
     )
+
+    let currentRetryCount = 0
+    while (
+      refreshUserInfoUntilCallback?.(userInfo) === false &&
+      currentRetryCount < 10
+    ) {
+      currentRetryCount++
+      userInfo = transformUser(
+        await contractStore.getKtaPublic.read.userByAddr([
+          userWalletStore.address,
+        ]),
+    )
+
+      await sleep(0.5 * 1000)
+    }
+
     await appOptionsStore.setUserInfo(userInfo)
   }
-
-  await callback?.()
 
   if (useToast) {
     const toastMsg = (toastMessage ? `${toastMessage}\n` : '') + eventMessage
