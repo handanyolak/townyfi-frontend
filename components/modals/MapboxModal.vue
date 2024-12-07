@@ -22,14 +22,14 @@
         <template #title>
           <div class="flex items-center">
             <button
-              class="mr-1 flex flex-col items-center rounded-md bg-towny-brown-dark-300 p-1 text-xs text-white"
+              class="mr-4 flex flex-col items-center rounded-md bg-towny-brown-dark-300 p-1 text-xs text-white"
               @click.stop="!isOwnAddress(_address) && attack(_address)"
             >
               <span>{{ isOwnAddress(_address) ? 'Self' : 'Attack' }}</span>
               <img src="@/assets/img/attack.svg" class="h-5 w-5" />
             </button>
 
-            <div class="text-xs">
+            <div class="text-shadow-none text-sm">
               {{ _address }}
             </div>
           </div>
