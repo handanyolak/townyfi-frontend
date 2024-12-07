@@ -2,6 +2,7 @@ import type { Log } from 'viem'
 import { TYPE } from 'vue-toastification'
 import { transformUser } from '../transformers'
 import { toCapitalizedWords } from './helper'
+import type { User } from '~/types'
 
 export const formatEventArgs = (eventArgs: any) => {
   let str = ''
@@ -38,17 +39,17 @@ export const processAndPrintLog = async ({
   logArgs,
   useToast,
   refreshUserInfo,
+  refreshUserInfoUntilCallback,
   addToLogMessages,
   toastMessage = '',
-  callback,
 }: {
   logName: string
   logArgs: any
   useToast: boolean
-  refreshUserInfo: boolean
+  refreshUserInfo?: boolean
+  refreshUserInfoUntilCallback?: (user: User) => boolean
   addToLogMessages: boolean
   toastMessage: string
-  callback?: () => void
 }) => {
   const appOptionsStore = useAppOptionsStore()
   const contractStore = useContractStore()
@@ -80,7 +81,7 @@ export const processAndPrintLog = async ({
         await contractStore.getKtaPublic.read.userByAddr([
           userWalletStore.address,
         ]),
-    )
+      )
 
       await sleep(0.5 * 1000)
     }

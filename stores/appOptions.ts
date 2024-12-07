@@ -20,8 +20,6 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
 
   const { hasMetamask, checkOnValidNetwork } = connectionStore
 
-  const { onValidNetwork } = storeToRefs(connectionStore)
-
   // --------[ States ]-------- //
   const isBlockchainInfo = ref(false)
   const isContractInfo = ref(false)
@@ -103,24 +101,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
 
     await checkOnValidNetwork()
 
-    if (hasMetamask && !onValidNetwork.value) {
-      try {
-        await userWalletStore.walletClient.switchChain({
-          id: userWalletStore.chainClient.chain.id,
-        })
-      } catch (error: any) {
-        const isUserRejected = error?.message
-          .toLowerCase()
-          .includes('user reject')
-        if (!isUserRejected) {
-          await userWalletStore.walletClient.addChain({
-            chain: userWalletStore.chainClient.chain,
-          })
-        }
-      }
-    }
-
-    if (onValidNetwork.value && !initialized.value) {
+    if (!initialized.value) {
       initialized.value = true
 
       const {
@@ -285,6 +266,9 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                   logArgs: args,
                   useToast: isUserAddress,
                   refreshUserInfo: isUserAddress,
+                  refreshUserInfoUntilCallback: (user) =>
+                    user.coordinate._x === newCoordinate._x &&
+                    user.coordinate._y === newCoordinate._y,
                   addToLogMessages: isNear,
                   toastMessage: 'You moved to new coordinate!',
                 })
@@ -318,6 +302,8 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                   logArgs: args,
                   useToast: isUserAddress,
                   refreshUserInfo: isUserAddress,
+                  refreshUserInfoUntilCallback: (user) =>
+                    user.levelId !== BigInt(0),
                   addToLogMessages: isUserAddress,
                   toastMessage: 'Welcome to TownyFi!',
                 })
@@ -344,16 +330,23 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                   defender,
                   userWalletStore.address,
                 )
+
                 const toastMessage = isUserAttacker
                   ? 'Your attack was dodged!'
                   : 'You dodged the attack!'
                 const isUserInvolved = isUserAttacker || isUserDefender
 
+                const userCurrent = isUserAttacker
+                  ? userGameStore.user
+                  : undefined
+
                 await processAndPrintLog({
                   logName: eventName,
                   logArgs: args,
                   useToast: isUserInvolved,
-                  refreshUserInfo: isUserInvolved,
+                  refreshUserInfo: isUserAttacker,
+                  refreshUserInfoUntilCallback: (user) =>
+                    userCurrent?.mana !== user.mana,
                   addToLogMessages: isUserInvolved,
                   toastMessage,
                 })
@@ -378,12 +371,19 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                   userWalletStore.address,
                 )
 
+                const userCurrent = isUserAddress
+                  ? userGameStore.user
+                  : undefined
+
                 const somethingStr = getEnumKeyByEnumValue(Get, something)
+                const somethingProp = somethingStr!.toLowerCase() as keyof User
                 await processAndPrintLog({
                   logName: eventName,
                   logArgs: args,
                   useToast: isUserAddress,
                   refreshUserInfo: isUserAddress,
+                  refreshUserInfoUntilCallback: (user) =>
+                    userCurrent?.[somethingProp] !== user[somethingProp],
                   addToLogMessages: isUserAddress,
                   toastMessage: `You got ${somethingStr ?? 'something'}!`,
                 })
@@ -416,11 +416,26 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                   : 'You were attacked!'
                 const isUserInvolved = isUserAttacker || isUserDefender
 
+                const userCurrent = isUserInvolved
+                  ? userGameStore.user
+                  : undefined
+
                 await processAndPrintLog({
                   logName: eventName,
                   logArgs: args,
                   useToast: isUserInvolved,
                   refreshUserInfo: isUserInvolved,
+                  refreshUserInfoUntilCallback: (user) => {
+                    if (isUserAttacker) {
+                      return userCurrent?.mana !== user.mana
+                    }
+
+                    if (isUserDefender) {
+                      return userCurrent?.health !== user.health
+                    }
+
+                    return false
+                  },
                   addToLogMessages: isUserInvolved,
                   toastMessage,
                 })
@@ -452,11 +467,12 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                   userGameStore.setWarLogInfo({ warLogs, winnerTownId })
                 }
 
+                userGameStore.setLastFetchedWar({ warLogs, winnerTownId })
+
                 await processAndPrintLog({
                   logName: eventName,
                   logArgs: filteredArgs,
                   useToast: isUserInvolved,
-                  refreshUserInfo: false,
                   addToLogMessages: true,
                   toastMessage,
                 })
@@ -513,7 +529,6 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                   logName: eventName,
                   logArgs: args,
                   useToast: isUserMentioned && !isUserAuthor,
-                  refreshUserInfo: false,
                   addToLogMessages: isUserMentioned && !isUserAuthor,
                   toastMessage: 'You got a message!',
                 })
@@ -548,7 +563,6 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                   logName: eventName,
                   logArgs: args,
                   useToast: true,
-                  refreshUserInfo: false,
                   addToLogMessages: true,
                   toastMessage: `You approved ${valueFormat} ${userWalletStore.ktaSymbol}!`,
                 })
@@ -578,6 +592,15 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                 )
                 const isUserInvolved = isUserSender || isUserReceiver
 
+                if (isUserInvolved) {
+                  const changeAmount = isUserSender
+                    ? BigInt(value) * BigInt(-1)
+                    : BigInt(value)
+                  userWalletStore.setKtaBalance(
+                    userWalletStore.ktaBalance + changeAmount,
+                  )
+                }
+
                 const valueFormat = formatUnits(
                   value,
                   userWalletStore.ktaDecimals,
@@ -591,7 +614,6 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                   logName: eventName,
                   logArgs: args,
                   useToast: isUserInvolved,
-                  refreshUserInfo: false,
                   addToLogMessages: isUserInvolved,
                   toastMessage,
                 })
