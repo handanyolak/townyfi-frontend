@@ -36,7 +36,7 @@
           @click="isEdit ? save() : edit()"
         />
       </div>
-      <div class="">
+      <div>
         <slot name="action" />
       </div>
       <div

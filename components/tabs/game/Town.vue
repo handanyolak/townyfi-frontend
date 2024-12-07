@@ -65,7 +65,7 @@
       <template #action>
         <AppButton
           v-if="isLeader"
-          class="w-[120px]"
+          class="w-32"
           basic-hover
           @click="settleTown()"
         >
@@ -93,7 +93,7 @@
       <template #action>
         <AppButton
           v-if="isLeader"
-          class="w-[120px]"
+          class="w-32"
           basic-hover
           @click="toggleRecruitment()"
         >
@@ -111,7 +111,7 @@
       </template>
     </ListItem>
 
-    <AppButton basic-hover class="mx-auto block" @click="leaveTown()">
+    <AppButton basic-hover class="mx-auto block w-32" @click="leaveTown()">
       Leave Town
     </AppButton>
     <ListTitle class="my-8">Citizens</ListTitle>
