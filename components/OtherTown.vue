@@ -128,11 +128,29 @@
         >
       </template>
     </ListItem>
-    <AppButton v-if="town.recruitment" class="my-3" @click="joinTown()"
-      >Join to {{ townName }}</AppButton
-    >
-    <AppButton class="my-3" @click="declareWar()">Declare War</AppButton>
-    <AppButton class="my-3" @click="townWar()">Town War</AppButton>
+    <div class="flex justify-between gap-4">
+      <AppButton
+        v-if="town.recruitment"
+        basic-hover
+        class="my-3 w-full"
+        @click="joinTown()"
+        >Join to {{ townName }}</AppButton
+      >
+      <AppButton
+        v-if="isCurrentUserLeader"
+        basic-hover
+        class="my-3 w-full"
+        @click="declareWar()"
+        >Declare War</AppButton
+      >
+      <AppButton
+        v-if="isCurrentUserLeader"
+        basic-hover
+        class="my-3 w-full"
+        @click="townWar()"
+        >Town War</AppButton
+      >
+    </div>
   </div>
 </template>
 
@@ -144,17 +162,21 @@ import ScrollableList from '~/components/common/ScrollableList.vue'
 import AppButton from '~/components/common/AppButton.vue'
 import { transformTown } from '~/transformers'
 
-// --------[ Props & Emits ]-------- //
+// --------[ Prop & Emit ]-------- //
 interface OtherTownProps {
   id: bigint
 }
 const props = defineProps<OtherTownProps>()
 
-// --------[ Stores ]-------- //
+// --------[ Store ]-------- //
 const userGameStore = useUserGameStore()
-const contractStore = useContractStore()
+const { town: currentUserTown } = storeToRefs(userGameStore)
 
+const contractStore = useContractStore()
 const { getKtaPublic, getKtaCaller } = storeToRefs(contractStore)
+
+const userWalletStore = useUserWalletStore()
+const { address: currentUserAddress } = storeToRefs(userWalletStore)
 
 // --------[ Data ]-------- //
 const town = ref(userGameStore.town)
@@ -169,13 +191,17 @@ const expired = ref(3743879)
 // --------[ Computed ]-------- //
 const leader = computed(() => middleCropping(town.value.leader))
 
+const isCurrentUserLeader = computed(
+  () => currentUserAddress.value === currentUserTown.value.leader,
+)
+
 const citizenAddresses = computed(() =>
   addresses.value.map((address) => middleCropping(address)),
 )
 
 const townName = computed(() => hexToString(town.value.name, { size: 32 }))
 
-// --------[ Hooks ]-------- //
+// --------[ Hook ]-------- //
 onMounted(async () => {
   town.value = transformTown(await getKtaPublic.value.read.townById([props.id]))
 
@@ -186,6 +212,7 @@ onMounted(async () => {
   }
 })
 
+// --------[ Method ]-------- //
 const joinTown = async () => {
   await getKtaCaller.value.callFunction({
     type: 'write',
