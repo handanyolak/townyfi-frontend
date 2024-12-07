@@ -1,7 +1,16 @@
 <template>
   <div class="flex justify-between py-5">
-    <div v-if="onValidNetwork">
+    <div>
       <div v-if="isConnected" class="flex flex-col gap-3 md:flex-row">
+        <AppButton
+          v-if="!onValidNetwork"
+          target="_blank"
+          border
+          border-hover
+          @click="switchOrAddNetwork()"
+        >
+          Switch Network
+        </AppButton>
         <AppButton
           v-if="!isRegistered"
           border-hover
@@ -17,19 +26,11 @@
         Connect Wallet
       </AppButton>
     </div>
-    <AppButton
-      v-else
-      target="_blank"
-      border
-      border-hover
-      @click="switchOrAddNetwork()"
-    >
-      Switch Network
-    </AppButton>
   </div>
 </template>
 
 <script setup lang="ts">
+import { UserRejectedRequestError } from 'viem'
 import AppButton from '~/components/common/AppButton.vue'
 import { $t } from '~/composables/useLang'
 
@@ -54,9 +55,16 @@ const switchOrAddNetwork = async () => {
       id: walletClient.value.chain.id,
     })
   } catch (error) {
-    await walletClient.value.addChain({
-      chain: walletClient.value.chain,
-    })
+    try {
+      if (!(error instanceof UserRejectedRequestError)) {
+        console.log(error)
+        await userWalletStore.walletClient.addChain({
+          chain: walletClient.value.chain,
+        })
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
 }
 </script>
