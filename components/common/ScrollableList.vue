@@ -17,7 +17,7 @@
         <AppButton
           v-if="actionable"
           basic-hover
-          class="w-[120px]"
+          class="w-32"
           @click="actionValue?.action(copyValue[index], item)"
           >{{ actionValue?.name }}
         </AppButton>
