@@ -2,13 +2,38 @@
   <div class="container flex h-screen items-center justify-center">
     <AppButton @click="startWar()"> War </AppButton>
     <SidebarTriggerButtons />
-    <ChatAndLogBox v-if="onValidNetwork" />
+
     <div
-      v-if="onValidNetwork && !isLoading"
+      v-if="!isLoading"
       class="map-frame flex items-center justify-center p-2 lg:p-20"
     >
-      <Map v-if="onValidNetwork" ref="mapElement" />
+      <Map ref="mapElement" />
     </div>
+    <AppButton
+      class="scale-animate absolute bottom-16 flex text-lg md:text-xl"
+      @click="startLastFetchedWar()"
+    >
+      <div class="flex items-center">
+        <client-only>
+          <Vue3Lottie
+            class="cursor-pointer"
+            :animation-data="StartWar"
+            :height="55"
+            :width="55"
+          />
+        </client-only>
+        <span>Watch Last War of the Game!</span>
+        <client-only>
+          <Vue3Lottie
+            class="cursor-pointer"
+            :animation-data="StartWar"
+            :height="55"
+            :width="55"
+          />
+        </client-only>
+      </div>
+    </AppButton>
+    <ChatAndLogBox v-if="onValidNetwork" />
     <TheLoading v-if="isLoading" full-screen />
     <AppModal
       :modal-size="dynamicModalSize"
@@ -30,13 +55,14 @@
 </template>
 
 <script setup lang="ts">
+import { Vue3Lottie } from 'vue3-lottie'
 import TheLoading from '~/components/common/TheLoading.vue'
 import Map from '~/components/map/Map.vue'
 import AppModal from '~/components/common/AppModal.vue'
 import ChatAndLogBox from '~/components/chatAndLog/ChatAndLogBox.vue'
 import SidebarTriggerButtons from '~/components/SidebarTriggerButtons.vue'
 import AppButton from '~/components/common/AppButton.vue'
-import type { Modal } from '~/types'
+import StartWar from '~/assets/lotties/start-war.json'
 
 // --------[ Stores ]-------- //
 const appOptionsStore = useAppOptionsStore()
@@ -60,71 +86,6 @@ const { width } = useElementSize(mapElement)
 // --------[ Hooks ]-------- //
 onMounted(async () => {
   await initializeApp()
-  // const settings_ = {
-  //   max: {
-  //     health: 100,
-  //     mana: 125,
-  //     energy: 150,
-  //     armor: 200,
-  //     teleportDistance: 50,
-  //     killArmorRewardLimit: 3,
-  //     safeTownDistance: 100,
-  //     safeTownDifference: 100,
-  //     safeZoneDistance: 4,
-  //     safeZoneDifference: 10000,
-  //     attackDistance: 1,
-  //     levelDifference: 2,
-  //   },
-  //   price: {
-  //     health: 5,
-  //     mana: 50,
-  //     energy: 3,
-  //     armor: 15,
-  //     revive: 50,
-  //     register: 500,
-  //     teleport: 1,
-  //     createTown: 0,
-  //     settleTown: 2500,
-  //     teleportToTown: 250,
-  //     prepareAttack: 100,
-  //     prepareDefend: 50,
-  //   },
-  //   rate: {
-  //     getHealth: 90,
-  //     getMana: 60,
-  //     getEnergy: 30,
-  //     registerReferralReward: 10,
-  //     armorAbsorption: 2,
-  //     attack: 5,
-  //     movement: 1,
-  //   },
-  //   time: {
-  //     revive: 17280,
-  //     teleport: 60,
-  //     teleportToTown: 720,
-  //     attackableAt: 720,
-  //     warExpiredAt: 360,
-  //     protectionAt: 720,
-  //     prepareToAttack: 30,
-  //   },
-  //   min: {
-  //     levelToCreateTown: 0,
-  //     townAreaRadius: 1,
-  //   },
-  //   exp: {
-  //     kill: 50,
-  //     referrerKill: 1,
-  //   },
-  //   multiplier: {
-  //     attack: 5,
-  //     resistance: 2,
-  //   },
-  //   numberDigits: 1,
-  // }
-  // setTimeout(async () => {
-  //   await getKta.value.write.updateSettings([settings_ as any])
-  // }, 1000)
-  // const deneme = await getKta.value.read.settings()
 })
 
 // --------[ Computed ]-------- //
@@ -141,6 +102,10 @@ const dynamicModalSize = computed(() => {
 })
 
 const startWar = () => {
+  setModalInfo('WarModal', { sizeMultiplier: 1.4, watchUserWar: true })
+}
+
+const startLastFetchedWar = () => {
   setModalInfo('WarModal', { sizeMultiplier: 1.4 })
 }
 </script>
@@ -154,5 +119,26 @@ const startWar = () => {
   background-image: url('~/assets/img/map-background.svg');
   background-repeat: no-repeat;
   background-size: 100% 100%;
+}
+
+.scale-animate {
+  box-shadow: 0px 0px 15px 2px rgba(198, 100, 50, 0.8);
+  transform: scale(1);
+  animation: scaleEffect 4s infinite ease-in-out;
+  transition: transform 0.3s ease;
+}
+
+.scale-animate:hover {
+  transform: scale(1.1);
+}
+
+@keyframes scaleEffect {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
 }
 </style>
