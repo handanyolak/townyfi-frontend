@@ -119,8 +119,13 @@
         >
       </template>
     </ListItem>
-    <ListTitle class="my-8 py-5">Town Info</ListTitle>
-    <OtherTown v-if="townId" :id="townId" />
+    <div v-if="townId">
+      <ListTitle
+        class="mb-10 mt-20 bg-towny-brown-dark-600 p-4 shadow-lg shadow-towny-brown-dark-400"
+        >Town Info</ListTitle
+      >
+      <OtherTown :id="townId" />
+    </div>
   </div>
 </template>
 
@@ -139,13 +144,13 @@ const {
   public: { chainBlockTime },
 } = useRuntimeConfig()
 
-// --------[ Props & Emits ]-------- //
+// --------[ Prop & Emit ]-------- //
 interface UserProps {
   address: Address
 }
 const props = defineProps<UserProps>()
 
-// --------[ Stores ]-------- //
+// --------[ Store ]-------- //
 const userGameStore = useUserGameStore()
 const contractStore = useContractStore()
 const userWalletStore = useUserWalletStore()
@@ -167,7 +172,7 @@ const referrerAddress = user.value.referrer as string
 const userName = computed(() => hexToString(user.value.name, { size: 32 }))
 const referrer = computed(() => middleCropping(referrerAddress))
 
-// --------[ Hooks ]-------- //
+// --------[ Hook ]-------- //
 onMounted(async () => {
   isDataLoading.value = true
   user.value = transformUser(
@@ -179,7 +184,7 @@ onMounted(async () => {
   isDataLoading.value = false
 })
 
-// --------[ Methods ]-------- //
+// --------[ Method ]-------- //
 const convert = (isConvert: boolean, propertyName: keyof UserTimer) => {
   if (isConvert) {
     timer.value[propertyName] =
