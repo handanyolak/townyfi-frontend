@@ -30,6 +30,7 @@ export const useUserGameStore = defineStore('userGameStore', () => {
   const town = ref<Town>(null as unknown as Town)
   const settings = ref<Settings>(null as unknown as Settings)
   const warLogInfo = ref<WarLogInfo>(townWar as unknown as WarLogInfo)
+  const lastFetchedWar = ref<WarLogInfo>(townWar as unknown as WarLogInfo)
 
   // TODO: move to app options store
   const nearLevel = useStorage('nearLevel', 3)
@@ -57,6 +58,10 @@ export const useUserGameStore = defineStore('userGameStore', () => {
 
   const setWarLogInfo = (newWarLogInfo: WarLogInfo) => {
     warLogInfo.value = newWarLogInfo
+  }
+
+  const setLastFetchedWar = (newLastFetchedWar: WarLogInfo) => {
+    lastFetchedWar.value = newLastFetchedWar
   }
 
   const setNearLevel = (newNearLevel: number) => {
@@ -146,7 +151,6 @@ export const useUserGameStore = defineStore('userGameStore', () => {
       addressesByCoordinate.value,
     )
     appOptionsStore.setOriginCoordinate(middleCoordinate)
-
     if (!getDataFromChain) {
       isLoading.value = false
 
@@ -217,6 +221,8 @@ export const useUserGameStore = defineStore('userGameStore', () => {
     town,
     warLogInfo,
     setWarLogInfo,
+    lastFetchedWar,
+    setLastFetchedWar,
     setSettings,
     setNearLevel,
     setIsRegistered,
