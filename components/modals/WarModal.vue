@@ -212,9 +212,19 @@ import AppButton from '~/components/common/AppButton.vue'
 import WarAnimation from '~/components/war/WarAnimation.vue'
 import { transformTown, transformUser } from '~/transformers'
 
+const props = defineProps<{
+  watchUserWar?: boolean
+  sizeMultiplier: number
+}>()
+
 // --------[ Store ]-------- //
 const userGameStore = useUserGameStore()
-const { warLogInfo, user } = userGameStore
+const {
+  warLogInfo: userWarLogInfo,
+  lastFetchedWar: gameWarLogInfo,
+  user,
+} = userGameStore
+const warLogInfo = props.watchUserWar ? userWarLogInfo : gameWarLogInfo
 const lottieInstance = ref<any>(null)
 const currentIndex = ref(0)
 const currentDamage = ref(
@@ -440,9 +450,8 @@ onMounted(() => {
     addresses.push(defender)
   }
 
-  const uniqAddressess = Array.from(new Set(addresses))
-
-  fetchUserInfos(uniqAddressess)
+  const uniqAddresses = Array.from(new Set(addresses))
+  fetchUserInfos(uniqAddresses)
 })
 </script>
 
