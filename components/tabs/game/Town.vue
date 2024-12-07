@@ -111,7 +111,9 @@
       </template>
     </ListItem>
 
-    <AppButton @click="leaveTown()"> Leave Town </AppButton>
+    <AppButton basic-hover class="mx-auto block" @click="leaveTown()">
+      Leave Town
+    </AppButton>
     <ListTitle class="my-8">Citizens</ListTitle>
     <ScrollableList
       :items="citizenAddresses"
