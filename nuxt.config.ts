@@ -55,6 +55,7 @@ export default defineNuxtConfig({
       chainBlockTime: convertToInteger(process.env.NUXT_CHAIN_BLOCK_TIME, 5),
       minNearLevel: convertToInteger(process.env.NUXT_MIN_NEAR_LEVEL, 2),
       maxNearLevel: convertToInteger(process.env.NUXT_MAX_NEAR_LEVEL, 5),
+      publicRpcUrls: process.env.NUXT_PUBLIC_RPC_URLS?.split(',') || [],
     },
   },
 

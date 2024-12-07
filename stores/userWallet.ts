@@ -8,6 +8,7 @@ import {
   createPublicClient,
   formatUnits,
   http,
+  fallback,
 } from 'viem'
 import * as chains from 'viem/chains'
 import { TYPE } from 'vue-toastification'
@@ -18,7 +19,7 @@ import { $t } from '~/composables/useLang'
 export const useUserWalletStore = defineStore('userWalletStore', () => {
   // --------[ Nuxt ]-------- //
   const {
-    public: { chain: runtimeChain },
+    public: { chain: runtimeChain, publicRpcUrls },
   } = useRuntimeConfig()
 
   // --------[ Stores ]-------- //
@@ -46,7 +47,7 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
   const publicClient = computed(() =>
     createPublicClient({
       chain,
-      transport: http(chain.rpcUrls.default.http[0]),
+      transport: fallback(publicRpcUrls.map((url) => http(url))),
       batch: {
         multicall: true,
       },
@@ -156,6 +157,7 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
     balance,
     chain,
     chainClient,
+    publicClient,
     walletClient,
     ktaSymbol,
     ktaDecimals,
