@@ -24,30 +24,37 @@
       </template>
     </ListItem>
     <AppButton
-      v-if="ktaAllowance <= BigInt(settings.price.register ?? 0)"
+      v-if="
+        ktaAllowance <= BigInt(settings.price.register ?? 0) &&
+        ktaBalance > BigInt(settings.price.register ?? 0)
+      "
       :is-loading="currentLoadingState === LoadingState.Approving"
       class="my-3"
       @click="userApprove()"
       >Approve
     </AppButton>
     <AppButton
-      v-else
+      v-if="ktaAllowance > BigInt(settings.price.register ?? 0)"
       :is-loading="currentLoadingState === LoadingState.Registering"
       class="my-3"
       @click="userRegister()"
       >Register
     </AppButton>
+
     <AppButton
-      :is-loading="currentLoadingState === LoadingState.AddingToken"
-      class="my-3"
-      @click="addKtaTokenToWallet()"
-      >Add Token to Metamask</AppButton
-    >
-    <AppButton
+      v-if="ktaBalance <= BigInt(settings.price.register ?? 0)"
       :is-loading="currentLoadingState === LoadingState.Minting"
       class="my-3"
       @click="mintKtaToken()"
       >Mint Token</AppButton
+    >
+
+    <AppButton
+      v-if="!isKtaTokenAdded"
+      :is-loading="currentLoadingState === LoadingState.AddingToken"
+      class="absolute bottom-12"
+      @click="addKtaTokenToWallet()"
+      >Add Token to Metamask</AppButton
     >
   </div>
 </template>
@@ -70,7 +77,7 @@ const {
   public: { ktaAddress },
 } = useRuntimeConfig()
 
-// --------[ Stores ]-------- //
+// --------[ Store ]-------- //
 const userWalletStore = useUserWalletStore()
 const userGameStore = useUserGameStore()
 const appOptionsStore = useAppOptionsStore()
@@ -92,13 +99,14 @@ const { settings } = storeToRefs(userGameStore)
 // --------[ Data ]-------- //
 const name = ref('')
 const referrer = ref('')
+const isKtaTokenAdded = ref(false)
 const currentLoadingState = ref(LoadingState.Idle)
 const referrerRules = getAddressRule()
 const nameRules = getBytes32Rule({
   required: true,
 })
 
-// --------[ Methods ]-------- //
+// --------[ Method ]-------- //
 const userRegister = async () => {
   currentLoadingState.value = LoadingState.Registering
   try {
@@ -159,6 +167,7 @@ const addKtaTokenToWallet = async () => {
         decimals: ktaDecimals.value,
       },
     })
+    isKtaTokenAdded.value = true
   } catch (error) {
     useAppToast(TYPE.ERROR, 'Something went wrong')
   } finally {
@@ -172,7 +181,7 @@ const mintKtaToken = async () => {
     await getKtaTokenCaller.value.callFunction({
       type: 'write',
       name: 'mint',
-      args: [[address.value, 10000n]],
+      args: [[address.value, 1000n]],
       needRegister: false,
     })
   } catch (error) {
