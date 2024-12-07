@@ -103,9 +103,7 @@ const pulseColor = computed(() => {
 })
 
 const backgroundClass = computed(() => {
-  if (isRegistered.value && isCoordinateOfUser.value && hasTown.value) {
-    return 'knight bg-knight'
-  } else if (isRegistered.value && isCoordinateOfUser.value) {
+  if (isRegistered.value && isCoordinateOfUser.value) {
     return 'knight bg-knight'
   }
   return hasTown.value ? 'items-start' : ''
@@ -127,6 +125,10 @@ const showCoordinates = () => {
 const hideCoordinates = () => {
   isHovering.value = false
 }
+
+onMounted(() => {
+  getUserCountByCoordinate.value.get(getMapKey.value)
+})
 </script>
 
 <style scoped>
