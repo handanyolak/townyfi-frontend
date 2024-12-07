@@ -18,7 +18,7 @@
       </SidebarButton>
     </div>
 
-    <div class="absolute top-[62px] block w-full md:hidden">
+    <div class="absolute left-0 top-[62px] block w-full md:hidden">
       <div class="mx-2 grid grid-cols-4 gap-x-2">
         <SidebarButton
           v-for="menu in desktopMenus"
