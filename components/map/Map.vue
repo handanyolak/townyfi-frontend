@@ -1,7 +1,7 @@
 <template>
   <div
-    class="fire-shadow-box relative overflow-hidden md:max-w-[70%]"
-    :style="mapSizeStyle"
+    class="fire-shadow-box relative min-w-full overflow-hidden md:min-w-min md:max-w-[70%]"
+    :style="`width: ${mapSize}%`"
   >
     <section
       ref="mapElement"
