@@ -58,7 +58,7 @@ import UserAccessManager from '~/components/UserAccessManager.vue'
 import AppButton from '~/components/common/AppButton.vue'
 import AppTour from '~/components/AppTour.vue'
 import { getAddressRule } from '~/composables/useYupRules'
-import { STEPS } from '~/constants/tour-steps'
+import { STEPS } from '~/constants'
 
 // --------[ Store ]-------- //
 const connectionStore = useConnectionStore()
