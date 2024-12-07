@@ -9,7 +9,6 @@
       tabindex="0"
       @keyup="handleKeyNavigation"
       @wheel="onWheel($event)"
-      @blur="handleBlur"
     >
       <div
         class="relative grid overflow-hidden rounded-lg border-[10px] border-towny-brown-dark-600"
@@ -22,7 +21,6 @@
         <Mapbox
           v-for="(item, index) in addressesByCoordinate"
           :key="index"
-          v-memo="[item]"
           :item="item"
           :emit-ready-event="index === 0"
           class="select-none"
@@ -58,8 +56,7 @@
 </template>
 
 <script setup lang="ts">
-import { useWindowSize } from '@vueuse/core'
-import { useDrag } from '@vueuse/gesture'
+import { useDrag, type EventTypes, type Handler } from '@vueuse/gesture'
 import Mapbox from '~/components/map/Mapbox.vue'
 import { MAX_PIXEL_VALUE } from '~/constants'
 import MoveControls from '~/components/map/MoveControls.vue'
@@ -68,16 +65,18 @@ import ReturnBackControls from '~/components/map/ReturnBackControls.vue'
 import NavigateControls from '~/components/map/NavigateControls.vue'
 import MapMenu from '~/components/map/MapMenu.vue'
 import MapMenuButton from '~/components/map/MapMenuButton.vue'
-import { NavigateDirection } from '~/enums'
+import { Direction } from '~/enums'
 
 // --------[ Store ]-------- //
 const userGameStore = useUserGameStore()
 const appOptionsStore = useAppOptionsStore()
+const contractStore = useContractStore()
 
 const { setModalInfo } = appOptionsStore
 const { setUserCoordinate, setNearLevelByCalculatingCoordinates } =
   userGameStore
 
+const { getKtaCaller } = storeToRefs(contractStore)
 const { addressesByCoordinate, nearLevel } = storeToRefs(userGameStore)
 const { originCoordinate } = storeToRefs(appOptionsStore)
 
@@ -91,7 +90,6 @@ const mapElement = ref<HTMLElement | null>(null)
 const navigation = ref<HTMLElement | null>(null)
 const { width } = useElementSize(mapElement)
 const mapSize = useLocalStorage('mapSize', 50)
-const { width: windowWidth } = useWindowSize()
 
 interface Menu {
   position: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
@@ -136,11 +134,6 @@ const mapStyle = computed(() => {
   }
 })
 
-const mapSizeStyle = computed(() => {
-  const dynamicWidth = windowWidth.value <= 768 ? '100%' : `${mapSize.value}%`
-  return `width: ${dynamicWidth}`
-})
-
 const menuSizeStyle = computed(() => {
   const baseWidthDivisor = 1.75
   const baseHeightDivisor = 1.25
@@ -173,49 +166,39 @@ const onWheel = (event: WheelEvent) => {
   setNearLevelByCalculatingCoordinates(newNearLevel)
 }
 
-const navigateByArrowKeys = (direction: NavigateDirection) => {
+const handleKeyNavigation = async ({ key, shiftKey }: KeyboardEvent) => {
   let { _x, _y } = originCoordinate.value
-
   const navigateValue = 1n
+  let direction
 
-  switch (direction) {
-    case NavigateDirection.Up:
+  switch (key) {
+    case 'ArrowUp':
       _y += navigateValue
+      direction = Direction.Up
       break
-    case NavigateDirection.Right:
+    case 'ArrowRight':
       _x += navigateValue
+      direction = Direction.Right
       break
-    case NavigateDirection.Down:
+    case 'ArrowDown':
       _y -= navigateValue
+      direction = Direction.Down
       break
-    case NavigateDirection.Left:
+    case 'ArrowLeft':
       _x -= navigateValue
+      direction = Direction.Left
       break
-    default:
-      console.error('Invalid direction:', direction)
-      break
+  }
+
+  if (shiftKey && direction !== undefined) {
+    await getKtaCaller.value.callFunction({
+      type: 'write',
+      name: 'move',
+      args: [[direction]],
+    })
   }
 
   setUserCoordinate({ _x, _y })
-}
-
-const handleKeyNavigation = (event: KeyboardEvent) => {
-  switch (event.key) {
-    case 'ArrowUp':
-      navigateByArrowKeys(NavigateDirection.Up)
-      break
-    case 'ArrowRight':
-      navigateByArrowKeys(NavigateDirection.Right)
-      break
-    case 'ArrowDown':
-      navigateByArrowKeys(NavigateDirection.Down)
-      break
-    case 'ArrowLeft':
-      navigateByArrowKeys(NavigateDirection.Left)
-      break
-    default:
-      console.log('Key not handled:', event.key)
-  }
 }
 
 const calculateNewCoordinates = (movement: [number, number]) => {
@@ -228,13 +211,14 @@ const calculateNewCoordinates = (movement: [number, number]) => {
   }
 }
 
-const dragHandler = ({
+const dragHandler: Handler<'drag', EventTypes['drag']> = ({
+  elapsedTime,
   movement,
   last,
-}: {
-  movement: [number, number]
-  last: boolean
 }) => {
+  if (elapsedTime < 150) {
+    return
+  }
   const newCoordinates = calculateNewCoordinates(movement)
   setUserCoordinate(newCoordinates, last)
 }
@@ -244,10 +228,6 @@ useDrag(dragHandler, {
   filterTaps: true,
 })
 
-const handleBlur = () => {
-  mapElement.value?.focus()
-}
-
 const toggleMenuVisibility = (position: string) => {
   menus.value = menus.value.map((menu) =>
     menu.position === position
@@ -255,13 +235,6 @@ const toggleMenuVisibility = (position: string) => {
       : { ...menu, isVisible: false },
   )
 }
-
-// --------[ Hook ]-------- //
-onMounted(() => {
-  mapElement.value = markRaw(
-    document.querySelector('.map-container') as HTMLElement,
-  )
-})
 </script>
 
 <style scoped>
