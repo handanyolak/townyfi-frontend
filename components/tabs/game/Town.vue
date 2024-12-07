@@ -134,6 +134,9 @@
       </template>
     </ListItem>
     <ListTitle class="my-8">War</ListTitle>
+    <AppButton basic-hover class="mx-auto block" @click="startWar()">
+      Watch Last Town War
+    </AppButton>
     <ListItem title="Attacker:" tooltip>
       <span>{{ attacker }}</span>
       <template #tooltip>
@@ -184,14 +187,18 @@ import AppButton from '~/components/common/AppButton.vue'
 import { TownStatus } from '~/enums'
 import { getBytes32Rule } from '~/composables/useYupRules'
 
-// --------[ Stores ]-------- //
+// --------[ Store ]-------- //
 const userGameStore = useUserGameStore()
-const contractStore = useContractStore()
-const userWalletStore = useUserWalletStore()
-
 const { user, town } = storeToRefs(userGameStore)
+
+const contractStore = useContractStore()
 const { getKtaPublic, getKtaCaller } = storeToRefs(contractStore)
+
+const userWalletStore = useUserWalletStore()
 const { address } = storeToRefs(userWalletStore)
+
+const appOptionStore = useAppOptionsStore()
+const { setModalInfo } = appOptionStore
 
 // --------[ Data ]-------- //
 const nameRules = getBytes32Rule()
@@ -219,7 +226,7 @@ const buttonLabel = computed(() =>
   town.value.status === TownStatus[0] ? 'Settle' : 'Voyage',
 )
 
-// --------[ Methods ]-------- //
+// --------[ Method ]-------- //
 const settleTown = async () => {
   await getKtaCaller.value.callFunction({
     type: 'write',
@@ -247,5 +254,9 @@ const kickCitizen = async (item: string) => {
     name: 'exileCitizen',
     args: [[item as Address]], // FIXME: type casting
   })
+}
+
+const startWar = () => {
+  setModalInfo('WarModal', { sizeMultiplier: 1.4, watchUserWar: true })
 }
 </script>

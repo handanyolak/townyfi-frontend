@@ -1,6 +1,5 @@
 <template>
   <div class="container flex h-screen items-center justify-center">
-    <AppButton @click="startWar()"> War </AppButton>
     <SidebarTriggerButtons />
 
     <div
@@ -100,10 +99,6 @@ const dynamicModalSize = computed(() => {
   const props: any = modalComponentProps.value
   return (width.value * (props?.sizeMultiplier ?? 1) + 20).toString()
 })
-
-const startWar = () => {
-  setModalInfo('WarModal', { sizeMultiplier: 1.4, watchUserWar: true })
-}
 
 const startLastFetchedWar = () => {
   setModalInfo('WarModal', { sizeMultiplier: 1.4 })
