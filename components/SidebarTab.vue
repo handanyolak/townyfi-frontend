@@ -31,7 +31,7 @@
     <div class="w-full">
       <Component
         :is="currentComponent"
-        class="tab"
+        class="tab grid grid-cols-1"
         :data="currentTabData"
       ></Component>
     </div>
