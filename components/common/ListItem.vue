@@ -1,42 +1,48 @@
 <template>
-  <div class="group my-4 flex p-1 text-sm shadow-towny-400 md:text-base">
-    <div class="flex items-center">
+  <div
+    class="group relative grid grid-cols-1 p-1 py-4 text-sm shadow-towny-400 md:grid-cols-4 md:text-base"
+  >
+    <div class="botom-1/2 absolute -left-4 top-1/2 -translate-y-1/2">
       <Tooltip v-if="tooltip">
         <slot name="tooltip" />
       </Tooltip>
-      <span class="font-semibold text-[#8b4513cc]">
-        {{ title }}
-      </span>
     </div>
-    <div class="flex flex-1 items-center justify-between">
-      <div class="flex w-full">
-        <div v-if="isEdit || input" class="mx-1 w-full">
-          <slot name="item" />
-        </div>
-        <span
-          v-else
-          class="mx-1 flex w-full items-center px-1 text-towny-brown-dark-600"
-        >
-          <slot />
-          <div v-if="isSupported && copiable" class="ml-2">
-            <Tooltip
-              :icon-name="copied ? 'uil:check-circle' : 'uil:copy'"
-              auto-close
-              @action="copied || copy(copyValue)"
-            >
-              <span> Copied! </span>
-            </Tooltip>
-          </div>
+    <div class="col-span-3 flex items-center">
+      <div class="flex w-full justify-center md:justify-start">
+        <span class="font-semibold text-[#8b4513cc]">
+          {{ title }}
         </span>
+        <div class="flex">
+          <div v-if="isEdit || input" class="mx-1 w-full">
+            <slot name="item" />
+          </div>
+          <span
+            v-else
+            class="mx-1 flex w-full items-center px-1 text-towny-brown-dark-600"
+          >
+            <slot />
+            <div v-if="isSupported && copiable" class="ml-2">
+              <Tooltip
+                :icon-name="copied ? 'uil:check-circle' : 'uil:copy'"
+                auto-close
+                @action="copied || copy(copyValue)"
+              >
+                <span> Copied! </span>
+              </Tooltip>
+            </div>
+          </span>
+          <div v-if="editable">
+            <Icon
+              :name="isEdit ? 'uil:check-circle' : 'uil:edit'"
+              class="h-4 w-4 cursor-pointer text-towny-brown-dark-300 opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
+              @click="isEdit ? save() : edit()"
+            />
+          </div>
+        </div>
       </div>
-      <div v-if="editable">
-        <Icon
-          :name="isEdit ? 'uil:check-circle' : 'uil:edit'"
-          class="h-4 w-4 cursor-pointer text-towny-brown-dark-300 opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
-          @click="isEdit ? save() : edit()"
-        />
-      </div>
-      <div>
+    </div>
+    <div class="flex items-center justify-center md:justify-end">
+      <div class="mt-2 flex justify-center md:mt-0">
         <slot name="action" />
       </div>
       <div
@@ -111,7 +117,7 @@ const convert = () => {
 }
 </script>
 
-<style scoped>
+<style lang="postcss" scoped>
 :deep(input) {
   @apply w-full rounded-sm bg-towny-brown-dark-300 bg-opacity-20 px-1 text-towny-brown-dark-600 outline-none backdrop-blur;
 }
