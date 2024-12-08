@@ -52,6 +52,7 @@ module.exports = {
           600: '#3f2007',
         },
         'night-blue': '#0a0a16',
+        'error-red': '#a6301b',
       },
       height: {
         '5v': '5vh',
