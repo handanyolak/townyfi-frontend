@@ -111,7 +111,11 @@
       </template>
     </ListItem>
 
-    <AppButton basic-hover class="mx-auto block w-32" @click="leaveTown()">
+    <AppButton
+      basic-hover
+      class="mx-auto mt-5 block w-full"
+      @click="leaveTown()"
+    >
       Leave Town
     </AppButton>
     <ListTitle class="my-8">Citizens</ListTitle>
@@ -136,7 +140,11 @@
       </template>
     </ListItem>
     <ListTitle class="my-8">War</ListTitle>
-    <AppButton basic-hover class="mx-auto block" @click="startWar()">
+    <AppButton
+      basic-hover
+      class="mx-auto my-5 block w-full"
+      @click="startWar()"
+    >
       Watch Last Town War
     </AppButton>
     <ListItem title="Attacker:" tooltip>
