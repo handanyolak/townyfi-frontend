@@ -3,7 +3,7 @@
     <Icon
       :name="iconName"
       :class="[
-        'mr-1 h-4 w-4 cursor-pointer text-towny-brown-dark-300 opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100',
+        'mr-1 h-4 w-4 cursor-pointer text-towny-brown-dark-400 opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100',
         iconClasses,
       ]"
       @click="actionTooltip()"
