@@ -4,7 +4,7 @@ import plugin from 'tailwindcss/plugin'
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   mode: 'jit',
-  darkMode: 'class',
+  darkMode: 'selector',
   content: [
     './components/**/*.{js,vue,ts}',
     './layouts/**/*.vue',
@@ -21,6 +21,12 @@ module.exports = {
     {
       pattern: /gap-[xy]-\d+/,
       variants: ['sm', 'md', 'lg', 'xl', '2xl'],
+    },
+    {
+      pattern: /translate-[xy]-\d+/,
+    },
+    {
+      pattern: /-translate-[xy]-\d+/,
     },
   ],
   theme: {
