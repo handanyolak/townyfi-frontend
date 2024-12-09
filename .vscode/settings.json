@@ -5,9 +5,11 @@
   "editor.formatOnSave": true,
   "typescript.tsdk": "node_modules/typescript/lib",
   "css.lint.unknownAtRules": "ignore",
+  "scss.lint.unknownAtRules": "ignore",
   "vue.autoInsert.dotValue": true,
   "vue.inlayHints.inlineHandlerLeading": true,
   "vue.inlayHints.missingProps": true,
   "vue.inlayHints.optionsWrapper": true,
   "liveServer.settings.AdvanceCustomBrowserCmdLine": "chrome",
+  "liveshare.allowGuestDebugControl": true
 }
