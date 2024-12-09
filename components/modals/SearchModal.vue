@@ -39,6 +39,7 @@
             :name="findOptions[currentFindOption]"
             :placeholder="placeholders[findOptions[currentFindOption]]"
             :rules="rules[findOptions[currentFindOption]]"
+            validate-on-input
             @input="search()"
           />
           <VeeErrorMessage
