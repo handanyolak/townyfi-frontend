@@ -19,7 +19,7 @@ export type Town = {
   recruitment: boolean
   status: string
   mode: string
-  protectionAt: BlockNumberStruct
+  protectionAt: bigint
 }
 
 export type UserTownInfo = {
@@ -131,6 +131,13 @@ export type Settings = {
   exp: SettingsExp
   multiplier: SettingsMultiplier
   numberDigits: bigint
+}
+
+export type War = {
+  attackerTownId: bigint
+  defenderTownId: bigint
+  attackableAt: bigint
+  expiredAt: bigint
 }
 
 export type WarLog = {

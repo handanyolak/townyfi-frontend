@@ -7,6 +7,7 @@ import type {
   Settings,
   Town,
   User,
+  War,
   WarLogInfo,
 } from '~/types'
 import { middleElement } from '~/utils'
@@ -28,6 +29,7 @@ export const useUserGameStore = defineStore('userGameStore', () => {
   // TODO: solve this
   const user = ref<User>(null as unknown as User)
   const town = ref<Town>(null as unknown as Town)
+  const war = ref<War>(null as unknown as War)
   const settings = ref<Settings>(null as unknown as Settings)
   const warLogInfo = ref<WarLogInfo>(townWar as unknown as WarLogInfo)
   const lastFetchedWar = ref<WarLogInfo>(townWar as unknown as WarLogInfo)
@@ -50,6 +52,10 @@ export const useUserGameStore = defineStore('userGameStore', () => {
 
   const setTown = (newTown: Town) => {
     town.value = newTown
+  }
+
+  const setWar = (newWar: War) => {
+    war.value = newWar
   }
 
   const setSettings = (newSetting: Settings) => {
@@ -218,7 +224,9 @@ export const useUserGameStore = defineStore('userGameStore', () => {
     getUserCountByCoordinate,
     setUser,
     setTown,
+    setWar,
     town,
+    war,
     warLogInfo,
     setWarLogInfo,
     lastFetchedWar,

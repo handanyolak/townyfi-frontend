@@ -7,7 +7,12 @@ import {
   processAndPrintLog,
   getDifference,
 } from '~/utils'
-import { transformSettings, transformTown, transformUser } from '~/transformers'
+import {
+  transformSettings,
+  transformTown,
+  transformUser,
+  transformWar,
+} from '~/transformers'
 import type { CoordinateStruct, User } from '~/types'
 
 export const useAppOptionsStore = defineStore('appOptionsStore', () => {
@@ -17,6 +22,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const connectionStore = useConnectionStore()
   const contractStore = useContractStore()
   const gameChatStore = useGameChatStore()
+  const appOptionStore = useAppOptionsStore()
 
   const { hasMetamask, checkOnValidNetwork } = connectionStore
 
@@ -171,6 +177,8 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
         allowanceVal,
         balanceOfVal,
         settingsVal,
+        blockNumberVal,
+        warVal,
       ] = await Promise.all([
         contractStore.getKtaPublic.read.isRegistered([userWalletStore.address]),
         contractStore.getKtaPublic.read.townById([userInfo.townInfo.townId]),
@@ -184,8 +192,11 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
           userWalletStore.address,
         ]),
         contractStore.getKtaPublic.read.settings(),
+        userWalletStore.publicClient.getBlockNumber(),
+        contractStore.getKtaPublic.read.warByTownId([userInfo.townInfo.townId]),
       ])
 
+      userWalletStore.setCurrentBlockNumber(blockNumberVal)
       userGameStore.setIsRegistered(isRegisteredVal)
       userGameStore.setUser(userInfo)
       userGameStore.setUserCoordinate(userInfo.coordinate)
@@ -196,10 +207,16 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
       userWalletStore.setKtaAllowance(allowanceVal)
       userWalletStore.setKtaBalance(balanceOfVal)
       userGameStore.setSettings(transformSettings(settingsVal))
+      userGameStore.setWar(transformWar(warVal))
 
       userWalletStore.chainClient.watchBlockNumber({
-        onBlockNumber: (blockNumber) => {
+        onBlockNumber: async (blockNumber) => {
           userWalletStore.setCurrentBlockNumber(blockNumber)
+          userWalletStore.setBalance(
+            await userWalletStore.publicClient.getBalance({
+              address: userWalletStore.address,
+            }),
+          )
         },
       })
 
@@ -210,21 +227,21 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
           address: contractStore.getKta.address,
           abi: contractStore.getKta.abi,
           strict: true,
-          onError: (error: Error) => console.error(error),
+          // onError: (error: Error) => console.error(error),
         } as const
 
         const ktaTokenEventFilter = {
           address: contractStore.getKtaToken.address,
           abi: contractStore.getKtaToken.abi,
           strict: true,
-          onError: (error: Error) => console.error(error),
+          // onError: (error: Error) => console.error(error),
         } as const
 
         const ktaGameChatEventFilter = {
           address: contractStore.getKtaGameChat.address,
           abi: contractStore.getKtaGameChat.abi,
           strict: true,
-          onError: (error: Error) => console.error(error),
+          // onError: (error: Error) => console.error(error),
         } as const
 
         userWalletStore.publicClient.watchContractEvent({

@@ -1,6 +1,6 @@
 import { replaceAtKeys } from '../utils'
 import { TownMode, TownStatus } from '../enums'
-import type { Settings, Town, User } from '../types'
+import type { Settings, Town, User, War } from '../types'
 
 export function transformTown(values: any): Town {
   return {
@@ -44,5 +44,14 @@ export function transformSettings(values: any): Settings {
     exp: values[5],
     multiplier: values[6],
     numberDigits: values[7],
+  }
+}
+
+export function transformWar(values: any): War {
+  return {
+    attackerTownId: values[0],
+    defenderTownId: values[1],
+    attackableAt: values[2]._at,
+    expiredAt: values[3]._at,
   }
 }

@@ -1,6 +1,5 @@
 import {
   type Address,
-  formatEther,
   zeroAddress,
   custom,
   publicActions,
@@ -47,7 +46,12 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
   const publicClient = computed(() =>
     createPublicClient({
       chain,
-      transport: fallback(publicRpcUrls.map((url) => http(url))),
+      transport: fallback(
+        publicRpcUrls.map((url) => http(url)),
+        {
+          rank: true,
+        },
+      ),
       batch: {
         multicall: true,
       },
@@ -60,14 +64,14 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
   const ktaAllowance = ref(0n)
   const ktaBalance = ref(0n)
   const currentBlockNumber = ref(BigInt(0))
-  const balance = ref('')
+  const balance = ref(BigInt(0))
 
   // --------[ Actions ]-------- //
   const setAddress = (newAddress: Address) => {
     address.value = newAddress
   }
 
-  const setBalance = (newBalance: string) => {
+  const setBalance = (newBalance: bigint) => {
     balance.value = newBalance
   }
 
@@ -110,11 +114,9 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
 
   const updateUserBalance = async (_address: Address) => {
     setBalance(
-      formatEther(
-        await chainClient.value.getBalance({
-          address: _address,
-        }),
-      ),
+      await chainClient.value.getBalance({
+        address: _address,
+      }),
     )
   }
 
