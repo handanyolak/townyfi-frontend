@@ -1,13 +1,13 @@
 import { useElementSize, useElementBounding } from '@vueuse/core'
 export const useTour = () => {
   const tourElement = ref<HTMLElement | null>(null)
-  const { width, height } = useElementSize(tourElement)
-  const { top, left } = useElementBounding(tourElement)
+  const { width, height } = useElementSize(tourElement as Ref<HTMLElement>)
+  const { top, left } = useElementBounding(tourElement as Ref<HTMLElement>)
 
   provide('tourData', { width, height, top, left })
 
   const next = (step: string) => {
-    const dynamicElement = document.querySelector(step) as HTMLElement
+    const dynamicElement = document.querySelector(step)
     tourElement.value = dynamicElement
   }
 
