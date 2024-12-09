@@ -56,6 +56,9 @@ export default defineNuxtConfig({
       minNearLevel: convertToInteger(process.env.NUXT_MIN_NEAR_LEVEL, 2),
       maxNearLevel: convertToInteger(process.env.NUXT_MAX_NEAR_LEVEL, 5),
       publicRpcUrls: process.env.NUXT_PUBLIC_RPC_URLS?.split(',') || [],
+      relayerWebhookUrl: process.env.NUXT_RELAYER_WEBHOOK_URL || '',
+      chainExtendExplorerUrls:
+        process.env.NUXT_CHAIN_EXTEND_EXPLORER_URLS?.split(',') || [],
     },
   },
 

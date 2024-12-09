@@ -16,21 +16,22 @@
     <ListItem title="Decimals:">
       <span>{{ chainClient.chain.nativeCurrency.decimals }}</span>
     </ListItem>
-    <ListTitle v-if="onValidNetwork" class="my-8">Explorer URLs</ListTitle>
+    <ListItem v-if="chainClient.chain.testnet" title="Testnet:">
+      <span>{{ chainClient.chain.testnet }}</span>
+    </ListItem>
+    <ListTitle class="my-8">Explorer URLs</ListTitle>
     <ScrollableList
       :items="
-        Object.values(chainClient.chain.blockExplorers ?? []).map(
-          (explorer) => explorer.url,
-        )
+        Object.values(chainClient.chain.blockExplorers ?? {})
+          .map(({ url }) => url as string)
+          .concat(chainExtendExplorerUrls)
       "
       linkable
+      class="max-h-44"
     />
     <ListTitle class="my-8">Miscellaneous</ListTitle>
     <ListItem v-if="currentBlockNumber > 0" title="Current Block Number:">
       <span>{{ currentBlockNumber }}</span>
-    </ListItem>
-    <ListItem v-if="chainClient.chain.testnet" title="Testnet:">
-      <span>{{ chainClient.chain.testnet }}</span>
     </ListItem>
     <AppButton
       class="my-2 flex w-full justify-center"
@@ -47,11 +48,12 @@ import ListItem from '~/components/common/ListItem.vue'
 import ScrollableList from '~/components/common/ScrollableList.vue'
 import AppButton from '~/components/common/AppButton.vue'
 
+const {
+  public: { chainExtendExplorerUrls },
+} = useRuntimeConfig()
+
 // --------[ Stores ]-------- //
 const userWalletStore = useUserWalletStore()
-const connectionStore = useConnectionStore()
-
-const { onValidNetwork } = storeToRefs(connectionStore)
 const { currentBlockNumber, walletClient, chainClient } =
   storeToRefs(userWalletStore)
 

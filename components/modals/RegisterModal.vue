@@ -3,23 +3,32 @@
     class="flex flex-col items-center space-y-4 rounded-sm bg-towny-brown-light-100 p-12"
   >
     <ListTitle class="my-8 w-full">Register</ListTitle>
-    <ListItem title="Name:" class="w-full" input>
+    <ListItem title="Name:" class="w-full">
       <template #item>
         <VeeForm class="flex flex-col items-center">
-          <VeeField v-model="name" name="name" :rules="nameRules" />
-          <VeeErrorMessage class="text-red-800" name="name" />
+          <VeeField
+            v-model="name"
+            name="name"
+            :rules="nameRules"
+            validate-on-input
+          />
+          <VeeErrorMessage class="text-error-red font-semibold" name="name" />
         </VeeForm>
       </template>
     </ListItem>
-    <ListItem title="Referrer:" class="w-full" input>
+    <ListItem title="Referrer:" class="w-full">
       <template #item>
         <VeeForm class="flex flex-col items-center">
           <VeeField
             v-model="referrer"
             name="referrer"
             :rules="referrer && referrerRules"
+            validate-on-input
           />
-          <VeeErrorMessage class="text-red-800" name="referrer" />
+          <VeeErrorMessage
+            class="text-error-red font-semibold"
+            name="referrer"
+          />
         </VeeForm>
       </template>
     </ListItem>
@@ -42,13 +51,11 @@
     </AppButton>
 
     <AppButton
-      v-if="ktaBalance <= BigInt(settings.price.register ?? 0)"
-      :is-loading="currentLoadingState === LoadingState.Minting"
-      class="my-3"
-      @click="mintKtaToken()"
-      >Mint Token</AppButton
+      :is-loading="currentLoadingState === LoadingState.RelayerWebhookRequest"
+      class="absolute bottom-24"
+      @click="claimStarterPack()"
+      >Claim Starter Pack</AppButton
     >
-
     <AppButton
       v-if="!isKtaTokenAdded"
       :is-loading="currentLoadingState === LoadingState.AddingToken"
@@ -95,6 +102,10 @@ const {
   address,
 } = storeToRefs(userWalletStore)
 const { settings } = storeToRefs(userGameStore)
+
+const {
+  public: { relayerWebhookUrl },
+} = useRuntimeConfig()
 
 // --------[ Data ]-------- //
 const name = ref('')
@@ -175,17 +186,32 @@ const addKtaTokenToWallet = async () => {
   }
 }
 
-const mintKtaToken = async () => {
-  currentLoadingState.value = LoadingState.Minting
+const claimStarterPack = async () => {
   try {
-    await getKtaTokenCaller.value.callFunction({
-      type: 'write',
-      name: 'mint',
-      args: [[address.value, 1000n]],
-      needRegister: false,
+    currentLoadingState.value = LoadingState.RelayerWebhookRequest
+    const response = await fetch(relayerWebhookUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        address: address.value,
+        contractAddress: getKtaToken.value.address,
+      }),
     })
-  } catch (error) {
-    useAppToast(TYPE.ERROR, 'Something went wrong')
+    const resData = await response.json()
+    const result = JSON.parse(resData.result)
+    if (!result.success) {
+      useAppToast(TYPE.ERROR, `Failed to claim: ${result.message}`)
+      return
+    }
+
+    useAppToast(
+      TYPE.SUCCESS,
+      `Starter Pack claimed successfully!\n${formatEventArgs(result)}`,
+    )
+  } catch (error: any) {
+    useAppToast(TYPE.ERROR, `Something went wrong: ${error?.message}`)
   } finally {
     currentLoadingState.value = LoadingState.Idle
   }
