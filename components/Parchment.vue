@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      class="round-parchment h-[16%] scale-105 transform rounded-xl bg-white py-3 text-center text-3xl font-bold text-towny-brown-dark-400 md:h-[12%]"
+      class="round-parchment h-[12%] scale-105 transform rounded-xl bg-white py-3 text-center text-3xl font-bold text-towny-brown-dark-400"
     >
       <slot name="parchment-header" />
     </div>
@@ -13,7 +13,7 @@
       </div>
     </div>
     <div
-      class="round-parchment flex h-[16%] scale-105 transform items-center justify-center rounded-xl bg-white md:h-[12%]"
+      class="round-parchment flex h-[12%] scale-105 transform items-center justify-center rounded-xl bg-white"
     >
       <slot name="parchment-footer" />
     </div>
