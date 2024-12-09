@@ -373,6 +373,6 @@ const kickCitizen = async (item: string) => {
 }
 
 const startWar = () => {
-  setModalInfo('WarModal', { sizeMultiplier: 1.4, watchUserWar: true })
+  setModalInfo('WarModal', { sizeMultiplier: 1.3, watchUserWar: true })
 }
 </script>
