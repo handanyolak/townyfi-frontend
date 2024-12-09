@@ -8,30 +8,6 @@
     >
       <Map ref="mapElement" />
     </div>
-    <AppButton
-      class="scale-animate absolute bottom-16 flex text-lg md:text-xl"
-      @click="startLastFetchedWar()"
-    >
-      <div class="flex items-center">
-        <client-only>
-          <Vue3Lottie
-            class="cursor-pointer"
-            :animation-data="StartWar"
-            :height="55"
-            :width="55"
-          />
-        </client-only>
-        <span>Watch Last War of the Game!</span>
-        <client-only>
-          <Vue3Lottie
-            class="cursor-pointer"
-            :animation-data="StartWar"
-            :height="55"
-            :width="55"
-          />
-        </client-only>
-      </div>
-    </AppButton>
     <ChatAndLogBox v-if="onValidNetwork" />
     <TheLoading v-if="isLoading" full-screen />
     <AppModal
@@ -55,14 +31,11 @@
 </template>
 
 <script setup lang="ts">
-import { Vue3Lottie } from 'vue3-lottie'
 import TheLoading from '~/components/common/TheLoading.vue'
 import Map from '~/components/map/Map.vue'
 import AppModal from '~/components/common/AppModal.vue'
 import ChatAndLogBox from '~/components/chatAndLog/ChatAndLogBox.vue'
 import SidebarTriggerButtons from '~/components/SidebarTriggerButtons.vue'
-import AppButton from '~/components/common/AppButton.vue'
-import StartWar from '~/assets/lotties/start-war.json'
 
 // --------[ Stores ]-------- //
 const appOptionsStore = useAppOptionsStore()
@@ -74,9 +47,6 @@ const { initializeApp, clearModalInfo } = appOptionsStore
 const { modalComponentName, modalComponentProps } = storeToRefs(appOptionsStore)
 const { onValidNetwork } = storeToRefs(connectionStore)
 const { isLoading } = storeToRefs(userGameStore)
-
-const appOptionStore = useAppOptionsStore()
-const { setModalInfo } = appOptionStore
 
 // --------[ Data ]-------- //
 // TODO: map'de hesaplanan width buraya emit ile gonderilecek
@@ -100,10 +70,6 @@ const dynamicModalSize = computed(() => {
   const props: any = modalComponentProps.value
   return (width.value * (props?.sizeMultiplier ?? 1) + 20).toString()
 })
-
-const startLastFetchedWar = () => {
-  setModalInfo('WarModal', { sizeMultiplier: 1.4 })
-}
 </script>
 
 <style lang="postcss">
@@ -115,26 +81,5 @@ const startLastFetchedWar = () => {
   background-image: url('~/assets/img/map-background.svg');
   background-repeat: no-repeat;
   background-size: 100% 100%;
-}
-
-.scale-animate {
-  box-shadow: 0px 0px 15px 2px rgba(198, 100, 50, 0.8);
-  transform: scale(1);
-  animation: scaleEffect 4s infinite ease-in-out;
-  transition: transform 0.3s ease;
-}
-
-.scale-animate:hover {
-  transform: scale(1.1);
-}
-
-@keyframes scaleEffect {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
 }
 </style>
