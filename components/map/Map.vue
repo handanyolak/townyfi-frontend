@@ -136,15 +136,15 @@ const mapStyle = computed(() => {
 
 const menuSizeStyle = computed(() => {
   const baseWidthDivisor = 1.75
-  const baseHeightDivisor = 1.25
+  const baseHeightDivisor = 1.75
   const step = 0.25
 
   const isMobile = window.innerWidth <= 768
 
   if (isMobile) {
     return {
-      width: `${width.value / 2}px`,
-      height: `${width.value / 1.5}px`,
+      width: `${width.value / 2.5}px`,
+      height: `${width.value / 2}px`,
     }
   }
 
