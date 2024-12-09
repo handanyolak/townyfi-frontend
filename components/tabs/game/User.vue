@@ -1,11 +1,16 @@
 <template>
   <div>
     <ListTitle class="my-8">General</ListTitle>
-    <ListItem title="Name:" editable tooltip @saved="() => onSaved()">
+    <ListItem title="Name:" editable @saved="() => onSaved()">
       <template #item>
         <VeeForm class="flex flex-col items-center">
-          <VeeField v-model="name" name="name" :rules="nameRules" />
-          <VeeErrorMessage class="text-red-800" name="name" />
+          <VeeField
+            v-model="name"
+            name="name"
+            :rules="nameRules"
+            validate-on-input
+          />
+          <VeeErrorMessage class="text-error-red font-semibold" name="name" />
         </VeeForm>
       </template>
       <span>{{ hexToString(user.name, { size: 32 }) }}</span>
@@ -16,10 +21,20 @@
         >
       </template>
     </ListItem>
-    <ListItem title="Coordinate:" tooltip>
-      <span>({{ user.coordinate._x.toString() }}</span>
-      <span>,</span>
-      <span>{{ user.coordinate._y.toString() }})</span>
+    <ListItem
+      title="Coordinate:"
+      searchable
+      :search-options="{
+        searchType: SearchType.Town,
+        findBy: FindOptions.Coordinate,
+        findInputText: `${user.coordinate._x.toString()},${user.coordinate._y.toString()}`,
+      }"
+    >
+      <span
+        >({{ user.coordinate._x.toString() }},{{
+          user.coordinate._y.toString()
+        }})</span
+      >
       <template #tooltip>
         <span
           >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum,
@@ -27,7 +42,7 @@
         >
       </template>
     </ListItem>
-    <ListItem title="Level:" tooltip>
+    <ListItem title="Level:">
       <span>{{ user.levelId }}</span>
       <template #tooltip>
         <span
@@ -36,7 +51,7 @@
         >
       </template>
     </ListItem>
-    <ListItem title="Exp:" tooltip>
+    <ListItem title="Exp:">
       <span>{{ user.exp }}</span>
       <template #tooltip>
         <span
@@ -45,7 +60,17 @@
         >
       </template>
     </ListItem>
-    <ListItem title="Referrer:" copiable tooltip :copy-value="referrerAddress">
+    <ListItem
+      title="Referrer:"
+      copiable
+      :copy-value="referrerAddress"
+      searchable
+      :search-options="{
+        searchType: SearchType.User,
+        findBy: FindOptions.Address,
+        findInputText: referrerAddress,
+      }"
+    >
       <span>{{ referrer }}</span>
       <template #tooltip>
         <span
@@ -55,7 +80,7 @@
       </template>
     </ListItem>
     <ListTitle class="my-8">Stats</ListTitle>
-    <ListItem title="Health:" tooltip>
+    <ListItem title="Health:">
       <span>{{ user.health }}</span>
       <template #tooltip>
         <span
@@ -64,7 +89,7 @@
         >
       </template>
     </ListItem>
-    <ListItem title="Mana:" tooltip>
+    <ListItem title="Mana:">
       <span>{{ user.mana }}</span>
       <template #tooltip>
         <span
@@ -73,7 +98,7 @@
         >
       </template>
     </ListItem>
-    <ListItem title="Energy:" tooltip>
+    <ListItem title="Energy:">
       <span>{{ user.energy }}</span>
       <template #tooltip>
         <span
@@ -82,7 +107,7 @@
         >
       </template>
     </ListItem>
-    <ListItem title="Armor:" tooltip>
+    <ListItem title="Armor:">
       <span>{{ user.armor }}</span>
       <template #tooltip>
         <span
@@ -92,7 +117,7 @@
       </template>
     </ListItem>
     <ListTitle class="my-8">Character Points</ListTitle>
-    <ListItem title="Attack:" tooltip>
+    <ListItem title="Attack:">
       <span>{{ user.charPoint.attack }}</span>
       <template #tooltip>
         <span
@@ -101,7 +126,7 @@
         >
       </template>
     </ListItem>
-    <ListItem title="Defend:" tooltip>
+    <ListItem title="Defend:">
       <span>{{ user.charPoint.defend }}</span>
       <template #tooltip>
         <span
@@ -117,11 +142,10 @@
       :title="`${toCapitalizedWords(item)}:`"
       :item="item"
       convertable
-      tooltip
-      @convert="(isConvert) => convert(isConvert, item as any)"
+      @convert="(isConvert) => convert(isConvert, item)"
     >
       <span>{{
-        timer[item].toString() === '0' ? 'Available!' : timer[item].toString()
+        timer[item].toString() === '0' ? 'Available!' : timer[item]
       }}</span>
       <template #tooltip>
         <span
@@ -154,7 +178,7 @@ import ListTitle from '~/components/common/ListTitle.vue'
 import ListItem from '~/components/common/ListItem.vue'
 import { toCapitalizedWords, middleCropping } from '~/utils'
 import { getBytes32Rule } from '~/composables/useYupRules'
-import { Get } from '~/enums'
+import { Get, SearchType, FindOptions } from '~/enums'
 import type { UserTimer } from '~/types'
 
 const {
@@ -171,14 +195,13 @@ const { user } = storeToRefs(userGameStore)
 const { currentBlockNumber } = storeToRefs(userWalletStore)
 
 // --------[ Data ]-------- //
-const timer = reactive<any>(user.value.timer)
-const timers = Object.keys(timer).filter((item: any) => isNaN(item))
+const timer = reactive<any>({ ...user.value.timer })
+const timers = Object.keys(timer) as (keyof UserTimer)[]
 const name = ref(hexToString(user.value.name, { size: 32 }))
 const referrerAddress = user.value.referrer as string
 const nameRules = getBytes32Rule()
 
 // --------[ Computed ]-------- //
-// TODO: Backend'de get datalar ayrildiktan sonra duzenlenecek
 const getPointIcon = computed(() => (_getPoint: string) => {
   const iconName = useLottie(_getPoint)
 
@@ -191,15 +214,17 @@ const referrer = computed(() => middleCropping(referrerAddress))
 const convert = (isConvert: boolean, propertyName: keyof UserTimer) => {
   if (isConvert) {
     timer[propertyName] =
-      timer[propertyName] - currentBlockNumber.value > 0
+      user.value.timer[propertyName] - currentBlockNumber.value > 0
         ? moment // eslint-disable-line import/no-named-as-default-member
             .duration(
-              (timer[propertyName] - Number(currentBlockNumber.value)) *
-                chainBlockTime *
-                1000,
+              (
+                (user.value.timer[propertyName] - currentBlockNumber.value) *
+                BigInt(chainBlockTime) *
+                BigInt(1000)
+              ).toString(),
             )
             .humanize()
-        : 0
+        : '0'
   } else {
     timer[propertyName] = user.value.timer[propertyName].toString()
   }

@@ -8,20 +8,18 @@
     >
     <div class="flex items-center rounded-md p-1">
       <div class="flex flex-col">
-        <div class="flex">
-          <ListItem class="shadow-none" title="X:" input>
+      <ListItem class="shadow-none" title="X:">
             <template #item>
               <input v-model="coordinateX" type="text" />
             </template>
             <span>{{ coordinateX }}</span>
           </ListItem>
-          <ListItem class="shadow-none" title="Y:" input>
+      <ListItem class="shadow-none" title="Y:">
             <template #item>
               <input v-model="coordinateY" type="text" />
             </template>
             <span>{{ coordinateY }}</span>
           </ListItem>
-        </div>
         <AppButton
           class="w-full rounded-md bg-towny-brown-dark-400 text-towny-brown-light-400"
           @click="navigate()"

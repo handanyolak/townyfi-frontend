@@ -4,22 +4,27 @@
   >
     <ListTitle class="my-8 w-3/4">Search</ListTitle>
     <div class="flex w-full space-x-2">
-      <ListItem class="w-full" title="Type:" input>
+      <ListItem class="w-full" title="Type:">
         <template #item>
           <AppDropdown
-            ref="searchTypeDropdown"
-            :key="currentSearchType"
+            v-model="currentSearchType"
+            :select="currentSearchType"
             :dropdown-items="Object.values(searchOptions)"
             @selected="handleSearchTypeChange"
           />
         </template>
       </ListItem>
 
-      <ListItem class="w-full" title="By:" input>
+      <ListItem class="w-full" title="By:">
         <template #item>
           <AppDropdown
-            ref="sidebarDropdown"
             :key="currentSearchType"
+            v-model="currentFindOption"
+            :select="
+              dynamicFindOptions.includes(currentFindOption)
+                ? currentFindOption
+                : dynamicFindOptions[0]
+            "
             :dropdown-items="dynamicFindOptions"
             @selected="handleDropdownChange"
           />
@@ -27,18 +32,18 @@
       </ListItem>
     </div>
     <VeeForm class="flex w-3/4 flex-col items-center" @submit.prevent>
-      <ListItem class="w-full" :title="`${selectedItem}:`" input>
+      <ListItem class="w-full" :title="`${currentFindOption}:`">
         <template #item>
           <VeeField
-            v-model="searchFormInput[findOptions[selectedItem]]"
-            :name="findOptions[selectedItem]"
-            :placeholder="placeholders[findOptions[selectedItem]]"
-            :rules="rules[findOptions[selectedItem]]"
+            v-model="searchFormInput[findOptions[currentFindOption]]"
+            :name="findOptions[currentFindOption]"
+            :placeholder="placeholders[findOptions[currentFindOption]]"
+            :rules="rules[findOptions[currentFindOption]]"
             @input="search()"
           />
           <VeeErrorMessage
             class="text-red-800"
-            :name="findOptions[selectedItem]"
+            :name="findOptions[currentFindOption]"
           />
         </template>
       </ListItem>
@@ -46,18 +51,18 @@
     <TheLoading v-if="isDataLoading" />
     <OtherTown
       v-if="
-        searchFormInput[findOptions[selectedItem]] &&
-        selectedItemId &&
-        currentSearchType === 'Town'
+        searchFormInput[findOptions[currentFindOption]] &&
+        foundTownId &&
+        currentSearchType === SearchType.Town
       "
-      :id="selectedItemId"
-      :key="selectedItemId.toString()"
+      :id="foundTownId"
+      :key="foundTownId.toString()"
       class="w-full"
     />
     <OtherUser
       v-if="
         currentSearchType === SearchType.User &&
-        selectedItem === 'Address' &&
+        currentFindOption === FindOptions.Address &&
         currentUserAddress
       "
       class="w-full"
@@ -67,7 +72,7 @@
     <div
       v-if="
         currentSearchType === SearchType.User &&
-        selectedItem === 'Coordinate' &&
+        currentFindOption === FindOptions.Coordinate &&
         userAddressList.length > 0
       "
       class="w-full"
@@ -76,7 +81,6 @@
         v-for="(_address, index) in userAddressList"
         :key="index"
         class="w-full"
-        tooltip
       >
         <template #title>
           <div
@@ -123,18 +127,32 @@ import {
 } from '~/composables/useYupRules'
 import { transformTown, transformUser } from '~/transformers'
 
+// --------[ Props & Emits ]-------- //
+interface SearchModalProps {
+  searchType?: SearchType
+  findBy?: FindOptions
+  findInputText?: string | bigint
+}
+
+const props = withDefaults(defineProps<SearchModalProps>(), {
+  searchType: SearchType.Town,
+  findBy: FindOptions.ID,
+  findInputText: '',
+})
+console.log(props)
+
 // --------[ Store ]-------- //
 const contractStore = useContractStore()
 
 const { getKtaPublic } = storeToRefs(contractStore)
 
 // --------[ Data ]-------- //
-const sidebarDropdown = ref<InstanceType<typeof AppDropdown> | null>(null)
-const currentSearchType = ref<SearchType>(SearchType.Town)
+const currentSearchType = ref(props.searchType)
+const currentFindOption = ref(props.findBy)
 const currentUserAddress = ref<Address | null>(null)
 const userAddressList = ref<readonly Address[]>([])
 const selectedAddress = ref<string | null>(null)
-const selectedItemId = ref<bigint | null>(null)
+const foundTownId = ref<bigint | null>(null)
 const searchOptions = SearchType
 const findOptions = FindOptions
 const isDataLoading = ref(false)
@@ -162,21 +180,16 @@ const searchFormInput = reactive({
   [FindOptions.Address]: '',
   [FindOptions.Coordinate]: '',
 })
+searchFormInput[findOptions[currentFindOption.value]] =
+  props.findInputText.toString()
 
-// --------[ Computed ]-------- //
-const selectedItem = computed<FindOptions>(() => {
-  if (currentSearchType.value === SearchType.User) {
-    return (
-      (sidebarDropdown.value?.selectedItem as FindOptions) ||
-      FindOptions.Address
-    )
-  } else {
-    return (
-      (sidebarDropdown.value?.selectedItem as FindOptions) || FindOptions.ID
-    )
+onMounted(() => {
+  if (props.findInputText !== undefined) {
+    search()
   }
 })
 
+// --------[ Computed ]-------- //
 const dynamicFindOptions = computed(() => {
   if (currentSearchType.value === SearchType.Town) {
     return Object.values({
@@ -194,12 +207,12 @@ const dynamicFindOptions = computed(() => {
 })
 
 const selectedItemSchema = computed(() => {
-  switch (selectedItem.value) {
-    case 'ID':
+  switch (currentFindOption.value) {
+    case FindOptions.ID:
       return idValidationSchema
-    case 'Address':
+    case FindOptions.Address:
       return addressValidationSchema
-    case 'Coordinate':
+    case FindOptions.Coordinate:
       return coordinateValidationSchema
     default:
       return object()
@@ -216,31 +229,35 @@ const formIsValid = computed(() => {
   }
 })
 
-const isTownUnavailable = computed(() => selectedItemId.value === BigInt(0))
+const isTownUnavailable = computed(() => foundTownId.value === BigInt(0))
 
 // --------[ Method ]-------- //
 const handleSearchTypeChange = (selectedValue: SearchType) => {
   resetSearchCriteria()
-  currentSearchType.value = selectedValue
   Object.keys(searchFormInput).forEach((key) => {
     const formKey = key as keyof typeof searchFormInput
     searchFormInput[formKey] = ''
   })
+  currentSearchType.value = selectedValue
+  if (!dynamicFindOptions.value.includes(currentFindOption.value)) {
+    currentFindOption.value = dynamicFindOptions.value[0]
+  }
 }
 
-const handleDropdownChange = () => {
+const handleDropdownChange = (newSelectedItem: FindOptions) => {
   resetSearchCriteria()
-  searchFormInput[findOptions[selectedItem.value]] = ''
+  searchFormInput[findOptions[currentFindOption.value]] = ''
+  currentFindOption.value = newSelectedItem
 }
 
-const getTownDetailsById = async (value: string) => {
+const getTownIdById = async (value: string) => {
   const townInfo = transformTown(
     await getKtaPublic.value.read.townById([BigInt(value)]),
   )
   return townInfo.leader === zeroAddress ? BigInt(0) : BigInt(value)
 }
 
-const getUserDetailsByAddress = async (address: Address) => {
+const getTownIdByAddress = async (address: Address) => {
   const userInfo = transformUser(
     await getKtaPublic.value.read.userByAddr([address]),
   )
@@ -270,22 +287,22 @@ const getAddressesByCoordinates = async (coordinateValue: string) => {
 const debouncedSearch = useDebounceFn(async () => {
   if (!formIsValid.value) return
   isDataLoading.value = true
-  const value = searchFormInput[findOptions[selectedItem.value]]
+  const value = searchFormInput[findOptions[currentFindOption.value]]
   try {
     if (currentSearchType.value === SearchType.Town) {
-      switch (selectedItem.value) {
+      switch (currentFindOption.value) {
         case FindOptions.ID:
-          selectedItemId.value = await getTownDetailsById(value)
+          foundTownId.value = await getTownIdById(value)
           break
         case FindOptions.Address:
-          selectedItemId.value = await getUserDetailsByAddress(value as Address)
+          foundTownId.value = await getTownIdByAddress(value as Address)
           break
         case FindOptions.Coordinate:
-          selectedItemId.value = await getTownIdByCoordinates(value)
+          foundTownId.value = await getTownIdByCoordinates(value)
           break
       }
     } else if (currentSearchType.value === SearchType.User) {
-      switch (selectedItem.value) {
+      switch (currentFindOption.value) {
         case FindOptions.Address:
           loadUserDetailsByAddress(value as Address)
           break
@@ -307,7 +324,7 @@ const search = () => {
 }
 
 const resetSearchCriteria = () => {
-  selectedItemId.value = null
+  foundTownId.value = null
   currentUserAddress.value = null
   selectedAddress.value = null
   userAddressList.value = []

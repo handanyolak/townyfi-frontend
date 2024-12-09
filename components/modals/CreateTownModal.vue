@@ -4,7 +4,7 @@
       class="flex w-full flex-col items-center space-y-4 bg-towny-brown-light-100 bg-opacity-20 p-1 backdrop-blur-sm"
     >
       <VeeForm class="flex w-full flex-col items-center">
-        <ListItem title="Name:" class="w-full bg-towny-brown-light-100" input>
+        <ListItem title="Name:" class="w-full bg-towny-brown-light-100">
           <template #item>
             <VeeField v-model="formInput.name" name="name" :rules="nameRules" />
             <VeeErrorMessage class="text-red-800" name="name" />

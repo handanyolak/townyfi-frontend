@@ -3,24 +3,37 @@
     class="group relative grid grid-cols-1 p-1 py-4 text-sm shadow-towny-400 md:grid-cols-4 md:text-base"
   >
     <div class="botom-1/2 absolute -left-4 top-1/2 -translate-y-1/2">
-      <Tooltip v-if="tooltip">
+      <Tooltip v-if="hasTooltipSlot">
         <slot name="tooltip" />
       </Tooltip>
     </div>
-    <div class="col-span-3 flex items-center">
+    <div
+      :class="[
+        'flex items-center',
+        hasActionSlot || convertable ? 'col-span-3' : 'col-span-4',
+      ]"
+    >
       <div class="flex w-full justify-center md:justify-start">
         <span class="font-semibold text-[#8b4513cc]">
           {{ title }}
         </span>
         <div class="flex">
-          <div v-if="isEdit || input" class="mx-1 w-full">
+          <div v-if="(!editable || isEdit) && hasItemSlot" class="mx-1 w-full">
             <slot name="item" />
           </div>
           <span
             v-else
             class="mx-1 flex w-full items-center px-1 text-towny-brown-dark-600"
           >
-            <slot />
+            <span
+              v-if="searchable"
+              :class="searchable ? 'cursor-pointer text-blue-500' : ''"
+              @click="
+                clearModalInfo() && setModalInfo('SearchModal', searchOptions)
+              "
+              ><slot
+            /></span>
+            <slot v-else />
             <div v-if="isSupported && copiable" class="ml-2">
               <Tooltip
                 :icon-name="copied ? 'uil:check-circle' : 'uil:copy'"
@@ -41,13 +54,16 @@
         </div>
       </div>
     </div>
-    <div class="flex items-center justify-center md:justify-end">
-      <div class="mt-2 flex justify-center md:mt-0">
+    <div
+      v-if="hasActionSlot || convertable"
+      class="flex items-center justify-center md:justify-end"
+    >
+      <div v-if="hasActionSlot" class="mt-2 flex justify-center md:mt-0">
         <slot name="action" />
       </div>
       <div
         v-if="convertable"
-        class="mr-2 h-3 w-3 cursor-pointer opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
+        class="mr-2 h-3 w-3 cursor-pointer transition-opacity duration-500 ease-out"
         @click="convert()"
       >
         <client-only>
@@ -70,6 +86,10 @@ import { Vue3Lottie } from 'vue3-lottie'
 import { useClipboard } from '@vueuse/core'
 import Tooltip from '~/components/common/Tooltip.vue'
 import Convert from '~/assets/lotties/convert.json'
+import { SearchType, FindOptions } from '~/enums'
+
+const appOptionStore = useAppOptionsStore()
+const { setModalInfo, clearModalInfo } = appOptionStore
 
 const { copy, copied, isSupported } = useClipboard({
   legacy: true,
@@ -78,13 +98,17 @@ const { copy, copied, isSupported } = useClipboard({
 // --------[ Prop & Emit ]-------- //
 interface ListItemProps {
   item?: string
-  input?: boolean
   title?: string
-  tooltip?: boolean
   editable?: boolean
+  convertable?: boolean
   copiable?: boolean
   copyValue?: string
-  convertable?: boolean
+  searchable?: boolean
+  searchOptions?: {
+    searchType: SearchType
+    findBy: FindOptions
+    findInputText: string | bigint
+  }
 }
 
 withDefaults(defineProps<ListItemProps>(), {
@@ -97,6 +121,11 @@ const emit = defineEmits<{
   (event: 'convert', isConvert: boolean): void
   (event: 'saved'): void
 }>()
+
+const slots = useSlots()
+const hasActionSlot = !!slots.action
+const hasTooltipSlot = !!slots.tooltip
+const hasItemSlot = !!slots.item
 
 // --------[ Data ]-------- //
 const isEdit = ref(false)

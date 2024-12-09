@@ -4,6 +4,12 @@
       v-for="(item, index) in items"
       :key="index"
       :copiable="copiable"
+      :searchable="searchable"
+      :search-options="
+        searchOptions
+          ? { ...searchOptions, findInputText: copyValue[index] }
+          : undefined
+      "
       :copy-value="copyValue[index]"
     >
       <span v-if="linkable">
@@ -13,9 +19,8 @@
         </a>
       </span>
       <span v-else>{{ item }}</span>
-      <template #action>
+      <template v-if="actionable" #action>
         <AppButton
-          v-if="actionable"
           basic-hover
           class="w-32"
           @click="actionValue?.action(copyValue[index], item)"
@@ -35,6 +40,7 @@
 <script setup lang="ts">
 import ListItem from '~/components/common/ListItem.vue'
 import AppButton from '~/components/common/AppButton.vue'
+import { SearchType, FindOptions } from '~/enums'
 
 // --------[ Props & Emits ]-------- //
 interface ScrollableListProps {
@@ -46,6 +52,12 @@ interface ScrollableListProps {
   actionValue?: {
     name: string
     action: (copyValue: string, item: string) => any
+  }
+  searchable?: boolean
+  searchOptions?: {
+    searchType: SearchType
+    findBy: FindOptions
+    findInputText: string | bigint
   }
 }
 
