@@ -10,7 +10,7 @@
         :class="isOpen ? 'rotate-180' : 'rotate-0'"
       />
       <div class="group flex">
-        <Tooltip v-if="tooltip" class="self-center">
+        <Tooltip v-if="hasTooltipSlot" class="self-center">
           <slot name="tooltip" />
         </Tooltip>
         <slot name="title" />
@@ -36,10 +36,12 @@ import Tooltip from '~/components/common/Tooltip.vue'
 // --------[ Props & Emits ]-------- //
 interface AccordionProps {
   dropdown?: boolean
-  tooltip?: boolean
 }
 
 defineProps<AccordionProps>()
+
+const slots = useSlots()
+const hasTooltipSlot = !!slots.tooltip
 
 // --------[ Data ]-------- //
 const isOpen = ref(false)
