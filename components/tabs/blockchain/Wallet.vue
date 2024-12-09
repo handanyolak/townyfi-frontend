@@ -6,7 +6,7 @@
     </ListItem>
     <ListItem title="Balance:">
       <span
-        >{{ balance }}
+        >{{ formatEther(balance) }}
         {{
           onValidNetwork ? chainClient.chain.nativeCurrency.symbol : ''
         }}</span
@@ -24,6 +24,7 @@
 </template>
 
 <script setup lang="ts">
+import { formatEther } from 'viem'
 import ListTitle from '~/components/common/ListTitle.vue'
 import ListItem from '~/components/common/ListItem.vue'
 
