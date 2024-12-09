@@ -10,7 +10,7 @@
             :rules="nameRules"
             validate-on-input
           />
-          <VeeErrorMessage class="text-error-red font-semibold" name="name" />
+          <VeeErrorMessage class="font-semibold text-error-red" name="name" />
         </VeeForm>
       </template>
       <span>{{ hexToString(user.name, { size: 32 }) }}</span>
@@ -213,12 +213,14 @@ const referrer = computed(() => middleCropping(referrerAddress))
 // --------[ Methods ]-------- //
 const convert = (isConvert: boolean, propertyName: keyof UserTimer) => {
   if (isConvert) {
+    const diffInBlockNumber =
+      currentBlockNumber.value - user.value.timer[propertyName]
     timer[propertyName] =
-      user.value.timer[propertyName] - currentBlockNumber.value > 0
+      diffInBlockNumber > 0
         ? moment // eslint-disable-line import/no-named-as-default-member
             .duration(
               (
-                (user.value.timer[propertyName] - currentBlockNumber.value) *
+                diffInBlockNumber *
                 BigInt(chainBlockTime) *
                 BigInt(1000)
               ).toString(),

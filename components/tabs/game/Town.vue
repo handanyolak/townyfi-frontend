@@ -10,7 +10,7 @@
             :rules="nameRules"
             validate-on-input
           />
-          <VeeErrorMessage class="text-error-red font-semibold" name="name" />
+          <VeeErrorMessage class="font-semibold text-error-red" name="name" />
         </VeeForm>
       </template>
       <span>{{ townName }}</span>
@@ -326,12 +326,14 @@ const convert = (
     town.value[propertyName as 'protectionAt'] ??
     war.value[propertyName as 'attackableAt' | 'expiredAt']
   if (isConvert) {
+    const diffInBlockNumber =
+      currentBlockNumber.value - currentPropertyBlockNumber
     timer[propertyName] =
-      currentPropertyBlockNumber - currentBlockNumber.value > 0
+      diffInBlockNumber > 0
         ? moment // eslint-disable-line import/no-named-as-default-member
             .duration(
               (
-                (currentPropertyBlockNumber - currentBlockNumber.value) *
+                diffInBlockNumber *
                 BigInt(chainBlockTime) *
                 BigInt(1000)
               ).toString(),
