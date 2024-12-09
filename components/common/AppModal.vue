@@ -8,7 +8,7 @@
         <div v-if="modalActive">
           <div
             ref="modal"
-            :style="`height: ${modalSize}px; width: ${modalSize}px`"
+            :style="modalStyle"
             :class="[
               contentClasses,
               'modal relative h-3/5 w-2/5 rounded-md bg-transparent',
@@ -30,20 +30,34 @@
 </template>
 
 <script setup lang="ts">
-import { onClickOutside } from '@vueuse/core'
+import { onClickOutside, useWindowSize } from '@vueuse/core'
 import type { Modal } from '~/types'
 
+// --------[ Store ]-------- //
 const appOptionsStore = useAppOptionsStore()
 const { isAnimation } = storeToRefs(appOptionsStore)
 
+const { width } = useWindowSize()
+
 // --------[ Prop & Emit ]-------- //
 
-defineProps<Modal>()
+const props = defineProps<Modal>()
 
 const emit = defineEmits(['modalClosed'])
 
 // --------[ Data ]-------- //
 const modal = ref(null)
+
+// --------[ Computed ]-------- //
+const modalStyle = computed(() => {
+  const isMobile = width.value <= 768
+
+  if (isMobile) {
+    return `height: 100vh; width: 90vw;`
+  } else {
+    return `height: ${props.modalSize}px; width: ${props.modalSize}px`
+  }
+})
 
 // --------[ Method ]-------- //
 const closeModal = () => {
