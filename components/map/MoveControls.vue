@@ -3,10 +3,7 @@
     :style="size"
     class="move flex flex-col items-center justify-center bg-towny-brown-dark-600 px-4 py-1"
   >
-    <ListTitle class="w-full shadow-md shadow-towny-brown-dark-400"
-      ><span class="text-sm">Move</span></ListTitle
-    >
-    <div class="relative mt-6 flex items-center justify-center p-10">
+    <div class="relative flex items-center justify-center p-10">
       <MoveArrow
         class="rotate-90"
         @click="navigateByArrow(NavigateDirection.Down)"
@@ -45,7 +42,6 @@
 
 <script setup lang="ts">
 import { NavigateDirection } from '~/enums'
-import ListTitle from '~/components/common/ListTitle.vue'
 import MoveArrow from '~/components/map/MoveArrow.vue'
 
 // --------[ Store ]-------- //
