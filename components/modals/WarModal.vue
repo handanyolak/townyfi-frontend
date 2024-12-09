@@ -1,15 +1,15 @@
 <template>
   <div class="modal-background rounded-md">
     <div
-      class="h-full w-full bg-towny-brown-dark-600 bg-opacity-20 px-4 py-6 backdrop-blur-sm"
+      class="h-full w-full bg-towny-brown-dark-600 bg-opacity-20 px-1 py-1 backdrop-blur-sm md:px-4 md:py-6"
     >
       <div v-if="!isBattleOver">
         <!-- Main Battle Section -->
-        <section class="grid grid-cols-5">
+        <section class="grid grid-cols-1 gap-4 md:grid-cols-5">
           <!-- Attacker Section -->
-          <section class="col-span-2 col-start-1">
+          <section class="md:col-span-2 md:col-start-1">
             <WarAnimation
-              class="mb-24"
+              class="mb-4 md:mb-24"
               :is-animating="isLottieRunning"
               :town-name="
                 townInfoById[userInfoByAddress[attackerWarrior.address]?.townId]
@@ -17,13 +17,13 @@
               "
               :clan-animation="warriorr1"
             />
-            <div class="mb-5 rounded-md bg-[#FFCA6C] p-2">
+            <div class="mb-2 rounded-md bg-[#FFCA6C] p-2 md:mb-5">
               <div class="flex items-center">
                 <img
-                  class="mr-2 h-8 w-8 rounded-full border border-towny-brown-dark-400"
+                  class="mr-2 h-5 w-5 rounded-full border border-towny-brown-dark-400 md:h-8 md:w-8"
                   :src="makeBlockie(attackerWarrior.address)"
                 />
-                <p class="text-lg font-semibold text-white">
+                <p class="text-sm font-semibold text-white md:text-lg">
                   {{ userInfoByAddress[attackerWarrior.address]?.name }}
                 </p>
               </div>
@@ -55,7 +55,7 @@
               :class="[
                 'absolute top-1/3 z-20 -translate-x-1/2 -translate-y-1/3 transform text-center text-5xl font-bold text-red-600 transition-all duration-700 ease-out',
                 isShowDamage
-                  ? 'custom-visible custom-animate-up '
+                  ? 'custom-visible custom-animate-up'
                   : 'custom-invisible',
                 attack === 1 ? 'right-0' : 'left-0',
               ]"
@@ -67,7 +67,7 @@
               :class="[
                 'absolute top-1/2 z-20 -translate-x-1/2 -translate-y-1/2 transform text-center text-5xl font-bold text-gray-600 transition-all duration-700 ease-out',
                 isShowDamage
-                  ? 'custom-visible custom-animate-up '
+                  ? 'custom-visible custom-animate-up'
                   : 'custom-invisible',
                 attack === 1 ? 'right-0' : 'left-0',
               ]"
@@ -75,8 +75,8 @@
               <span>-{{ currentArmorDamage }}</span>
             </span>
             <div
-              class="absolute top-0 z-50 w-full scale-x-100"
-              :style="`transform: scaleX(${attack})`"
+              class="absolute top-0 z-50 hidden w-full scale-x-100 md:block"
+              :style="`transform: scaleX(${attack});`"
             >
               <client-only>
                 <Vue3Lottie
@@ -94,9 +94,9 @@
           </div>
 
           <!-- Defender Section -->
-          <section class="col-span-2 col-start-4">
+          <section class="md:col-span-2 md:col-start-4">
             <WarAnimation
-              class="mb-24"
+              class="mb-2 md:mb-24"
               :background-classes="'-scale-x-100 transform'"
               :is-animating="isLottieRunning"
               :town-name="
@@ -105,13 +105,14 @@
               "
               :clan-animation="warriorr2"
             />
-            <div class="mb-5 rounded-md bg-[#FFCA6C] p-2">
+
+            <div class="mb-2 rounded-md bg-[#FFCA6C] p-2 md:mb-5">
               <div class="flex items-center">
                 <img
-                  class="mr-2 h-8 w-8 rounded-full border border-towny-brown-dark-400"
+                  class="mr-2 h-5 w-5 rounded-full border border-towny-brown-dark-400 md:h-8 md:w-8"
                   :src="makeBlockie(defenderWarrior.address)"
                 />
-                <p class="text-lg font-semibold text-white">
+                <p class="text-sm font-semibold text-white md:text-lg">
                   {{ userInfoByAddress[defenderWarrior.address]?.name }}
                 </p>
               </div>
@@ -142,7 +143,7 @@
         <section class="relative my-10 flex justify-center space-x-4">
           <div
             v-if="!isBattleStarted"
-            class="flex w-1/6 flex-col justify-center"
+            class="flex w-5/6 flex-col justify-center md:w-1/6"
           >
             <AppButton @click="startBattle"> Start Battle </AppButton>
             <client-only>
@@ -154,18 +155,18 @@
               />
             </client-only>
           </div>
-          <div v-else class="w-1/5 space-y-3">
+          <div v-else class="w-3/5 space-y-3 md:w-1/5">
             <div
-              class="flex w-full items-center justify-between text-lg text-white"
+              class="flex w-full cursor-pointer items-center justify-between text-lg text-white"
             >
               <AppButton
-                class="app-button h-10 w-10 font-bold"
+                class="app-button h-10 w-10 cursor-pointer font-bold transition-transform duration-75 active:scale-110"
                 @click="decreaseSpeed"
                 >-</AppButton
               >
               <span>Speed</span>
               <AppButton
-                class="app-button h-10 w-10 font-bold"
+                class="app-button h-10 w-10 cursor-pointer font-bold transition-transform duration-75 active:scale-110"
                 @click="increaseSpeed"
                 >+</AppButton
               >

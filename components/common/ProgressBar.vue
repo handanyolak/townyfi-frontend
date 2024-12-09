@@ -1,6 +1,8 @@
 <template>
-  <div class="progress mt-4 bg-slate-100 bg-opacity-10">
-    <div class="progress-bg relative h-10 rounded-sm border border-white/50">
+  <div class="progress mt-2 bg-slate-100 bg-opacity-10 md:mt-4">
+    <div
+      class="progress-bg relative h-7 rounded-sm border border-white/50 md:h-10"
+    >
       <div class="relative h-full">
         <span
           v-if="name"

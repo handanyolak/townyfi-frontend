@@ -11,24 +11,29 @@
         />
       </client-only>
     </div>
-    <div
-      style="box-shadow: 0px 0px 45px 0px #f4c043"
-      :class="[backgroundClasses, 'overflow-hidden rounded-full']"
-    >
-      <client-only>
-        <Vue3Lottie
-          :animation-data="sunny"
-          :speed="3"
-          :auto-play="isAnimating"
-          :pause-animation="!isAnimating"
-        />
-      </client-only>
+    <div class="flex items-center justify-center">
+      <div
+        style="box-shadow: 0px 0px 45px 0px #f4c043"
+        :class="[backgroundClasses, 'overflow-hidden rounded-full']"
+      >
+        <div class="h-48 w-48 rounded-full md:h-full md:w-full">
+          <client-only>
+            <Vue3Lottie
+              :animation-data="sunny"
+              :speed="3"
+              :auto-play="isAnimating"
+              :pause-animation="!isAnimating"
+              class="rounded-full"
+            />
+          </client-only>
+        </div>
+      </div>
     </div>
     <div
       v-for="(item, index) in items"
       :key="index"
       :class="item.position"
-      class="absolute top-0"
+      class="absolute top-0 w-48 md:w-full"
     >
       <client-only>
         <Vue3Lottie
