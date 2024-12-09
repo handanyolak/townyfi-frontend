@@ -16,7 +16,14 @@
           isGameInfo || isOptions ? 'right-6' : 'left-4',
         ]"
         src="@/assets/img/close.svg"
-        @click="sideLeave()"
+        @click="
+          sideLeave({
+            isGameInfo: isGameInfo,
+            isContractInfo: isContractInfo,
+            isBlockchainInfo: isBlockchainInfo,
+            isOptions: isOptions,
+          })
+        "
       />
       <img
         class="absolute left-1/2 top-4 z-50 h-20 -translate-x-1/2 transform select-none"
@@ -26,7 +33,7 @@
       <div class="py-[85px]">
         <div
           :class="[
-            'shadow-vintage absolute -top-3 h-full w-full bg-white [filter:url(#wavy)]',
+            'absolute -top-3 h-full w-full bg-white shadow-vintage [filter:url(#wavy)]',
             isBlockchainInfo || isContractInfo ? 'rotate-180 transform' : '',
           ]"
         ></div>
@@ -76,7 +83,14 @@ const { isRegistered } = storeToRefs(userGameStore)
 const sideBar = ref(null)
 
 // --------[ Method ]-------- //
-onClickOutside(sideBar, () => sideLeave())
+onClickOutside(sideBar, () =>
+  sideLeave({
+    isGameInfo: isGameInfo.value,
+    isContractInfo: isContractInfo.value,
+    isBlockchainInfo: isBlockchainInfo.value,
+    isOptions: isOptions.value,
+  }),
+)
 </script>
 
 <style scoped>

@@ -55,7 +55,12 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
       modalComponentProps.value ?? {},
       'animation',
     )
-    sideLeave()
+    sideLeave({
+      isGameInfo: true,
+      isContractInfo: true,
+      isBlockchainInfo: true,
+      isOptions: true,
+    })
     return new Promise((resolve) => {
       modalResultResolver.value = resolve
     })
@@ -70,6 +75,8 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     }
     isConfirmed.value = false
     isAttackSuccess.value = false
+
+    return true
   }
 
   const closeModalWithResponse = (response: boolean) => {
@@ -79,14 +86,32 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     }
   }
 
-  const sideLeave = () => {
+  const sideLeave = ({
+    isGameInfo,
+    isContractInfo,
+    isBlockchainInfo,
+    isOptions,
+  }: {
+    isGameInfo: boolean
+    isContractInfo: boolean
+    isBlockchainInfo: boolean
+    isOptions: boolean
+  }) => {
     showSidebar.value = false
 
     requestAnimationFrame(() => {
-      isGameInfo.value = false
-      isContractInfo.value = false
-      isBlockchainInfo.value = false
-      isOptions.value = false
+      if (isGameInfo) {
+        appOptionStore.isGameInfo = false
+      }
+      if (isContractInfo) {
+        appOptionStore.isContractInfo = false
+      }
+      if (isBlockchainInfo) {
+        appOptionStore.isBlockchainInfo = false
+      }
+      if (isOptions) {
+        appOptionStore.isOptions = false
+      }
     })
   }
 

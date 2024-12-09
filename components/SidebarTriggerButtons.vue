@@ -101,7 +101,8 @@ const getTranslateClass = (menu: any, axis: 'x' | 'y') => {
   return `translate-${axis}-0`
 }
 
-const handleToggle = (drawerName: DrawerName) => {
+const handleToggle = async (drawerName: DrawerName) => {
+  await sleep(0.1 * 1000)
   appOptionStore[drawerName] = true
   appOptionStore.showSidebar = true
 }
