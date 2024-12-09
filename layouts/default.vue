@@ -9,20 +9,16 @@
 </template>
 
 <script setup lang="ts">
+import { useDark, useToggle } from '@vueuse/core'
 import TheHeader from '~/components/layout/TheHeader.vue'
 import TheSidebar from '~/components/layout/TheSidebar.vue'
 
-// --------[ Store ]-------- //
-const connectionStore = useConnectionStore()
-const appOptionStore = useAppOptionsStore()
+const isDark = useDark({
+  selector: 'body',
+  storageKey: 'theme',
+  valueDark: 'dark',
+  valueLight: 'light',
+})
 
-// --------[ Method ]-------- //
-connectionStore.$subscribe(
-  (_, state) => {
-    if (!state.onValidNetwork) {
-      appOptionStore.sideLeave()
-    }
-  },
-  { detached: true },
-)
+useToggle(isDark)
 </script>

@@ -38,10 +38,11 @@
 
 <script lang="ts" setup>
 import { Vue3Lottie } from 'vue3-lottie'
+import { useDark, useToggle } from '@vueuse/core'
 import Harp from '~/assets/lotties/harp.json'
 import AppDropdown from '~/components/common/AppDropdown.vue'
 
-// --------[ Strore ]-------- //
+// --------[ Store ]-------- //
 const appOptionStore = useAppOptionsStore()
 const useUserOptions = useUserOptionsStore()
 const { toggleMusic, toggleAudio } = appOptionStore
@@ -51,13 +52,15 @@ const { setLanguage } = useUserOptions
 
 // --------[ Composable ]-------- //
 const isDark = useDark({
+  selector: 'body',
   storageKey: 'theme',
   valueDark: 'dark',
   valueLight: 'light',
 })
 
+const toggleTheme = useToggle(isDark) as any
+
 // --------[ Data ]-------- //
-const toggleTheme = useToggle(isDark)
 const isAnimating = ref(false)
 
 // --------[ Computed ]-------- //
