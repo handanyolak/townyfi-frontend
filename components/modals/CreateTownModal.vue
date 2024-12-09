@@ -6,18 +6,27 @@
       <VeeForm class="flex w-full flex-col items-center">
         <ListItem title="Name:" class="w-full bg-towny-brown-light-100">
           <template #item>
-            <VeeField v-model="formInput.name" name="name" :rules="nameRules" />
-            <VeeErrorMessage class="text-red-800" name="name" />
+            <VeeField
+              v-model="formInput.name"
+              name="name"
+              :rules="nameRules"
+              validate-on-input
+            />
+            <VeeErrorMessage class="text-error-red font-semibold" name="name" />
           </template>
         </ListItem>
-        <ListItem title="Price:" class="w-full bg-towny-brown-light-100" input>
+        <ListItem title="Price:" class="w-full bg-towny-brown-light-100">
           <template #item>
             <VeeField
               v-model="formInput.price"
               name="price"
               :rules="priceRules"
+              validate-on-input
             />
-            <VeeErrorMessage class="text-red-800" name="price" />
+            <VeeErrorMessage
+              class="text-error-red font-semibold"
+              name="price"
+            />
           </template>
         </ListItem>
       </VeeForm>
