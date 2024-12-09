@@ -1,6 +1,12 @@
 <template>
   <div class="flex h-full flex-col justify-end">
     <div ref="chatArea" class="h-[350px] overflow-y-auto overflow-x-hidden p-4">
+      <p
+        v-if="!chatMessages.length"
+        class="my-5 text-center text-lg font-medium text-towny-brown-dark-500"
+      >
+        No messages yet. Start the conversation!
+      </p>
       <div
         v-for="(message, index) in chatMessages"
         ref="date"
@@ -106,6 +112,7 @@ import { getBytes32Rule } from '~/composables/useYupRules'
 import { middleCropping } from '~/utils'
 import Tooltip from '~/components/common/Tooltip.vue'
 
+// --------[ Store ]-------- //
 const contractStore = useContractStore()
 const { getKtaGameChatCaller } = storeToRefs(contractStore)
 
@@ -115,9 +122,12 @@ const { chatMessages } = storeToRefs(gameChatStore)
 const userWalletStore = useUserWalletStore()
 const { address } = storeToRefs(userWalletStore)
 
+// --------[ Prop & Emit ]-------- //
 defineProps<{
   isChat?: boolean
 }>()
+
+const emit = defineEmits(['new-message-notification'])
 
 // --------[ Data ]-------- //
 const youMessage = ref('')
@@ -137,6 +147,8 @@ const formattedDate = computed(() => (date: Date) => {
   })
   return formatDate.value
 })
+
+const messageCount = computed(() => chatMessages.value.length)
 
 // --------[ Method ]-------- //
 const sendMessage = async () => {
@@ -165,4 +177,11 @@ const sendMessage = async () => {
     isLoading.value = false
   }
 }
+
+// --------[ Hook ]-------- //
+watch(messageCount, (newCount, oldCount) => {
+  if (newCount > oldCount) {
+    emit('new-message-notification', true)
+  }
+})
 </script>

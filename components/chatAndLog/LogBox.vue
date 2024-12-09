@@ -22,17 +22,36 @@
         </div>
       </div>
     </div>
-    <div v-else class="text-center text-sm text-towny-brown-dark-300">
+    <p
+      v-else
+      class="my-5 text-center text-lg font-medium text-towny-brown-dark-500"
+    >
       No activities yet
-    </div>
+    </p>
   </div>
 </template>
 
 <script setup lang="ts">
+// --------[ Store ]-------- //
 const gameChatStore = useGameChatStore()
 const { logMessages } = storeToRefs(gameChatStore)
 
+// --------[ Prop & Emit ]-------- //
+const emit = defineEmits(['new-log-notification'])
+
+// --------[ Computed ]-------- //
+
+const logCount = computed(() => logMessages.value.length)
+
+// --------[ Method ]-------- //
 const splitLogMessage = (message: string) => {
   return message.split('\n')
 }
+
+// --------[ Hook ]-------- //
+watch(logCount, (newCount, oldCount) => {
+  if (newCount > oldCount) {
+    emit('new-log-notification', true)
+  }
+})
 </script>
