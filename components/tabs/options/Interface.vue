@@ -1,7 +1,7 @@
 <template>
   <div>
     <ListTitle class="my-8">General</ListTitle>
-    <ListItem title="Coordinate:">
+    <ListItem title="Language:">
       <AppDropdown
         :select="language"
         :dropdown-items="languages"
@@ -76,12 +76,13 @@ const { language } = storeToRefs(useUserOptions)
 
 // --------[ Data ]-------- //
 const isDark = useDark({
+  selector: 'body',
   storageKey: 'theme',
   valueDark: 'dark',
   valueLight: 'light',
 })
 
-const toggleTheme = useToggle(isDark)
+const toggleTheme = useToggle(isDark) as any
 
 const mapSizes = Array.from({ length: 13 }, (_, i) => (i + 1).toString())
 const mapSize = useLocalStorage('mapSize', 50)
