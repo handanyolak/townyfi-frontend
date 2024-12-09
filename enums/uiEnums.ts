@@ -14,6 +14,7 @@ export enum LoadingState {
   Registering = 'REGISTERING',
   Approving = 'APPROVING',
   AddingToken = 'ADDING_TOKEN',
+  RelayerWebhookRequest = 'RELAYER_WEBHOOK_REQUEST',
   Minting = 'MINTING',
 }
 
