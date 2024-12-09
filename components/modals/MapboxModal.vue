@@ -4,16 +4,28 @@
       ({{ coordinate._x }}, {{ coordinate._y }})</template
     >
     <div class="flex flex-col">
-      <SearchBar v-model="search" :rules="searchRules" />
-      <Accordion>
+      <SearchBar
+        v-if="addresses.length"
+        v-model="search"
+        :rules="searchRules"
+      />
+      <Accordion v-if="townId">
         <template #title>
-          <p class="w-full text-center font-bold not-italic">Town Info</p>
+          <p class="w-full text-center font-bold not-italic">Town</p>
         </template>
         <template #content>
-          <Town class="px-3" />
+          <OtherTown :id="townId" class="px-3" />
         </template>
       </Accordion>
-      <ListTitle class="my-8 text-lg font-bold">User Info</ListTitle>
+      <ListTitle v-if="filteredList.length" class="my-8 text-lg font-bold"
+        >Users</ListTitle
+      >
+      <p
+        v-if="!addresses.length"
+        class="my-20 text-center text-3xl text-towny-brown-dark-500"
+      >
+        For now, there are no users here...
+      </p>
       <Accordion
         v-for="(_address, index) in filteredList"
         :key="index"
@@ -25,8 +37,12 @@
               class="mr-4 flex flex-col items-center rounded-md bg-towny-brown-dark-300 p-1 text-xs text-white"
               @click.stop="!isOwnAddress(_address) && attack(_address)"
             >
-              <span>{{ isOwnAddress(_address) ? 'Self' : 'Attack' }}</span>
-              <img src="@/assets/img/attack.svg" class="h-5 w-5" />
+              <span>{{ isOwnAddress(_address) ? 'You' : 'Attack' }}</span>
+              <img
+                v-if="!isOwnAddress(_address)"
+                src="@/assets/img/attack.svg"
+                class="h-5 w-5"
+              />
             </button>
 
             <div class="text-shadow-none text-sm">
@@ -61,7 +77,7 @@ import Accordion from '~/components/common/Accordion.vue'
 import SearchBar from '~/components/common/SearchBar.vue'
 import AppButton from '~/components/common/AppButton.vue'
 import ListTitle from '~/components/common/ListTitle.vue'
-import Town from '~/components/tabs/game/Town.vue'
+import OtherTown from '~/components/OtherTown.vue'
 import { getAddressRule } from '~/composables/useYupRules'
 import type { CoordinateItem } from '~/types'
 import { getDifference } from '~/utils'
@@ -89,13 +105,18 @@ const { address } = storeToRefs(userWalletStore)
 const search = ref('')
 const clickedAddress = ref('')
 const addresses = ref<readonly Address[]>([])
+const townId = ref(BigInt(0))
 const searchRules = getAddressRule()
 const searchDebounced = useDebounce(search, 1000)
 
 // --------[ Hook ]-------- //
 onMounted(async () => {
-  addresses.value = await getKtaPublic.value.read.getAddressesByCoordinate([
-    props.coordinate,
+  ;[addresses.value, townId.value] = await Promise.all([
+    getKtaPublic.value.read.getAddressesByCoordinate([props.coordinate]),
+    getKtaPublic.value.read.townIdByCoordinate([
+      props.coordinate._x,
+      props.coordinate._y,
+    ]),
   ])
 })
 
@@ -118,6 +139,15 @@ const isAtSameCoordinate = computed(
 
 // --------[ Method ]-------- //
 const teleport = async () => {
+  const confirmed = await setModalInfo('AnimationModal', {
+    animation: 'teleportToTown',
+    message: `Are you sure you want to teleport ${props.coordinate._x}, ${props.coordinate._y}?`,
+  })
+
+  if (!confirmed) {
+    return
+  }
+
   try {
     await getKtaCaller.value.callFunction({
       type: 'write',
