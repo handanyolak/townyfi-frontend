@@ -95,7 +95,7 @@ defineExpose<DropdownExpose>({
 })
 </script>
 
-<style scoped>
+<style lang="postcss" scoped>
 .dropdown-enter-active {
   @apply ease-custom transform transition duration-500;
 }

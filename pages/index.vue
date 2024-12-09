@@ -35,6 +35,7 @@
     <ChatAndLogBox v-if="onValidNetwork" />
     <TheLoading v-if="isLoading" full-screen />
     <AppModal
+      v-if="modalComponentName"
       :modal-size="dynamicModalSize"
       :modal-active="Boolean(modalComponentName)"
       @modal-closed="clearModalInfo()"
@@ -105,7 +106,7 @@ const startLastFetchedWar = () => {
 }
 </script>
 
-<style>
+<style lang="postcss">
 .toast-theme {
   @apply flex items-center bg-towny-brown-dark-300 bg-opacity-30 text-towny-brown-light-200 backdrop-blur-sm;
 }
