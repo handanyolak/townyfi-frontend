@@ -57,13 +57,12 @@ const switchOrAddNetwork = async () => {
   } catch (error) {
     try {
       if (!(error instanceof UserRejectedRequestError)) {
-        console.log(error)
         await userWalletStore.walletClient.addChain({
           chain: walletClient.value.chain,
         })
       }
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
   }
 }

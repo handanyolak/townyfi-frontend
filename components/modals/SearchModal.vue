@@ -120,7 +120,7 @@ import {
   idValidationSchema,
   addressValidationSchema,
   coordinateValidationSchema,
-} from '~/validations/'
+} from '~/validations'
 import {
   getAddressRule,
   getUintRule,
@@ -140,7 +140,6 @@ const props = withDefaults(defineProps<SearchModalProps>(), {
   findBy: FindOptions.ID,
   findInputText: '',
 })
-console.log(props)
 
 // --------[ Store ]-------- //
 const contractStore = useContractStore()
@@ -220,10 +219,10 @@ const selectedItemSchema = computed(() => {
   }
 })
 
-const formIsValid = computed(() => {
+const formIsValid = computed(async () => {
   const schema = selectedItemSchema.value
   try {
-    schema.validateSync(searchFormInput, { abortEarly: false })
+    await schema.validate(searchFormInput, { abortEarly: false })
     return true
   } catch (error) {
     return false
@@ -286,7 +285,7 @@ const getAddressesByCoordinates = async (coordinateValue: string) => {
 }
 
 const debouncedSearch = useDebounceFn(async () => {
-  if (!formIsValid.value) return
+  if (!(await formIsValid.value)) return
   isDataLoading.value = true
   const value = searchFormInput[findOptions[currentFindOption.value]]
   try {
