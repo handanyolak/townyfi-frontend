@@ -15,7 +15,7 @@
                 townInfoById[userInfoByAddress[attackerWarrior.address]?.townId]
                   ?.name
               "
-              :clan-animation="warriorr1"
+              :clan-animation="warrior1"
             />
             <div class="mb-2 rounded-md bg-[#FFCA6C] p-2 md:mb-5">
               <div class="flex items-center">
@@ -103,7 +103,7 @@
                 townInfoById[userInfoByAddress[defenderWarrior.address]?.townId]
                   ?.name
               "
-              :clan-animation="warriorr2"
+              :clan-animation="warrior2"
             />
 
             <div class="mb-2 rounded-md bg-[#FFCA6C] p-2 md:mb-5">
@@ -224,15 +224,15 @@ const {
   warLogInfo: userWarLogInfo,
   lastFetchedWar: gameWarLogInfo,
   user,
-} = userGameStore
+} = storeToRefs(userGameStore)
 const warLogInfo = props.watchUserWar ? userWarLogInfo : gameWarLogInfo
 const lottieInstance = ref<any>(null)
 const currentIndex = ref(0)
 const currentDamage = ref(
-  BigInt(warLogInfo.warLogs[currentIndex.value].healthDamage),
+  BigInt(warLogInfo.value.warLogs[currentIndex.value].healthDamage),
 )
 const currentArmorDamage = ref(
-  BigInt(warLogInfo.warLogs[currentIndex.value].armorDamage),
+  BigInt(warLogInfo.value.warLogs[currentIndex.value].armorDamage),
 )
 const attack = ref(1)
 const isLottieRunning = ref(false)
@@ -244,42 +244,43 @@ const userInfoByAddress = ref<any>({})
 const townInfoById = ref<any>({})
 const ATTACKER = ref(1)
 const DEFENDER = ref(0)
-const warriorr1 = ref<object | undefined>(undefined)
-const warriorr2 = ref<object | undefined>(undefined)
-const isWinnerUser = BigInt(warLogInfo.winnerTownId) === user.townInfo.townId
+const warrior1 = ref<object | undefined>(undefined)
+const warrior2 = ref<object | undefined>(undefined)
+const isWinnerUser =
+  BigInt(warLogInfo.value.winnerTownId) === user.value.townInfo.townId
 const isBattleOver = ref(false)
 const animationSpeed = ref(1.0)
 
 const warriors = ref([
   {
-    address: warLogInfo.warLogs[currentIndex.value].defender,
+    address: warLogInfo.value.warLogs[currentIndex.value].defender,
     health:
-      BigInt(warLogInfo.warLogs[currentIndex.value].remainingHealth) +
-      BigInt(warLogInfo.warLogs[currentIndex.value].healthDamage),
+      BigInt(warLogInfo.value.warLogs[currentIndex.value].remainingHealth) +
+      BigInt(warLogInfo.value.warLogs[currentIndex.value].healthDamage),
     firstHealth:
-      BigInt(warLogInfo.warLogs[currentIndex.value].remainingHealth) +
-      BigInt(warLogInfo.warLogs[currentIndex.value].healthDamage),
+      BigInt(warLogInfo.value.warLogs[currentIndex.value].remainingHealth) +
+      BigInt(warLogInfo.value.warLogs[currentIndex.value].healthDamage),
     armor:
-      BigInt(warLogInfo.warLogs[currentIndex.value].armorDamage) +
-      BigInt(warLogInfo.warLogs[currentIndex.value].remainingArmor),
+      BigInt(warLogInfo.value.warLogs[currentIndex.value].armorDamage) +
+      BigInt(warLogInfo.value.warLogs[currentIndex.value].remainingArmor),
     firstArmor:
-      BigInt(warLogInfo.warLogs[currentIndex.value].armorDamage) +
-      BigInt(warLogInfo.warLogs[currentIndex.value].remainingArmor),
+      BigInt(warLogInfo.value.warLogs[currentIndex.value].armorDamage) +
+      BigInt(warLogInfo.value.warLogs[currentIndex.value].remainingArmor),
   },
   {
-    address: warLogInfo.warLogs[currentIndex.value].attacker,
+    address: warLogInfo.value.warLogs[currentIndex.value].attacker,
     health:
-      BigInt(warLogInfo.warLogs[currentIndex.value + 1].remainingHealth) +
-      BigInt(warLogInfo.warLogs[currentIndex.value + 1].healthDamage),
+      BigInt(warLogInfo.value.warLogs[currentIndex.value + 1].remainingHealth) +
+      BigInt(warLogInfo.value.warLogs[currentIndex.value + 1].healthDamage),
     firstHealth:
-      BigInt(warLogInfo.warLogs[currentIndex.value + 1].remainingHealth) +
-      BigInt(warLogInfo.warLogs[currentIndex.value + 1].healthDamage),
+      BigInt(warLogInfo.value.warLogs[currentIndex.value + 1].remainingHealth) +
+      BigInt(warLogInfo.value.warLogs[currentIndex.value + 1].healthDamage),
     armor:
-      BigInt(warLogInfo.warLogs[currentIndex.value + 1].armorDamage) +
-      BigInt(warLogInfo.warLogs[currentIndex.value + 1].remainingArmor),
+      BigInt(warLogInfo.value.warLogs[currentIndex.value + 1].armorDamage) +
+      BigInt(warLogInfo.value.warLogs[currentIndex.value + 1].remainingArmor),
     firstArmor:
-      BigInt(warLogInfo.warLogs[currentIndex.value + 1].armorDamage) +
-      BigInt(warLogInfo.warLogs[currentIndex.value + 1].remainingArmor),
+      BigInt(warLogInfo.value.warLogs[currentIndex.value + 1].armorDamage) +
+      BigInt(warLogInfo.value.warLogs[currentIndex.value + 1].remainingArmor),
   },
 ])
 
@@ -292,39 +293,44 @@ const updateBattleLog = () => {
     lottieInstance.value.goToAndPlay(1200, false)
   }
 
-  if (warLogInfo.warLogs.length > currentIndex.value) {
+  if (warLogInfo.value.warLogs.length > currentIndex.value) {
     warriors.value[ATTACKER.value].address =
-      warLogInfo.warLogs[currentIndex.value].attacker
+      warLogInfo.value.warLogs[currentIndex.value].attacker
     warriors.value[DEFENDER.value].address =
-      warLogInfo.warLogs[currentIndex.value].defender
+      warLogInfo.value.warLogs[currentIndex.value].defender
 
     const isAttackerDead = warriors.value[ATTACKER.value].health <= 0n
     if (isAttackerDead) {
-      const isThereNextLog = warLogInfo.warLogs.length > currentIndex.value + 1
+      const isThereNextLog =
+        warLogInfo.value.warLogs.length > currentIndex.value + 1
       warriors.value[ATTACKER.value].health = isThereNextLog
-        ? BigInt(warLogInfo.warLogs[currentIndex.value + 1].remainingHealth) +
-          BigInt(warLogInfo.warLogs[currentIndex.value + 1].healthDamage)
+        ? BigInt(
+            warLogInfo.value.warLogs[currentIndex.value + 1].remainingHealth,
+          ) +
+          BigInt(warLogInfo.value.warLogs[currentIndex.value + 1].healthDamage)
         : 0n
 
       warriors.value[ATTACKER.value].armor = isThereNextLog
-        ? BigInt(warLogInfo.warLogs[currentIndex.value + 1].remainingArmor) +
-          BigInt(warLogInfo.warLogs[currentIndex.value + 1].armorDamage)
+        ? BigInt(
+            warLogInfo.value.warLogs[currentIndex.value + 1].remainingArmor,
+          ) +
+          BigInt(warLogInfo.value.warLogs[currentIndex.value + 1].armorDamage)
         : 0n
     }
 
     warriors.value[DEFENDER.value].health = BigInt(
-      warLogInfo.warLogs[currentIndex.value].remainingHealth,
+      warLogInfo.value.warLogs[currentIndex.value].remainingHealth,
     )
 
     warriors.value[DEFENDER.value].armor = BigInt(
-      warLogInfo.warLogs[currentIndex.value].remainingArmor,
+      warLogInfo.value.warLogs[currentIndex.value].remainingArmor,
     )
 
     currentDamage.value = BigInt(
-      warLogInfo.warLogs[currentIndex.value].healthDamage,
+      warLogInfo.value.warLogs[currentIndex.value].healthDamage,
     )
     currentArmorDamage.value = BigInt(
-      warLogInfo.warLogs[currentIndex.value].armorDamage,
+      warLogInfo.value.warLogs[currentIndex.value].armorDamage,
     )
 
     ATTACKER.value = 1 - ATTACKER.value
@@ -410,8 +416,8 @@ const loadAnimations = async () => {
     import('~/assets/lotties/warrior1.json'),
     import('~/assets/lotties/warrior2.json'),
   ])
-  warriorr1.value = warrior1Data.default
-  warriorr2.value = warrior2Data.default
+  warrior1.value = warrior1Data.default
+  warrior2.value = warrior2Data.default
 }
 
 const decreaseSpeed = () => {
@@ -446,7 +452,7 @@ const defenderWarrior = computed(() => {
 onMounted(() => {
   loadAnimations()
   const addresses: string[] = []
-  for (const { attacker, defender } of warLogInfo.warLogs) {
+  for (const { attacker, defender } of warLogInfo.value.warLogs) {
     addresses.push(attacker)
     addresses.push(defender)
   }
