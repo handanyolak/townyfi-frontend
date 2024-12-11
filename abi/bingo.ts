@@ -66,12 +66,6 @@ export const bingoAbi = [
         name: 'playerAddress',
         type: 'address',
       },
-      {
-        indexed: false,
-        internalType: 'uint256[]',
-        name: 'numbers',
-        type: 'uint256[]',
-      },
     ],
     name: 'BingoCardPurchased',
     type: 'event',
@@ -87,19 +81,6 @@ export const bingoAbi = [
       },
     ],
     name: 'CoordinatorSet',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: 'uint256[]',
-        name: 'drawnNumbers',
-        type: 'uint256[]',
-      },
-    ],
-    name: 'DrawnNumbersFilled',
     type: 'event',
   },
   {
@@ -356,14 +337,20 @@ export const bingoAbi = [
   },
   {
     inputs: [],
-    name: 'fillDrawnNumbers',
-    outputs: [],
-    stateMutability: 'nonpayable',
+    name: 'drawnNumbersTimestamp',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
     type: 'function',
   },
   {
     inputs: [],
-    name: 'finalizeGame',
+    name: 'fillDrawnNumbers',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -444,6 +431,19 @@ export const bingoAbi = [
         internalType: 'uint256[]',
         name: '',
         type: 'uint256[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'isGameFinished',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
       },
     ],
     stateMutability: 'view',
@@ -558,4 +558,4 @@ export const bingoAbi = [
     stateMutability: 'view',
     type: 'function',
   },
-]
+] as const

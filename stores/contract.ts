@@ -4,7 +4,7 @@ import { ContractCaller } from '~/contracts'
 
 export const useContractStore = defineStore('contractStore', () => {
   const {
-    public: { ktaTokenAddress, ktaGameChatAddress },
+    public: { ktaTokenAddress, ktaGameChatAddress, bingoContractAddress },
   } = useRuntimeConfig()
 
   // --------[ Stores ]-------- //
@@ -15,14 +15,14 @@ export const useContractStore = defineStore('contractStore', () => {
   // --------[ States ]-------- //
   const getBingoContract = computed(() =>
     getContract({
-      address: '0xd1AbD03eB6b23a652D1072e32C0E977C788D3bed',
+      address: bingoContractAddress as Address,
       abi: bingoAbi,
       client: walletClient.value,
     }),
   )
   const getBingoContractPublic = computed(() =>
     getContract({
-      address: '0xd1AbD03eB6b23a652D1072e32C0E977C788D3bed',
+      address: bingoContractAddress as Address,
       abi: bingoAbi,
       client: publicClient.value,
     }),

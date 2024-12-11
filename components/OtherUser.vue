@@ -158,7 +158,6 @@ import ListItem from '~/components/common/ListItem.vue'
 import TheLoading from '~/components/common/TheLoading.vue'
 import OtherTown from '~/components/OtherTown.vue'
 import { toCapitalizedWords, middleCropping } from '~/utils'
-import { transformUser } from '~/transformers'
 import type { UserTimer } from '~/types'
 import { SearchType, FindOptions } from '~/enums'
 

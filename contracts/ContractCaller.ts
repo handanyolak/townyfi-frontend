@@ -21,7 +21,7 @@ export class ContractCaller<K> {
     const userWalletStore = useUserWalletStore()
 
     const accountInfo = useAppKitAccount()
-    const { chainClient } = storeToRefs(userWalletStore)
+    const { chainClient, walletClient } = storeToRefs(userWalletStore)
 
     if (type === 'write' && !accountInfo.value.isConnected) {
       useAppToast(TYPE.ERROR, 'Connect your wallet first')
@@ -34,27 +34,11 @@ export class ContractCaller<K> {
       .catch((e) => e)
 
     if (staticCallRes instanceof Error) {
-      // if (
-      //   type === 'write' &&
-      //   (name === 'teleport' || name === 'move') &&
-      //   user.value.energy < settings.value.rate.movement
-      // ) {
-      //   useAppToast(TYPE.ERROR, 'You do not have enough energy')
+      const trimmedMessage = staticCallRes.message
+        .split('Contract Call:')[0]
+        .trim()
 
-      //   return false
-      // }
-
-      // if (
-      //   type === 'write' &&
-      //   name === 'attack' &&
-      //   user.value.mana < settings.value.rate.attack
-      // ) {
-      //   useAppToast(TYPE.ERROR, 'You do not have enough mana')
-
-      //   return false
-      // }
-
-      useAppToast(TYPE.ERROR, staticCallRes.message)
+      useAppToast(TYPE.ERROR, trimmedMessage)
 
       return false
     }
@@ -74,6 +58,9 @@ export class ContractCaller<K> {
     )
 
     try {
+      await walletClient.value.requestAddresses()
+      await walletClient.value.getAddresses()
+
       const tx = await this.contract[type][name](...args)
 
       const receipt = await chainClient.value.waitForTransactionReceipt({
@@ -92,6 +79,7 @@ export class ContractCaller<K> {
       )
       return true
     } catch (error) {
+      console.error(error)
       toast.dismiss(toastId)
       useAppToast(TYPE.ERROR, 'Transaction failed: Something went wrong')
       return false

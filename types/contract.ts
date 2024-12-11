@@ -153,3 +153,9 @@ export type WarLogInfo = {
   warLogs: readonly WarLog[]
   winnerTownId: bigint
 }
+
+export type Player = {
+  playerAddress: Address
+  remainingNumbersCount: bigint
+  numbers: bigint[]
+}

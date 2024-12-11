@@ -146,6 +146,7 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
 
   const connectWeb3 = async () => {
     try {
+      const accounts = await walletClient.value.getAddresses()
       await walletClient.value.requestAddresses()
       handleAccountsChanged()
       await connect()

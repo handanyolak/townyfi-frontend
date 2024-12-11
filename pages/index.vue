@@ -14,14 +14,7 @@
       <appkit-button />
     </div>
 
-    <div v-if="!gameStarted" class="mb-4">
-      <button
-        class="rounded bg-blue-500 px-6 py-3 text-white hover:bg-blue-600"
-        @click="startGame"
-      >
-        Start Game
-      </button>
-    </div>
+    <div v-if="!gameStarted" class="mb-4"></div>
 
     <div class="w-fit rounded-md bg-green-700 p-4">
       <div class="rounded-md bg-white p-2">
@@ -66,37 +59,37 @@
         🎉 Tebrikler! Bingo! 🎉
       </div>
     </transition>
+
+    <div>
+      <div>Player</div>
+      <div>isPlayerRegistered {{ isPlayerRegistered }}</div>
+      <div>playerNumbers {{ playerNumbers }}</div>
+      <div>playerAddress {{ playerAddress }}</div>
+      <div>isUserWinner {{ isUserWinner }}</div>
+      <div>playerRemainingNumbersCount {{ playerRemainingNumbersCount }}</div>
+
+      <div class="mt-5">Bingo</div>
+      <div>drawnNumbers {{ drawnNumbers }}</div>
+      <div>drawnNumbersTimestamp {{ drawnNumbersTimestamp }}</div>
+      <div>bingoCardNumbersCount {{ bingoCardNumbersCount }}</div>
+      <div>maxBingoNumber {{ maxBingoNumber }}</div>
+      <div>minBingoNumber {{ minBingoNumber }}</div>
+      <div>bingoCardPrice {{ bingoCardPrice }}</div>
+      <div>bingoCardPriceFormatted {{ bingoCardPriceFormatted }}</div>
+      <div>gameStartTimestamp {{ gameStartTimestamp }}</div>
+      <div>winners {{ winners }}</div>
+      <div>rewardByWinner {{ rewardByWinner }}</div>
+      <div>rewardByWinnerFormatted {{ rewardByWinnerFormatted }}</div>
+      <div>isGameFinished {{ isGameFinished }}</div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { sepolia, type AppKitNetwork } from '@reown/appkit/networks'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import {
-  createAppKit,
-  useAppKit,
-  useAppKitAccount,
-  useAppKitEvents,
-  useAppKitNetwork,
-  useAppKitState,
-  useAppKitTheme,
-  useDisconnect,
-  useWalletInfo,
-  useAppKitProvider,
-} from '@reown/appkit/vue'
-import {
-  createWalletClient,
-  custom,
-  getContract,
-  hashMessage,
-  keccak256,
-  publicActions,
-  recoverAddress,
-  toBytes,
-  toHex,
-  verifyMessage,
-  type Address,
-} from 'viem'
+import { createAppKit } from '@reown/appkit/vue'
+import { useToast } from 'vue-toastification'
 
 const networks: [AppKitNetwork, ...AppKitNetwork[]] = [sepolia]
 const projectId = 'f85db361b46b66558ac9fb7ebd0eea91' // https://cloud.reown.com,
@@ -129,9 +122,38 @@ createAppKit({
   },
 })
 
-const accountInfo = useAppKitAccount()
-const { getBingoContract, getBingoContractCaller } =
-  storeToRefs(useContractStore())
+const contractStore = useContractStore()
+const { getBingoContractCaller } = storeToRefs(contractStore)
+const playerStore = usePlayerStore()
+const bingoStore = useBingoStore()
+const {
+  isPlayerRegistered,
+  playerNumbers,
+  playerAddress,
+  isUserWinner,
+  playerRemainingNumbersCount,
+} = storeToRefs(playerStore)
+const {
+  drawnNumbers,
+  drawnNumbersTimestamp,
+  bingoCardNumbersCount,
+  bingoCardPrice,
+  maxBingoNumber,
+  minBingoNumber,
+  bingoCardPriceFormatted,
+  gameStartTimestamp,
+  winners,
+  rewardByWinner,
+  rewardByWinnerFormatted,
+  drawnNumbersWithTimestamp,
+  isGameFinished,
+} = storeToRefs(bingoStore)
+
+const { initializeApp } = useAppOptionsStore()
+
+const cardNumbers = ref<number[]>([])
+const unixTimestamp = ref(0)
+const toast = useToast()
 
 // --------[ Lifecycle ]-------- //
 onMounted(async () => {
@@ -147,11 +169,19 @@ onMounted(async () => {
       console.error('Error reconnecting', error)
     }
   }
+  await initializeApp()
 
-  console.log(
-    'getBingoContract.value.read.owner()',
-    await getBingoContract.value.read.owner(),
-  )
+  if (isPlayerRegistered.value) {
+    cardNumbers.value = playerNumbers.value.map((num) => Number(num))
+  } else {
+    cardNumbers.value = generateRandomNumbers(15, 1, 90)
+  }
+
+  unixTimestamp.value = await useUnixTimestamp()
+
+  if (drawnNumbersWithTimestamp.value.length) {
+    await startTriggeringSequentially()
+  }
 })
 
 // --------[ Data ]-------- //
@@ -163,10 +193,75 @@ const gameWon = ref(false)
 // --------[ Method ]-------- //
 const buyBingoCard = async () => {
   await getBingoContractCaller.value.callFunction({
-    function: 'buyBingoCard',
+    name: 'buyBingoCard',
     type: 'write',
-    args: [0n, 1n, 2n, 3n, 4n, 5n, 6n, 7n, 8n, 9n, 10n, 11n, 12n, 13n, 14n],
+    args: [
+      [cardNumbers.value.map((num) => BigInt(num))],
+      {
+        value: bingoCardPrice.value,
+      },
+    ],
   })
+}
+
+const startTriggeringSequentially = async () => {
+  const currentWorldTime = unixTimestamp.value
+  let isFirstSync = true
+  for (let i = 0; i < drawnNumbersWithTimestamp.value.length; i++) {
+    const currentItem = drawnNumbersWithTimestamp.value[i]
+    if (currentWorldTime > currentItem.timestamp) {
+      if (playerNumbers.value.includes(BigInt(currentItem.number))) {
+        highlightedNumbers.value.add(currentItem.number)
+      }
+
+      if (i === drawnNumbersWithTimestamp.value.length - 1) {
+        if (isUserWinner.value) {
+          toast.success('Bingo! Congratulations!')
+        } else {
+          toast.error('someone won, good luck on next')
+        }
+      }
+
+      continue
+    }
+
+    const nextItem = drawnNumbersWithTimestamp.value[i + 1]
+    const delay =
+      (nextItem
+        ? (isFirstSync ? currentWorldTime : nextItem.timestamp) -
+          currentItem.timestamp
+        : 10) * 1000
+
+    isFirstSync = false
+
+    if (delay > 0) {
+      console.log(
+        `Sayı ${currentItem.number} için ${delay / 1000} saniye bekleniyor...`,
+      )
+      await sleep(delay)
+    }
+
+    currentNumber.value = currentItem.number
+    setTimeout(() => {
+      currentNumber.value = null
+    }, 1500)
+
+    if (playerNumbers.value.includes(BigInt(currentItem.number))) {
+      highlightedNumbers.value.add(currentItem.number)
+    }
+
+    if (
+      Number(bingoCardNumbersCount.value) - highlightedNumbers.value.size ===
+      Number(playerRemainingNumbersCount.value)
+    ) {
+      if (isUserWinner.value) {
+        toast.success('Bingo! Congratulations!')
+      } else {
+        toast.error('someone won, good luck on next')
+      }
+      return
+    }
+  }
 }
 
 const generateRandomNumbers = (
@@ -182,61 +277,36 @@ const generateRandomNumbers = (
   return Array.from(numbers)
 }
 
-const cardNumbers: number[] = generateRandomNumbers(14, 1, 90)
-
-const generateShuffledNumbers = (min: number, max: number): number[] => {
-  const numbers = Array.from({ length: max - min + 1 }, (_, i) => i + min)
-  for (let i = numbers.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[numbers[i], numbers[j]] = [numbers[j], numbers[i]]
-  }
-  return numbers
-}
-
-const numbers: number[] = generateShuffledNumbers(1, 90)
-
 const formatCells = (cardNumbers: number[]): (number | null)[] => {
   const result: (number | null)[] = []
+  let notNullCount = 2
+  let isBeforeCellNotNull = false
   cardNumbers.forEach((num, index) => {
     result.push(num)
+    if (!isBeforeCellNotNull && notNullCount && Math.random() >= 0.5) {
+      notNullCount--
+      isBeforeCellNotNull = true
+      return
+    }
+    if (notNullCount === 2 && index === cardNumbers.length - 3) {
+      notNullCount--
+      isBeforeCellNotNull = true
+      return
+    }
+    if (notNullCount === 1 && index === cardNumbers.length - 2) {
+      notNullCount--
+      isBeforeCellNotNull = true
+      return
+    }
     if (index !== cardNumbers.length - 1) {
+      isBeforeCellNotNull = false
       result.push(null)
     }
   })
   return result
 }
 
-const cells = formatCells(cardNumbers)
-
-const startGame = () => {
-  gameStarted.value = true
-  let index = 0
-
-  const interval = setInterval(() => {
-    if (index < numbers.length) {
-      const number = numbers[index]
-
-      currentNumber.value = number
-      setTimeout(() => {
-        currentNumber.value = null
-      }, 1500)
-
-      if (cardNumbers.includes(number)) {
-        highlightedNumbers.value.add(number)
-      }
-
-      if (cardNumbers.every((num) => highlightedNumbers.value.has(num))) {
-        gameWon.value = true
-        clearInterval(interval)
-        console.log('Oyun kazandı!')
-      }
-
-      index++
-    } else {
-      clearInterval(interval)
-    }
-  }, 2000)
-}
+const cells = computed(() => formatCells(cardNumbers.value))
 </script>
 
 <style scoped>

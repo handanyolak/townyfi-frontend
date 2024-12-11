@@ -1,19 +1,9 @@
 import { useToggle, useStorage } from '@vueuse/core'
-import { formatUnits, hexToString } from 'viem'
-import DOMPurify from 'dompurify'
-import { Get } from '~/enums'
-import {
-  getEnumKeyByEnumValue,
-  processAndPrintLog,
-  getDifference,
-} from '~/utils'
-import {
-  transformSettings,
-  transformTown,
-  transformUser,
-  transformWar,
-} from '~/transformers'
+import { zeroAddress, type Address } from 'viem'
+import { useAppKitAccount } from '@reown/appkit/vue'
+import { processAndPrintLog } from '~/utils'
 import type { CoordinateStruct, User } from '~/types'
+import { transformPlayer } from '~/transformers'
 
 export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   // --------[ Stores ]-------- //
@@ -21,10 +11,12 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const userGameStore = useUserGameStore()
   const connectionStore = useConnectionStore()
   const contractStore = useContractStore()
-  const gameChatStore = useGameChatStore()
   const appOptionStore = useAppOptionsStore()
+  const bingoStore = useBingoStore()
+  const playerStore = usePlayerStore()
+  const accountInfo = useAppKitAccount()
 
-  const { hasMetamask, checkOnValidNetwork } = connectionStore
+  const { checkOnValidNetwork } = connectionStore
 
   // --------[ States ]-------- //
   const isBlockchainInfo = ref(false)
@@ -126,7 +118,8 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   }
 
   const initializeApp = async () => {
-    if (hasMetamask) {
+    await sleep(500)
+    if (accountInfo.value.isConnected) {
       await userWalletStore.connect()
     }
 
@@ -135,200 +128,167 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     if (!initialized.value) {
       initialized.value = true
 
-      const [symbolVal, decimalsVal, balanceOfVal, blockNumberVal] =
-        await Promise.all([
-          contractStore.getKtaTokenPublic.read.symbol(),
-          contractStore.getKtaTokenPublic.read.decimals(),
+      const [
+        drawnNumbers,
+        drawnNumbersTimestamp,
+        winners,
+        isGameFinished,
+        bingoCardNumbersCount,
+        minBingoNumber,
+        maxBingoNumber,
+        bingoCardPrice,
+      ] = await Promise.all([
+        contractStore.getBingoContractPublic.read.getAllDrawnNumbers(),
+        contractStore.getBingoContractPublic.read.drawnNumbersTimestamp(),
+        contractStore.getBingoContractPublic.read.getAllWinners(),
+        contractStore.getBingoContractPublic.read.isGameFinished(),
+        contractStore.getBingoContractPublic.read.BINGO_CARD_NUMBERS_COUNT(),
+        contractStore.getBingoContractPublic.read.MIN_BINGO_NUMBER(),
+        contractStore.getBingoContractPublic.read.MAX_BINGO_NUMBER(),
+        contractStore.getBingoContractPublic.read.BINGO_CARD_PRICE(),
+      ])
 
-          contractStore.getKtaTokenPublic.read.balanceOf([
-            userWalletStore.address,
+      if (drawnNumbers.length > 0) {
+        const drawnNumbersWithTimestamp = drawnNumbers.map((number, index) => {
+          let additionalTimestamp = index * 10
+          if (index === 0) {
+            additionalTimestamp += 60
+          }
+          return {
+            number: Number(number),
+            timestamp: Number(drawnNumbersTimestamp) + additionalTimestamp,
+          }
+        })
+        bingoStore.setDrawnNumbersWithTimestamp(drawnNumbersWithTimestamp)
+      }
+
+      bingoStore.setDrawnNumbers(drawnNumbers)
+      bingoStore.setDrawnNumbersTimestamp(drawnNumbersTimestamp)
+      bingoStore.setWinners(winners)
+      bingoStore.setIsGameFinished(isGameFinished)
+      bingoStore.setBingoCardNumbersCount(bingoCardNumbersCount)
+      bingoStore.setMinBingoNumber(minBingoNumber)
+      bingoStore.setMaxBingoNumber(maxBingoNumber)
+      bingoStore.setBingoCardPrice(bingoCardPrice)
+
+      try {
+        const playerInfo = transformPlayer(
+          await contractStore.getBingoContractPublic.read.getPlayerInfo([
+            (accountInfo.value.address as Address) ?? zeroAddress,
           ]),
-          userWalletStore.publicClient.getBlockNumber(),
-        ])
+        )
 
-      userWalletStore.setCurrentBlockNumber(blockNumberVal)
-      userWalletStore.setKtaSymbol(symbolVal)
-      userWalletStore.setKtaDecimals(decimalsVal)
-      userWalletStore.setKtaBalance(balanceOfVal)
+        playerStore.setPlayerAddress(playerInfo.playerAddress)
+        playerStore.setPlayerNumbers(playerInfo.numbers)
+        playerStore.setRemainingNumbersCount(playerInfo.remainingNumbersCount)
+      } catch (error) {}
 
-      userWalletStore.chainClient.watchBlockNumber({
-        onBlockNumber: async (blockNumber) => {
-          userWalletStore.setCurrentBlockNumber(blockNumber)
-          userWalletStore.setBalance(
-            await userWalletStore.publicClient.getBalance({
-              address: userWalletStore.address,
-            }),
-          )
+      // userWalletStore.chainClient.watchBlockNumber({
+      //   onBlockNumber: async (blockNumber) => {
+      //     userWalletStore.setCurrentBlockNumber(blockNumber)
+      //     userWalletStore.setBalance(
+      //       await userWalletStore.publicClient.getBalance({
+      //         address: userWalletStore.address,
+      //       }),
+      //     )
+      //   },
+      // })
+
+      const bingoContractEventFilter = {
+        address: contractStore.getBingoContract.address,
+        abi: contractStore.getBingoContract.abi,
+        strict: true,
+        onError: (error: Error) => console.error(error),
+      } as const
+
+      userWalletStore.publicClient.watchContractEvent({
+        ...bingoContractEventFilter,
+        eventName: 'BingoCardPurchased',
+        onLogs: async (logs) => {
+          try {
+            const uniqueLogs = getUniqueLogs(logs)
+            for (const { eventName, args } of uniqueLogs) {
+              const { playerAddress } = args
+
+              if (playerAddress === accountInfo.value.address) {
+                const playerInfo = transformPlayer(
+                  await contractStore.getBingoContractPublic.read.getPlayerInfo(
+                    [playerAddress],
+                  ),
+                )
+
+                playerStore.setPlayerAddress(playerInfo.playerAddress)
+                playerStore.setPlayerNumbers(playerInfo.numbers)
+                playerStore.setRemainingNumbersCount(
+                  playerInfo.remainingNumbersCount,
+                )
+              }
+
+              processAndPrintLog({
+                logName: eventName,
+                logArgs: args,
+                useToast: true,
+                toastMessage: 'Bingo card purchased!',
+              })
+            }
+          } catch (error) {
+            console.error(`${logs[0].eventName} error`, error)
+          }
         },
       })
 
-      // TODO: watchContractEvent doesn't work with json rpc
-      if (hasMetamask) {
-        // TODO: add startGameEvents function for all events
+      userWalletStore.publicClient.watchContractEvent({
+        ...bingoContractEventFilter,
+        eventName: 'GameFinalized',
+        onLogs: async (logs) => {
+          try {
+            const uniqueLogs = getUniqueLogs(logs)
+            for (const { eventName, args } of uniqueLogs) {
+              const { winners, rewardPerWinner: rewardPerWinnerWei } = args
 
-        const ktaTokenEventFilter = {
-          address: contractStore.getKtaToken.address,
-          abi: contractStore.getKtaToken.abi,
-          strict: true,
-          // onError: (error: Error) => console.error(error),
-        } as const
+              const [drawnNumbers, drawnNumbersTimestamp] = await Promise.all([
+                contractStore.getBingoContractPublic.read.getAllDrawnNumbers(),
+                contractStore.getBingoContractPublic.read.drawnNumbersTimestamp(),
+              ])
 
-        const ktaGameChatEventFilter = {
-          address: contractStore.getKtaGameChat.address,
-          abi: contractStore.getKtaGameChat.abi,
-          strict: true,
-          // onError: (error: Error) => console.error(error),
-        } as const
+              const drawnNumbersWithTimestamp = drawnNumbers.map(
+                (number, index) => {
+                  let additionalTimestamp = index * 10
+                  if (index === 0) {
+                    additionalTimestamp += 60
+                  }
+                  return {
+                    number: Number(number),
+                    timestamp:
+                      Number(drawnNumbersTimestamp) + additionalTimestamp,
+                  }
+                },
+              )
+              bingoStore.setDrawnNumbersWithTimestamp(drawnNumbersWithTimestamp)
+              bingoStore.setDrawnNumbers(drawnNumbers)
+              bingoStore.setDrawnNumbersTimestamp(drawnNumbersTimestamp)
+              bingoStore.setWinners(winners)
+              bingoStore.setRewardByWinner(rewardPerWinnerWei)
 
-        userWalletStore.publicClient.watchContractEvent({
-          ...ktaGameChatEventFilter,
-          eventName: 'Message',
-          onLogs: async (logs) => {
-            try {
-              const uniqueLogs = getUniqueLogs(logs)
-              for (const { eventName, args } of uniqueLogs) {
-                const { user: author, message } = args
-                const messageStr = hexToString(message, { size: 32 })
-
-                const nameStr = hexToString('name', { size: 32 })
-                let sanitizedMessage = DOMPurify.sanitize(messageStr, {
-                  ALLOWED_TAGS: [],
-                  ALLOWED_ATTR: [],
-                })
-                const userMention = `@${hexToString(userGameStore.user.name, {
-                  size: 32,
-                })}`
-                const isUserMentioned = messageStr.includes(userMention)
-                if (isUserMentioned) {
-                  const boldUserMention = `<b>${userMention}</b>`
-                  sanitizedMessage = sanitizedMessage.replace(
-                    userMention,
-                    boldUserMention,
-                  )
-                }
-
-                gameChatStore.addChatMessages({
-                  body: sanitizedMessage,
-                  author,
-                  name: nameStr,
-                  date: new Date(),
-                })
-
-                const isUserAuthor = areAddressesEqual(
-                  author,
-                  userWalletStore.address,
-                )
-
-                await processAndPrintLog({
-                  logName: eventName,
-                  logArgs: args,
-                  useToast: isUserMentioned && !isUserAuthor,
-                  addToLogMessages: isUserMentioned && !isUserAuthor,
-                  toastMessage: 'You got a message!',
-                })
-              }
-            } catch (error) {
-              console.error(`${logs[0].eventName} error`, error)
+              processAndPrintLog({
+                logName: eventName,
+                logArgs: {
+                  ...args,
+                  drawnNumbersTimestamp,
+                },
+                useToast: true,
+                toastMessage: `Drawn numbers filled! Game will start in 1 minute`,
+              })
             }
-          },
-        })
-
-        userWalletStore.publicClient.watchContractEvent({
-          ...ktaTokenEventFilter,
-          eventName: 'Approval',
-          args: {
-            owner: userWalletStore.address,
-          },
-          onLogs: async (logs) => {
-            try {
-              const uniqueLogs = getUniqueLogs(logs)
-              for (const { eventName, args } of uniqueLogs) {
-                const { value } = args
-
-                userWalletStore.setKtaAllowance(value)
-
-                const valueFormat = formatUnits(
-                  value,
-                  userWalletStore.ktaDecimals,
-                )
-
-                await processAndPrintLog({
-                  logName: eventName,
-                  logArgs: args,
-                  useToast: true,
-                  addToLogMessages: true,
-                  toastMessage: `You approved ${valueFormat} ${userWalletStore.ktaSymbol}!`,
-                })
-              }
-            } catch (error) {
-              console.error(`${logs[0].eventName} error`, error)
-            }
-          },
-        })
-
-        userWalletStore.publicClient.watchContractEvent({
-          ...ktaTokenEventFilter,
-          eventName: 'Transfer',
-          onLogs: async (logs) => {
-            try {
-              const uniqueLogs = getUniqueLogs(logs)
-              for (const log of uniqueLogs) {
-                const { eventName, args } = log
-                const { from, to, value } = args
-                const isUserSender = areAddressesEqual(
-                  from,
-                  userWalletStore.address,
-                )
-                const isUserReceiver = areAddressesEqual(
-                  to,
-                  userWalletStore.address,
-                )
-                const isUserInvolved = isUserSender || isUserReceiver
-
-                if (isUserInvolved) {
-                  const changeAmount = isUserSender
-                    ? BigInt(value) * BigInt(-1)
-                    : BigInt(value)
-                  userWalletStore.setKtaBalance(
-                    userWalletStore.ktaBalance + changeAmount,
-                  )
-                }
-
-                const valueFormat = formatUnits(
-                  value,
-                  userWalletStore.ktaDecimals,
-                )
-
-                const toastMessage =
-                  (isUserSender ? `You sent ` : `You received`) +
-                  `${valueFormat} ${userWalletStore.ktaSymbol}\n`
-
-                await processAndPrintLog({
-                  logName: eventName,
-                  logArgs: args,
-                  useToast: isUserInvolved,
-                  addToLogMessages: isUserInvolved,
-                  toastMessage,
-                })
-
-                if (isUserInvolved) {
-                  userWalletStore.setKtaBalance(
-                    await contractStore.getKtaTokenPublic.read.balanceOf([
-                      userWalletStore.address,
-                    ]),
-                  )
-                }
-              }
-            } catch (error) {
-              console.error(`${logs[0].eventName} error`, error)
-            }
-          },
-        })
-      }
+          } catch (error) {
+            console.error(`${logs[0].eventName} error`, error)
+          }
+        },
+      })
     }
   }
 
-  const setUserInfo = async (userInfo: User) => {
+  const setUserInfo = (userInfo: User) => {
     userGameStore.setUser(userInfo)
   }
 

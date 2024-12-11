@@ -1,6 +1,5 @@
 import type { Log } from 'viem'
 import { TYPE } from 'vue-toastification'
-import { transformUser } from '../transformers'
 import { toCapitalizedWords } from './helper'
 import type { User } from '~/types'
 
@@ -34,35 +33,22 @@ export const getUniqueLogs = <T extends Log>(logs: T[]) => {
   return uniqueLogs
 }
 
-export const processAndPrintLog = async ({
+export const processAndPrintLog = ({
   logName,
-  logArgs,
+  logArgs = {},
   useToast,
-  refreshUserInfo,
-  refreshUserInfoUntilCallback,
-  addToLogMessages,
   toastMessage = '',
 }: {
   logName: string
-  logArgs: any
+  logArgs?: any
   useToast: boolean
   refreshUserInfo?: boolean
   refreshUserInfoUntilCallback?: (user: User) => boolean
-  addToLogMessages: boolean
   toastMessage: string
 }) => {
-  const appOptionsStore = useAppOptionsStore()
-  const contractStore = useContractStore()
-  const userWalletStore = useUserWalletStore()
-  const gameChatStore = useGameChatStore()
-
   const eventNameMessage = `Event: ${logName}`
   const argsMessage = formatEventArgs(logArgs)
   const eventMessage = `${eventNameMessage}\n${argsMessage}`
-
-  if (addToLogMessages) {
-    gameChatStore.addLogMessage(eventMessage)
-  }
 
   if (useToast) {
     const toastMsg = (toastMessage ? `${toastMessage}\n` : '') + eventMessage

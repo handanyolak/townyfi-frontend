@@ -46,6 +46,8 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
+      bingoContractAddress:
+        process.env.NUXT_BINGO_CONTRACT_ADDRESS || zeroAddress,
       ktaTokenAddress: process.env.NUXT_KTA_TOKEN_ADDRESS || zeroAddress,
       ktaGamePassNftAddress:
         process.env.NUXT_KTA_GAME_PASS_NFT_ADDRESS || zeroAddress,
