@@ -3,7 +3,7 @@
     class="background-bingo relative flex min-h-screen flex-col items-center justify-center bg-[#FFF0D9]"
   >
     <div
-      v-if="isPlayerRegistered || isGameFinishedInUi"
+      v-if="isPlayerRegistered || !isGameFinishedInUi"
       class="justify-cent flex flex-col items-center"
     >
       <button
@@ -96,7 +96,7 @@
       </div>
     </div>
     <div v-else>Game is finished. Good luck on next</div>
-    <transition name="fade">
+    <!-- <transition name="fade">
       <div
         v-if="!isGameFinishedInUi"
         class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
@@ -129,7 +129,6 @@
               :key="winner"
               class="max-h-[2%] space-y-4 overflow-y-auto"
             >
-              <!-- TODO: list will be scroll -->
               <li class="text-center">{{ winner }}</li>
               <li class="text-center">{{ winner }}</li>
               <li class="text-center">{{ winner }}</li>
@@ -143,7 +142,7 @@
           </button>
         </div>
       </div>
-    </transition>
+    </transition> -->
   </div>
 </template>
 
@@ -226,7 +225,7 @@ const {
 const accountInfo = useAppKitAccount()
 const userWalletStore = useUserWalletStore()
 const { walletClient } = storeToRefs(userWalletStore)
-
+const eventStore = useEventStore()
 const { initializeApp } = useAppOptionsStore()
 
 const cardNumbers = ref<number[]>([])
@@ -275,6 +274,18 @@ const isGameFinishedInUi = computed(
       drawnNumbersWithTimestamp.value[
         drawnNumbersWithTimestamp.value.length - 1
       ].timestamp,
+)
+
+const stop = watch(
+  () => eventStore.gameFinishedEvent,
+  async (newValue) => {
+    if (newValue) {
+      stop()
+      eventStore.clearEvent()
+
+      await startTriggeringSequentially()
+    }
+  },
 )
 
 const calculateCardColor = computed(() => {

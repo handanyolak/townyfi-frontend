@@ -14,6 +14,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const bingoStore = useBingoStore()
   const playerStore = usePlayerStore()
   const accountInfo = useAppKitAccount()
+  const eventStore = useEventStore()
 
   // --------[ States ]-------- //
   const isBlockchainInfo = ref(false)
@@ -277,6 +278,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
               bingoStore.setDrawnNumbersTimestamp(drawnNumbersTimestamp)
               bingoStore.setWinners(winners)
               bingoStore.setRewardByWinner(rewardPerWinner)
+              eventStore.triggerGameFinishedEvent()
 
               processAndPrintLog({
                 logName: eventName,
