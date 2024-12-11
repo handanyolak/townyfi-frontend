@@ -10,6 +10,7 @@ export const useBingoStore = defineStore('bingoStore', () => {
   const winners = ref<readonly Address[]>([])
   const rewardByWinner = ref(0n)
   const isGameFinished = ref(false)
+  const minPlayers = ref(0n)
   const drawnNumbersWithTimestamp = ref<
     {
       number: number
@@ -53,6 +54,10 @@ export const useBingoStore = defineStore('bingoStore', () => {
     isGameFinished.value = newValue
   }
 
+  const setMinPlayers = (newValue: bigint) => {
+    minPlayers.value = newValue
+  }
+
   const setDrawnNumbersWithTimestamp = (
     newValue: {
       number: number
@@ -83,6 +88,7 @@ export const useBingoStore = defineStore('bingoStore', () => {
     setBingoCardPrice,
     setWinners,
     setRewardByWinner,
+    setMinPlayers,
     setDrawnNumbersWithTimestamp,
     setIsGameFinished,
     isGameFinished,
@@ -98,5 +104,6 @@ export const useBingoStore = defineStore('bingoStore', () => {
     rewardByWinner,
     rewardByWinnerFormatted,
     drawnNumbersWithTimestamp,
+    minPlayers,
   }
 })

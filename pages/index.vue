@@ -92,6 +92,7 @@
         <div>rewardByWinner {{ rewardByWinner }}</div>
         <div>rewardByWinnerFormatted {{ rewardByWinnerFormatted }}</div>
         <div>isGameFinished {{ isGameFinished }}</div>
+        <div>minPlayers {{ minPlayers }}</div>
       </div>
     </div>
     <div v-else>Game is finished. Good luck on next</div>
@@ -220,6 +221,7 @@ const {
   rewardByWinnerFormatted,
   drawnNumbersWithTimestamp,
   isGameFinished,
+  minPlayers,
 } = storeToRefs(bingoStore)
 const accountInfo = useAppKitAccount()
 const userWalletStore = useUserWalletStore()

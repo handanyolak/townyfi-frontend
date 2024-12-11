@@ -134,6 +134,8 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
         minBingoNumber,
         maxBingoNumber,
         bingoCardPrice,
+        rewardPerWinner,
+        minPlayers,
       ] = await Promise.all([
         contractStore.getBingoContractPublic.read.getAllDrawnNumbers(),
         contractStore.getBingoContractPublic.read.drawnNumbersTimestamp(),
@@ -143,6 +145,8 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
         contractStore.getBingoContractPublic.read.MIN_BINGO_NUMBER(),
         contractStore.getBingoContractPublic.read.MAX_BINGO_NUMBER(),
         contractStore.getBingoContractPublic.read.BINGO_CARD_PRICE(),
+        contractStore.getBingoContractPublic.read.rewardPerWinner(),
+        contractStore.getBingoContractPublic.read.MIN_PLAYERS(),
       ])
 
       if (drawnNumbers.length > 0) {
@@ -167,6 +171,8 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
       bingoStore.setMinBingoNumber(minBingoNumber)
       bingoStore.setMaxBingoNumber(maxBingoNumber)
       bingoStore.setBingoCardPrice(bingoCardPrice)
+      bingoStore.setRewardByWinner(rewardPerWinner)
+      bingoStore.setMinPlayers(minPlayers)
 
       try {
         const playerInfo = transformPlayer(
@@ -236,16 +242,21 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
 
       userWalletStore.publicClient.watchContractEvent({
         ...bingoContractEventFilter,
-        eventName: 'GameFinalized',
+        eventName: 'GameFinished',
         onLogs: async (logs) => {
           try {
             const uniqueLogs = getUniqueLogs(logs)
-            for (const { eventName, args } of uniqueLogs) {
-              const { winners, rewardPerWinner: rewardPerWinnerWei } = args
-
-              const [drawnNumbers, drawnNumbersTimestamp] = await Promise.all([
+            for (const { eventName } of uniqueLogs) {
+              const [
+                drawnNumbers,
+                drawnNumbersTimestamp,
+                winners,
+                rewardPerWinner,
+              ] = await Promise.all([
                 contractStore.getBingoContractPublic.read.getAllDrawnNumbers(),
                 contractStore.getBingoContractPublic.read.drawnNumbersTimestamp(),
+                contractStore.getBingoContractPublic.read.getAllWinners(),
+                contractStore.getBingoContractPublic.read.rewardPerWinner(),
               ])
 
               const drawnNumbersWithTimestamp = drawnNumbers.map(
@@ -265,12 +276,11 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
               bingoStore.setDrawnNumbers(drawnNumbers)
               bingoStore.setDrawnNumbersTimestamp(drawnNumbersTimestamp)
               bingoStore.setWinners(winners)
-              bingoStore.setRewardByWinner(rewardPerWinnerWei)
+              bingoStore.setRewardByWinner(rewardPerWinner)
 
               processAndPrintLog({
                 logName: eventName,
                 logArgs: {
-                  ...args,
                   drawnNumbersTimestamp,
                 },
                 useToast: true,

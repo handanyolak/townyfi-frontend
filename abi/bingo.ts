@@ -85,21 +85,8 @@ export const bingoAbi = [
   },
   {
     anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: 'address[]',
-        name: 'winners',
-        type: 'address[]',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'rewardPerWinner',
-        type: 'uint256',
-      },
-    ],
-    name: 'GameFinalized',
+    inputs: [],
+    name: 'GameFinished',
     type: 'event',
   },
   {
@@ -138,25 +125,6 @@ export const bingoAbi = [
       },
     ],
     name: 'OwnershipTransferred',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'vrfRequestId',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256[]',
-        name: 'randomNumbers',
-        type: 'uint256[]',
-      },
-    ],
-    name: 'RandomNumbersFilled',
     type: 'event',
   },
   {
@@ -220,6 +188,19 @@ export const bingoAbi = [
   {
     inputs: [],
     name: 'MIN_BINGO_NUMBER',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'MIN_PLAYERS',
     outputs: [
       {
         internalType: 'uint256',
@@ -485,6 +466,19 @@ export const bingoAbi = [
     name: 'requestRandomNumbers',
     outputs: [],
     stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'rewardPerWinner',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
     type: 'function',
   },
   {
