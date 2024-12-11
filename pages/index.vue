@@ -61,13 +61,13 @@
     </transition>
 
     <div>
-      <div
-        v-if="accountInfo.isConnected"
+        <button
+          v-if="accountInfo.isConnected && !hasClaimed"
         class="bg-blue-500"
         @click="claimNativeToken()"
       >
         Claim some native token
-      </div>
+        </button>
 
       <div class="mt-5">Player</div>
       <div>isPlayerRegistered {{ isPlayerRegistered }}</div>
@@ -109,7 +109,7 @@ import {
   verifyMessage,
   type Address,
 } from 'viem'
-
+import { useStorage } from '@vueuse/core'
 const networks: [AppKitNetwork, ...AppKitNetwork[]] = [sepolia]
 const projectId = 'f85db361b46b66558ac9fb7ebd0eea91' // https://cloud.reown.com,
 
@@ -181,6 +181,7 @@ const { initializeApp } = useAppOptionsStore()
 const cardNumbers = ref<number[]>([])
 const unixTimestamp = ref(0)
 const toast = useToast()
+const hasClaimed = useStorage('has-claimed', false)
 
 // --------[ Lifecycle ]-------- //
 onMounted(async () => {
@@ -347,6 +348,7 @@ const claimNativeToken = async () => {
   toast.success(
     `Starter Pack claimed successfully!\n${formatEventArgs(result)}`,
   )
+  hasClaimed.value = true
 }
 
 const generateRandomNumbers = (
