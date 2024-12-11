@@ -6,17 +6,13 @@
       v-if="isPlayerRegistered || isGameFinishedInUi"
       class="justify-cent flex flex-col items-center"
     >
-      <div
+      <button
         v-if="!isPlayerRegistered && !isGameFinished"
-        class="mb-4"
+        class="rounded bg-blue-500 px-6 py-3 text-lg text-white hover:bg-blue-600 md:text-xl"
         @click="buyBingoCard()"
       >
-        <button
-          class="rounded bg-blue-500 px-6 py-3 text-white hover:bg-blue-600"
-        >
-          Buy the card
-        </button>
-      </div>
+        Buy the card (<span>{{ bingoCardPriceFormatted }}</span> ETH )
+      </button>
       <div>
         <appkit-button />
       </div>
