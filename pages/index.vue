@@ -40,7 +40,7 @@
               {{ cell !== null ? cell : '' }}
               <span
                 v-if="cell !== null && highlightedNumbers.has(cell)"
-                class="absolute h-16 w-16 rounded-full opacity-40"
+                class="absolute h-16 w-16 rounded-full opacity-40 transition-all duration-500 ease-in-out"
                 :style="`background-color: ${calculateCardColor[0]}`"
               ></span>
             </div>
@@ -51,8 +51,7 @@
       <transition name="number-fade" appear>
         <div
           v-if="currentNumber !== null"
-          :style="`color: ${calculateCardColor[0]}`"
-          class="transform-center absolute flex h-40 w-40 justify-center rounded-full bg-white text-9xl font-bold"
+          class="transform-center absolute flex h-40 w-40 justify-center rounded-full bg-white text-9xl font-bold text-white"
         >
           <div
             :style="`background-color: ${calculateCardColor[0]}`"
@@ -72,7 +71,7 @@
           Claim some native token
         </button>
 
-        <div class="mt-5">Player</div>
+        <!-- <div class="mt-5">Player</div>
         <div>isPlayerRegistered {{ isPlayerRegistered }}</div>
         <div>playerNumbers {{ playerNumbers }}</div>
         <div>playerAddress {{ playerAddress }}</div>
@@ -92,57 +91,40 @@
         <div>rewardByWinner {{ rewardByWinner }}</div>
         <div>rewardByWinnerFormatted {{ rewardByWinnerFormatted }}</div>
         <div>isGameFinished {{ isGameFinished }}</div>
-        <div>minPlayers {{ minPlayers }}</div>
+        <div>minPlayers {{ minPlayers }}</div> -->
       </div>
     </div>
     <div v-else>Game is finished. Good luck on next</div>
-    <!-- <transition name="fade">
-      <div
-        v-if="!isGameFinishedInUi"
-        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
-      >
-        <div
-          class="h-[80%] w-[90%] rounded-lg bg-white p-6 shadow-lg md:h-[50%] md:w-[50%]"
+    <div v-if="isGameFinishedInUi">
+      <div>
+        <h2
+          class="mb-4 text-center text-4xl font-bold"
+          :style="`color: ${calculateCardColor[0]}`"
         >
-          <h2
-            class="mb-4 text-center text-2xl font-bold"
-            :style="`color: ${calculateCardColor[0]}`"
-          >
-            Oyun Bitti
-          </h2>
-          <p class="mb-6 text-center text-lg">
-            {{
-              isUserWinner
-                ? 'Tebrikler! Kazandınız! 🎉'
-                : 'Maalesef kazanamadınız. Bir dahaki sefere başarılar! 🍀'
-            }}
-          </p>
-          <div>
-            <h2
-              class="my-4 text-center text-2xl font-semibold"
-              :style="`color: ${calculateCardColor[0]}`"
-            >
-              Kazananlar
-            </h2>
-            <ul
-              v-for="winner in winners"
-              :key="winner"
-              class="max-h-[2%] space-y-4 overflow-y-auto"
-            >
-              <li class="text-center">{{ winner }}</li>
-              <li class="text-center">{{ winner }}</li>
-              <li class="text-center">{{ winner }}</li>
-            </ul>
-          </div>
-          <button
-            class="w-full rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-            @click="closeModal"
-          >
-            Kapat
-          </button>
-        </div>
+          Oyun Bitti
+        </h2>
+        <p class="mb-6 text-center text-2xl">
+          {{
+            isUserWinner
+              ? 'Tebrikler! Kazandınız! 🎉'
+              : 'Maalesef kazanamadınız. Bir dahaki sefere başarılar! 🍀'
+          }}
+        </p>
       </div>
-    </transition> -->
+      <div class="flex flex-col items-center justify-center">
+        <h2
+          class="my-4 text-center text-2xl font-semibold md:text-4xl"
+          :style="`color: ${calculateCardColor[0]}`"
+        >
+          Kazananlar
+        </h2>
+        <ul v-for="winner in winners" :key="winner" class="space-y-4 py-5">
+          <li class="text-center">
+            {{ winner }}
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -282,7 +264,6 @@ const stop = watch(
     if (newValue) {
       stop()
       eventStore.clearGameFinishedEvent()
-
       await startTriggeringSequentially()
     }
   },
@@ -490,9 +471,6 @@ const formatCells = (cardNumbers: number[]): (number | null)[] => {
   return result
 }
 
-const closeModal = () => {
-  isModalVisible.value = false
-}
 const cells = computed(() => formatCells(cardNumbers.value))
 </script>
 
@@ -527,15 +505,6 @@ const cells = computed(() => formatCells(cardNumbers.value))
 
 .number-fade-leave-to {
   transform: scale(0);
-  opacity: 0;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.5s;
-}
-.fade-enter-from,
-.fade-leave-to {
   opacity: 0;
 }
 </style>
