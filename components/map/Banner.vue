@@ -135,7 +135,6 @@ const props = defineProps<BannerProps>()
 const userGameStore = useUserGameStore()
 
 const contractStore = useContractStore()
-const { getKtaPublic } = storeToRefs(contractStore)
 
 // --------[ Data ]-------- //
 const town = ref(userGameStore.town)
@@ -145,15 +144,5 @@ const townName = computed(() => {
   return town.value.name
     ? hexToString(town.value.name, { size: 32 })
     : 'Loading...'
-})
-
-// --------[ Hook ]-------- //
-onMounted(async () => {
-  const townID = await getKtaPublic.value.read.townIdByCoordinate([
-    BigInt(props.coordinates.x),
-    BigInt(props.coordinates.y),
-  ])
-
-  town.value = transformTown(await getKtaPublic.value.read.townById([townID]))
 })
 </script>

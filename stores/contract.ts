@@ -1,23 +1,40 @@
 import { getContract, type Address } from 'viem'
-import { ktaTokenAbi, ktaAbi, ktaGameChatAbi } from '~/abi'
+import { ktaTokenAbi, ktaGameChatAbi, bingoAbi } from '~/abi'
 import { ContractCaller } from '~/contracts'
 
 export const useContractStore = defineStore('contractStore', () => {
   const {
-    public: { ktaTokenAddress, ktaAddress, ktaGameChatAddress },
+    public: { ktaTokenAddress, ktaGameChatAddress },
   } = useRuntimeConfig()
 
   // --------[ Stores ]-------- //
   const userWalletStore = useUserWalletStore()
 
-  const { chainClient, publicClient } = storeToRefs(userWalletStore)
+  const { walletClient, publicClient } = storeToRefs(userWalletStore)
 
   // --------[ States ]-------- //
+  const getBingoContract = computed(() =>
+    getContract({
+      address: '0xd1AbD03eB6b23a652D1072e32C0E977C788D3bed',
+      abi: bingoAbi,
+      client: walletClient.value,
+    }),
+  )
+  const getBingoContractPublic = computed(() =>
+    getContract({
+      address: '0xd1AbD03eB6b23a652D1072e32C0E977C788D3bed',
+      abi: bingoAbi,
+      client: publicClient.value,
+    }),
+  )
+  const getBingoContractCaller = computed(
+    () => new ContractCaller(getBingoContract.value),
+  )
   const getKtaToken = computed(() =>
     getContract({
       address: ktaTokenAddress as Address,
       abi: ktaTokenAbi,
-      client: chainClient.value,
+      client: walletClient.value,
     }),
   )
   const getKtaTokenPublic = computed(() =>
@@ -27,25 +44,11 @@ export const useContractStore = defineStore('contractStore', () => {
       client: publicClient.value,
     }),
   )
-  const getKta = computed(() =>
-    getContract({
-      address: ktaAddress as Address,
-      abi: ktaAbi,
-      client: chainClient.value,
-    }),
-  )
-  const getKtaPublic = computed(() =>
-    getContract({
-      address: ktaAddress as Address,
-      abi: ktaAbi,
-      client: publicClient.value,
-    }),
-  )
   const getKtaGameChat = computed(() =>
     getContract({
       address: ktaGameChatAddress as Address,
       abi: ktaGameChatAbi,
-      client: chainClient.value,
+      client: walletClient.value,
     }),
   )
   const getKtaGameChatPublic = computed(() =>
@@ -58,18 +61,17 @@ export const useContractStore = defineStore('contractStore', () => {
   const getKtaTokenCaller = computed(
     () => new ContractCaller(getKtaToken.value),
   )
-  const getKtaCaller = computed(() => new ContractCaller(getKta.value))
   const getKtaGameChatCaller = computed(
     () => new ContractCaller(getKtaGameChat.value),
   )
 
   return {
+    getBingoContract,
+    getBingoContractPublic,
+    getBingoContractCaller,
     getKtaToken,
     getKtaTokenPublic,
     getKtaTokenCaller,
-    getKta,
-    getKtaPublic,
-    getKtaCaller,
     getKtaGameChat,
     getKtaGameChatPublic,
     getKtaGameChatCaller,

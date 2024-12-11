@@ -174,10 +174,8 @@ const props = defineProps<UserProps>()
 
 // --------[ Store ]-------- //
 const userGameStore = useUserGameStore()
-const contractStore = useContractStore()
 const userWalletStore = useUserWalletStore()
 
-const { getKtaPublic } = storeToRefs(contractStore)
 const { currentBlockNumber } = storeToRefs(userWalletStore)
 
 // --------[ Data ]-------- //
@@ -196,9 +194,7 @@ const referrer = computed(() => middleCropping(referrerAddress))
 // --------[ Hook ]-------- //
 onMounted(async () => {
   isDataLoading.value = true
-  user.value = transformUser(
-    await getKtaPublic.value.read.userByAddr([props.address]),
-  )
+
   townId.value = user.value.townInfo.townId
   timer.value = { ...user.value.timer }
   timers.value = Object.keys(timer.value) as (keyof UserTimer)[]

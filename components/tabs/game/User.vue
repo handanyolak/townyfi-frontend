@@ -10,7 +10,7 @@
             :rules="nameRules"
             validate-on-input
           />
-          <VeeErrorMessage class="text-error-red font-semibold" name="name" />
+          <VeeErrorMessage class="font-semibold text-error-red" name="name" />
         </VeeForm>
       </template>
       <span>{{ hexToString(user.name, { size: 32 }) }}</span>
@@ -188,9 +188,7 @@ const {
 // --------[ Stores ]-------- //
 const userGameStore = useUserGameStore()
 const userWalletStore = useUserWalletStore()
-const contractStore = useContractStore()
 
-const { getKtaCaller } = storeToRefs(contractStore)
 const { user } = storeToRefs(userGameStore)
 const { currentBlockNumber } = storeToRefs(userWalletStore)
 
@@ -236,26 +234,10 @@ const getSomething = async (item: string) => {
   }
 
   const getItem = Get[item.slice(3) as keyof typeof Get]
-
-  await getKtaCaller.value.callFunction({
-    type: 'write',
-    name: 'get',
-    args: [[getItem]],
-  })
 }
 
-const revive = async () => {
-  await getKtaCaller.value.callFunction({
-    type: 'write',
-    name: 'revive',
-  })
-}
-const teleportToTown = async () => {
-  await getKtaCaller.value.callFunction({
-    type: 'write',
-    name: 'teleportToTown',
-  })
-}
+const revive = async () => {}
+const teleportToTown = async () => {}
 
 const handleClick = async (item: string) => {
   switch (item) {
@@ -282,14 +264,5 @@ const onSaved = async () => {
     return
   }
   const encodedName = stringToHex(tempName, { size: 32 })
-  const result = await getKtaCaller.value.callFunction({
-    type: 'write',
-    name: 'changeName',
-    args: [[encodedName]],
-  })
-
-  if (result) {
-    user.value.name = encodedName
-  }
 }
 </script>

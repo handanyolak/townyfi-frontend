@@ -40,7 +40,6 @@
             :placeholder="placeholders[findOptions[currentFindOption]]"
             :rules="rules[findOptions[currentFindOption]]"
             validate-on-input
-            @input="search()"
           />
           <VeeErrorMessage
             class="text-red-800"
@@ -143,9 +142,6 @@ const props = withDefaults(defineProps<SearchModalProps>(), {
 console.log(props)
 
 // --------[ Store ]-------- //
-const contractStore = useContractStore()
-
-const { getKtaPublic } = storeToRefs(contractStore)
 
 // --------[ Data ]-------- //
 const currentSearchType = ref(props.searchType)
@@ -183,12 +179,6 @@ const searchFormInput = reactive({
 })
 searchFormInput[findOptions[currentFindOption.value]] =
   props.findInputText.toString()
-
-onMounted(() => {
-  if (props.findInputText !== undefined) {
-    search()
-  }
-})
 
 // --------[ Computed ]-------- //
 const dynamicFindOptions = computed(() => {
@@ -251,78 +241,17 @@ const handleDropdownChange = (newSelectedItem: FindOptions) => {
   currentFindOption.value = newSelectedItem
 }
 
-const getTownIdById = async (value: string) => {
-  const townInfo = transformTown(
-    await getKtaPublic.value.read.townById([BigInt(value)]),
-  )
-  return townInfo.leader === zeroAddress ? BigInt(0) : BigInt(value)
-}
+const getTownIdById = async (value: string) => {}
 
-const getTownIdByAddress = async (address: Address) => {
-  const userInfo = transformUser(
-    await getKtaPublic.value.read.userByAddr([address]),
-  )
-  return userInfo.townInfo.townId
-}
+const getTownIdByAddress = async (address: Address) => {}
 
-const getTownIdByCoordinates = async (value: string) => {
-  const coordinates = value
-    .split(',')
-    .map((coordinate) => BigInt(coordinate.trim())) as unknown as Readonly<
-    [bigint, bigint]
-  >
-
-  return await getKtaPublic.value.read.townIdByCoordinate(coordinates)
-}
+const getTownIdByCoordinates = async (value: string) => {}
 
 const loadUserDetailsByAddress = (address: Address) => {
   currentUserAddress.value = address
 }
 
-const getAddressesByCoordinates = async (coordinateValue: string) => {
-  const [x, y] = coordinateValue.split(',').map((coord) => BigInt(coord.trim()))
-  const coordinates = { _x: x, _y: y }
-  return await getKtaPublic.value.read.getAddressesByCoordinate([coordinates])
-}
-
-const debouncedSearch = useDebounceFn(async () => {
-  if (!formIsValid.value) return
-  isDataLoading.value = true
-  const value = searchFormInput[findOptions[currentFindOption.value]]
-  try {
-    if (currentSearchType.value === SearchType.Town) {
-      switch (currentFindOption.value) {
-        case FindOptions.ID:
-          foundTownId.value = await getTownIdById(value)
-          break
-        case FindOptions.Address:
-          foundTownId.value = await getTownIdByAddress(value as Address)
-          break
-        case FindOptions.Coordinate:
-          foundTownId.value = await getTownIdByCoordinates(value)
-          break
-      }
-    } else if (currentSearchType.value === SearchType.User) {
-      switch (currentFindOption.value) {
-        case FindOptions.Address:
-          loadUserDetailsByAddress(value as Address)
-          break
-        case FindOptions.Coordinate:
-          userAddressList.value = await getAddressesByCoordinates(value)
-          break
-      }
-    }
-  } catch (error) {
-    console.error('Error fetching data:', error)
-  } finally {
-    isDataLoading.value = false
-  }
-}, 500)
-
-const search = () => {
-  resetSearchCriteria()
-  debouncedSearch()
-}
+const getAddressesByCoordinates = async (coordinateValue: string) => {}
 
 const resetSearchCriteria = () => {
   foundTownId.value = null

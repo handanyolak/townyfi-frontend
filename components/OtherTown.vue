@@ -201,11 +201,7 @@
       </template>
     </ListItem>
     <div class="flex justify-between gap-4">
-      <AppButton
-        v-if="town.recruitment"
-        basic-hover
-        class="my-3 w-full"
-        @click="joinTown()"
+      <AppButton v-if="town.recruitment" basic-hover class="my-3 w-full"
         >Join</AppButton
       >
       <AppButton
@@ -250,9 +246,6 @@ const props = defineProps<OtherTownProps>()
 const userGameStore = useUserGameStore()
 const { town: currentUserTown } = storeToRefs(userGameStore)
 
-const contractStore = useContractStore()
-const { getKtaPublic, getKtaCaller } = storeToRefs(contractStore)
-
 const userWalletStore = useUserWalletStore()
 const { address: currentUserAddress, currentBlockNumber } =
   storeToRefs(userWalletStore)
@@ -281,20 +274,6 @@ const citizenAddresses = computed(() =>
 
 const townName = computed(() => hexToString(town.value.name, { size: 32 }))
 
-// --------[ Hook ]-------- //
-onMounted(async () => {
-  town.value = transformTown(await getKtaPublic.value.read.townById([props.id]))
-  war.value = transformWar(
-    await getKtaPublic.value.read.warByTownId([props.id]),
-  )
-
-  if (!areAddressesEqual(town.value.leader, zeroAddress)) {
-    addresses.value = (await getKtaPublic.value.read.getCitizensByTownId([
-      props.id,
-    ])) as string[]
-  }
-})
-
 // --------[ Method ]-------- //
 const convert = (
   isConvert: boolean,
@@ -321,26 +300,7 @@ const convert = (
   }
 }
 
-const joinTown = async () => {
-  await getKtaCaller.value.callFunction({
-    type: 'write',
-    name: 'joinTown',
-    args: [[BigInt(props.id)]],
-  })
-}
+const declareWar = async () => {}
 
-const declareWar = async () => {
-  await getKtaCaller.value.callFunction({
-    type: 'write',
-    name: 'declareWar',
-    args: [[BigInt(props.id)]],
-  })
-}
-
-const startWar = async () => {
-  await getKtaCaller.value.callFunction({
-    type: 'write',
-    name: 'townWar',
-  })
-}
+const startWar = async () => {}
 </script>

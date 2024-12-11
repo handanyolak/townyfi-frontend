@@ -12,7 +12,7 @@
               :rules="nameRules"
               validate-on-input
             />
-            <VeeErrorMessage class="text-error-red font-semibold" name="name" />
+            <VeeErrorMessage class="font-semibold text-error-red" name="name" />
           </template>
         </ListItem>
         <ListItem title="Price:" class="w-full bg-towny-brown-light-100">
@@ -24,7 +24,7 @@
               validate-on-input
             />
             <VeeErrorMessage
-              class="text-error-red font-semibold"
+              class="font-semibold text-error-red"
               name="price"
             />
           </template>
@@ -45,11 +45,6 @@ import { object } from 'yup'
 import ListItem from '~/components/common/ListItem.vue'
 import AppButton from '~/components/common/AppButton.vue'
 import { getBytes32Rule, getUintRule } from '~/composables/useYupRules'
-
-// --------[ Stores ]-------- //
-const contractStore = useContractStore()
-
-const { getKtaCaller } = storeToRefs(contractStore)
 
 // --------[ Data ]-------- //
 const formInput = reactive({
@@ -72,15 +67,7 @@ watch(formInput, (newFormInput) => {
 })
 
 // --------[ Methods ]-------- //
-const createTown = async () => {
-  await getKtaCaller.value.callFunction({
-    type: 'write',
-    name: 'createTown',
-    args: [
-      [stringToHex(formInput.name, { size: 32 }), BigInt(formInput.price)],
-    ],
-  })
-}
+const createTown = async () => {}
 </script>
 
 <style scoped>

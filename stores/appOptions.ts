@@ -135,79 +135,21 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     if (!initialized.value) {
       initialized.value = true
 
-      const {
-        health,
-        mana,
-        energy,
-        armor,
-        coordinate,
-        name,
-        exp,
-        levelId,
-        referrer,
-        townInfo,
-        timer,
-        charPoint,
-      } = transformUser(
-        await contractStore.getKtaPublic.read.userByAddr([
-          userWalletStore.address,
-        ]),
-      )
+      const [symbolVal, decimalsVal, balanceOfVal, blockNumberVal] =
+        await Promise.all([
+          contractStore.getKtaTokenPublic.read.symbol(),
+          contractStore.getKtaTokenPublic.read.decimals(),
 
-      const userInfo = {
-        health,
-        mana,
-        energy,
-        armor,
-        coordinate,
-        name,
-        exp,
-        levelId,
-        referrer,
-        townInfo,
-        timer,
-        charPoint,
-      }
-
-      const [
-        isRegisteredVal,
-        townVal,
-        symbolVal,
-        decimalsVal,
-        allowanceVal,
-        balanceOfVal,
-        settingsVal,
-        blockNumberVal,
-        warVal,
-      ] = await Promise.all([
-        contractStore.getKtaPublic.read.isRegistered([userWalletStore.address]),
-        contractStore.getKtaPublic.read.townById([userInfo.townInfo.townId]),
-        contractStore.getKtaTokenPublic.read.symbol(),
-        contractStore.getKtaTokenPublic.read.decimals(),
-        contractStore.getKtaTokenPublic.read.allowance([
-          userWalletStore.address,
-          contractStore.getKtaPublic.address,
-        ]),
-        contractStore.getKtaTokenPublic.read.balanceOf([
-          userWalletStore.address,
-        ]),
-        contractStore.getKtaPublic.read.settings(),
-        userWalletStore.publicClient.getBlockNumber(),
-        contractStore.getKtaPublic.read.warByTownId([userInfo.townInfo.townId]),
-      ])
+          contractStore.getKtaTokenPublic.read.balanceOf([
+            userWalletStore.address,
+          ]),
+          userWalletStore.publicClient.getBlockNumber(),
+        ])
 
       userWalletStore.setCurrentBlockNumber(blockNumberVal)
-      userGameStore.setIsRegistered(isRegisteredVal)
-      userGameStore.setUser(userInfo)
-      userGameStore.setUserCoordinate(userInfo.coordinate)
-      userGameStore.setTown(transformTown(townVal))
-      setOriginCoordinate(userInfo.coordinate)
       userWalletStore.setKtaSymbol(symbolVal)
       userWalletStore.setKtaDecimals(decimalsVal)
-      userWalletStore.setKtaAllowance(allowanceVal)
       userWalletStore.setKtaBalance(balanceOfVal)
-      userGameStore.setSettings(transformSettings(settingsVal))
-      userGameStore.setWar(transformWar(warVal))
 
       userWalletStore.chainClient.watchBlockNumber({
         onBlockNumber: async (blockNumber) => {
@@ -223,12 +165,6 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
       // TODO: watchContractEvent doesn't work with json rpc
       if (hasMetamask) {
         // TODO: add startGameEvents function for all events
-        const ktaEventFilter = {
-          address: contractStore.getKta.address,
-          abi: contractStore.getKta.abi,
-          strict: true,
-          // onError: (error: Error) => console.error(error),
-        } as const
 
         const ktaTokenEventFilter = {
           address: contractStore.getKtaToken.address,
@@ -245,287 +181,6 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
         } as const
 
         userWalletStore.publicClient.watchContractEvent({
-          ...ktaEventFilter,
-          eventName: 'UserMoved',
-          onLogs: async (logs) => {
-            try {
-              const uniqueLogs = getUniqueLogs(logs)
-              for (const { eventName, args } of uniqueLogs) {
-                const { user, oldCoordinate, newCoordinate } = args
-
-                const oldX = oldCoordinate._x.toString()
-                const oldY = oldCoordinate._y.toString()
-                const newX = newCoordinate._x.toString()
-                const newY = newCoordinate._y.toString()
-                const oldCoordinateMapKey = `${oldX},${oldY}`
-                const newCoordinateMapKey = `${newX},${newY}`
-
-                if (oldCoordinateMapKey !== newCoordinateMapKey) {
-                  if (
-                    userGameStore.userCountByCoordinate.has(oldCoordinateMapKey)
-                  ) {
-                    userGameStore.userCountByCoordinate.set(
-                      oldCoordinateMapKey,
-                      (userGameStore.userCountByCoordinate.get(
-                        oldCoordinateMapKey,
-                      ) ?? 1) - 1,
-                    )
-                  }
-                }
-
-                if (
-                  userGameStore.userCountByCoordinate.has(newCoordinateMapKey)
-                ) {
-                  userGameStore.userCountByCoordinate.set(
-                    newCoordinateMapKey,
-                    (userGameStore.userCountByCoordinate.get(
-                      newCoordinateMapKey,
-                    ) ?? 0) + 1,
-                  )
-                }
-
-                const isUserAddress = areAddressesEqual(
-                  user,
-                  userWalletStore.address,
-                )
-
-                const isNear =
-                  getDifference(
-                    oldX,
-                    oldY,
-                    userGameStore.user.coordinate._x,
-                    userGameStore.user.coordinate._y,
-                  ) <= 20n ||
-                  getDifference(
-                    newX,
-                    newY,
-                    userGameStore.user.coordinate._x,
-                    userGameStore.user.coordinate._y,
-                  ) <= 20n
-
-                await processAndPrintLog({
-                  logName: eventName,
-                  logArgs: args,
-                  useToast: isUserAddress,
-                  refreshUserInfo: isUserAddress,
-                  refreshUserInfoUntilCallback: (user) =>
-                    user.coordinate._x === newCoordinate._x &&
-                    user.coordinate._y === newCoordinate._y,
-                  addToLogMessages: isNear,
-                  toastMessage: 'You moved to new coordinate!',
-                })
-
-                if (isUserAddress) {
-                  userGameStore.setUserCoordinate(newCoordinate)
-                }
-              }
-            } catch (error) {
-              console.error(`${logs[0].eventName} error`, error)
-            }
-          },
-        })
-
-        userWalletStore.publicClient.watchContractEvent({
-          ...ktaEventFilter,
-          eventName: 'UserRegistered',
-          onLogs: async (logs) => {
-            try {
-              const uniqueLogs = getUniqueLogs(logs)
-              for (const { eventName, args } of uniqueLogs) {
-                const { user } = args
-
-                const isUserAddress = areAddressesEqual(
-                  user,
-                  userWalletStore.address,
-                )
-
-                await processAndPrintLog({
-                  logName: eventName,
-                  logArgs: args,
-                  useToast: isUserAddress,
-                  refreshUserInfo: isUserAddress,
-                  refreshUserInfoUntilCallback: (user) =>
-                    user.levelId !== BigInt(0),
-                  addToLogMessages: isUserAddress,
-                  toastMessage: 'Welcome to TownyFi!',
-                })
-              }
-            } catch (error) {
-              console.error(`${logs[0].eventName} error`, error)
-            }
-          },
-        })
-
-        userWalletStore.publicClient.watchContractEvent({
-          ...ktaEventFilter,
-          eventName: 'UserMissed',
-          onLogs: async (logs) => {
-            try {
-              const uniqueLogs = getUniqueLogs(logs)
-              for (const { eventName, args } of uniqueLogs) {
-                const { attacker, defender } = args
-                const isUserAttacker = areAddressesEqual(
-                  attacker,
-                  userWalletStore.address,
-                )
-                const isUserDefender = areAddressesEqual(
-                  defender,
-                  userWalletStore.address,
-                )
-
-                const toastMessage = isUserAttacker
-                  ? 'Your attack was dodged!'
-                  : 'You dodged the attack!'
-                const isUserInvolved = isUserAttacker || isUserDefender
-
-                const userCurrent = isUserAttacker
-                  ? userGameStore.user
-                  : undefined
-
-                await processAndPrintLog({
-                  logName: eventName,
-                  logArgs: args,
-                  useToast: isUserInvolved,
-                  refreshUserInfo: isUserAttacker,
-                  refreshUserInfoUntilCallback: (user) =>
-                    userCurrent?.mana !== user.mana,
-                  addToLogMessages: isUserInvolved,
-                  toastMessage,
-                })
-              }
-            } catch (error) {
-              console.error(`${logs[0].eventName} error`, error)
-            }
-          },
-        })
-
-        userWalletStore.publicClient.watchContractEvent({
-          ...ktaEventFilter,
-          eventName: 'UserGot',
-          onLogs: async (logs) => {
-            try {
-              const uniqueLogs = getUniqueLogs(logs)
-              for (const { eventName, args } of uniqueLogs) {
-                const { user, something } = args
-
-                const isUserAddress = areAddressesEqual(
-                  user,
-                  userWalletStore.address,
-                )
-
-                const userCurrent = isUserAddress
-                  ? userGameStore.user
-                  : undefined
-
-                const somethingStr = getEnumKeyByEnumValue(Get, something)
-                const somethingProp = somethingStr!.toLowerCase() as keyof User
-                await processAndPrintLog({
-                  logName: eventName,
-                  logArgs: args,
-                  useToast: isUserAddress,
-                  refreshUserInfo: isUserAddress,
-                  refreshUserInfoUntilCallback: (user) =>
-                    userCurrent?.[somethingProp] !== user[somethingProp],
-                  addToLogMessages: isUserAddress,
-                  toastMessage: `You got ${somethingStr ?? 'something'}!`,
-                })
-              }
-            } catch (error) {
-              console.error(`${logs[0].eventName} error`, error)
-            }
-          },
-        })
-
-        userWalletStore.publicClient.watchContractEvent({
-          ...ktaEventFilter,
-          eventName: 'UserAttacked',
-          onLogs: async (logs) => {
-            try {
-              const uniqueLogs = getUniqueLogs(logs)
-              for (const { eventName, args } of uniqueLogs) {
-                const { attacker, defender } = args
-
-                const isUserAttacker = areAddressesEqual(
-                  attacker,
-                  userWalletStore.address,
-                )
-                const isUserDefender = areAddressesEqual(
-                  defender,
-                  userWalletStore.address,
-                )
-                const toastMessage = isUserAttacker
-                  ? 'You attacked!'
-                  : 'You were attacked!'
-                const isUserInvolved = isUserAttacker || isUserDefender
-
-                const userCurrent = isUserInvolved
-                  ? userGameStore.user
-                  : undefined
-
-                await processAndPrintLog({
-                  logName: eventName,
-                  logArgs: args,
-                  useToast: isUserInvolved,
-                  refreshUserInfo: isUserInvolved,
-                  refreshUserInfoUntilCallback: (user) => {
-                    if (isUserAttacker) {
-                      return userCurrent?.mana !== user.mana
-                    }
-
-                    if (isUserDefender) {
-                      return userCurrent?.health !== user.health
-                    }
-
-                    return false
-                  },
-                  addToLogMessages: isUserInvolved,
-                  toastMessage,
-                })
-              }
-            } catch (error) {
-              console.error(`${logs[0].eventName} error`, error)
-            }
-          },
-        })
-
-        userWalletStore.publicClient.watchContractEvent({
-          ...ktaEventFilter,
-          eventName: 'TownWarDetailsEvent',
-          onLogs: async (logs) => {
-            try {
-              const uniqueLogs = getUniqueLogs(logs)
-              for (const { eventName, args } of uniqueLogs) {
-                const { winnerTownId, loserTownId, warLogs } = args
-                const { warLogs: _, ...filteredArgs } = args
-                const userTownId = userGameStore.user.townInfo.townId
-                const isUserWinner = userTownId === winnerTownId
-                const isUserLoser = userTownId === loserTownId
-                const isUserInvolved = isUserWinner || isUserLoser
-                const toastMessage = isUserWinner
-                  ? 'You won the war!'
-                  : 'You lost the war!'
-
-                if (isUserInvolved) {
-                  userGameStore.setWarLogInfo({ warLogs, winnerTownId })
-                }
-
-                userGameStore.setLastFetchedWar({ warLogs, winnerTownId })
-
-                await processAndPrintLog({
-                  logName: eventName,
-                  logArgs: filteredArgs,
-                  useToast: isUserInvolved,
-                  addToLogMessages: true,
-                  toastMessage,
-                })
-              }
-            } catch (error) {
-              console.error(`${logs[0].eventName} error`, error)
-            }
-          },
-        })
-
-        userWalletStore.publicClient.watchContractEvent({
           ...ktaGameChatEventFilter,
           eventName: 'Message',
           onLogs: async (logs) => {
@@ -534,11 +189,8 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
               for (const { eventName, args } of uniqueLogs) {
                 const { user: author, message } = args
                 const messageStr = hexToString(message, { size: 32 })
-                // TODO: Can provided by the contract
-                const { name } = transformUser(
-                  await contractStore.getKtaPublic.read.userByAddr([author]),
-                )
-                const nameStr = hexToString(name, { size: 32 })
+
+                const nameStr = hexToString('name', { size: 32 })
                 let sanitizedMessage = DOMPurify.sanitize(messageStr, {
                   ALLOWED_TAGS: [],
                   ALLOWED_ATTR: [],
@@ -586,7 +238,6 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
           eventName: 'Approval',
           args: {
             owner: userWalletStore.address,
-            spender: contractStore.getKta.address,
           },
           onLogs: async (logs) => {
             try {
@@ -678,19 +329,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   }
 
   const setUserInfo = async (userInfo: User) => {
-    userGameStore.setIsRegistered(
-      await contractStore.getKtaPublic.read.isRegistered([
-        userWalletStore.address,
-      ]),
-    )
     userGameStore.setUser(userInfo)
-    userGameStore.setTown(
-      transformTown(
-        await contractStore.getKtaPublic.read.townById([
-          userInfo.townInfo.townId,
-        ]),
-      ),
-    )
   }
 
   const toggleAudio = () => {

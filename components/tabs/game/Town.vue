@@ -10,7 +10,7 @@
             :rules="nameRules"
             validate-on-input
           />
-          <VeeErrorMessage class="text-error-red font-semibold" name="name" />
+          <VeeErrorMessage class="font-semibold text-error-red" name="name" />
         </VeeForm>
       </template>
       <span>{{ townName }}</span>
@@ -283,8 +283,6 @@ const {
 const userGameStore = useUserGameStore()
 const { user, town, war } = storeToRefs(userGameStore)
 
-const contractStore = useContractStore()
-const { getKtaPublic, getKtaCaller } = storeToRefs(contractStore)
 
 const userWalletStore = useUserWalletStore()
 const { address, currentBlockNumber } = storeToRefs(userWalletStore)
@@ -294,9 +292,7 @@ const { setModalInfo } = appOptionStore
 
 // --------[ Data ]-------- //
 const nameRules = getBytes32Rule()
-const addresses = (await getKtaPublic.value.read.getCitizensByTownId([
-  user.value.townInfo.townId,
-])) as string[]
+
 const timer = reactive<any>({
   protectionAt: town.value.protectionAt,
   attackableAt: war.value.attackableAt,
@@ -307,7 +303,7 @@ const timer = reactive<any>({
 const leader = computed(() => middleCropping(town.value.leader))
 
 const citizenAddresses = computed(() =>
-  addresses.map((address) => middleCropping(address)),
+
 )
 const townName = computed(() => hexToString(town.value.name, { size: 32 }))
 
@@ -344,32 +340,19 @@ const convert = (
 }
 
 const settleTown = async () => {
-  await getKtaCaller.value.callFunction({
-    type: 'write',
-    name: 'settleTown',
-  })
+
 }
 
 const toggleRecruitment = async () => {
-  await getKtaCaller.value.callFunction({
-    type: 'write',
-    name: 'changeTownRecruitment',
-  })
+
 }
 
 const leaveTown = async () => {
-  await getKtaCaller.value.callFunction({
-    type: 'write',
-    name: 'leaveTown',
-  })
+
 }
 
 const kickCitizen = async (item: string) => {
-  await getKtaCaller.value.callFunction({
-    type: 'write',
-    name: 'exileCitizen',
-    args: [[item as Address]], // FIXME: type casting
-  })
+
 }
 
 const startWar = () => {

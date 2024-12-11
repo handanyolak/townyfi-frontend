@@ -70,13 +70,11 @@ import { Direction } from '~/enums'
 // --------[ Store ]-------- //
 const userGameStore = useUserGameStore()
 const appOptionsStore = useAppOptionsStore()
-const contractStore = useContractStore()
 
 const { setModalInfo } = appOptionsStore
 const { setUserCoordinate, setNearLevelByCalculatingCoordinates } =
   userGameStore
 
-const { getKtaCaller } = storeToRefs(contractStore)
 const { addressesByCoordinate, nearLevel } = storeToRefs(userGameStore)
 const { originCoordinate } = storeToRefs(appOptionsStore)
 
@@ -191,11 +189,6 @@ const handleKeyNavigation = async ({ key, shiftKey }: KeyboardEvent) => {
   }
 
   if (shiftKey && direction !== undefined) {
-    await getKtaCaller.value.callFunction({
-      type: 'write',
-      name: 'move',
-      args: [[direction]],
-    })
   }
 
   setUserCoordinate({ _x, _y })

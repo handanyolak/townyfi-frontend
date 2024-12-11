@@ -12,7 +12,7 @@
             :rules="nameRules"
             validate-on-input
           />
-          <VeeErrorMessage class="text-error-red font-semibold" name="name" />
+          <VeeErrorMessage class="font-semibold text-error-red" name="name" />
         </VeeForm>
       </template>
     </ListItem>
@@ -26,7 +26,7 @@
             validate-on-input
           />
           <VeeErrorMessage
-            class="text-error-red font-semibold"
+            class="font-semibold text-error-red"
             name="referrer"
           />
         </VeeForm>
@@ -91,8 +91,7 @@ const appOptionsStore = useAppOptionsStore()
 const contractStore = useContractStore()
 
 const { clearModalInfo } = appOptionsStore
-const { getKtaToken, getKtaTokenCaller, getKtaCaller } =
-  storeToRefs(contractStore)
+const { getKtaToken, getKtaTokenCaller } = storeToRefs(contractStore)
 const {
   walletClient,
   ktaSymbol,
@@ -121,21 +120,6 @@ const nameRules = getBytes32Rule({
 const userRegister = async () => {
   currentLoadingState.value = LoadingState.Registering
   try {
-    const result = await getKtaCaller.value.callFunction({
-      type: 'write',
-      name: 'register',
-      args: [
-        [
-          stringToHex(name.value, { size: 32 }),
-          referrer.value === '' ? zeroAddress : addHexPrefix(referrer.value),
-        ],
-      ],
-      needRegister: false,
-    })
-
-    if (result) {
-      clearModalInfo()
-    }
   } catch (error) {
     useAppToast(TYPE.ERROR, 'Something went wrong')
   } finally {

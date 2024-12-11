@@ -1,6 +1,7 @@
 // @ts-nocheck
 
 import { TYPE, useToast } from 'vue-toastification'
+import { useAppKitAccount } from '@reown/appkit/vue'
 import { defaultToastificationConfig } from '~/config'
 import type { Mutable, ParamType } from '~/types'
 
@@ -10,7 +11,6 @@ export class ContractCaller<K> {
   async callFunction<FT extends 'read' | 'write', FN extends keyof K[FT]>({
     type,
     name,
-    needRegister = true,
     args = [],
   }: {
     type: FT
@@ -18,22 +18,13 @@ export class ContractCaller<K> {
     needRegister?: boolean
     args?: Mutable<ParamType<K[FT][FN]>> | []
   }) {
-    const connectionStore = useConnectionStore()
-    const userGameStore = useUserGameStore()
     const userWalletStore = useUserWalletStore()
 
-    const { isConnected } = storeToRefs(connectionStore)
-    const { isRegistered, user, settings } = storeToRefs(userGameStore)
+    const accountInfo = useAppKitAccount()
     const { chainClient } = storeToRefs(userWalletStore)
 
-    if (type === 'write' && !isConnected.value) {
+    if (type === 'write' && !accountInfo.value.isConnected) {
       useAppToast(TYPE.ERROR, 'Connect your wallet first')
-
-      return false
-    }
-
-    if (needRegister && !isRegistered.value) {
-      useAppToast(TYPE.ERROR, 'Register your account first')
 
       return false
     }
@@ -43,25 +34,25 @@ export class ContractCaller<K> {
       .catch((e) => e)
 
     if (staticCallRes instanceof Error) {
-      if (
-        type === 'write' &&
-        (name === 'teleport' || name === 'move') &&
-        user.value.energy < settings.value.rate.movement
-      ) {
-        useAppToast(TYPE.ERROR, 'You do not have enough energy')
+      // if (
+      //   type === 'write' &&
+      //   (name === 'teleport' || name === 'move') &&
+      //   user.value.energy < settings.value.rate.movement
+      // ) {
+      //   useAppToast(TYPE.ERROR, 'You do not have enough energy')
 
-        return false
-      }
+      //   return false
+      // }
 
-      if (
-        type === 'write' &&
-        name === 'attack' &&
-        user.value.mana < settings.value.rate.attack
-      ) {
-        useAppToast(TYPE.ERROR, 'You do not have enough mana')
+      // if (
+      //   type === 'write' &&
+      //   name === 'attack' &&
+      //   user.value.mana < settings.value.rate.attack
+      // ) {
+      //   useAppToast(TYPE.ERROR, 'You do not have enough mana')
 
-        return false
-      }
+      //   return false
+      // }
 
       useAppToast(TYPE.ERROR, staticCallRes.message)
 

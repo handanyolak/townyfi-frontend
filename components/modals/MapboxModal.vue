@@ -45,7 +45,7 @@
               />
             </button>
 
-            <div class="text-shadow-none text-sm">
+            <div class="text-sm text-shadow-none">
               {{ _address }}
             </div>
           </div>
@@ -90,10 +90,8 @@ interface MapboxModalProps {
 const props = defineProps<MapboxModalProps>()
 
 // --------[ Store ]-------- //
-const contractStore = useContractStore()
 const appOptionsStore = useAppOptionsStore()
 
-const { getKtaPublic, getKtaCaller } = storeToRefs(contractStore)
 const { clearModalInfo, setModalInfo } = appOptionsStore
 
 const userGameStore = useUserGameStore()
@@ -108,17 +106,6 @@ const addresses = ref<readonly Address[]>([])
 const townId = ref(BigInt(0))
 const searchRules = getAddressRule()
 const searchDebounced = useDebounce(search, 1000)
-
-// --------[ Hook ]-------- //
-onMounted(async () => {
-  ;[addresses.value, townId.value] = await Promise.all([
-    getKtaPublic.value.read.getAddressesByCoordinate([props.coordinate]),
-    getKtaPublic.value.read.townIdByCoordinate([
-      props.coordinate._x,
-      props.coordinate._y,
-    ]),
-  ])
-})
 
 // --------[ Computed ]-------- //
 const filteredList = computed(() => {
@@ -149,18 +136,6 @@ const teleport = async () => {
   }
 
   try {
-    await getKtaCaller.value.callFunction({
-      type: 'write',
-      name: 'teleport',
-      args: [
-        [
-          {
-            _x: props.coordinate._x,
-            _y: props.coordinate._y,
-          },
-        ],
-      ],
-    })
   } catch (error) {
     console.error('Teleport transaction failed:', error)
   } finally {
@@ -180,11 +155,6 @@ const attack = async (address: string) => {
   }
 
   try {
-    await getKtaCaller.value.callFunction({
-      type: 'write',
-      name: 'attack',
-      args: [[address as Address]], // FIXME: type casting
-    })
   } catch (error) {
     console.error('Attack transaction failed: ', error)
   } finally {
@@ -208,11 +178,6 @@ const move = async () => {
   }
 
   try {
-    await getKtaCaller.value.callFunction({
-      type: 'write',
-      name: 'move',
-      args: [[direction]],
-    })
   } catch (error) {
     console.error('Move transaction failed: ', error)
   } finally {

@@ -2,9 +2,6 @@ import { zeroAddress, type Address, toBytes, isAddress } from 'viem'
 import { addMethod, string, StringSchema } from 'yup'
 
 export default defineNuxtPlugin(() => {
-  const contractStore = useContractStore()
-  const { getKtaPublic } = storeToRefs(contractStore)
-
   addMethod<StringSchema<string>>(
     string,
     'bytes32',
@@ -40,9 +37,6 @@ export default defineNuxtPlugin(() => {
   addMethod(string, 'townyIsRegistered', function () {
     return this.test(async (value, context) => {
       try {
-        return await getKtaPublic.value.read.isRegistered([
-          (value as Address) || zeroAddress,
-        ])
       } catch (error: any) {
         return context.createError({
           message: 'this field must be an TownyFi player',

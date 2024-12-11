@@ -112,13 +112,7 @@ export const useUserGameStore = defineStore('userGameStore', () => {
     const minScanY = y - nearLevelValue
     const maxScanY = y + nearLevelValue
 
-    const multiCallData: MultiCallData[] = [
-      {
-        address: contractStore.getKta.address,
-        abi: contractStore.getKta.abi,
-        functionsData: [],
-      },
-    ]
+    const multiCallData: MultiCallData[] = []
 
     addressesByCoordinate.value = []
     for (let j: bigint = maxScanY; j >= minScanY; j--) {
@@ -166,7 +160,7 @@ export const useUserGameStore = defineStore('userGameStore', () => {
     // TODO: why did not use await here (was it to get performance on Frontend?)
     if (multiCallData.length) {
       useMultiCall(multiCallData).then((results) => {
-        const resultInfosByAddrKey = results.get(contractStore.getKta.address)
+        const resultInfosByAddrKey = results.get('')
         if (!resultInfosByAddrKey) {
           return
         }

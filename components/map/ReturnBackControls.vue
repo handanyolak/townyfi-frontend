@@ -30,9 +30,6 @@ const userGameStore = useUserGameStore()
 const { setUserCoordinate } = userGameStore
 const { user, town } = storeToRefs(userGameStore)
 
-const contractStore = useContractStore()
-const { getKtaCaller } = storeToRefs(contractStore)
-
 // --------[ Prop & Emit ]-------- //
 defineProps({
   size: {
@@ -61,18 +58,6 @@ const teleportToTown = async () => {
   }
 
   try {
-    await getKtaCaller.value.callFunction({
-      type: 'write',
-      name: 'teleport',
-      args: [
-        [
-          {
-            _x: town.value.coordinate._x,
-            _y: town.value.coordinate._y,
-          },
-        ],
-      ],
-    })
   } catch (error) {
     console.error('Teleport transaction failed: ', error)
   } finally {

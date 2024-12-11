@@ -64,31 +64,6 @@ export const processAndPrintLog = async ({
     gameChatStore.addLogMessage(eventMessage)
   }
 
-  if (refreshUserInfo) {
-    let userInfo = transformUser(
-      await contractStore.getKtaPublic.read.userByAddr([
-        userWalletStore.address,
-      ]),
-    )
-
-    let currentRetryCount = 0
-    while (
-      refreshUserInfoUntilCallback?.(userInfo) === false &&
-      currentRetryCount < 10
-    ) {
-      currentRetryCount++
-      userInfo = transformUser(
-        await contractStore.getKtaPublic.read.userByAddr([
-          userWalletStore.address,
-        ]),
-      )
-
-      await sleep(0.5 * 1000)
-    }
-
-    await appOptionsStore.setUserInfo(userInfo)
-  }
-
   if (useToast) {
     const toastMsg = (toastMessage ? `${toastMessage}\n` : '') + eventMessage
     useAppToast(TYPE.INFO, toastMsg)
