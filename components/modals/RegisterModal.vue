@@ -67,44 +67,21 @@
 </template>
 
 <script setup lang="ts">
-import { stringToHex, zeroAddress, type Address } from 'viem'
-import { TYPE } from 'vue-toastification'
 import ListItem from '~/components/common/ListItem.vue'
 import ListTitle from '~/components/common/ListTitle.vue'
 import AppButton from '~/components/common/AppButton.vue'
-import { addHexPrefix } from '~/utils'
 import { LoadingState } from '~/enums'
 import { getAddressRule, getBytes32Rule } from '~/composables/useYupRules'
 
 // --------[ Props & Emits ]-------- //
 defineEmits(['registerClosed'])
 
-// --------[ Nuxt Imports ]-------- //
-const {
-  public: { ktaAddress },
-} = useRuntimeConfig()
-
 // --------[ Store ]-------- //
 const userWalletStore = useUserWalletStore()
 const userGameStore = useUserGameStore()
-const appOptionsStore = useAppOptionsStore()
-const contractStore = useContractStore()
 
-const { clearModalInfo } = appOptionsStore
-const { getKtaToken, getKtaTokenCaller } = storeToRefs(contractStore)
-const {
-  walletClient,
-  ktaSymbol,
-  ktaDecimals,
-  ktaBalance,
-  ktaAllowance,
-  address,
-} = storeToRefs(userWalletStore)
+const { ktaBalance, ktaAllowance } = storeToRefs(userWalletStore)
 const { settings } = storeToRefs(userGameStore)
-
-const {
-  public: { relayerWebhookUrl },
-} = useRuntimeConfig()
 
 // --------[ Data ]-------- //
 const name = ref('')
@@ -117,87 +94,11 @@ const nameRules = getBytes32Rule({
 })
 
 // --------[ Method ]-------- //
-const userRegister = async () => {
-  currentLoadingState.value = LoadingState.Registering
-  try {
-  } catch (error) {
-    useAppToast(TYPE.ERROR, 'Something went wrong')
-  } finally {
-    currentLoadingState.value = LoadingState.Idle
-  }
-}
+const userRegister = async () => {}
 
-const userApprove = async () => {
-  currentLoadingState.value = LoadingState.Approving
-  try {
-    if (ktaBalance.value < BigInt(settings.value.price.register ?? 0)) {
-      useAppToast(
-        TYPE.ERROR,
-        `You don't have enough tokens (${settings.value.price.register}) to register for the game`,
-      )
-      return
-    }
+const userApprove = async () => {}
 
-    await getKtaTokenCaller.value.callFunction({
-      type: 'write',
-      name: 'approve',
-      args: [[ktaAddress as Address, ktaBalance.value]], // FIXME: type casting
-      needRegister: false,
-    })
-  } catch (error) {
-    useAppToast(TYPE.ERROR, 'Something went wrong')
-  } finally {
-    currentLoadingState.value = LoadingState.Idle
-  }
-}
+const addKtaTokenToWallet = async () => {}
 
-const addKtaTokenToWallet = async () => {
-  try {
-    currentLoadingState.value = LoadingState.AddingToken
-    await walletClient.value.watchAsset({
-      type: 'ERC20',
-      options: {
-        address: getKtaToken.value.address,
-        symbol: ktaSymbol.value,
-        decimals: ktaDecimals.value,
-      },
-    })
-    isKtaTokenAdded.value = true
-  } catch (error) {
-    useAppToast(TYPE.ERROR, 'Something went wrong')
-  } finally {
-    currentLoadingState.value = LoadingState.Idle
-  }
-}
-
-const claimStarterPack = async () => {
-  try {
-    currentLoadingState.value = LoadingState.RelayerWebhookRequest
-    const response = await fetch(relayerWebhookUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        address: address.value,
-        contractAddress: getKtaToken.value.address,
-      }),
-    })
-    const resData = await response.json()
-    const result = JSON.parse(resData.result)
-    if (!result.success) {
-      useAppToast(TYPE.ERROR, `Failed to claim: ${result.message}`)
-      return
-    }
-
-    useAppToast(
-      TYPE.SUCCESS,
-      `Starter Pack claimed successfully!\n${formatEventArgs(result)}`,
-    )
-  } catch (error: any) {
-    useAppToast(TYPE.ERROR, `Something went wrong: ${error?.message}`)
-  } finally {
-    currentLoadingState.value = LoadingState.Idle
-  }
-}
+const claimStarterPack = async () => {}
 </script>

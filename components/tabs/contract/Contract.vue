@@ -47,24 +47,13 @@
 </template>
 
 <script setup lang="ts">
-import type { Address } from 'viem'
-import { TYPE } from 'vue-toastification'
 import ListTitle from '~/components/common/ListTitle.vue'
 import ListItem from '~/components/common/ListItem.vue'
 import AppButton from '~/components/common/AppButton.vue'
 
-const contractStore = useContractStore()
 const userWalletStore = useUserWalletStore()
 
-const { getKtaToken, getKtaTokenCaller } = storeToRefs(contractStore)
-const {
-  walletClient,
-  ktaSymbol,
-  ktaDecimals,
-  ktaBalance,
-  address,
-  chainClient,
-} = storeToRefs(userWalletStore)
+const { chainClient } = storeToRefs(userWalletStore)
 
 interface ContractProps {
   data: {
@@ -75,48 +64,9 @@ interface ContractProps {
 }
 defineProps<ContractProps>()
 
-const {
-  public: { ktaAddress },
-} = useRuntimeConfig()
+const addKtaTokenToWallet = async () => {}
 
-const addKtaTokenToWallet = async () => {
-  try {
-    await walletClient.value.watchAsset({
-      type: 'ERC20',
-      options: {
-        address: getKtaToken.value.address,
-        symbol: ktaSymbol.value,
-        decimals: ktaDecimals.value,
-      },
-    })
-  } catch (error) {
-    useAppToast(TYPE.ERROR, 'Something went wrong')
-  }
-}
+const mintKtaToken = async () => {}
 
-const mintKtaToken = async () => {
-  try {
-    await getKtaTokenCaller.value.callFunction({
-      type: 'write',
-      name: 'mint',
-      args: [[address.value, 1000n]],
-      needRegister: false,
-    })
-  } catch (error) {
-    useAppToast(TYPE.ERROR, 'Something went wrong')
-  }
-}
-
-const approveKtaToken = async () => {
-  try {
-    await getKtaTokenCaller.value.callFunction({
-      type: 'write',
-      name: 'approve',
-      args: [[ktaAddress as Address, ktaBalance.value]], // FIXME: type casting
-      needRegister: false,
-    })
-  } catch (error) {
-    useAppToast(TYPE.ERROR, 'Something went wrong')
-  }
-}
+const approveKtaToken = async () => {}
 </script>

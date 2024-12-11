@@ -4,13 +4,7 @@ import { custom } from '~/chains/custom'
 import type { Tab } from '~/types'
 
 const {
-  public: {
-    chain: runtimeChain,
-    ktaAddress,
-    ktaGameChatAddress,
-    ktaGamePassNftAddress,
-    ktaTokenAddress,
-  },
+  public: { chain: runtimeChain },
 } = useRuntimeConfig()
 
 const chain =
@@ -64,64 +58,6 @@ export const TABS: Record<string, Tab[]> = {
     },
   ],
   contractInfo: [
-    {
-      id: 'game-contract',
-      name: 'Game',
-      component: 'Contract',
-      folder: 'contract',
-      data: {
-        contractName: 'TownyFi',
-        contractDesc: 'The main contract of the game. Used for game logic.',
-        contractAddress: ktaAddress,
-      },
-    },
-    {
-      id: 'token-contract',
-      name: 'Token',
-      component: 'Contract',
-      folder: 'contract',
-      data: {
-        contractName: 'TownyFi Token',
-        contractDesc:
-          'The token contract of the game. Used for rewards and payments. The token is a standard ERC20 token.',
-        contractAddress: ktaTokenAddress,
-      },
-    },
-    {
-      id: 'nft-contract',
-      name: 'NFT',
-      component: 'Contract',
-      folder: 'contract',
-      data: {
-        contractName: 'TownyFiNFT',
-        contractDesc:
-          'The NFT contract of the game. Used for NFTs and Game Passes. The NFT is a standard ERC721 token.',
-        contractAddress: ktaGamePassNftAddress,
-      },
-    },
-    {
-      id: 'chat-contract',
-      name: 'Chat',
-      component: 'Contract',
-      folder: 'contract',
-      data: {
-        contractName: 'TownyFiChat',
-        contractDesc:
-          'The chat contract of the game. Used for chat messages and official announcements.',
-        contractAddress: ktaGameChatAddress,
-      },
-    },
-    {
-      id: 'pass-contract',
-      name: 'Pass',
-      component: 'Contract',
-      folder: 'contract',
-      data: {
-        contractName: 'TownyFiPass_0',
-        contractDesc: 'The example Game Pass contract of the game.',
-        contractAddress: ktaGamePassNftAddress,
-      },
-    },
     {
       id: 'multicall-contract',
       name: 'Multicall',

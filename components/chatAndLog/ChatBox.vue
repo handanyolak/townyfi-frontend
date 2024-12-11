@@ -81,7 +81,7 @@
           />
           <VeeErrorMessage
             :class="isChat ? 'apacity-100 delay-200' : 'opacity-0'"
-            class="bg-error-red absolute bottom-14 left-1/2 z-10 w-[95%] -translate-x-1/2 rounded-lg p-4 px-2 text-center text-sm font-semibold text-white shadow-lg transition-opacity duration-300 ease-in-out"
+            class="absolute bottom-14 left-1/2 z-10 w-[95%] -translate-x-1/2 rounded-lg bg-error-red p-4 px-2 text-center text-sm font-semibold text-white shadow-lg transition-opacity duration-300 ease-in-out"
             name="name"
           />
         </VeeForm>
@@ -113,9 +113,6 @@ import { middleCropping } from '~/utils'
 import Tooltip from '~/components/common/Tooltip.vue'
 
 // --------[ Store ]-------- //
-const contractStore = useContractStore()
-const { getKtaGameChatCaller } = storeToRefs(contractStore)
-
 const gameChatStore = useGameChatStore()
 const { chatMessages } = storeToRefs(gameChatStore)
 
@@ -152,31 +149,7 @@ const messageCount = computed(() => chatMessages.value.length)
 
 // --------[ Method ]-------- //
 const sendMessage = async () => {
-  isLoading.value = true
-  try {
-    if (youMessage.value.trim() !== '') {
-      await getKtaGameChatCaller.value.callFunction({
-        type: 'write',
-        name: 'sendMessage',
-        args: [[stringToHex(youMessage.value, { size: 32 })]],
-      })
 
-      youMessage.value = ''
-      nextTick(() => {
-        if (chatArea.value) {
-          chatArea.value.scrollTo({
-            top: chatArea.value.scrollHeight,
-            behavior: 'smooth',
-          })
-        }
-      })
-    }
-  } catch (error) {
-    console.error('Error sending message:', error)
-  } finally {
-    isLoading.value = false
-  }
-}
 
 // --------[ Hook ]-------- //
 watch(messageCount, (newCount, oldCount) => {

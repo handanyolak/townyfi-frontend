@@ -48,11 +48,6 @@ export default defineNuxtConfig({
     public: {
       bingoContractAddress:
         process.env.NUXT_BINGO_CONTRACT_ADDRESS || zeroAddress,
-      ktaTokenAddress: process.env.NUXT_KTA_TOKEN_ADDRESS || zeroAddress,
-      ktaGamePassNftAddress:
-        process.env.NUXT_KTA_GAME_PASS_NFT_ADDRESS || zeroAddress,
-      ktaAddress: process.env.NUXT_KTA_ADDRESS || zeroAddress,
-      ktaGameChatAddress: process.env.NUXT_KTA_GAME_CHAT_ADDRESS || zeroAddress,
       chain: process.env.NUXT_CHAIN,
       chainBlockTime: convertToInteger(process.env.NUXT_CHAIN_BLOCK_TIME, 5),
       minNearLevel: convertToInteger(process.env.NUXT_MIN_NEAR_LEVEL, 2),

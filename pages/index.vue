@@ -2,7 +2,7 @@
   <div
     class="background-bingo relative flex min-h-screen flex-col items-center justify-center bg-[#FFF0D9]"
   >
-    <div class="mb-4" @click="buyBingoCard()">
+    <div v-if="!isPlayerRegistered" class="mb-4" @click="buyBingoCard()">
       <button
         class="rounded bg-blue-500 px-6 py-3 text-white hover:bg-blue-600"
       >
@@ -61,7 +61,15 @@
     </transition>
 
     <div>
-      <div>Player</div>
+      <div
+        v-if="accountInfo.isConnected"
+        class="bg-blue-500"
+        @click="claimNativeToken()"
+      >
+        Claim some native token
+      </div>
+
+      <div class="mt-5">Player</div>
       <div>isPlayerRegistered {{ isPlayerRegistered }}</div>
       <div>playerNumbers {{ playerNumbers }}</div>
       <div>playerAddress {{ playerAddress }}</div>
@@ -88,8 +96,19 @@
 <script setup lang="ts">
 import { sepolia, type AppKitNetwork } from '@reown/appkit/networks'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { createAppKit } from '@reown/appkit/vue'
+import {
+  createAppKit,
+  useAppKitAccount,
+  useAppKitEvents,
+} from '@reown/appkit/vue'
 import { useToast } from 'vue-toastification'
+import {
+  keccak256,
+  parseEther,
+  toBytes,
+  verifyMessage,
+  type Address,
+} from 'viem'
 
 const networks: [AppKitNetwork, ...AppKitNetwork[]] = [sepolia]
 const projectId = 'f85db361b46b66558ac9fb7ebd0eea91' // https://cloud.reown.com,
@@ -122,6 +141,10 @@ createAppKit({
   },
 })
 
+const {
+  public: { relayerWebhookUrl },
+} = useRuntimeConfig()
+
 const contractStore = useContractStore()
 const { getBingoContractCaller } = storeToRefs(contractStore)
 const playerStore = usePlayerStore()
@@ -148,6 +171,10 @@ const {
   drawnNumbersWithTimestamp,
   isGameFinished,
 } = storeToRefs(bingoStore)
+const accountInfo = useAppKitAccount()
+const events = useAppKitEvents()
+const userWalletStore = useUserWalletStore()
+const { walletClient } = storeToRefs(userWalletStore)
 
 const { initializeApp } = useAppOptionsStore()
 
@@ -180,6 +207,7 @@ onMounted(async () => {
   unixTimestamp.value = await useUnixTimestamp()
 
   if (drawnNumbersWithTimestamp.value.length) {
+    console.log('helo')
     await startTriggeringSequentially()
   }
 })
@@ -207,9 +235,10 @@ const buyBingoCard = async () => {
 const startTriggeringSequentially = async () => {
   const currentWorldTime = unixTimestamp.value
   let isFirstSync = true
+  let isToastShown = false
   for (let i = 0; i < drawnNumbersWithTimestamp.value.length; i++) {
     const currentItem = drawnNumbersWithTimestamp.value[i]
-    if (currentWorldTime > currentItem.timestamp) {
+    if (currentWorldTime >= currentItem.timestamp) {
       if (playerNumbers.value.includes(BigInt(currentItem.number))) {
         highlightedNumbers.value.add(currentItem.number)
       }
@@ -220,17 +249,36 @@ const startTriggeringSequentially = async () => {
         } else {
           toast.error('someone won, good luck on next')
         }
+
+        isToastShown = true
       }
 
       continue
     }
 
+    if (
+      Number(bingoCardNumbersCount.value) - highlightedNumbers.value.size <=
+      Number(playerRemainingNumbersCount.value)
+    ) {
+      if (!isToastShown) {
+        if (isUserWinner.value) {
+          toast.success('Bingo! Congratulations!')
+        } else {
+          toast.error('someone won, good luck on next')
+        }
+      }
+
+      isToastShown = true
+      return
+    }
+
     const nextItem = drawnNumbersWithTimestamp.value[i + 1]
     const delay =
-      (nextItem
-        ? (isFirstSync ? currentWorldTime : nextItem.timestamp) -
-          currentItem.timestamp
-        : 10) * 1000
+      (isFirstSync
+        ? currentItem.timestamp - currentWorldTime
+        : nextItem
+          ? nextItem.timestamp - currentItem.timestamp
+          : 10) * 1000
 
     isFirstSync = false
 
@@ -249,19 +297,56 @@ const startTriggeringSequentially = async () => {
     if (playerNumbers.value.includes(BigInt(currentItem.number))) {
       highlightedNumbers.value.add(currentItem.number)
     }
-
-    if (
-      Number(bingoCardNumbersCount.value) - highlightedNumbers.value.size ===
-      Number(playerRemainingNumbersCount.value)
-    ) {
-      if (isUserWinner.value) {
-        toast.success('Bingo! Congratulations!')
-      } else {
-        toast.error('someone won, good luck on next')
-      }
-      return
-    }
   }
+}
+
+const claimNativeToken = async () => {
+  const message = 'Bingo!'
+  const messageHash = keccak256(toBytes(message))
+  const address = accountInfo.value.address as Address
+  const signature = await walletClient.value.signMessage({
+    message: {
+      raw: messageHash,
+    },
+    account: address,
+  })
+
+  const valid = await verifyMessage({
+    address,
+    message: {
+      raw: messageHash,
+    },
+    signature,
+  })
+
+  if (!valid) {
+    toast.error('Invalid signature')
+    return
+  }
+
+  const response = await fetch(relayerWebhookUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      address,
+      signature,
+      amount: parseEther('0.1'),
+    }),
+  })
+
+  const resData = await response.json()
+  const result = JSON.parse(resData.result)
+  if (!result.success) {
+    console.error('result', result)
+    toast.error(`Failed to claim: ${result.message}`)
+    return
+  }
+
+  toast.success(
+    `Starter Pack claimed successfully!\n${formatEventArgs(result)}`,
+  )
 }
 
 const generateRandomNumbers = (

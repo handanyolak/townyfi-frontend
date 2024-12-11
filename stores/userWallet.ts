@@ -98,7 +98,6 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
   const connect = async () => {
     const accounts = await walletClient.value.getAddresses()
     const isConnected = accounts.length > 0
-    connectionStore.setIsConnected(isConnected)
     // TODO: Is this code block necessary?
     if (isConnected) await updateUserWalletInfo(accounts[0])
   }
@@ -123,7 +122,7 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
   const startEthEvents = () => {
     window.ethereum.on('chainChanged', handleChainChanged)
     window.ethereum.on('accountsChanged', handleAccountsChanged)
-    window.ethereum.on('disconnect', handleDisconnect)
+    // window.ethereum.on('disconnect', handleDisconnect)
   }
 
   const handleChainChanged = () => {
@@ -134,19 +133,14 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
     window.location.reload()
   }
 
-  const handleDisconnect = () => {
-    connectionStore.setIsConnected(false)
-  }
-
   const disconnectWeb3 = () => {
-    connectionStore.setIsConnected(false)
     userGameStore.setIsRegistered(false)
     useAppToast(TYPE.SUCCESS, $t('disconnected'))
   }
 
   const connectWeb3 = async () => {
     try {
-      const accounts = await walletClient.value.getAddresses()
+      await walletClient.value.getAddresses()
       await walletClient.value.requestAddresses()
       handleAccountsChanged()
       await connect()
@@ -177,7 +171,6 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
     setKtaDecimals,
     setKtaAllowance,
     setKtaBalance,
-    handleDisconnect,
     updateUserBalance,
     updateUserAddress,
     handleChainChanged,

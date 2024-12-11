@@ -9,14 +9,11 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   // --------[ Stores ]-------- //
   const userWalletStore = useUserWalletStore()
   const userGameStore = useUserGameStore()
-  const connectionStore = useConnectionStore()
   const contractStore = useContractStore()
   const appOptionStore = useAppOptionsStore()
   const bingoStore = useBingoStore()
   const playerStore = usePlayerStore()
   const accountInfo = useAppKitAccount()
-
-  const { checkOnValidNetwork } = connectionStore
 
   // --------[ States ]-------- //
   const isBlockchainInfo = ref(false)
@@ -121,9 +118,9 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     await sleep(500)
     if (accountInfo.value.isConnected) {
       await userWalletStore.connect()
-    }
 
-    await checkOnValidNetwork()
+      userWalletStore.startEthEvents()
+    }
 
     if (!initialized.value) {
       initialized.value = true

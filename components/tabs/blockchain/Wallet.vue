@@ -1,5 +1,5 @@
 <template>
-  <div v-if="hasMetamask && isConnected">
+  <div v-if="hasMetamask">
     <ListTitle class="my-8">General</ListTitle>
     <ListItem title="Address:" copiable :copy-value="address">
       <span>{{ middleCropping(address) }}</span>
@@ -34,6 +34,6 @@ const connectionStore = useConnectionStore()
 
 const { address, balance, chainClient, ktaBalance, ktaSymbol, ktaAllowance } =
   storeToRefs(userWalletStore)
-const { onValidNetwork, isConnected } = storeToRefs(connectionStore)
+const { onValidNetwork } = storeToRefs(connectionStore)
 const { hasMetamask } = connectionStore
 </script>
