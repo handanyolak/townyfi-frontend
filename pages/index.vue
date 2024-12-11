@@ -63,15 +63,6 @@
         </div>
       </transition>
 
-      <transition name="congratulations" appear>
-        <div
-          v-if="gameWon"
-          class="absolute flex h-64 w-64 items-center justify-center rounded-full bg-yellow-500 text-center text-4xl font-bold text-white"
-        >
-          🎉 Tebrikler! Bingo! 🎉
-        </div>
-      </transition>
-
       <div>
         <button
           v-if="accountInfo.isConnected && !hasClaimed"
@@ -104,6 +95,54 @@
       </div>
     </div>
     <div v-else>Game is finished. Good luck on next</div>
+    <transition name="fade">
+      <div
+        v-if="!isGameFinishedInUi"
+        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+      >
+        <div
+          class="h-[80%] w-[90%] rounded-lg bg-white p-6 shadow-lg md:h-[50%] md:w-[50%]"
+        >
+          <h2
+            class="mb-4 text-center text-2xl font-bold"
+            :style="`color: ${calculateCardColor[0]}`"
+          >
+            Oyun Bitti
+          </h2>
+          <p class="mb-6 text-center text-lg">
+            {{
+              isUserWinner
+                ? 'Tebrikler! Kazandınız! 🎉'
+                : 'Maalesef kazanamadınız. Bir dahaki sefere başarılar! 🍀'
+            }}
+          </p>
+          <div>
+            <h2
+              class="my-4 text-center text-2xl font-semibold"
+              :style="`color: ${calculateCardColor[0]}`"
+            >
+              Kazananlar
+            </h2>
+            <ul
+              v-for="winner in winners"
+              :key="winner"
+              class="max-h-[2%] space-y-4 overflow-y-auto"
+            >
+              <!-- TODO: list will be scroll -->
+              <li class="text-center">{{ winner }}</li>
+              <li class="text-center">{{ winner }}</li>
+              <li class="text-center">{{ winner }}</li>
+            </ul>
+          </div>
+          <button
+            class="w-full rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+            @click="closeModal"
+          >
+            Kapat
+          </button>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -192,6 +231,7 @@ const cardNumbers = ref<number[]>([])
 const unixTimestamp = ref(0)
 const toast = useToast()
 const hasClaimed = useStorage('has-claimed', false)
+const isModalVisible = ref(false)
 
 // --------[ Lifecycle ]-------- //
 onMounted(async () => {
@@ -225,7 +265,6 @@ onMounted(async () => {
 const highlightedNumbers = ref<Set<number>>(new Set())
 const gameStarted = ref(false)
 const currentNumber = ref<number | null>(null)
-const gameWon = ref(false)
 
 const isGameFinishedInUi = computed(
   () =>
@@ -438,6 +477,9 @@ const formatCells = (cardNumbers: number[]): (number | null)[] => {
   return result
 }
 
+const closeModal = () => {
+  isModalVisible.value = false
+}
 const cells = computed(() => formatCells(cardNumbers.value))
 </script>
 
@@ -475,20 +517,12 @@ const cells = computed(() => formatCells(cardNumbers.value))
   opacity: 0;
 }
 
-.congratulations-enter-active,
-.congratulations-leave-active {
-  transition:
-    transform 1.5s ease,
-    opacity 1.5s ease;
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
 }
-
-.congratulations-enter-from {
-  transform: scale(0.5);
-  opacity: 0;
-}
-
-.congratulations-leave-to {
-  transform: scale(2);
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
 }
 </style>
