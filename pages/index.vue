@@ -281,7 +281,7 @@ const stop = watch(
   async (newValue) => {
     if (newValue) {
       stop()
-      eventStore.clearEvent()
+      eventStore.clearGameFinishedEvent()
 
       await startTriggeringSequentially()
     }
