@@ -384,9 +384,8 @@ const startTriggeringSequentially = async () => {
     isFirstSync = false
 
     if (delay > 0) {
-      console.log(
-        `Sayı ${currentItem.number} için ${delay / 1000} saniye bekleniyor...`,
-      )
+      toast.info(`Next number will be drawn in ${delay / 1000} seconds`)
+
       await sleep(delay)
     }
 

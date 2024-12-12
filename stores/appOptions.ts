@@ -202,7 +202,8 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
         address: contractStore.getBingoContract.address,
         abi: contractStore.getBingoContract.abi,
         strict: true,
-        onError: (error: Error) => console.error(error),
+        onError: (error: Error) =>
+          console.error('bingoContractEventFilter', error),
       } as const
 
       userWalletStore.publicClient.watchContractEvent({
