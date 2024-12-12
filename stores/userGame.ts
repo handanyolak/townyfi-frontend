@@ -14,14 +14,8 @@ import { middleElement } from '~/utils'
 import { useMultiCall } from '~/composables/useMultiCall'
 
 export const useUserGameStore = defineStore('userGameStore', () => {
-  // --------[ Nuxt Imports ]-------- //
-  const {
-    public: { minNearLevel, maxNearLevel },
-  } = useRuntimeConfig()
-
   // --------[ Stores ]-------- //
   const appOptionsStore = useAppOptionsStore()
-  const contractStore = useContractStore()
 
   // --------[ States ]-------- //
   const isRegistered = ref(false)
@@ -68,25 +62,6 @@ export const useUserGameStore = defineStore('userGameStore', () => {
 
   const setLastFetchedWar = (newLastFetchedWar: WarLogInfo) => {
     lastFetchedWar.value = newLastFetchedWar
-  }
-
-  const setNearLevel = (newNearLevel: number) => {
-    if (newNearLevel > maxNearLevel || newNearLevel < minNearLevel) {
-      return false
-    }
-
-    nearLevel.value = newNearLevel
-
-    return true
-  }
-
-  const setNearLevelByCalculatingCoordinates = (newNearLevel: number) => {
-    const { originCoordinate } = appOptionsStore
-
-    const res = setNearLevel(newNearLevel)
-    if (res) {
-      setUserCoordinate(originCoordinate)
-    }
   }
 
   const setUserProperty = <T extends keyof User>(
@@ -226,10 +201,8 @@ export const useUserGameStore = defineStore('userGameStore', () => {
     lastFetchedWar,
     setLastFetchedWar,
     setSettings,
-    setNearLevel,
     setIsRegistered,
     setUserProperty,
     setUserCoordinate,
-    setNearLevelByCalculatingCoordinates,
   }
 })

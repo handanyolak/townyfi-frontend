@@ -50,12 +50,12 @@ export default defineNuxtConfig({
         process.env.NUXT_BINGO_CONTRACT_ADDRESS || zeroAddress,
       chain: process.env.NUXT_CHAIN,
       chainBlockTime: convertToInteger(process.env.NUXT_CHAIN_BLOCK_TIME, 5),
-      minNearLevel: convertToInteger(process.env.NUXT_MIN_NEAR_LEVEL, 2),
-      maxNearLevel: convertToInteger(process.env.NUXT_MAX_NEAR_LEVEL, 5),
       publicRpcUrls: process.env.NUXT_PUBLIC_RPC_URLS?.split(',') || [],
-      relayerWebhookUrl: process.env.NUXT_RELAYER_WEBHOOK_URL || '',
+      defenderRelayerWebhookUrl:
+        process.env.NUXT_DEFENDER_RELAYER_WEBHOOK_URL || '',
       chainExtendExplorerUrls:
         process.env.NUXT_CHAIN_EXTEND_EXPLORER_URLS?.split(',') || [],
+      reownAppkitProjectId: process.env.NUXT_REOWN_APPKIT_PROJECT_ID || '',
     },
   },
 

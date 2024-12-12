@@ -64,7 +64,7 @@
 
       <div>
         <button
-          v-if="accountInfo.isConnected && !hasClaimed"
+          v-if="accountInfo.isConnected && !hasStarterPackClaimed"
           class="bg-blue-500"
           @click="claimNativeToken()"
         >
@@ -153,18 +153,21 @@ import {
 } from 'viem'
 import { useStorage } from '@vueuse/core'
 const networks: [AppKitNetwork, ...AppKitNetwork[]] = [sepolia]
-const projectId = 'f85db361b46b66558ac9fb7ebd0eea91' // https://cloud.reown.com,
+
+const {
+  public: { reownAppkitProjectId, defenderRelayerWebhookUrl },
+} = useRuntimeConfig()
 
 const wagmiAdapter = new WagmiAdapter({
   ssr: false,
-  projectId,
+  projectId: reownAppkitProjectId,
   networks,
 })
 
 createAppKit({
   adapters: [wagmiAdapter],
   networks,
-  projectId,
+  projectId: reownAppkitProjectId,
   metadata: {
     name: 'AppKit',
     description: 'AppKit Example',
@@ -183,10 +186,6 @@ createAppKit({
   },
 })
 
-const {
-  public: { relayerWebhookUrl },
-} = useRuntimeConfig()
-
 const contractStore = useContractStore()
 const { getBingoContractCaller } = storeToRefs(contractStore)
 const playerStore = usePlayerStore()
@@ -194,25 +193,17 @@ const bingoStore = useBingoStore()
 const {
   isPlayerRegistered,
   playerNumbers,
-  playerAddress,
   isUserWinner,
   playerRemainingNumbersCount,
 } = storeToRefs(playerStore)
 const {
   drawnNumbers,
-  drawnNumbersTimestamp,
   bingoCardNumbersCount,
   bingoCardPrice,
-  maxBingoNumber,
-  minBingoNumber,
   bingoCardPriceFormatted,
-  gameStartTimestamp,
   winners,
-  rewardByWinner,
-  rewardByWinnerFormatted,
   drawnNumbersWithTimestamp,
   isGameFinished,
-  minPlayers,
 } = storeToRefs(bingoStore)
 const accountInfo = useAppKitAccount()
 const userWalletStore = useUserWalletStore()
@@ -224,7 +215,7 @@ const { initializeApp } = appOptionsStore
 const cardNumbers = ref<number[]>([])
 const unixTimestamp = ref(0)
 const toast = useToast()
-const hasClaimed = useStorage('has-claimed', false)
+const hasStarterPackClaimed = useStorage('has-starter-pack-claimed', false)
 const currentDrawnNumbers = ref<number[]>([])
 
 // --------[ Lifecycle ]-------- //
@@ -278,7 +269,10 @@ const isGameFinishedInUi = computed(
 const stop = watch(
   () => eventStore.gameFinishedEvent,
   async (newValue) => {
+    console.log('Game finished event triggered')
+    console.log('newValue', newValue)
     if (newValue) {
+      console.log('startTriggeringSequentially')
       await startTriggeringSequentially()
 
       stop()
@@ -431,7 +425,7 @@ const claimNativeToken = async () => {
     return
   }
 
-  const response = await fetch(relayerWebhookUrl, {
+  const response = await fetch(defenderRelayerWebhookUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -446,15 +440,18 @@ const claimNativeToken = async () => {
   const resData = await response.json()
   const result = JSON.parse(resData.result)
   if (!result.success) {
-    console.error('result', result)
-    toast.error(`Failed to claim: ${result.message}`)
+    if (result?.message.toLowerCase().includes('already')) {
+      hasStarterPackClaimed.value = true
+    }
+
+    toast.error(`Failed to claim: ${result?.message}`)
     return
   }
 
   toast.success(
     `Starter Pack claimed successfully!\n${formatEventArgs(result)}`,
   )
-  hasClaimed.value = true
+  hasStarterPackClaimed.value = true
 }
 
 const generateRandomNumbers = (
