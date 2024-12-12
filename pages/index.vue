@@ -95,28 +95,14 @@
       </div>
     </div>
     <div v-else>Game is finished. Good luck on next</div>
+
     <div v-if="isGameFinishedInUi">
-      <div>
+      <div class="mt-4 flex flex-col items-center justify-center">
         <h2
-          class="mb-4 text-center text-4xl font-bold"
+          class="my-4 text-center text-2xl font-semibold text-shadow md:text-4xl"
           :style="`color: ${calculateCardColor[0]}`"
         >
-          Oyun Bitti
-        </h2>
-        <p class="mb-6 text-center text-2xl">
-          {{
-            isUserWinner
-              ? 'Tebrikler! Kazandınız! 🎉'
-              : 'Maalesef kazanamadınız. Bir dahaki sefere başarılar! 🍀'
-          }}
-        </p>
-      </div>
-      <div class="flex flex-col items-center justify-center">
-        <h2
-          class="my-4 text-center text-2xl font-semibold md:text-4xl"
-          :style="`color: ${calculateCardColor[0]}`"
-        >
-          Kazananlar
+          Winners
         </h2>
         <ul v-for="winner in winners" :key="winner" class="space-y-4 py-5">
           <li class="text-center">
@@ -124,6 +110,29 @@
           </li>
         </ul>
       </div>
+    </div>
+    <div class="absolute right-0 top-0">
+      <ul
+        class="grid grid-cols-10 grid-rows-9 justify-center gap-1 rounded-lg bg-white p-2 shadow-xl"
+      >
+        <li
+          v-for="(currentDrawnNumber, index) in currentDrawnNumbers"
+          :key="index"
+          class="relative flex h-12 w-12 items-center justify-center text-center text-xl"
+        >
+          {{ currentDrawnNumber }}
+          <span
+            class="absolute left-0 top-0 h-12 w-12 rounded-full opacity-40 transition-all duration-500 ease-in-out"
+            :style="`background-color: ${calculateCardColor[0]}`"
+          ></span>
+        </li>
+      </ul>
+      <p
+        v-if="remainingDrawnNumbersCount && !isGameFinishedInUi"
+        class="my-4 text-center text-xl"
+      >
+        Remaining drawn Numbers count: {{ remainingDrawnNumbersCount }}
+      </p>
     </div>
   </div>
 </template>
@@ -208,13 +217,14 @@ const accountInfo = useAppKitAccount()
 const userWalletStore = useUserWalletStore()
 const { walletClient } = storeToRefs(userWalletStore)
 const eventStore = useEventStore()
-const { initializeApp } = useAppOptionsStore()
+const appOptionsStore = useAppOptionsStore()
+const { initializeApp } = appOptionsStore
 
 const cardNumbers = ref<number[]>([])
 const unixTimestamp = ref(0)
 const toast = useToast()
 const hasClaimed = useStorage('has-claimed', false)
-const isModalVisible = ref(false)
+const currentDrawnNumbers = ref<number[]>([])
 
 // --------[ Lifecycle ]-------- //
 onMounted(async () => {
@@ -230,7 +240,9 @@ onMounted(async () => {
       console.error('Error reconnecting', error)
     }
   }
+
   await initializeApp()
+
   if (isPlayerRegistered.value) {
     cardNumbers.value = playerNumbers.value.map((num) => Number(num))
   } else {
@@ -249,6 +261,10 @@ const highlightedNumbers = ref<Set<number>>(new Set())
 const gameStarted = ref(false)
 const currentNumber = ref<number | null>(null)
 
+const remainingDrawnNumbersCount = computed(
+  () => drawnNumbers.value.length - currentDrawnNumbers.value.length,
+)
+
 const isGameFinishedInUi = computed(
   () =>
     drawnNumbersWithTimestamp.value.length > 0 &&
@@ -262,9 +278,10 @@ const stop = watch(
   () => eventStore.gameFinishedEvent,
   async (newValue) => {
     if (newValue) {
+      await startTriggeringSequentially()
+
       stop()
       eventStore.clearGameFinishedEvent()
-      await startTriggeringSequentially()
     }
   },
 )
@@ -309,20 +326,26 @@ const startTriggeringSequentially = async () => {
     const currentItem = drawnNumbersWithTimestamp.value[i]
     if (currentWorldTime >= currentItem.timestamp) {
       if (
-        isPlayerRegistered.value &&
         Number(bingoCardNumbersCount.value) - highlightedNumbers.value.size >
-          Number(playerRemainingNumbersCount.value)
+        Number(playerRemainingNumbersCount.value)
       ) {
-        if (playerNumbers.value.includes(BigInt(currentItem.number))) {
+        if (
+          isPlayerRegistered.value &&
+          playerNumbers.value.includes(BigInt(currentItem.number))
+        ) {
           highlightedNumbers.value.add(currentItem.number)
         }
+
+        currentDrawnNumbers.value.push(currentItem.number)
       }
 
       if (i === drawnNumbersWithTimestamp.value.length - 1) {
-        if (isUserWinner.value) {
-          toast.success('Bingo! Congratulations!')
-        } else {
-          toast.error('someone won, good luck on next')
+        if (isPlayerRegistered.value) {
+          if (isUserWinner.value) {
+            toast.success('Bingo! Congratulations!')
+          } else {
+            toast.error('someone won, good luck on next')
+          }
         }
 
         isToastShown = true
@@ -337,10 +360,12 @@ const startTriggeringSequentially = async () => {
         Number(playerRemainingNumbersCount.value)
     ) {
       if (!isToastShown) {
-        if (isUserWinner.value) {
-          toast.success('Bingo! Congratulations!')
-        } else {
-          toast.error('someone won, good luck on next')
+        if (isPlayerRegistered.value) {
+          if (isUserWinner.value) {
+            toast.success('Bingo! Congratulations!')
+          } else {
+            toast.error('someone won, good luck on next')
+          }
         }
       }
 
@@ -366,6 +391,9 @@ const startTriggeringSequentially = async () => {
     }
 
     currentNumber.value = currentItem.number
+
+    currentDrawnNumbers.value.push(currentItem.number)
+
     setTimeout(() => {
       currentNumber.value = null
     }, 1500)
