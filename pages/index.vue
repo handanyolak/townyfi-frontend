@@ -243,8 +243,9 @@ onMounted(async () => {
 
   unixTimestamp.value = await useUnixTimestamp()
 
-  if (drawnNumbersWithTimestamp.value.length) {
+  if (drawnNumbersWithTimestamp.value.length > 0) {
     await startTriggeringSequentially()
+    unixTimestamp.value = await useUnixTimestamp()
   }
 })
 
@@ -274,6 +275,7 @@ const stop = watch(
     if (newValue) {
       console.log('startTriggeringSequentially')
       await startTriggeringSequentially()
+      unixTimestamp.value = await useUnixTimestamp()
 
       stop()
       eventStore.clearGameFinishedEvent()
@@ -314,6 +316,7 @@ const buyBingoCard = async () => {
 }
 
 const startTriggeringSequentially = async () => {
+  unixTimestamp.value = await useUnixTimestamp()
   const currentWorldTime = unixTimestamp.value
   let isFirstSync = true
   let isToastShown = false
