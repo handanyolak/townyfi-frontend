@@ -1,6 +1,6 @@
 <template>
   <div
-    class="background-bingo relative flex min-h-screen flex-col items-center bg-[#FFF0D9]"
+    class="background-bingo relative flex min-h-screen flex-col items-center space-y-10 bg-[#FFF0D9] px-4"
   >
     <div class="md:self-end">
       <ul
@@ -10,7 +10,7 @@
         <li
           v-for="(currentDrawnNumber, index) in currentDrawnNumbers"
           :key="index"
-          class="relative flex h-6 w-6 items-center justify-center text-center text-xl md:h-12 md:w-12"
+          class="relative flex h-6 w-6 items-center justify-center text-center text-shadow md:h-12 md:w-12 md:text-xl"
         >
           {{ currentDrawnNumber }}
           <span
@@ -26,7 +26,7 @@
         Remaining drawn Numbers count: {{ remainingDrawnNumbersCount }}
       </p>
     </div>
-    <div>
+    <div class="space-y-10">
       <div
         v-if="isPlayerRegistered || !isGameFinishedInUi"
         class="justify-cent flex flex-col items-center"
@@ -38,7 +38,7 @@
         >
           Buy the card (<span>{{ bingoCardPriceFormatted }}</span> ETH )
         </button>
-        <div>
+        <div class="text-red-500">
           <appkit-button />
         </div>
 
@@ -49,30 +49,34 @@
             (!isPlayerRegistered && drawnNumbers.length <= 0) ||
             isPlayerRegistered
           "
-          class="w-fit rounded-md p-4"
-          :style="`background-color: ${calculateCardColor[0]}`"
         >
-          <div class="rounded-md bg-white p-2">
-            <div class="grid grid-cols-9 border border-gray-400">
-              <div
-                v-for="(cell, index) in cells"
-                :key="index"
-                class="relative flex h-8 w-8 items-center justify-center border border-gray-400 md:h-16 md:w-16"
-                :class="{
-                  'bg-white font-bold ': cell !== null,
-                }"
-                :style="{
-                  color: cell !== null ? calculateCardColor[0] : '',
-                  'background-color':
-                    cell === null ? calculateCardColor[0] : '',
-                }"
-              >
-                {{ cell !== null ? cell : '' }}
-                <span
-                  v-if="cell !== null && highlightedNumbers.has(cell)"
-                  class="absolute h-8 w-8 rounded-full opacity-40 transition-all duration-500 ease-in-out md:h-16 md:w-16"
-                  :style="`background-color: ${calculateCardColor[0]}`"
-                ></span>
+          <div
+            v-if="cells.length"
+            class="w-fit rounded-md p-4"
+            :style="`background-color: ${calculateCardColor[0]}`"
+          >
+            <div class="rounded-md bg-white p-2">
+              <div class="grid grid-cols-9 border border-gray-400">
+                <div
+                  v-for="(cell, index) in cells"
+                  :key="index"
+                  class="relative flex h-8 w-8 items-center justify-center border border-gray-400 text-shadow md:h-16 md:w-16 md:text-xl"
+                  :class="{
+                    'bg-white font-bold ': cell !== null,
+                  }"
+                  :style="{
+                    color: cell !== null ? calculateCardColor[0] : '',
+                    'background-color':
+                      cell === null ? calculateCardColor[0] : '',
+                  }"
+                >
+                  {{ cell !== null ? cell : '' }}
+                  <span
+                    v-if="cell !== null && highlightedNumbers.has(cell)"
+                    class="absolute h-8 w-8 rounded-full opacity-40 transition-all duration-500 ease-in-out md:h-16 md:w-16"
+                    :style="`background-color: ${calculateCardColor[0]}`"
+                  ></span>
+                </div>
               </div>
             </div>
           </div>
@@ -95,7 +99,7 @@
         <div>
           <button
             v-if="accountInfo.isConnected && !hasStarterPackClaimed"
-            class="bg-blue-500"
+            class="rounded bg-blue-500 p-2 text-xl text-white text-shadow hover:bg-blue-600"
             @click="claimNativeToken()"
           >
             Claim some native token
@@ -104,19 +108,23 @@
       </div>
 
       <div v-if="isGameFinishedInUi">
-        <div class="mt-4 flex flex-col items-center justify-center">
+        <div
+          :style="`background-color: ${calculateCardColor[0]}`"
+          class="my-4 flex flex-col items-center justify-center rounded-md p-4 opacity-80"
+        >
           <h2
-            class="my-4 text-center text-2xl font-semibold text-shadow md:text-4xl"
-            :style="`color: ${calculateCardColor[0]}`"
+            class="my-4 text-center text-3xl font-semibold text-white text-shadow md:text-4xl"
           >
             Winners
           </h2>
           <ul v-for="winner in winners" :key="winner" class="space-y-4 py-5">
-            <li class="text-center">
+            <li class="text-center text-sm text-white md:text-xl md:font-bold">
               {{ winner }}
             </li>
           </ul>
-          rewardPerWinner {{ rewardPerWinnerFormatted }}
+          <span class="text-white md:text-xl"
+            >Reward Per Winner: {{ rewardPerWinnerFormatted }}</span
+          >
         </div>
       </div>
     </div>
