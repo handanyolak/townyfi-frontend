@@ -20,6 +20,10 @@
       <div v-if="!gameStarted" class="mb-4"></div>
 
       <div
+        v-if="
+          (!isPlayerRegistered && drawnNumbers.length <= 0) ||
+          isPlayerRegistered
+        "
         class="w-fit rounded-md p-4"
         :style="`background-color: ${calculateCardColor[0]}`"
       >
@@ -28,19 +32,19 @@
             <div
               v-for="(cell, index) in cells"
               :key="index"
-              class="relative flex h-16 w-16 items-center justify-center border border-gray-400"
+              class="relative flex h-8 w-8 items-center justify-center border border-gray-400 md:h-16 md:w-16"
               :class="{
                 'bg-white font-bold ': cell !== null,
               }"
               :style="{
-                color: cell !== null ? calculateCardColor[3] : '',
+                color: cell !== null ? calculateCardColor[0] : '',
                 'background-color': cell === null ? calculateCardColor[0] : '',
               }"
             >
               {{ cell !== null ? cell : '' }}
               <span
                 v-if="cell !== null && highlightedNumbers.has(cell)"
-                class="absolute h-16 w-16 rounded-full opacity-40 transition-all duration-500 ease-in-out"
+                class="absolute h-8 w-8 rounded-full opacity-40 transition-all duration-500 ease-in-out md:h-16 md:w-16"
                 :style="`background-color: ${calculateCardColor[0]}`"
               ></span>
             </div>
@@ -70,31 +74,8 @@
         >
           Claim some native token
         </button>
-
-        <!-- <div class="mt-5">Player</div>
-        <div>isPlayerRegistered {{ isPlayerRegistered }}</div>
-        <div>playerNumbers {{ playerNumbers }}</div>
-        <div>playerAddress {{ playerAddress }}</div>
-        <div>isUserWinner {{ isUserWinner }}</div>
-        <div>playerRemainingNumbersCount {{ playerRemainingNumbersCount }}</div>
-
-        <div class="mt-5">Bingo</div>
-        <div>drawnNumbers {{ drawnNumbers }}</div>
-        <div>drawnNumbersTimestamp {{ drawnNumbersTimestamp }}</div>
-        <div>bingoCardNumbersCount {{ bingoCardNumbersCount }}</div>
-        <div>maxBingoNumber {{ maxBingoNumber }}</div>
-        <div>minBingoNumber {{ minBingoNumber }}</div>
-        <div>bingoCardPrice {{ bingoCardPrice }}</div>
-        <div>bingoCardPriceFormatted {{ bingoCardPriceFormatted }}</div>
-        <div>gameStartTimestamp {{ gameStartTimestamp }}</div>
-        <div>winners {{ winners }}</div>
-        <div>rewardByWinner {{ rewardByWinner }}</div>
-        <div>rewardByWinnerFormatted {{ rewardByWinnerFormatted }}</div>
-        <div>isGameFinished {{ isGameFinished }}</div>
-        <div>minPlayers {{ minPlayers }}</div> -->
       </div>
     </div>
-    <div v-else>Game is finished. Good luck on next</div>
 
     <div v-if="isGameFinishedInUi">
       <div class="mt-4 flex flex-col items-center justify-center">
@@ -109,9 +90,10 @@
             {{ winner }}
           </li>
         </ul>
+        rewardPerWinner {{ rewardPerWinnerFormatted }}
       </div>
     </div>
-    <div class="absolute right-0 top-0">
+    <div class="absolute top-0 md:right-0">
       <ul
         v-if="currentDrawnNumbers.length > 0"
         class="grid grid-cols-10 grid-rows-9 justify-center gap-1 rounded-lg bg-white p-2 shadow-xl"
@@ -119,11 +101,11 @@
         <li
           v-for="(currentDrawnNumber, index) in currentDrawnNumbers"
           :key="index"
-          class="relative flex h-12 w-12 items-center justify-center text-center text-xl"
+          class="relative flex h-6 w-6 items-center justify-center text-center text-xl md:h-12 md:w-12"
         >
           {{ currentDrawnNumber }}
           <span
-            class="absolute left-0 top-0 h-12 w-12 rounded-full opacity-40 transition-all duration-500 ease-in-out"
+            class="absolute left-0 top-0 h-6 w-6 rounded-full opacity-40 transition-all duration-500 ease-in-out md:h-12 md:w-12"
             :style="`background-color: ${calculateCardColor[0]}`"
           ></span>
         </li>
@@ -142,7 +124,7 @@
 import { sepolia, type AppKitNetwork } from '@reown/appkit/networks'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { createAppKit, useAppKitAccount } from '@reown/appkit/vue'
-import { useToast } from 'vue-toastification'
+import { POSITION, useToast } from 'vue-toastification'
 import {
   keccak256,
   parseEther,
@@ -190,20 +172,17 @@ const contractStore = useContractStore()
 const { getBingoContractCaller } = storeToRefs(contractStore)
 const playerStore = usePlayerStore()
 const bingoStore = useBingoStore()
-const {
-  isPlayerRegistered,
-  playerNumbers,
-  isUserWinner,
-  playerRemainingNumbersCount,
-} = storeToRefs(playerStore)
+const { isPlayerRegistered, playerNumbers, isUserWinner } =
+  storeToRefs(playerStore)
 const {
   drawnNumbers,
-  bingoCardNumbersCount,
   bingoCardPrice,
   bingoCardPriceFormatted,
   winners,
   drawnNumbersWithTimestamp,
   isGameFinished,
+  drawnNumbersLastIndex,
+  rewardPerWinnerFormatted,
 } = storeToRefs(bingoStore)
 const accountInfo = useAppKitAccount()
 const userWalletStore = useUserWalletStore()
@@ -245,6 +224,7 @@ onMounted(async () => {
 
   if (drawnNumbersWithTimestamp.value.length > 0) {
     await startTriggeringSequentially()
+  } else {
     unixTimestamp.value = await useUnixTimestamp()
   }
 })
@@ -270,12 +250,8 @@ const isGameFinishedInUi = computed(
 const stop = watch(
   () => eventStore.gameFinishedEvent,
   async (newValue) => {
-    console.log('Game finished event triggered')
-    console.log('newValue', newValue)
     if (newValue) {
-      console.log('startTriggeringSequentially')
       await startTriggeringSequentially()
-      unixTimestamp.value = await useUnixTimestamp()
 
       stop()
       eventStore.clearGameFinishedEvent()
@@ -319,56 +295,33 @@ const startTriggeringSequentially = async () => {
   unixTimestamp.value = await useUnixTimestamp()
   const currentWorldTime = unixTimestamp.value
   let isFirstSync = true
-  let isToastShown = false
   for (let i = 0; i < drawnNumbersWithTimestamp.value.length; i++) {
+    const isGameFinishedOnUi = BigInt(i) > drawnNumbersLastIndex.value
+    if (isGameFinishedOnUi) {
+      break
+    }
+
+    const isLastIndex = BigInt(i) === drawnNumbersLastIndex.value
     const currentItem = drawnNumbersWithTimestamp.value[i]
     if (currentWorldTime >= currentItem.timestamp) {
-      if (
-        Number(bingoCardNumbersCount.value) - highlightedNumbers.value.size >
-        Number(playerRemainingNumbersCount.value)
-      ) {
-        if (
-          isPlayerRegistered.value &&
-          playerNumbers.value.includes(BigInt(currentItem.number))
-        ) {
-          highlightedNumbers.value.add(currentItem.number)
-        }
+      currentDrawnNumbers.value.push(currentItem.number)
 
-        currentDrawnNumbers.value.push(currentItem.number)
+      if (
+        isPlayerRegistered.value &&
+        playerNumbers.value.includes(BigInt(currentItem.number))
+      ) {
+        highlightedNumbers.value.add(currentItem.number)
       }
 
-      if (i === drawnNumbersWithTimestamp.value.length - 1) {
-        if (isPlayerRegistered.value) {
-          if (isUserWinner.value) {
-            toast.success('Bingo! Congratulations!')
-          } else {
-            toast.error('someone won, good luck on next')
-          }
+      if (isLastIndex && isPlayerRegistered.value) {
+        if (isUserWinner.value) {
+          toast.success('Bingo! Congratulations!')
+        } else {
+          toast.error('Good luck on next!')
         }
-
-        isToastShown = true
       }
 
       continue
-    }
-
-    if (
-      isPlayerRegistered.value &&
-      Number(bingoCardNumbersCount.value) - highlightedNumbers.value.size <=
-        Number(playerRemainingNumbersCount.value)
-    ) {
-      if (!isToastShown) {
-        if (isPlayerRegistered.value) {
-          if (isUserWinner.value) {
-            toast.success('Bingo! Congratulations!')
-          } else {
-            toast.error('someone won, good luck on next')
-          }
-        }
-      }
-
-      isToastShown = true
-      return
     }
 
     const nextItem = drawnNumbersWithTimestamp.value[i + 1]
@@ -377,18 +330,23 @@ const startTriggeringSequentially = async () => {
         ? currentItem.timestamp - currentWorldTime
         : nextItem
           ? nextItem.timestamp - currentItem.timestamp
-          : 10) * 1000
+          : 3) * 1000
 
     isFirstSync = false
 
     if (delay > 0) {
-      toast.info(`Next number will be drawn in ${delay / 1000} seconds`)
+      if (delay > 3 * 1000) {
+        toast.info(`Next number will be drawn in ${delay / 1000} seconds`, {
+          pauseOnHover: false,
+          position: POSITION.BOTTOM_RIGHT,
+          timeout: 3 * 1000,
+        })
+      }
 
       await sleep(delay)
     }
 
     currentNumber.value = currentItem.number
-
     currentDrawnNumbers.value.push(currentItem.number)
 
     setTimeout(() => {
@@ -401,7 +359,16 @@ const startTriggeringSequentially = async () => {
     ) {
       highlightedNumbers.value.add(currentItem.number)
     }
+
+    if (isLastIndex && isPlayerRegistered.value) {
+      if (isUserWinner.value) {
+        toast.success('Bingo! Congratulations!')
+      } else {
+        toast.error('someone won, good luck on next')
+      }
+    }
   }
+  unixTimestamp.value = await useUnixTimestamp()
 }
 
 const claimNativeToken = async () => {
