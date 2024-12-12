@@ -8,9 +8,10 @@ export const useBingoStore = defineStore('bingoStore', () => {
   const maxBingoNumber = ref(0)
   const bingoCardPrice = ref(0n)
   const winners = ref<readonly Address[]>([])
-  const rewardByWinner = ref(0n)
+  const rewardPerWinner = ref(0n)
   const isGameFinished = ref(false)
   const minPlayers = ref(0n)
+  const drawnNumbersLastIndex = ref(0n)
   const drawnNumbersWithTimestamp = ref<
     {
       number: number
@@ -46,8 +47,8 @@ export const useBingoStore = defineStore('bingoStore', () => {
     winners.value = newValue
   }
 
-  const setRewardByWinner = (newValue: bigint) => {
-    rewardByWinner.value = newValue
+  const setRewardPerWinner = (newValue: bigint) => {
+    rewardPerWinner.value = newValue
   }
 
   const setIsGameFinished = (newValue: boolean) => {
@@ -56,6 +57,10 @@ export const useBingoStore = defineStore('bingoStore', () => {
 
   const setMinPlayers = (newValue: bigint) => {
     minPlayers.value = newValue
+  }
+
+  const setDrawnNumbersLastIndex = (newValue: bigint) => {
+    drawnNumbersLastIndex.value = newValue
   }
 
   const setDrawnNumbersWithTimestamp = (
@@ -67,8 +72,8 @@ export const useBingoStore = defineStore('bingoStore', () => {
     drawnNumbersWithTimestamp.value = newValue
   }
 
-  const rewardByWinnerFormatted = computed(() =>
-    formatEther(rewardByWinner.value),
+  const rewardPerWinnerFormatted = computed(() =>
+    formatEther(rewardPerWinner.value),
   )
 
   const bingoCardPriceFormatted = computed(() =>
@@ -87,10 +92,11 @@ export const useBingoStore = defineStore('bingoStore', () => {
     setMaxBingoNumber,
     setBingoCardPrice,
     setWinners,
-    setRewardByWinner,
+    setRewardPerWinner,
     setMinPlayers,
     setDrawnNumbersWithTimestamp,
     setIsGameFinished,
+    setDrawnNumbersLastIndex,
     isGameFinished,
     drawnNumbers,
     drawnNumbersTimestamp,
@@ -101,9 +107,10 @@ export const useBingoStore = defineStore('bingoStore', () => {
     bingoCardPriceFormatted,
     gameStartTimestamp,
     winners,
-    rewardByWinner,
-    rewardByWinnerFormatted,
+    rewardPerWinner,
+    rewardPerWinnerFormatted,
     drawnNumbersWithTimestamp,
     minPlayers,
+    drawnNumbersLastIndex,
   }
 })
