@@ -137,6 +137,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
         bingoCardPrice,
         rewardPerWinner,
         minPlayers,
+        drawnNumbersLastIndex,
       ] = await Promise.all([
         contractStore.getBingoContractPublic.read.getAllDrawnNumbers(),
         contractStore.getBingoContractPublic.read.drawnNumbersTimestamp(),
@@ -148,13 +149,14 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
         contractStore.getBingoContractPublic.read.BINGO_CARD_PRICE(),
         contractStore.getBingoContractPublic.read.rewardPerWinner(),
         contractStore.getBingoContractPublic.read.MIN_PLAYERS(),
+        contractStore.getBingoContractPublic.read.drawnNumbersLastIndex(),
       ])
 
       if (drawnNumbers.length > 0) {
         const drawnNumbersWithTimestamp = drawnNumbers.map((number, index) => {
-          let additionalTimestamp = index * 10
+          let additionalTimestamp = index * 3
           if (index === 0) {
-            additionalTimestamp += 60
+            additionalTimestamp += 15
           }
           return {
             number: Number(number),
@@ -172,8 +174,9 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
       bingoStore.setMinBingoNumber(minBingoNumber)
       bingoStore.setMaxBingoNumber(maxBingoNumber)
       bingoStore.setBingoCardPrice(bingoCardPrice)
-      bingoStore.setRewardByWinner(rewardPerWinner)
+      bingoStore.setRewardPerWinner(rewardPerWinner)
       bingoStore.setMinPlayers(minPlayers)
+      bingoStore.setDrawnNumbersLastIndex(drawnNumbersLastIndex)
 
       try {
         const playerInfo = transformPlayer(
@@ -254,18 +257,20 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                 drawnNumbersTimestamp,
                 winners,
                 rewardPerWinner,
+                drawnNumbersLastIndex,
               ] = await Promise.all([
                 contractStore.getBingoContractPublic.read.getAllDrawnNumbers(),
                 contractStore.getBingoContractPublic.read.drawnNumbersTimestamp(),
                 contractStore.getBingoContractPublic.read.getAllWinners(),
                 contractStore.getBingoContractPublic.read.rewardPerWinner(),
+                contractStore.getBingoContractPublic.read.drawnNumbersLastIndex(),
               ])
 
               const drawnNumbersWithTimestamp = drawnNumbers.map(
                 (number, index) => {
-                  let additionalTimestamp = index * 10
+                  let additionalTimestamp = index * 3
                   if (index === 0) {
-                    additionalTimestamp += 60
+                    additionalTimestamp += 15
                   }
                   return {
                     number: Number(number),
@@ -278,8 +283,9 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
               bingoStore.setDrawnNumbers(drawnNumbers)
               bingoStore.setDrawnNumbersTimestamp(drawnNumbersTimestamp)
               bingoStore.setWinners(winners)
-              bingoStore.setRewardByWinner(rewardPerWinner)
+              bingoStore.setRewardPerWinner(rewardPerWinner)
               eventStore.triggerGameFinishedEvent()
+              bingoStore.setDrawnNumbersLastIndex(drawnNumbersLastIndex)
 
               processAndPrintLog({
                 logName: eventName,
@@ -287,7 +293,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                   drawnNumbersTimestamp,
                 },
                 useToast: true,
-                toastMessage: `Drawn numbers filled! Game will start in 1 minute`,
+                toastMessage: `Drawn numbers filled! The game will begin in a few seconds`,
               })
             }
           } catch (error) {
