@@ -8,7 +8,7 @@
     >
       <button
         v-if="!isPlayerRegistered && !isGameFinished"
-        class="rounded bg-blue-500 px-6 py-3 text-lg text-white hover:bg-blue-600 md:text-xl"
+        class="mb-8 rounded bg-blue-500 px-6 py-3 text-lg text-white hover:bg-blue-600 md:text-xl"
         @click="buyBingoCard()"
       >
         Buy the card (<span>{{ bingoCardPriceFormatted }}</span> ETH )
@@ -113,6 +113,7 @@
     </div>
     <div class="absolute right-0 top-0">
       <ul
+        v-if="currentDrawnNumbers.length > 0"
         class="grid grid-cols-10 grid-rows-9 justify-center gap-1 rounded-lg bg-white p-2 shadow-xl"
       >
         <li
