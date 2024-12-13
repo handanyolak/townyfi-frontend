@@ -5,10 +5,12 @@ on:
     branches:
       - main
       - master
+      - bingo
   pull_request:
     branches:
       - main
       - master
+      - bingo
 
 jobs:
   cd:
