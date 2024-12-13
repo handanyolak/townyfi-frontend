@@ -3,17 +3,16 @@ import { formatUnits, type Address } from 'viem'
 export const useBingoStore = defineStore('bingoStore', () => {
   const userWalletStore = useUserWalletStore()
 
-  const drawnNumbers = ref<readonly bigint[]>([])
+  const drawnNumbers = ref<readonly number[]>([])
   const drawnNumbersTimestamp = ref(0n)
-  const bingoCardNumbersCount = ref(0n)
-  const minBingoNumber = ref(0n)
+  const bingoCardNumbersCount = ref(0)
+  const minBingoNumber = ref(0)
   const maxBingoNumber = ref(0)
   const bingoCardPrice = ref(0n)
   const winners = ref<readonly Address[]>([])
   const rewardPerWinner = ref(0n)
   const isGameFinished = ref(false)
   const minPlayers = ref(0n)
-  const drawnNumbersLastIndex = ref(0n)
   const playerAddresses = ref<readonly Address[]>([])
   const drawnNumbersWithTimestamp = ref<
     {
@@ -22,7 +21,7 @@ export const useBingoStore = defineStore('bingoStore', () => {
     }[]
   >([])
 
-  const setDrawnNumbers = (newValue: readonly bigint[]) => {
+  const setDrawnNumbers = (newValue: readonly number[]) => {
     drawnNumbers.value = newValue
   }
 
@@ -30,11 +29,11 @@ export const useBingoStore = defineStore('bingoStore', () => {
     drawnNumbersTimestamp.value = newValue
   }
 
-  const setBingoCardNumbersCount = (newValue: bigint) => {
+  const setBingoCardNumbersCount = (newValue: number) => {
     bingoCardNumbersCount.value = newValue
   }
 
-  const setMinBingoNumber = (newValue: bigint) => {
+  const setMinBingoNumber = (newValue: number) => {
     minBingoNumber.value = newValue
   }
 
@@ -60,10 +59,6 @@ export const useBingoStore = defineStore('bingoStore', () => {
 
   const setMinPlayers = (newValue: bigint) => {
     minPlayers.value = newValue
-  }
-
-  const setDrawnNumbersLastIndex = (newValue: bigint) => {
-    drawnNumbersLastIndex.value = newValue
   }
 
   const setPlayerAddresses = (newValue: readonly Address[]) => {
@@ -113,7 +108,6 @@ export const useBingoStore = defineStore('bingoStore', () => {
     setMinPlayers,
     setDrawnNumbersWithTimestamp,
     setIsGameFinished,
-    setDrawnNumbersLastIndex,
     setPlayerAddresses,
     isGameFinished,
     drawnNumbers,
@@ -129,7 +123,6 @@ export const useBingoStore = defineStore('bingoStore', () => {
     rewardPerWinnerFormatted,
     drawnNumbersWithTimestamp,
     minPlayers,
-    drawnNumbersLastIndex,
     playerAddresses,
     addPlayerAddress,
   }

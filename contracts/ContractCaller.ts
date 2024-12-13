@@ -61,7 +61,9 @@ export class ContractCaller<K> {
       await walletClient.value.requestAddresses()
       await walletClient.value.getAddresses()
 
-      const tx = await this.contract[type][name](...args)
+      const _tx = await this.contract[type][name](...args)
+
+      useAppToast(TYPE.INFO, `Transaction of '${name}' function sent`)
 
       const receipt = await chainClient.value.waitForTransactionReceipt({
         hash: tx,
@@ -73,10 +75,7 @@ export class ContractCaller<K> {
 
       toast.dismiss(toastId)
 
-      useAppToast(
-        TYPE.SUCCESS,
-        `Transaction of '${String(name)}' function confirmed successfully`,
-      )
+      useAppToast(TYPE.SUCCESS, `Transaction of '${name}' function confirmed`)
       return true
     } catch (error) {
       console.error(error)

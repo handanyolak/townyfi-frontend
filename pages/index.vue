@@ -214,9 +214,11 @@ const {
   winners,
   drawnNumbersWithTimestamp,
   isGameFinished,
-  drawnNumbersLastIndex,
   rewardPerWinnerFormatted,
   playerAddresses,
+  maxBingoNumber,
+  minBingoNumber,
+  bingoCardNumbersCount,
 } = storeToRefs(bingoStore)
 const accountInfo = useAppKitAccount()
 const userWalletStore = useUserWalletStore()
@@ -254,15 +256,12 @@ onMounted(async () => {
   if (isPlayerRegistered.value) {
     cardNumbers.value = playerNumbers.value.map((num) => Number(num))
   } else {
-    cardNumbers.value = generateRandomNumbers(15, 1, 90)
+    cardNumbers.value = generateRandomNumbers(
+      bingoCardNumbersCount.value,
+      minBingoNumber.value,
+      maxBingoNumber.value,
+    )
   }
-
-  console.log(
-    'drawnNumbersWithTimestamp.value.length',
-    drawnNumbersWithTimestamp.value.length,
-  )
-
-  unixTimestamp.value = await useUnixTimestamp()
 
   if (drawnNumbersWithTimestamp.value.length > 0) {
     await startTriggeringSequentially()
@@ -277,7 +276,7 @@ const gameStarted = ref(false)
 const currentNumber = ref<number | null>(null)
 
 const remainingDrawnNumbersCount = computed(
-  () => drawnNumbers.value.length - currentDrawnNumbers.value.length,
+  () => maxBingoNumber.value - currentDrawnNumbers.value.length,
 )
 
 const isGameFinishedInUi = computed(
@@ -327,7 +326,7 @@ const buyBingoCard = async () => {
     name: 'buyBingoCard',
     type: 'write',
     args: [
-      [cardNumbers.value.map((num) => BigInt(num))],
+      [cardNumbers.value],
       {
         value: bingoCardPrice.value,
       },
@@ -344,16 +343,11 @@ const startTriggeringSequentially = async () => {
   const currentWorldTime = unixTimestamp.value
   let isFirstSync = true
   for (let i = 0; i < drawnNumbersWithTimestamp.value.length; i++) {
-    console.log('helo')
-    const isGameFinishedOnUi = BigInt(i) > drawnNumbersLastIndex.value
-    if (isGameFinishedOnUi) {
-      break
-    }
-
-    const isLastIndex = BigInt(i) === drawnNumbersLastIndex.value
+    const isLastIndex = i === drawnNumbersWithTimestamp.value.length - 1
     const currentItem = drawnNumbersWithTimestamp.value[i]
     if (currentWorldTime >= currentItem.timestamp) {
       currentDrawnNumbers.value.push(currentItem.number)
+      console.log('added by 1', currentItem.timestamp, unixTimestamp.value)
 
       if (
         isPlayerRegistered.value &&
@@ -397,6 +391,7 @@ const startTriggeringSequentially = async () => {
 
     currentNumber.value = currentItem.number
     currentDrawnNumbers.value.push(currentItem.number)
+    console.log('added by 2', currentItem.timestamp, unixTimestamp.value)
 
     setTimeout(() => {
       currentNumber.value = null

@@ -151,9 +151,9 @@ export const bingoAbi = [
     name: 'BINGO_CARD_NUMBERS_COUNT',
     outputs: [
       {
-        internalType: 'uint256',
+        internalType: 'uint8',
         name: '',
-        type: 'uint256',
+        type: 'uint8',
       },
     ],
     stateMutability: 'view',
@@ -177,9 +177,9 @@ export const bingoAbi = [
     name: 'MAX_BINGO_NUMBER',
     outputs: [
       {
-        internalType: 'uint32',
+        internalType: 'uint8',
         name: '',
-        type: 'uint32',
+        type: 'uint8',
       },
     ],
     stateMutability: 'view',
@@ -190,9 +190,9 @@ export const bingoAbi = [
     name: 'MIN_BINGO_NUMBER',
     outputs: [
       {
-        internalType: 'uint256',
+        internalType: 'uint8',
         name: '',
-        type: 'uint256',
+        type: 'uint8',
       },
     ],
     stateMutability: 'view',
@@ -299,9 +299,9 @@ export const bingoAbi = [
   {
     inputs: [
       {
-        internalType: 'uint256[]',
+        internalType: 'uint8[]',
         name: '_numbers',
-        type: 'uint256[]',
+        type: 'uint8[]',
       },
     ],
     name: 'buyBingoCard',
@@ -314,19 +314,6 @@ export const bingoAbi = [
     name: 'claimReward',
     outputs: [],
     stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'drawnNumbersLastIndex',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
     type: 'function',
   },
   {
@@ -351,12 +338,12 @@ export const bingoAbi = [
   },
   {
     inputs: [],
-    name: 'getAllDrawnNumbers',
+    name: 'getDrawnNumbers',
     outputs: [
       {
-        internalType: 'uint256[]',
+        internalType: 'uint8[]',
         name: '',
-        type: 'uint256[]',
+        type: 'uint8[]',
       },
     ],
     stateMutability: 'view',
@@ -364,33 +351,7 @@ export const bingoAbi = [
   },
   {
     inputs: [],
-    name: 'getAllPlayerAddresses',
-    outputs: [
-      {
-        internalType: 'address[]',
-        name: '',
-        type: 'address[]',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'getAllRandomNumbers',
-    outputs: [
-      {
-        internalType: 'uint256[]',
-        name: '',
-        type: 'uint256[]',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'getAllWinners',
+    name: 'getPlayerAddresses',
     outputs: [
       {
         internalType: 'address[]',
@@ -417,14 +378,53 @@ export const bingoAbi = [
         type: 'address',
       },
       {
-        internalType: 'uint256',
+        internalType: 'uint8',
         name: '',
-        type: 'uint256',
+        type: 'uint8',
       },
+      {
+        internalType: 'uint8[]',
+        name: '',
+        type: 'uint8[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'getRandomNumbers',
+    outputs: [
       {
         internalType: 'uint256[]',
         name: '',
         type: 'uint256[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'getRemainingNumbers',
+    outputs: [
+      {
+        internalType: 'uint8[]',
+        name: '',
+        type: 'uint8[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'getWinners',
+    outputs: [
+      {
+        internalType: 'address[]',
+        name: '',
+        type: 'address[]',
       },
     ],
     stateMutability: 'view',
@@ -536,25 +536,6 @@ export const bingoAbi = [
   {
     inputs: [],
     name: 'vrfRequestId',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    name: 'vrfRequestResult',
     outputs: [
       {
         internalType: 'uint256',
