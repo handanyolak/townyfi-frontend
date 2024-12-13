@@ -46,6 +46,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
+      appUrl: process.env.NUXT_APP_URL || 'http://localhost:3000',
       bingoContractAddress:
         process.env.NUXT_BINGO_CONTRACT_ADDRESS || zeroAddress,
       chain: process.env.NUXT_CHAIN,
@@ -57,10 +58,15 @@ export default defineNuxtConfig({
         process.env.NUXT_DRAWN_NUMBERS_ADDITIONAL_TIME_IN_SEC,
         15,
       ),
-      chainBlockTime: convertToInteger(process.env.NUXT_CHAIN_BLOCK_TIME, 5),
+      chainBlockTimeInSec: convertToInteger(
+        process.env.NUXT_CHAIN_BLOCK_TIME_IN_SEC,
+        5,
+      ),
       publicRpcUrls: process.env.NUXT_PUBLIC_RPC_URLS?.split(',') || [],
-      defenderRelayerWebhookUrl:
-        process.env.NUXT_DEFENDER_RELAYER_WEBHOOK_URL || '',
+      ozDefenderRelayerWebhookUrl:
+        process.env.NUXT_OZ_DEFENDER_RELAYER_WEBHOOK_URL || '',
+      ozDefenderRelayerMessage:
+        process.env.NUXT_OZ_DEFENDER_RELAYER_MESSAGE || 'Bingo!',
       chainExtendExplorerUrls:
         process.env.NUXT_CHAIN_EXTEND_EXPLORER_URLS?.split(',') || [],
       reownAppkitProjectId: process.env.NUXT_REOWN_APPKIT_PROJECT_ID || '',

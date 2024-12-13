@@ -168,7 +168,12 @@ import { useAppToast } from '~/composables/useAppToast'
 const networks: [AppKitNetwork, ...AppKitNetwork[]] = [sepolia]
 
 const {
-  public: { reownAppkitProjectId, defenderRelayerWebhookUrl },
+  public: {
+    reownAppkitProjectId,
+    ozDefenderRelayerWebhookUrl,
+    ozDefenderRelayerMessage,
+    appUrl,
+  },
 } = useRuntimeConfig()
 
 const wagmiAdapter = new WagmiAdapter({
@@ -182,9 +187,9 @@ createAppKit({
   networks,
   projectId: reownAppkitProjectId,
   metadata: {
-    name: 'AppKit',
-    description: 'AppKit Example',
-    url: 'http://localhost:3000', // origin must match your domain & subdomain
+    name: 'Bingo!',
+    description: 'Bingo!',
+    url: appUrl,
     icons: ['https://avatars.githubusercontent.com/u/179229932'],
   },
   features: {
@@ -415,8 +420,7 @@ const startTriggeringSequentially = async () => {
 }
 
 const claimNativeToken = async () => {
-  const message = 'Bingo!'
-  const messageHash = keccak256(toBytes(message))
+  const messageHash = keccak256(toBytes(ozDefenderRelayerMessage))
   const address = accountInfo.value.address as Address
   const signature = await walletClient.value.signMessage({
     message: {
@@ -438,7 +442,7 @@ const claimNativeToken = async () => {
     return
   }
 
-  const response = await fetch(defenderRelayerWebhookUrl, {
+  const response = await fetch(ozDefenderRelayerWebhookUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
