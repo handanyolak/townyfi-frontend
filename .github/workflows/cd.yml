@@ -55,9 +55,6 @@ jobs:
       - name: Install dependencies with dev deps
         run: yarn install --production=false
 
-      - name: Build
-        run: yarn build
-
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
