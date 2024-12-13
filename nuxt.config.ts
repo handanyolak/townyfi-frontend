@@ -49,6 +49,14 @@ export default defineNuxtConfig({
       bingoContractAddress:
         process.env.NUXT_BINGO_CONTRACT_ADDRESS || zeroAddress,
       chain: process.env.NUXT_CHAIN,
+      drawnNumbersIntervalInSec: convertToInteger(
+        process.env.NUXT_DRAWN_NUMBERS_INTERVAL_IN_SEC,
+        3,
+      ),
+      drawnNumbersAdditionalTimeInSec: convertToInteger(
+        process.env.NUXT_DRAWN_NUMBERS_ADDITIONAL_TIME_IN_SEC,
+        15,
+      ),
       chainBlockTime: convertToInteger(process.env.NUXT_CHAIN_BLOCK_TIME, 5),
       publicRpcUrls: process.env.NUXT_PUBLIC_RPC_URLS?.split(',') || [],
       defenderRelayerWebhookUrl:

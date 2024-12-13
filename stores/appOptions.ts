@@ -15,6 +15,10 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const accountInfo = useAppKitAccount()
   const eventStore = useEventStore()
 
+  const {
+    public: { drawnNumbersIntervalInSec, drawnNumbersAdditionalTimeInSec },
+  } = useRuntimeConfig()
+
   // --------[ States ]-------- //
   const isBlockchainInfo = ref(false)
   const isContractInfo = ref(false)
@@ -159,16 +163,13 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
       ])
 
       if (drawnNumbers.length > 0) {
-        const drawnNumbersWithTimestamp = drawnNumbers.map((number, index) => {
-          let additionalTimestamp = index * 3
-          if (index === 0) {
-            additionalTimestamp += 15
-          }
-          return {
-            number: Number(number),
-            timestamp: Number(drawnNumbersTimestamp) + additionalTimestamp,
-          }
-        })
+        const drawnNumbersWithTimestamp = drawnNumbers.map((number, index) => ({
+          number,
+          timestamp:
+            Number(drawnNumbersTimestamp) +
+            index * drawnNumbersIntervalInSec +
+            drawnNumbersAdditionalTimeInSec,
+        }))
         bingoStore.setDrawnNumbersWithTimestamp(drawnNumbersWithTimestamp)
       }
 
@@ -295,17 +296,13 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                 }
 
                 const drawnNumbersWithTimestamp = drawnNumbers.map(
-                  (number, index) => {
-                    let additionalTimestamp = index * 3
-                    if (index === 0) {
-                      additionalTimestamp += 15
-                    }
-                    return {
-                      number: Number(number),
-                      timestamp:
-                        Number(drawnNumbersTimestamp) + additionalTimestamp,
-                    }
-                  },
+                  (number, index) => ({
+                    number,
+                    timestamp:
+                      Number(drawnNumbersTimestamp) +
+                      index * drawnNumbersIntervalInSec +
+                      drawnNumbersAdditionalTimeInSec,
+                  }),
                 )
                 bingoStore.setDrawnNumbersWithTimestamp(
                   drawnNumbersWithTimestamp,

@@ -348,7 +348,6 @@ const startTriggeringSequentially = async () => {
     const currentItem = drawnNumbersWithTimestamp.value[i]
     if (currentWorldTime >= currentItem.timestamp) {
       currentDrawnNumbers.value.push(currentItem.number)
-      console.log('added by 1', currentItem.timestamp, unixTimestamp.value)
 
       if (
         isPlayerRegistered.value &&
@@ -396,7 +395,6 @@ const startTriggeringSequentially = async () => {
 
     currentNumber.value = currentItem.number
     currentDrawnNumbers.value.push(currentItem.number)
-    console.log('added by 2', currentItem.timestamp, unixTimestamp.value)
 
     setTimeout(() => {
       currentNumber.value = null
