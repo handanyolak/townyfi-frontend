@@ -2,9 +2,8 @@
   <div
     class="background-bingo relative flex min-h-screen flex-col items-center space-y-10 bg-[#FFF0D9] px-4"
   >
-    <div class="md:self-end">
+    <div v-if="currentDrawnNumbers.length > 0" class="md:self-end">
       <ul
-        v-if="currentDrawnNumbers.length > 0"
         class="grid grid-cols-10 grid-rows-9 justify-center gap-1 rounded-lg bg-white p-2 shadow-xl"
       >
         <li
@@ -19,10 +18,7 @@
           ></span>
         </li>
       </ul>
-      <p
-        v-if="currentDrawnNumbers.length > 0 && !isGameFinishedInUi"
-        class="my-4 text-center text-xl"
-      >
+      <p v-if="!isGameFinishedInUi" class="my-4 text-center text-xl">
         Remaining drawn Numbers count: {{ remainingDrawnNumbersCount }}
       </p>
     </div>
