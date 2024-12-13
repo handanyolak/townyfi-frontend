@@ -110,7 +110,7 @@
             >
             <ul v-for="winner in winners" :key="winner">
               <a
-                class="text-sm text-blue-600 underline md:text-xl"
+                class="my-0.5 cursor-pointer text-sm text-blue-600 underline md:text-xl"
                 @click="goToPageWithQuery(winner)"
               >
                 {{ winner }}
@@ -137,7 +137,7 @@
         <a
           v-for="playerAddress in playerAddresses"
           :key="playerAddress"
-          class="text-sm text-blue-600 underline md:text-xl"
+          class="my-0.5 cursor-pointer text-sm text-blue-600 underline md:text-xl"
           @click="goToPageWithQuery(playerAddress)"
         >
           {{ playerAddress }}
