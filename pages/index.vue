@@ -139,7 +139,7 @@
         </div>
       </div>
     </div>
-    <div class="flex flex-col">
+    <div v-if="playerAddresses.length > 0" class="flex flex-col">
       <h2 class="my-1 text-center text-2xl md:text-2xl">Players</h2>
       <a
         v-for="playerAddress in playerAddresses"
