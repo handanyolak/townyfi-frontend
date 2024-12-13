@@ -6,9 +6,14 @@ export const usePlayerStore = defineStore('playerStore', () => {
   const playerAddress = ref<Address>(zeroAddress)
   const playerNumbers = ref<readonly bigint[]>([])
   const playerRemainingNumbersCount = ref(0n)
+  const otherPlayerAddress = ref<Address | null>(null)
 
   const setPlayerAddress = (newValue: Address) => {
     playerAddress.value = newValue
+  }
+
+  const setOtherPlayerAddress = (newValue: Address) => {
+    otherPlayerAddress.value = newValue
   }
 
   const setPlayerNumbers = (newValue: readonly bigint[]) => {
@@ -27,6 +32,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
 
   return {
     setPlayerAddress,
+    setOtherPlayerAddress,
     setPlayerNumbers,
     setRemainingNumbersCount,
     playerAddress,
@@ -34,5 +40,6 @@ export const usePlayerStore = defineStore('playerStore', () => {
     isPlayerRegistered,
     isUserWinner,
     playerRemainingNumbersCount,
+    otherPlayerAddress,
   }
 })

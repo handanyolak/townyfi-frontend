@@ -188,7 +188,7 @@ const contractStore = useContractStore()
 const { getBingoContractCaller } = storeToRefs(contractStore)
 const playerStore = usePlayerStore()
 const bingoStore = useBingoStore()
-const { isPlayerRegistered, playerNumbers, isUserWinner } =
+const { isPlayerRegistered, playerNumbers, isUserWinner, otherPlayerAddress } =
   storeToRefs(playerStore)
 const {
   drawnNumbers,
@@ -228,7 +228,10 @@ onMounted(async () => {
     }
   }
 
-  await initializeApp()
+  const route = useRoute()
+  const queryParams = route.query
+
+  await initializeApp(queryParams.playerAddress as string)
 
   if (isPlayerRegistered.value) {
     cardNumbers.value = playerNumbers.value.map((num) => Number(num))
@@ -277,7 +280,9 @@ const stop = watch(
 
 const calculateCardColor = computed(() => {
   const hash = keccak256(
-    (accountInfo.value.address as Address) ?? zeroAddress,
+    (otherPlayerAddress.value ||
+      accountInfo.value.address ||
+      zeroAddress) as Address,
   ).slice(2)
   const firstThirtyHexChars = hash.slice(0, 30)
   const colors = []

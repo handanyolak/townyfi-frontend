@@ -1,5 +1,5 @@
 import { useToggle, useStorage } from '@vueuse/core'
-import { zeroAddress, type Address } from 'viem'
+import { isAddress, zeroAddress, type Address } from 'viem'
 import { useAppKitAccount } from '@reown/appkit/vue'
 import { processAndPrintLog } from '~/utils'
 import type { CoordinateStruct, User } from '~/types'
@@ -115,8 +115,15 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     originCoordinate.value = newOriginCoordinate
   }
 
-  const initializeApp = async () => {
-    await sleep(500)
+  const initializeApp = async (playerAddress: null | string) => {
+    await sleep(250)
+
+    if (playerAddress && isAddress(playerAddress)) {
+      playerStore.setOtherPlayerAddress(playerAddress)
+    } else {
+      playerAddress = null
+    }
+
     if (accountInfo.value.isConnected) {
       await userWalletStore.connect()
 
@@ -181,7 +188,8 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
       try {
         const playerInfo = transformPlayer(
           await contractStore.getBingoContractPublic.read.getPlayerInfo([
-            (accountInfo.value.address as Address) ?? zeroAddress,
+            ((playerAddress ?? accountInfo.value.address) as Address) ??
+              zeroAddress,
           ]),
         )
 
