@@ -55,9 +55,6 @@ jobs:
       - name: Install dependencies with dev deps
         run: yarn install --production=false
 
-      - name: Fetch recent contributions count
-        run: yarn fetch
-
       - name: Build
         run: yarn build
 
