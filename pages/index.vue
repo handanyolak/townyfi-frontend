@@ -33,7 +33,9 @@
         class="relative flex flex-col items-center justify-center"
       >
         <button
-          v-if="!isPlayerRegistered && !isGameFinished"
+          v-if="
+            !isPlayerRegistered && !isGameFinished && !isUserOnOtherPlayerPage
+          "
           class="mb-8 rounded bg-[#5b75f4] px-6 py-3 text-lg text-white hover:bg-[#6981f6] md:text-xl"
           @click="buyBingoCard()"
         >
@@ -97,7 +99,11 @@
 
         <div>
           <button
-            v-if="accountInfo.isConnected && !hasStarterPackClaimed"
+            v-if="
+              accountInfo.isConnected &&
+              !hasStarterPackClaimed &&
+              !isUserOnOtherPlayerPage
+            "
             class="rounded bg-[#5b75f4] p-2 text-xl text-white text-shadow hover:bg-[#6981f6]"
             @click="claimNativeToken()"
           >
