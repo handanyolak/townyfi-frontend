@@ -1,4 +1,4 @@
-import { zeroAddress, type Address, toBytes, isAddress } from 'viem'
+import { toBytes, isAddress } from 'viem'
 import { addMethod, string, StringSchema } from 'yup'
 
 export default defineNuxtPlugin(() => {
@@ -33,15 +33,4 @@ export default defineNuxtPlugin(() => {
       })
     },
   )
-
-  addMethod(string, 'townyIsRegistered', function () {
-    return this.test(async (value, context) => {
-      try {
-      } catch (error: any) {
-        return context.createError({
-          message: 'this field must be an TownyFi player',
-        })
-      }
-    })
-  })
 })

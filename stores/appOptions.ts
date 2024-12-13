@@ -1,14 +1,13 @@
 import { useToggle, useStorage } from '@vueuse/core'
 import { isAddress, zeroAddress, type Address } from 'viem'
 import { useAppKitAccount } from '@reown/appkit/vue'
-import { processAndPrintLog } from '~/utils'
+import { TYPE } from 'vue-toastification'
 import type { CoordinateStruct, User } from '~/types'
 import { transformPlayer } from '~/transformers'
 
 export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   // --------[ Stores ]-------- //
   const userWalletStore = useUserWalletStore()
-  const userGameStore = useUserGameStore()
   const contractStore = useContractStore()
   const appOptionStore = useAppOptionsStore()
   const bingoStore = useBingoStore()
@@ -224,21 +223,31 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
           try {
             const uniqueLogs = getUniqueLogs(logs)
             for (const { eventName, args } of uniqueLogs) {
-              const { playerAddress } = args
+              const { playerAddress: playerAddressFromLog } = args
 
-              if (playerAddress === accountInfo.value.address) {
-                const playerInfo = transformPlayer(
-                  await contractStore.getBingoContractPublic.read.getPlayerInfo(
-                    [playerAddress],
-                  ),
-                )
+              while (true) {
+                let playerInfoRaw
+                try {
+                  playerInfoRaw =
+                    await contractStore.getBingoContractPublic.read.getPlayerInfo(
+                      [playerAddressFromLog],
+                    )
+                } catch (error) {
+                  await sleep(0.5 * 1000)
+                  continue
+                }
 
-                playerStore.setPlayerAddress(playerInfo.playerAddress)
-                playerStore.setPlayerNumbers(playerInfo.numbers)
-                playerStore.setRemainingNumbersCount(
-                  playerInfo.remainingNumbersCount,
-                )
-                bingoStore.addPlayerAddress(playerInfo.playerAddress)
+                const { playerAddress, numbers, remainingNumbersCount } =
+                  transformPlayer(playerInfoRaw)
+
+                if (playerAddressFromLog === accountInfo.value.address) {
+                  playerStore.setPlayerAddress(playerAddress)
+                  playerStore.setPlayerNumbers(numbers)
+                  playerStore.setRemainingNumbersCount(remainingNumbersCount)
+                }
+
+                bingoStore.addPlayerAddress(playerAddress)
+                break
               }
 
               processAndPrintLog({
@@ -261,37 +270,52 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
           try {
             const uniqueLogs = getUniqueLogs(logs)
             for (const { eventName } of uniqueLogs) {
-              const [
-                drawnNumbers,
-                drawnNumbersTimestamp,
-                winners,
-                rewardPerWinner,
-              ] = await Promise.all([
-                contractStore.getBingoContractPublic.read.getDrawnNumbers(),
-                contractStore.getBingoContractPublic.read.drawnNumbersTimestamp(),
-                contractStore.getBingoContractPublic.read.getWinners(),
-                contractStore.getBingoContractPublic.read.rewardPerWinner(),
-              ])
+              const initialDrawnNumbersTimestamp =
+                bingoStore.drawnNumbersTimestamp
+              while (true) {
+                const [
+                  drawnNumbers,
+                  winners,
+                  drawnNumbersTimestamp,
+                  rewardPerWinner,
+                ] = await Promise.all([
+                  contractStore.getBingoContractPublic.read.getDrawnNumbers(),
+                  contractStore.getBingoContractPublic.read.getWinners(),
+                  contractStore.getBingoContractPublic.read.drawnNumbersTimestamp(),
+                  contractStore.getBingoContractPublic.read.rewardPerWinner(),
+                ])
 
-              const drawnNumbersWithTimestamp = drawnNumbers.map(
-                (number, index) => {
-                  let additionalTimestamp = index * 3
-                  if (index === 0) {
-                    additionalTimestamp += 15
-                  }
-                  return {
-                    number: Number(number),
-                    timestamp:
-                      Number(drawnNumbersTimestamp) + additionalTimestamp,
-                  }
-                },
-              )
-              bingoStore.setDrawnNumbersWithTimestamp(drawnNumbersWithTimestamp)
-              bingoStore.setDrawnNumbers(drawnNumbers)
-              bingoStore.setDrawnNumbersTimestamp(drawnNumbersTimestamp)
-              bingoStore.setWinners(winners)
-              bingoStore.setRewardPerWinner(rewardPerWinner)
-              eventStore.triggerGameFinishedEvent()
+                if (initialDrawnNumbersTimestamp === drawnNumbersTimestamp) {
+                  await sleep(0.5 * 1000)
+                  continue
+                }
+
+                const drawnNumbersWithTimestamp = drawnNumbers.map(
+                  (number, index) => {
+                    let additionalTimestamp = index * 3
+                    if (index === 0) {
+                      additionalTimestamp += 15
+                    }
+                    return {
+                      number: Number(number),
+                      timestamp:
+                        Number(drawnNumbersTimestamp) + additionalTimestamp,
+                    }
+                  },
+                )
+                bingoStore.setDrawnNumbersWithTimestamp(
+                  drawnNumbersWithTimestamp,
+                )
+                bingoStore.setDrawnNumbers(drawnNumbers)
+                bingoStore.setDrawnNumbersTimestamp(drawnNumbersTimestamp)
+                bingoStore.setWinners(winners)
+                bingoStore.setRewardPerWinner(rewardPerWinner)
+                eventStore.triggerGameFinishedEvent()
+
+                if (initialDrawnNumbersTimestamp !== drawnNumbersTimestamp) {
+                  break
+                }
+              }
 
               processAndPrintLog({
                 logName: eventName,
@@ -310,8 +334,25 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     }
   }
 
-  const setUserInfo = (userInfo: User) => {
-    userGameStore.setUser(userInfo)
+  const processAndPrintLog = ({
+    logName,
+    logArgs = {},
+    useToast,
+    toastMessage = '',
+  }: {
+    logName: string
+    logArgs?: any
+    useToast: boolean
+    toastMessage: string
+  }) => {
+    const eventNameMessage = `Event: ${logName}`
+    const argsMessage = formatEventArgs(logArgs)
+    const eventMessage = `${eventNameMessage}\n${argsMessage}`
+
+    if (useToast) {
+      const toastMsg = (toastMessage ? `${toastMessage}\n` : '') + eventMessage
+      useAppToast(TYPE.INFO, toastMsg)
+    }
   }
 
   const toggleAudio = () => {
@@ -366,7 +407,6 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     isAttackSuccess,
     sideLeave,
     toggleMusic,
-    setUserInfo,
     toggleAudio,
     initializeApp,
     setOriginCoordinate,

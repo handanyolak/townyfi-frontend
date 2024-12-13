@@ -1,3 +1,4 @@
+import { useAppKitAccount } from '@reown/appkit/vue'
 import {
   type Address,
   zeroAddress,
@@ -5,15 +6,11 @@ import {
   publicActions,
   createWalletClient,
   createPublicClient,
-  formatUnits,
   http,
   fallback,
 } from 'viem'
 import * as chains from 'viem/chains'
-import { TYPE } from 'vue-toastification'
-import { useAppToast } from '~/composables/useAppToast'
 import { custom as customChain } from '~/chains/custom'
-import { $t } from '~/composables/useLang'
 
 export const useUserWalletStore = defineStore('userWalletStore', () => {
   // --------[ Nuxt ]-------- //
@@ -23,11 +20,9 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
 
   // --------[ Stores ]-------- //
   const connectionStore = useConnectionStore()
-  const userGameStore = useUserGameStore()
 
   // --------[ States ]-------- //
   const ethereum = window.ethereum
-  const address = ref(zeroAddress as Address)
   const chain =
     runtimeChain !== 'custom'
       ? (chains[
@@ -39,7 +34,7 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
     createWalletClient({
       chain,
       transport: custom(ethereum),
-      account: address.value,
+      account: useAppKitAccount().value.address as Address,
     }).extend(publicActions),
   )
 
@@ -69,64 +64,16 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
   )
 
   const chainClient = connectionStore.hasMetamask ? walletClient : publicClient
-  const ktaSymbol = ref('')
-  const ktaDecimals = ref(0)
-  const ktaAllowance = ref(0n)
-  const ktaBalance = ref(0n)
   const currentBlockNumber = ref(BigInt(0))
-  const balance = ref(BigInt(0))
 
   // --------[ Actions ]-------- //
-  const setAddress = (newAddress: Address) => {
-    address.value = newAddress
-  }
-
-  const setBalance = (newBalance: bigint) => {
-    balance.value = newBalance
-  }
-
   const setCurrentBlockNumber = (newBlockNumber: bigint) => {
     currentBlockNumber.value = newBlockNumber
   }
 
-  const setKtaSymbol = (newKtaSymbol: string) => {
-    ktaSymbol.value = newKtaSymbol
-  }
-
-  const setKtaDecimals = (newKtaDecimals: number) => {
-    ktaDecimals.value = newKtaDecimals
-  }
-
-  const setKtaAllowance = (newKtaAllowance: bigint) => {
-    ktaAllowance.value = BigInt(formatUnits(newKtaAllowance, ktaDecimals.value))
-  }
-
-  const setKtaBalance = (newKtaBalance: bigint) => {
-    ktaBalance.value = BigInt(formatUnits(newKtaBalance, ktaDecimals.value))
-  }
-
   const connect = async () => {
-    const accounts = await walletClient.value.getAddresses()
-    const isConnected = accounts.length > 0
-    // TODO: Is this code block necessary?
-    if (isConnected) await updateUserWalletInfo(accounts[0])
-  }
-
-  const updateUserWalletInfo = async (_address: Address) => {
-    updateUserAddress(_address)
-    await updateUserBalance(_address)
-  }
-
-  const updateUserAddress = (_address: Address) => {
-    setAddress(_address)
-  }
-
-  const updateUserBalance = async (_address: Address) => {
-    setBalance(
-      await chainClient.value.getBalance({
-        address: _address,
-      }),
-    )
+    await walletClient.value.getAddresses()
+    await walletClient.value.requestAddresses()
   }
 
   const startEthEvents = () => {
@@ -143,48 +90,15 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
     window.location.reload()
   }
 
-  const disconnectWeb3 = () => {
-    userGameStore.setIsRegistered(false)
-    useAppToast(TYPE.SUCCESS, $t('disconnected'))
-  }
-
-  const connectWeb3 = async () => {
-    try {
-      await walletClient.value.getAddresses()
-      await walletClient.value.requestAddresses()
-      handleAccountsChanged()
-      await connect()
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
   return {
-    address,
-    balance,
     chain,
     chainClient,
     publicClient,
     walletClient,
-    ktaSymbol,
-    ktaDecimals,
-    ktaAllowance,
-    ktaBalance,
     currentBlockNumber,
     connect,
-    setAddress,
-    setBalance,
-    connectWeb3,
     startEthEvents,
-    disconnectWeb3,
-    setKtaSymbol,
-    setKtaDecimals,
-    setKtaAllowance,
-    setKtaBalance,
-    updateUserBalance,
-    updateUserAddress,
     handleChainChanged,
-    updateUserWalletInfo,
     handleAccountsChanged,
     setCurrentBlockNumber,
   }

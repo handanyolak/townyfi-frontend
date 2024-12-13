@@ -157,7 +157,7 @@
 import { sepolia, type AppKitNetwork } from '@reown/appkit/networks'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { createAppKit, useAppKitAccount } from '@reown/appkit/vue'
-import { POSITION, useToast } from 'vue-toastification'
+import { POSITION, TYPE } from 'vue-toastification'
 import {
   keccak256,
   parseEther,
@@ -167,6 +167,8 @@ import {
   type Address,
 } from 'viem'
 import { useStorage } from '@vueuse/core'
+import { useAppToast } from '~/composables/useAppToast'
+
 const networks: [AppKitNetwork, ...AppKitNetwork[]] = [sepolia]
 
 const {
@@ -201,6 +203,8 @@ createAppKit({
   },
 })
 
+const appOptionsStore = useAppOptionsStore()
+const { initializeApp } = appOptionsStore
 const contractStore = useContractStore()
 const { getBingoContractCaller } = storeToRefs(contractStore)
 const playerStore = usePlayerStore()
@@ -224,12 +228,9 @@ const accountInfo = useAppKitAccount()
 const userWalletStore = useUserWalletStore()
 const { walletClient, publicClient } = storeToRefs(userWalletStore)
 const eventStore = useEventStore()
-const appOptionsStore = useAppOptionsStore()
-const { initializeApp } = appOptionsStore
 
 const cardNumbers = ref<number[]>([])
 const unixTimestamp = ref(0)
-const toast = useToast()
 const hasStarterPackClaimed = useStorage('has-starter-pack-claimed', false)
 const currentDrawnNumbers = ref<number[]>([])
 
@@ -358,9 +359,9 @@ const startTriggeringSequentially = async () => {
 
       if (isLastIndex && isPlayerRegistered.value) {
         if (isUserWinner.value) {
-          toast.success('Bingo!')
+          useAppToast(TYPE.SUCCESS, 'Bingo!')
         } else {
-          toast.error('Good luck next time!')
+          useAppToast(TYPE.ERROR, 'Good luck next time')
         }
       }
 
@@ -379,11 +380,15 @@ const startTriggeringSequentially = async () => {
 
     if (delay > 0) {
       if (delay > 3 * 1000) {
-        toast.info(`Next number will be drawn in ${delay / 1000} seconds`, {
-          pauseOnHover: false,
-          position: POSITION.BOTTOM_RIGHT,
-          timeout: 3 * 1000,
-        })
+        useAppToast(
+          TYPE.INFO,
+          `Next number will be drawn in ${delay / 1000} seconds`,
+          {
+            pauseOnHover: false,
+            position: POSITION.BOTTOM_RIGHT,
+            timeout: 3 * 1000,
+          },
+        )
       }
 
       await sleep(delay)
@@ -406,9 +411,9 @@ const startTriggeringSequentially = async () => {
 
     if (isLastIndex && isPlayerRegistered.value) {
       if (isUserWinner.value) {
-        toast.success('Bingo!')
+        useAppToast(TYPE.SUCCESS, 'Bingo!')
       } else {
-        toast.error('Good luck next time')
+        useAppToast(TYPE.ERROR, 'Good luck next time')
       }
     }
   }
@@ -435,7 +440,7 @@ const claimNativeToken = async () => {
   })
 
   if (!valid) {
-    toast.error('Invalid signature')
+    useAppToast(TYPE.ERROR, 'Invalid signature')
     return
   }
 
@@ -458,13 +463,11 @@ const claimNativeToken = async () => {
       hasStarterPackClaimed.value = true
     }
 
-    toast.error(`Failed to claim: ${result?.message}`)
+    useAppToast(TYPE.ERROR, `Failed to claim: ${result.message}`)
     return
   }
 
-  toast.success(
-    `Starter Pack claimed successfully!\n${formatEventArgs(result)}`,
-  )
+  useAppToast(TYPE.SUCCESS, `Claimed successfully\n${formatEventArgs(result)}`)
   hasStarterPackClaimed.value = true
 }
 

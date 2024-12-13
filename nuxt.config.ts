@@ -89,11 +89,11 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: 'TownyFi',
+      title: 'Bingo',
       meta: [
         {
           name: 'description',
-          content: 'TownyFi is a Web3 game for managing towns.',
+          content: 'Bingo is a decentralized lottery game on Ethereum',
         },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       ],

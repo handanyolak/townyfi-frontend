@@ -133,13 +133,6 @@ export type Settings = {
   numberDigits: bigint
 }
 
-export type War = {
-  attackerTownId: bigint
-  defenderTownId: bigint
-  attackableAt: bigint
-  expiredAt: bigint
-}
-
 export type WarLog = {
   attacker: Address
   defender: Address

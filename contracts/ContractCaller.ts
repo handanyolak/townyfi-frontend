@@ -2,7 +2,6 @@
 
 import { TYPE, useToast } from 'vue-toastification'
 import { useAppKitAccount } from '@reown/appkit/vue'
-import { defaultToastificationConfig } from '~/config'
 import type { Mutable, ParamType } from '~/types'
 
 export class ContractCaller<K> {
@@ -51,7 +50,6 @@ export class ContractCaller<K> {
     const toastId = toast(
       `Sending transaction of '${String(name)}' function...`,
       {
-        ...defaultToastificationConfig,
         timeout: 0,
         icon,
       },

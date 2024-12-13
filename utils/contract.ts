@@ -32,26 +32,3 @@ export const getUniqueLogs = <T extends Log>(logs: T[]) => {
 
   return uniqueLogs
 }
-
-export const processAndPrintLog = ({
-  logName,
-  logArgs = {},
-  useToast,
-  toastMessage = '',
-}: {
-  logName: string
-  logArgs?: any
-  useToast: boolean
-  refreshUserInfo?: boolean
-  refreshUserInfoUntilCallback?: (user: User) => boolean
-  toastMessage: string
-}) => {
-  const eventNameMessage = `Event: ${logName}`
-  const argsMessage = formatEventArgs(logArgs)
-  const eventMessage = `${eventNameMessage}\n${argsMessage}`
-
-  if (useToast) {
-    const toastMsg = (toastMessage ? `${toastMessage}\n` : '') + eventMessage
-    useAppToast(TYPE.INFO, toastMsg)
-  }
-}
