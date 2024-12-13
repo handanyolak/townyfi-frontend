@@ -47,7 +47,17 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
     createPublicClient({
       chain,
       transport: fallback(
-        publicRpcUrls.map((url) => http(url)),
+        publicRpcUrls.map((url) =>
+          http(url, {
+            onFetchRequest: (req, init) => {
+              console.debug(
+                'method rpc',
+                req.url,
+                init.body && JSON.parse(init.body as any).method,
+              )
+            },
+          }),
+        ),
         {
           rank: true,
         },

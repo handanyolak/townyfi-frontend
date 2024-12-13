@@ -1,6 +1,8 @@
-import { formatEther, type Address } from 'viem'
+import { formatUnits, type Address } from 'viem'
 
 export const useBingoStore = defineStore('bingoStore', () => {
+  const userWalletStore = useUserWalletStore()
+
   const drawnNumbers = ref<readonly bigint[]>([])
   const drawnNumbersTimestamp = ref(0n)
   const bingoCardNumbersCount = ref(0n)
@@ -12,6 +14,7 @@ export const useBingoStore = defineStore('bingoStore', () => {
   const isGameFinished = ref(false)
   const minPlayers = ref(0n)
   const drawnNumbersLastIndex = ref(0n)
+  const playerAddresses = ref<readonly Address[]>([])
   const drawnNumbersWithTimestamp = ref<
     {
       number: number
@@ -63,6 +66,14 @@ export const useBingoStore = defineStore('bingoStore', () => {
     drawnNumbersLastIndex.value = newValue
   }
 
+  const setPlayerAddresses = (newValue: readonly Address[]) => {
+    playerAddresses.value = newValue as Address[]
+  }
+
+  const addPlayerAddress = (newValue: Address) => {
+    playerAddresses.value = [...playerAddresses.value, newValue]
+  }
+
   const setDrawnNumbersWithTimestamp = (
     newValue: {
       number: number
@@ -73,11 +84,17 @@ export const useBingoStore = defineStore('bingoStore', () => {
   }
 
   const rewardPerWinnerFormatted = computed(() =>
-    formatEther(rewardPerWinner.value),
+    formatUnits(
+      rewardPerWinner.value,
+      userWalletStore.chain.nativeCurrency.decimals,
+    ),
   )
 
   const bingoCardPriceFormatted = computed(() =>
-    formatEther(bingoCardPrice.value),
+    formatUnits(
+      bingoCardPrice.value,
+      userWalletStore.chain.nativeCurrency.decimals,
+    ),
   )
 
   const gameStartTimestamp = computed(
@@ -97,6 +114,7 @@ export const useBingoStore = defineStore('bingoStore', () => {
     setDrawnNumbersWithTimestamp,
     setIsGameFinished,
     setDrawnNumbersLastIndex,
+    setPlayerAddresses,
     isGameFinished,
     drawnNumbers,
     drawnNumbersTimestamp,
@@ -112,5 +130,7 @@ export const useBingoStore = defineStore('bingoStore', () => {
     drawnNumbersWithTimestamp,
     minPlayers,
     drawnNumbersLastIndex,
+    playerAddresses,
+    addPlayerAddress,
   }
 })

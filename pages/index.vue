@@ -29,14 +29,15 @@
     <div class="space-y-10">
       <div
         v-if="isPlayerRegistered || !isGameFinishedInUi"
-        class="justify-cent flex flex-col items-center"
+        class="relative flex flex-col items-center justify-center"
       >
         <button
           v-if="!isPlayerRegistered && !isGameFinished"
           class="mb-8 rounded bg-blue-500 px-6 py-3 text-lg text-white hover:bg-blue-600 md:text-xl"
           @click="buyBingoCard()"
         >
-          Buy the card (<span>{{ bingoCardPriceFormatted }}</span> ETH )
+          Buy the card (<span>{{ bingoCardPriceFormatted }}</span>
+          {{ publicClient.chain.nativeCurrency.symbol }} )
         </button>
         <div class="text-red-500">
           <appkit-button />
@@ -109,29 +110,45 @@
 
       <div v-if="isGameFinishedInUi">
         <div
-          :style="`background-color: ${calculateCardColor[0]}`"
-          class="my-4 flex flex-col items-center justify-center rounded-md p-4 opacity-80"
+          class="my-4 flex flex-col items-center justify-center rounded-md p-4"
         >
-          <h2
-            class="my-4 text-center text-3xl font-semibold text-white text-shadow md:text-4xl"
+          <h2 class="my-1 text-center text-2xl md:text-2xl">Winners</h2>
+          <span class="md:text-xl"
+            >Claim amount per winner: {{ rewardPerWinnerFormatted }}
+            {{ publicClient.chain.nativeCurrency.symbol }}</span
           >
-            Winners
-          </h2>
-          <ul v-for="winner in winners" :key="winner" class="space-y-4 py-5">
-            <li class="text-center text-sm text-white md:text-xl md:font-bold">
+          <ul v-for="winner in winners" :key="winner">
+            <a
+              class="text-sm text-blue-600 underline md:text-xl"
+              @click="goToPageWithQuery(winner)"
+            >
               {{ winner }}
-            </li>
+            </a>
           </ul>
-          <span class="text-white md:text-xl"
-            >Reward Per Winner: {{ rewardPerWinnerFormatted }}</span
-          >
           <button
-            class="my-4 rounded-md p-4 text-xl text-white shadow-lg backdrop-brightness-75 transition-all duration-200 text-shadow hover:backdrop-brightness-50"
+            v-if="
+              winners.length > 0 &&
+              isUserWinner &&
+              winners.includes((accountInfo.address as Address) ?? zeroAddress)
+            "
+            class="my-2 rounded bg-blue-500 p-2 text-xl text-white text-shadow hover:bg-blue-600"
+            @click="claimNativeToken()"
           >
-            Claim your reward
+            Claim!
           </button>
         </div>
       </div>
+    </div>
+    <div class="flex flex-col">
+      <h2 class="my-1 text-center text-2xl md:text-2xl">Players</h2>
+      <a
+        v-for="playerAddress in playerAddresses"
+        :key="playerAddress"
+        class="text-sm text-blue-600 underline md:text-xl"
+        @click="goToPageWithQuery(playerAddress)"
+      >
+        {{ playerAddress }}
+      </a>
     </div>
   </div>
 </template>
@@ -199,10 +216,11 @@ const {
   isGameFinished,
   drawnNumbersLastIndex,
   rewardPerWinnerFormatted,
+  playerAddresses,
 } = storeToRefs(bingoStore)
 const accountInfo = useAppKitAccount()
 const userWalletStore = useUserWalletStore()
-const { walletClient } = storeToRefs(userWalletStore)
+const { walletClient, publicClient } = storeToRefs(userWalletStore)
 const eventStore = useEventStore()
 const appOptionsStore = useAppOptionsStore()
 const { initializeApp } = appOptionsStore
@@ -238,6 +256,11 @@ onMounted(async () => {
   } else {
     cardNumbers.value = generateRandomNumbers(15, 1, 90)
   }
+
+  console.log(
+    'drawnNumbersWithTimestamp.value.length',
+    drawnNumbersWithTimestamp.value.length,
+  )
 
   unixTimestamp.value = await useUnixTimestamp()
 
@@ -312,11 +335,16 @@ const buyBingoCard = async () => {
   })
 }
 
+const goToPageWithQuery = (winner: Address) => {
+  window.location.href = `?playerAddress=${winner}`
+}
+
 const startTriggeringSequentially = async () => {
   unixTimestamp.value = await useUnixTimestamp()
   const currentWorldTime = unixTimestamp.value
   let isFirstSync = true
   for (let i = 0; i < drawnNumbersWithTimestamp.value.length; i++) {
+    console.log('helo')
     const isGameFinishedOnUi = BigInt(i) > drawnNumbersLastIndex.value
     if (isGameFinishedOnUi) {
       break
@@ -336,9 +364,9 @@ const startTriggeringSequentially = async () => {
 
       if (isLastIndex && isPlayerRegistered.value) {
         if (isUserWinner.value) {
-          toast.success('Bingo! Congratulations!')
+          toast.success('Bingo!')
         } else {
-          toast.error('Good luck on next!')
+          toast.error('Good luck next time!')
         }
       }
 
@@ -383,9 +411,9 @@ const startTriggeringSequentially = async () => {
 
     if (isLastIndex && isPlayerRegistered.value) {
       if (isUserWinner.value) {
-        toast.success('Bingo! Congratulations!')
+        toast.success('Bingo!')
       } else {
-        toast.error('someone won, good luck on next')
+        toast.error('Good luck next time')
       }
     }
   }

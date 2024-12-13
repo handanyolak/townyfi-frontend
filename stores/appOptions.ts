@@ -145,6 +145,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
         rewardPerWinner,
         minPlayers,
         drawnNumbersLastIndex,
+        playerAddresses,
       ] = await Promise.all([
         contractStore.getBingoContractPublic.read.getAllDrawnNumbers(),
         contractStore.getBingoContractPublic.read.drawnNumbersTimestamp(),
@@ -157,6 +158,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
         contractStore.getBingoContractPublic.read.rewardPerWinner(),
         contractStore.getBingoContractPublic.read.MIN_PLAYERS(),
         contractStore.getBingoContractPublic.read.drawnNumbersLastIndex(),
+        contractStore.getBingoContractPublic.read.getAllPlayerAddresses(),
       ])
 
       if (drawnNumbers.length > 0) {
@@ -184,6 +186,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
       bingoStore.setRewardPerWinner(rewardPerWinner)
       bingoStore.setMinPlayers(minPlayers)
       bingoStore.setDrawnNumbersLastIndex(drawnNumbersLastIndex)
+      bingoStore.setPlayerAddresses(playerAddresses)
 
       try {
         const playerInfo = transformPlayer(
@@ -238,6 +241,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                 playerStore.setRemainingNumbersCount(
                   playerInfo.remainingNumbersCount,
                 )
+                bingoStore.addPlayerAddress(playerInfo.playerAddress)
               }
 
               processAndPrintLog({
