@@ -1,7 +1,6 @@
 import { useAppKitAccount } from '@reown/appkit/vue'
 import {
   type Address,
-  zeroAddress,
   custom,
   publicActions,
   createWalletClient,
