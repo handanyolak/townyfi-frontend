@@ -4,7 +4,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
   const bingoStore = useBingoStore()
 
   const playerAddress = ref<Address>(zeroAddress)
-  const playerNumbers = ref<readonly bigint[]>([])
+  const playerNumbers = ref<readonly number[]>([])
   const playerRemainingNumbersCount = ref(0n)
   const otherPlayerAddress = ref<Address | null>(null)
 
@@ -16,7 +16,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
     otherPlayerAddress.value = newValue
   }
 
-  const setPlayerNumbers = (newValue: readonly bigint[]) => {
+  const setPlayerNumbers = (newValue: readonly number[]) => {
     playerNumbers.value = newValue
   }
 

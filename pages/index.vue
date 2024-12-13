@@ -20,7 +20,7 @@
         </li>
       </ul>
       <p
-        v-if="remainingDrawnNumbersCount && !isGameFinishedInUi"
+        v-if="currentDrawnNumbers.length > 0 && !isGameFinishedInUi"
         class="my-4 text-center text-xl"
       >
         Remaining drawn Numbers count: {{ remainingDrawnNumbersCount }}
@@ -132,7 +132,7 @@
               winners.includes((accountInfo.address as Address) ?? zeroAddress)
             "
             class="my-2 rounded bg-blue-500 p-2 text-xl text-white text-shadow hover:bg-blue-600"
-            @click="claimNativeToken()"
+            @click="claimReward()"
           >
             Claim!
           </button>
@@ -352,7 +352,7 @@ const startTriggeringSequentially = async () => {
 
       if (
         isPlayerRegistered.value &&
-        playerNumbers.value.includes(BigInt(currentItem.number))
+        playerNumbers.value.includes(currentItem.number)
       ) {
         highlightedNumbers.value.add(currentItem.number)
       }
@@ -404,7 +404,7 @@ const startTriggeringSequentially = async () => {
 
     if (
       isPlayerRegistered.value &&
-      playerNumbers.value.includes(BigInt(currentItem.number))
+      playerNumbers.value.includes(currentItem.number)
     ) {
       highlightedNumbers.value.add(currentItem.number)
     }
@@ -469,6 +469,13 @@ const claimNativeToken = async () => {
 
   useAppToast(TYPE.SUCCESS, `Claimed successfully\n${formatEventArgs(result)}`)
   hasStarterPackClaimed.value = true
+}
+
+const claimReward = async () => {
+  await getBingoContractCaller.value.callFunction({
+    name: 'claimReward',
+    type: 'write',
+  })
 }
 
 const generateRandomNumbers = (

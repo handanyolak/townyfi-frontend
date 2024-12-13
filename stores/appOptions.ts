@@ -2,7 +2,7 @@ import { useToggle, useStorage } from '@vueuse/core'
 import { isAddress, zeroAddress, type Address } from 'viem'
 import { useAppKitAccount } from '@reown/appkit/vue'
 import { TYPE } from 'vue-toastification'
-import type { CoordinateStruct, User } from '~/types'
+import type { CoordinateStruct } from '~/types'
 import { transformPlayer } from '~/transformers'
 
 export const useAppOptionsStore = defineStore('appOptionsStore', () => {
@@ -193,7 +193,9 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
         )
 
         playerStore.setPlayerAddress(playerInfo.playerAddress)
-        playerStore.setPlayerNumbers(playerInfo.numbers)
+        playerStore.setPlayerNumbers(
+          playerInfo.numbers as unknown as readonly number[],
+        )
         playerStore.setRemainingNumbersCount(playerInfo.remainingNumbersCount)
       } catch (error) {}
 
@@ -242,7 +244,9 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
 
                 if (playerAddressFromLog === accountInfo.value.address) {
                   playerStore.setPlayerAddress(playerAddress)
-                  playerStore.setPlayerNumbers(numbers)
+                  playerStore.setPlayerNumbers(
+                    numbers as unknown as readonly number[],
+                  )
                   playerStore.setRemainingNumbersCount(remainingNumbersCount)
                 }
 
