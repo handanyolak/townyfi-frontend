@@ -125,6 +125,11 @@
           <span class="text-white md:text-xl"
             >Reward Per Winner: {{ rewardPerWinnerFormatted }}</span
           >
+          <button
+            class="my-4 rounded-md p-4 text-xl text-white shadow-lg backdrop-brightness-75 transition-all duration-200 text-shadow hover:backdrop-brightness-50"
+          >
+            Claim your reward
+          </button>
         </div>
       </div>
     </div>
