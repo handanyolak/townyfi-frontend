@@ -229,10 +229,14 @@ const accountInfo = useAppKitAccount()
 const userWalletStore = useUserWalletStore()
 const { walletClient, publicClient } = storeToRefs(userWalletStore)
 const eventStore = useEventStore()
+const route = useRoute()
 
 const cardNumbers = ref<number[]>([])
 const unixTimestamp = ref(0)
-const hasStarterPackClaimed = useStorage('has-starter-pack-claimed', false)
+const hasStarterPackClaimed = useStorage(
+  `${accountInfo.value.address}:starter-pack-claimed`,
+  false,
+)
 const currentDrawnNumbers = ref<number[]>([])
 
 // --------[ Lifecycle ]-------- //
@@ -250,10 +254,11 @@ onMounted(async () => {
     }
   }
 
-  const route = useRoute()
-  const queryParams = route.query
+  if (Array.isArray(route.query.playerAddress)) {
+    route.query.playerAddress = route.query.playerAddress[0] as Address
+  }
 
-  await initializeApp(queryParams.playerAddress as string)
+  await initializeApp(route.query.playerAddress)
 
   if (isPlayerRegistered.value) {
     cardNumbers.value = playerNumbers.value.map((num) => Number(num))
@@ -288,6 +293,12 @@ const isGameFinishedInUi = computed(
       drawnNumbersWithTimestamp.value[
         drawnNumbersWithTimestamp.value.length - 1
       ].timestamp,
+)
+
+const isUserOnOtherPlayerPage = computed(
+  () =>
+    otherPlayerAddress.value &&
+    otherPlayerAddress.value !== accountInfo.value.address?.toLowerCase(),
 )
 
 const stop = watch(
@@ -453,7 +464,7 @@ const claimNativeToken = async () => {
     body: JSON.stringify({
       address,
       signature,
-      amount: bingoCardPrice.value + parseEther('0.1'),
+      amount: bingoCardPrice.value + parseEther('0.25'),
     }),
   })
 
