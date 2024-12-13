@@ -336,8 +336,11 @@ const buyBingoCard = async () => {
   })
 }
 
-const goToPageWithQuery = (winner: Address) => {
-  window.location.href = `?playerAddress=${winner}`
+const goToPageWithQuery = (address: Address) => {
+  if (address === accountInfo.value.address) {
+    return (window.location.href = '/')
+  }
+  window.location.href = `?playerAddress=${address}`
 }
 
 const startTriggeringSequentially = async () => {
@@ -450,7 +453,7 @@ const claimNativeToken = async () => {
     body: JSON.stringify({
       address,
       signature,
-      amount: parseEther('0.1'),
+      amount: bingoCardPrice.value + parseEther('0.1'),
     }),
   })
 
