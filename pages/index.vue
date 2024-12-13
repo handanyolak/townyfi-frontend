@@ -182,6 +182,7 @@ const {
     reownAppkitProjectId,
     ozDefenderRelayerWebhookUrl,
     ozDefenderRelayerMessage,
+    drawnNumbersIntervalInSec,
     appUrl,
   },
 } = useRuntimeConfig()
@@ -403,14 +404,14 @@ const startTriggeringSequentially = async () => {
     isFirstSync = false
 
     if (delay > 0) {
-      if (delay > 3 * 1000) {
+      if (delay > drawnNumbersIntervalInSec * 1000) {
         useAppToast(
           TYPE.INFO,
           `Next number will be drawn in ${delay / 1000} seconds`,
           {
             pauseOnHover: false,
             position: POSITION.BOTTOM_RIGHT,
-            timeout: 3 * 1000,
+            timeout: drawnNumbersIntervalInSec * 1000,
           },
         )
       }
