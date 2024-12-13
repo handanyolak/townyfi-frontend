@@ -1,158 +1,160 @@
 <template>
-  <div
-    class="background-bingo flex min-h-screen flex-col items-center space-y-10 bg-[#FFF0D9] px-4"
-    :class="!currentDrawnNumbers.length ? 'justify-center' : ''"
-  >
-    <div class="absolute top-2">
-      <appkit-button />
-    </div>
+  <div class="min-h-screen bg-[#FFF0D9]">
+    <div
+      class="background-bingo flex h-[90vh] flex-col items-center space-y-10 bg-[#FFF0D9] px-4"
+      :class="!currentDrawnNumbers.length ? 'justify-center' : ''"
+    >
+      <div class="absolute top-2">
+        <appkit-button />
+      </div>
 
-    <div v-if="currentDrawnNumbers.length > 0" class="md:self-end">
-      <ul
-        class="grid grid-cols-10 grid-rows-9 justify-center gap-0.5 rounded-lg bg-white p-2 shadow-xl"
-      >
-        <li
-          v-for="(currentDrawnNumber, index) in currentDrawnNumbers"
-          :key="index"
-          class="relative flex h-6 w-6 items-center justify-center text-center text-shadow md:h-8 md:w-8 md:text-lg xl:h-10 xl:w-10 xl:text-xl 2xl:h-12 2xl:w-12 2xl:text-2xl"
+      <div v-if="currentDrawnNumbers.length > 0" class="md:self-end">
+        <ul
+          class="grid grid-cols-10 grid-rows-9 justify-center gap-0.5 rounded-lg bg-white p-2 shadow-xl"
         >
-          {{ currentDrawnNumber }}
-          <span
-            class="absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-40 transition-all duration-500 ease-in-out md:h-8 md:w-8 md:text-lg xl:h-10 xl:w-10"
-            :style="`background-color: ${calculateCardColor[0]}`"
-          ></span>
-        </li>
-      </ul>
-      <p v-if="!isGameFinishedInUi" class="my-4 text-center text-xl">
-        Remaining drawn Numbers count: {{ remainingDrawnNumbersCount }}
-      </p>
-    </div>
-    <div class="card space-y-10">
-      <div
-        v-if="isPlayerRegistered || !isGameFinishedInUi"
-        class="relative flex flex-col items-center justify-center"
-      >
-        <button
-          v-if="
-            !isPlayerRegistered && !isGameFinished && !isUserOnOtherPlayerPage
-          "
-          class="mb-8 rounded bg-[#5b75f4] px-6 py-3 text-lg text-white hover:bg-[#6981f6] md:text-xl"
-          @click="buyBingoCard()"
-        >
-          Buy the card (<span>{{ bingoCardPriceFormatted }}</span>
-          {{ publicClient.chain.nativeCurrency.symbol }} )
-        </button>
-
-        <div v-if="!gameStarted" class="mb-4"></div>
-
-        <div
-          v-if="
-            (!isPlayerRegistered && drawnNumbers.length <= 0) ||
-            isPlayerRegistered
-          "
-        >
-          <div
-            v-if="cells.length"
-            class="w-fit rounded-md p-4"
-            :style="`background-color: ${calculateCardColor[0]}`"
+          <li
+            v-for="(currentDrawnNumber, index) in currentDrawnNumbers"
+            :key="index"
+            class="relative flex h-6 w-6 items-center justify-center text-center text-shadow md:h-8 md:w-8 md:text-lg xl:h-10 xl:w-10 xl:text-xl 2xl:h-12 2xl:w-12 2xl:text-2xl"
           >
-            <div class="rounded-md bg-white p-2">
-              <div class="grid grid-cols-9 border border-gray-400">
-                <div
-                  v-for="(cell, index) in cells"
-                  :key="index"
-                  class="relative flex h-8 w-8 items-center justify-center border border-gray-400 text-shadow md:h-10 md:w-10 md:text-xl xl:h-12 xl:w-12 2xl:h-16 2xl:w-16"
-                  :class="{
-                    'bg-white font-bold ': cell !== null,
-                  }"
-                  :style="{
-                    color: cell !== null ? calculateCardColor[0] : '',
-                    'background-color':
-                      cell === null ? calculateCardColor[0] : '',
-                  }"
-                >
-                  {{ cell !== null ? cell : '' }}
-                  <span
-                    v-if="cell !== null && highlightedNumbers.has(cell)"
-                    class="absolute h-8 w-8 rounded-full opacity-40 transition-all duration-500 ease-in-out md:h-10 md:w-10 xl:h-12 xl:w-12 2xl:h-16 2xl:w-16"
-                    :style="`background-color: ${calculateCardColor[0]}`"
-                  ></span>
+            {{ currentDrawnNumber }}
+            <span
+              class="absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-40 transition-all duration-500 ease-in-out md:h-8 md:w-8 md:text-lg xl:h-10 xl:w-10"
+              :style="`background-color: ${calculateCardColor[0]}`"
+            ></span>
+          </li>
+        </ul>
+        <p v-if="!isGameFinishedInUi" class="my-4 text-center text-xl">
+          Remaining drawn Numbers count: {{ remainingDrawnNumbersCount }}
+        </p>
+      </div>
+      <div class="card space-y-10">
+        <div
+          v-if="isPlayerRegistered || !isGameFinishedInUi"
+          class="relative flex flex-col items-center justify-center"
+        >
+          <button
+            v-if="
+              !isPlayerRegistered && !isGameFinished && !isUserOnOtherPlayerPage
+            "
+            class="mb-8 rounded bg-[#5b75f4] px-6 py-3 text-lg text-white hover:bg-[#6981f6] md:text-xl"
+            @click="buyBingoCard()"
+          >
+            Buy the card (<span>{{ bingoCardPriceFormatted }}</span>
+            {{ publicClient.chain.nativeCurrency.symbol }} )
+          </button>
+
+          <div v-if="!gameStarted" class="mb-4"></div>
+
+          <div
+            v-if="
+              (!isPlayerRegistered && drawnNumbers.length <= 0) ||
+              isPlayerRegistered
+            "
+          >
+            <div
+              v-if="cells.length"
+              class="w-fit rounded-md p-4"
+              :style="`background-color: ${calculateCardColor[0]}`"
+            >
+              <div class="rounded-md bg-white p-2">
+                <div class="grid grid-cols-9 border border-gray-400">
+                  <div
+                    v-for="(cell, index) in cells"
+                    :key="index"
+                    class="relative flex h-8 w-8 items-center justify-center border border-gray-400 text-shadow md:h-10 md:w-10 md:text-xl xl:h-12 xl:w-12 2xl:h-16 2xl:w-16"
+                    :class="{
+                      'bg-white font-bold ': cell !== null,
+                    }"
+                    :style="{
+                      color: cell !== null ? calculateCardColor[0] : '',
+                      'background-color':
+                        cell === null ? calculateCardColor[0] : '',
+                    }"
+                  >
+                    {{ cell !== null ? cell : '' }}
+                    <span
+                      v-if="cell !== null && highlightedNumbers.has(cell)"
+                      class="absolute h-8 w-8 rounded-full opacity-40 transition-all duration-500 ease-in-out md:h-10 md:w-10 xl:h-12 xl:w-12 2xl:h-16 2xl:w-16"
+                      :style="`background-color: ${calculateCardColor[0]}`"
+                    ></span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+
+          <transition name="number-fade" appear>
+            <div
+              v-if="currentNumber !== null"
+              class="transform-center absolute flex h-40 w-40 justify-center rounded-full bg-white text-9xl font-bold text-white"
+            >
+              <div
+                :style="`background-color: ${calculateCardColor[0]}`"
+                class="flex h-full w-full justify-center rounded-full bg-opacity-40"
+              >
+                {{ currentNumber }}
+              </div>
+            </div>
+          </transition>
         </div>
 
-        <transition name="number-fade" appear>
+        <div v-if="isGameFinishedInUi">
           <div
-            v-if="currentNumber !== null"
-            class="transform-center absolute flex h-40 w-40 justify-center rounded-full bg-white text-9xl font-bold text-white"
+            class="my-4 flex flex-col items-center justify-center rounded-md p-4"
           >
-            <div
-              :style="`background-color: ${calculateCardColor[0]}`"
-              class="flex h-full w-full justify-center rounded-full bg-opacity-40"
+            <h2 class="my-1 text-center text-2xl md:text-2xl">Winners</h2>
+            <span class="text-center md:text-xl"
+              >Claim amount per winner: {{ rewardPerWinnerFormatted }}
+              {{ publicClient.chain.nativeCurrency.symbol }}</span
             >
-              {{ currentNumber }}
-            </div>
+            <ul v-for="winner in winners" :key="winner">
+              <a
+                class="text-sm text-blue-600 underline md:text-xl"
+                @click="goToPageWithQuery(winner)"
+              >
+                {{ winner }}
+              </a>
+            </ul>
+            <button
+              v-if="
+                winners.length > 0 &&
+                isUserWinner &&
+                winners.includes(
+                  (accountInfo.address as Address) ?? zeroAddress,
+                )
+              "
+              class="my-2 rounded bg-[#5b75f4] p-2 text-xl text-white text-shadow hover:bg-[#6981f6]"
+              @click="claimReward()"
+            >
+              Claim!
+            </button>
           </div>
-        </transition>
-
-        <div>
-          <button
-            v-if="
-              accountInfo.isConnected &&
-              !hasStarterPackClaimed &&
-              !isUserOnOtherPlayerPage
-            "
-            class="rounded bg-[#5b75f4] p-2 text-xl text-white text-shadow hover:bg-[#6981f6]"
-            @click="claimNativeToken()"
-          >
-            Claim some native token
-          </button>
         </div>
       </div>
-
-      <div v-if="isGameFinishedInUi">
-        <div
-          class="my-4 flex flex-col items-center justify-center rounded-md p-4"
+      <div v-if="playerAddresses.length > 0" class="flex flex-col">
+        <h2 class="my-1 text-center text-2xl md:text-2xl">Players</h2>
+        <a
+          v-for="playerAddress in playerAddresses"
+          :key="playerAddress"
+          class="text-sm text-blue-600 underline md:text-xl"
+          @click="goToPageWithQuery(playerAddress)"
         >
-          <h2 class="my-1 text-center text-2xl md:text-2xl">Winners</h2>
-          <span class="text-center md:text-xl"
-            >Claim amount per winner: {{ rewardPerWinnerFormatted }}
-            {{ publicClient.chain.nativeCurrency.symbol }}</span
-          >
-          <ul v-for="winner in winners" :key="winner">
-            <a
-              class="text-sm text-blue-600 underline md:text-xl"
-              @click="goToPageWithQuery(winner)"
-            >
-              {{ winner }}
-            </a>
-          </ul>
-          <button
-            v-if="
-              winners.length > 0 &&
-              isUserWinner &&
-              winners.includes((accountInfo.address as Address) ?? zeroAddress)
-            "
-            class="my-2 rounded bg-[#5b75f4] p-2 text-xl text-white text-shadow hover:bg-[#6981f6]"
-            @click="claimReward()"
-          >
-            Claim!
-          </button>
-        </div>
+          {{ playerAddress }}
+        </a>
       </div>
     </div>
-    <div v-if="playerAddresses.length > 0" class="flex flex-col">
-      <h2 class="my-1 text-center text-2xl md:text-2xl">Players</h2>
-      <a
-        v-for="playerAddress in playerAddresses"
-        :key="playerAddress"
-        class="text-sm text-blue-600 underline md:text-xl"
-        @click="goToPageWithQuery(playerAddress)"
+    <div
+      v-if="isPlayerRegistered || !isGameFinishedInUi"
+      class="flex h-full items-end justify-center"
+    >
+      <button
+        v-if="accountInfo.isConnected && !hasStarterPackClaimed"
+        class="mt-5 rounded bg-[#5b75f4] p-2 text-xl text-white text-shadow hover:bg-[#6981f6]"
+        @click="claimNativeToken()"
       >
-        {{ playerAddress }}
-      </a>
+        Claim some native token
+      </button>
     </div>
   </div>
 </template>
