@@ -117,7 +117,7 @@ export default defineNuxtConfig({
   },
 
   app: {
-    // baseURL: '/bingo/',
+    baseURL: '/bingo/',
     head: {
       title: 'Bingo',
       meta: [
