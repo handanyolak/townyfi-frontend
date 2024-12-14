@@ -170,7 +170,7 @@
 import { sepolia, type AppKitNetwork } from '@reown/appkit/networks'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { createAppKit, useAppKitAccount } from '@reown/appkit/vue'
-import { POSITION, TYPE } from 'vue-toastification'
+import { POSITION, TYPE, useToast } from 'vue-toastification'
 import {
   formatUnits,
   keccak256,
@@ -472,62 +472,78 @@ const startTriggeringSequentially = async () => {
 }
 
 const claimNativeToken = async () => {
-  const messageHash = keccak256(toBytes(ozDefenderRelayerMessage))
-  const address = accountInfo.value.address as Address
-  const signature = await walletClient.value.signMessage({
-    message: {
-      raw: messageHash,
-    },
-    account: address,
+  const icon = defineAsyncComponent(
+    () => import(`../components/toast/Loading.vue`),
+  )
+
+  const toast = useToast()
+  const toastId = toast(`Claiming native token...`, {
+    timeout: 0,
+    icon,
   })
+  try {
+    const messageHash = keccak256(toBytes(ozDefenderRelayerMessage))
+    const address = accountInfo.value.address as Address
+    const signature = await walletClient.value.signMessage({
+      message: {
+        raw: messageHash,
+      },
+      account: address,
+    })
 
-  const valid = await verifyMessage({
-    address,
-    message: {
-      raw: messageHash,
-    },
-    signature,
-  })
-
-  if (!valid) {
-    useAppToast(TYPE.ERROR, 'Invalid signature')
-    return
-  }
-
-  const response = await fetch(ozDefenderRelayerWebhookUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
+    const valid = await verifyMessage({
       address,
+      message: {
+        raw: messageHash,
+      },
       signature,
-      amount: bingoCardPrice.value + parseEther('0.25'),
-    }),
-  })
+    })
 
-  const resData = await response.json()
-  const result = JSON.parse(resData.result)
-  if (!result.success) {
-    if (result?.message.toLowerCase().includes('already')) {
-      localStorage.setItem(
-        `${accountInfo.value.address}:starter-pack-claimed`,
-        'true',
-      )
-
-      showClaimNativeToken.value = false
+    if (!valid) {
+      throw new Error('Invalid signature')
     }
 
-    useAppToast(TYPE.ERROR, `Failed to claim: ${result.message}`)
-    return
-  }
+    const response = await fetch(ozDefenderRelayerWebhookUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        address,
+        signature,
+        amount: bingoCardPrice.value + parseEther('0.25'),
+      }),
+    })
 
-  useAppToast(TYPE.SUCCESS, `Claimed successfully\n${formatEventArgs(result)}`)
-  localStorage.setItem(
-    `${accountInfo.value.address}:starter-pack-claimed`,
-    'true',
-  )
-  showClaimNativeToken.value = false
+    const resData = await response.json()
+    const result = JSON.parse(resData.result)
+    if (!result.success) {
+      if (result?.message.toLowerCase().includes('already')) {
+        localStorage.setItem(
+          `${accountInfo.value.address}:starter-pack-claimed`,
+          'true',
+        )
+
+        showClaimNativeToken.value = false
+      }
+
+      throw new Error(`Failed to claim: ${result.message}`)
+    }
+
+    useAppToast(
+      TYPE.SUCCESS,
+      `Claimed successfully\n${formatEventArgs(result)}`,
+    )
+    localStorage.setItem(
+      `${accountInfo.value.address}:starter-pack-claimed`,
+      'true',
+    )
+    showClaimNativeToken.value = false
+  } catch (error: any) {
+    useAppToast(TYPE.ERROR, error.message)
+  } finally {
+    toast.dismiss(toastId)
+  }
 }
 
 const claimReward = async () => {
