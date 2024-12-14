@@ -54,10 +54,11 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      appUrl: process.env.NUXT_APP_URL || 'http://localhost:3000',
+      appUrl: process.env.NUXT_APP_URL || 'https://emretepedev.github.io',
       bingoContractAddress:
-        process.env.NUXT_BINGO_CONTRACT_ADDRESS || zeroAddress,
-      chain: process.env.NUXT_CHAIN,
+        process.env.NUXT_BINGO_CONTRACT_ADDRESS ||
+        '0x4b0D402ed2E376f7698b231ac3C9FA0652A1f2B9',
+      chain: process.env.NUXT_CHAIN || 'sepolia',
       drawnNumbersIntervalInSec: convertToInteger(
         process.env.NUXT_DRAWN_NUMBERS_INTERVAL_IN_SEC,
         3,
@@ -70,14 +71,20 @@ export default defineNuxtConfig({
         process.env.NUXT_CHAIN_BLOCK_TIME_IN_SEC,
         5,
       ),
-      publicRpcUrls: process.env.NUXT_PUBLIC_RPC_URLS?.split(',') || [],
+      publicRpcUrls: (
+        process.env.NUXT_PUBLIC_RPC_URLS ||
+        'https://sepolia.gateway.tenderly.co,https://eth-sepolia.public.blastapi.io,https://gateway.tenderly.co/public/sepolia,https://ethereum-sepolia.blockpi.network/v1/rpc/private,https://sepolia.drpc.org,https://ethereum-sepolia-rpc.publicnode.com,https://endpoints.omniatech.io/v1/eth/sepolia/public,https://ethereum-sepolia.rpc.subquery.network/public,https://1rpc.io/sepolia,https://api.zan.top/eth-sepolia,https://eth-sepolia.g.alchemy.com/v2/demo,https://eth-sepolia.api.onfinality.io/public,https://eth-testnet.4everland.org/v1/37fa9972c1b1cd5fab542c7bdd4cde2f,https://eth-sepolia-public.unifra.io'
+      ).split(','),
       ozDefenderRelayerWebhookUrl:
-        process.env.NUXT_OZ_DEFENDER_RELAYER_WEBHOOK_URL || '',
+        process.env.NUXT_OZ_DEFENDER_RELAYER_WEBHOOK_URL ||
+        'https://api.defender.openzeppelin.com/actions/4ede244c-65a3-4ab9-9c8a-1eb265782cd4/runs/webhook/333bd302-898d-4ba9-9a60-77e2a0af814a/PL4mQLTJw2AZ61pTSA73Wj',
       ozDefenderRelayerMessage:
         process.env.NUXT_OZ_DEFENDER_RELAYER_MESSAGE || 'Bingo!',
       chainExtendExplorerUrls:
         process.env.NUXT_CHAIN_EXTEND_EXPLORER_URLS?.split(',') || [],
-      reownAppkitProjectId: process.env.NUXT_REOWN_APPKIT_PROJECT_ID || '',
+      reownAppkitProjectId:
+        process.env.NUXT_REOWN_APPKIT_PROJECT_ID ||
+        'f1af70943ebd1ef87a5642ad2b859a82',
     },
   },
 
