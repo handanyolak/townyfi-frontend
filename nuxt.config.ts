@@ -1,5 +1,4 @@
 import { createResolver } from '@nuxt/kit'
-import { zeroAddress } from 'viem'
 import { convertToInteger } from './utils'
 
 const { resolve } = createResolver(import.meta.url)
@@ -57,7 +56,7 @@ export default defineNuxtConfig({
       appUrl: process.env.NUXT_APP_URL || 'https://emretepedev.github.io',
       bingoContractAddress:
         process.env.NUXT_BINGO_CONTRACT_ADDRESS ||
-        '0xab3f6d202af36d069311fa95fedbf19ca65df932',
+        '0x3f9b9f6b287e9110143b6fac158d06560816af5f',
       chain: process.env.NUXT_CHAIN || 'sepolia',
       drawnNumbersIntervalInSec: convertToInteger(
         process.env.NUXT_DRAWN_NUMBERS_INTERVAL_IN_SEC,
