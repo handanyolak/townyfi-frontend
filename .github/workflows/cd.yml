@@ -11,6 +11,7 @@ on:
       - main
       - master
       - bingo
+  workflow_dispatch:
 
 jobs:
   cd:
