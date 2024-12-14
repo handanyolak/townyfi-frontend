@@ -89,3 +89,7 @@ sw.*
 
 # Vim swap files
 *.swp
+
+# SSL sertificate files
+localhost.key
+localhost.crt

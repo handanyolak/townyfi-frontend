@@ -141,4 +141,10 @@ export default defineNuxtConfig({
       ],
     },
   },
+  devServer: {
+    https: {
+      key: './localhost.key',
+      cert: './localhost.crt',
+    },
+  },
 })
