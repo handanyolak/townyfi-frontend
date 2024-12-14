@@ -127,7 +127,7 @@
               class="my-2 rounded bg-[#5b75f4] p-2 text-xl text-white text-shadow hover:bg-[#6981f6]"
               @click="claimReward()"
             >
-              Claim!
+              Claim
             </button>
           </div>
         </div>

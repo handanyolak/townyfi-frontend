@@ -57,7 +57,7 @@ export default defineNuxtConfig({
       appUrl: process.env.NUXT_APP_URL || 'https://emretepedev.github.io',
       bingoContractAddress:
         process.env.NUXT_BINGO_CONTRACT_ADDRESS ||
-        '0x4b0D402ed2E376f7698b231ac3C9FA0652A1f2B9',
+        '0xab3f6d202af36d069311fa95fedbf19ca65df932',
       chain: process.env.NUXT_CHAIN || 'sepolia',
       drawnNumbersIntervalInSec: convertToInteger(
         process.env.NUXT_DRAWN_NUMBERS_INTERVAL_IN_SEC,
@@ -117,7 +117,7 @@ export default defineNuxtConfig({
   },
 
   app: {
-    baseURL: '/bingo/',
+    // baseURL: '/bingo/',
     head: {
       title: 'Bingo',
       meta: [
