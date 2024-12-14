@@ -57,15 +57,17 @@
           >
             <div
               v-if="cells.length"
-              class="w-fit rounded-md p-4"
+              class="w-fit rounded-md p-2 md:p-4"
               :style="`background-color: ${calculateCardColor[0]}`"
             >
               <div class="rounded-md bg-white p-2">
-                <div class="grid grid-cols-9 border border-gray-400">
+                <div
+                  class="grid grid-cols-9 border-[0.5px] border-gray-400 md:border"
+                >
                   <div
                     v-for="(cell, index) in cells"
                     :key="index"
-                    class="relative flex h-8 w-8 items-center justify-center border border-gray-400 text-shadow md:h-10 md:w-10 md:text-xl xl:h-12 xl:w-12 2xl:h-16 2xl:w-16"
+                    class="relative flex h-8 w-8 items-center justify-center border-[0.5px] border-gray-400 text-shadow md:h-10 md:w-10 md:border md:text-xl xl:h-12 xl:w-12 2xl:h-16 2xl:w-16"
                     :class="{
                       'bg-white font-bold ': cell !== null,
                     }"
