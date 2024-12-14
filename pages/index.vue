@@ -92,11 +92,11 @@
           <transition name="number-fade" appear>
             <div
               v-if="currentNumber !== null"
-              class="transform-center absolute flex h-40 w-40 justify-center rounded-full bg-white text-9xl font-bold text-white"
+              class="transform-center absolute top-0 flex h-16 w-16 justify-center rounded-full bg-white text-4xl font-bold text-white md:h-24 md:w-24 md:text-6xl xl:h-40 xl:w-40 xl:text-9xl"
             >
               <div
                 :style="`background-color: ${calculateCardColor[0]}`"
-                class="flex h-full w-full justify-center rounded-full bg-opacity-40"
+                class="flex h-full w-full items-center justify-center rounded-full bg-opacity-40"
               >
                 {{ currentNumber }}
               </div>
