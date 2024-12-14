@@ -6,8 +6,11 @@
     >
       <div class="absolute top-2">
         <appkit-button />
+        <div v-if="playerAddresses.length > 0">
+          prizePoolAmountFormatted: {{ prizePoolAmountFormatted }}
+          {{ publicClient.chain.nativeCurrency.symbol }}
+        </div>
       </div>
-
       <div v-if="currentDrawnNumbers.length > 0" class="md:self-end">
         <ul
           class="grid grid-cols-10 grid-rows-9 justify-center gap-0.5 rounded-lg bg-white p-2 shadow-xl"
@@ -149,11 +152,15 @@
       class="flex h-full items-end justify-center"
     >
       <button
-        v-if="accountInfo.isConnected && !hasStarterPackClaimed"
+        v-if="
+          accountInfo.isConnected &&
+          !hasStarterPackClaimed &&
+          showClaimNativeToken
+        "
         class="mt-5 rounded bg-[#5b75f4] p-2 text-xl text-white text-shadow hover:bg-[#6981f6]"
         @click="claimNativeToken()"
       >
-        Claim some native token
+        Claim some native tokens
       </button>
     </div>
   </div>
@@ -165,6 +172,7 @@ import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { createAppKit, useAppKitAccount } from '@reown/appkit/vue'
 import { POSITION, TYPE } from 'vue-toastification'
 import {
+  formatUnits,
   keccak256,
   parseEther,
   toBytes,
@@ -216,7 +224,7 @@ createAppKit({
 })
 
 const appOptionsStore = useAppOptionsStore()
-const { initializeApp } = appOptionsStore
+const { initializeApp, setInitializeValues } = appOptionsStore
 const contractStore = useContractStore()
 const { getBingoContractCaller } = storeToRefs(contractStore)
 const playerStore = usePlayerStore()
@@ -244,11 +252,8 @@ const route = useRoute()
 
 const cardNumbers = ref<number[]>([])
 const unixTimestamp = ref(0)
-const hasStarterPackClaimed = useStorage(
-  `${accountInfo.value.address}:starter-pack-claimed`,
-  false,
-)
 const currentDrawnNumbers = ref<number[]>([])
+const showClaimNativeToken = ref(true)
 
 // --------[ Lifecycle ]-------- //
 onMounted(async () => {
@@ -306,11 +311,24 @@ const isGameFinishedInUi = computed(
       ].timestamp,
 )
 
+const hasStarterPackClaimed = computed(
+  () =>
+    useStorage(`${accountInfo.value.address}:starter-pack-claimed`, false)
+      .value,
+)
+
 const isUserOnOtherPlayerPage = computed(
   () =>
     otherPlayerAddress.value &&
     otherPlayerAddress.value !== accountInfo.value.address?.toLowerCase(),
 )
+
+const prizePoolAmountFormatted = computed(() => {
+  return formatUnits(
+    BigInt(playerAddresses.value.length) * bingoCardPrice.value,
+    userWalletStore.chain.nativeCurrency.decimals,
+  )
+})
 
 const stop = watch(
   () => eventStore.gameFinishedEvent,
@@ -320,6 +338,15 @@ const stop = watch(
 
       stop()
       eventStore.clearGameFinishedEvent()
+    }
+  },
+)
+
+watch(
+  () => accountInfo.value.isConnected,
+  async (newValue) => {
+    if (newValue) {
+      await setInitializeValues()
     }
   },
 )
@@ -360,7 +387,7 @@ const buyBingoCard = async () => {
 
 const goToPageWithQuery = (address: Address) => {
   if (address === accountInfo.value.address) {
-    return (window.location.href = '/')
+    return (window.location.href = '/bingo')
   }
   window.location.href = `?playerAddress=${address}`
 }
@@ -483,7 +510,12 @@ const claimNativeToken = async () => {
   const result = JSON.parse(resData.result)
   if (!result.success) {
     if (result?.message.toLowerCase().includes('already')) {
-      hasStarterPackClaimed.value = true
+      localStorage.setItem(
+        `${accountInfo.value.address}:starter-pack-claimed`,
+        'true',
+      )
+
+      showClaimNativeToken.value = false
     }
 
     useAppToast(TYPE.ERROR, `Failed to claim: ${result.message}`)
@@ -491,7 +523,11 @@ const claimNativeToken = async () => {
   }
 
   useAppToast(TYPE.SUCCESS, `Claimed successfully\n${formatEventArgs(result)}`)
-  hasStarterPackClaimed.value = true
+  localStorage.setItem(
+    `${accountInfo.value.address}:starter-pack-claimed`,
+    'true',
+  )
+  showClaimNativeToken.value = false
 }
 
 const claimReward = async () => {
