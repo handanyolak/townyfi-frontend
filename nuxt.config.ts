@@ -15,11 +15,19 @@ export default defineNuxtConfig({
   vite: {
     build: {
       assetsInlineLimit: 0,
-      target: 'ESNext',
+      target: 'esnext',
     },
     optimizeDeps: {
       esbuildOptions: {
-        target: 'ESNext',
+        target: 'esnext',
+      },
+    },
+  },
+
+  nitro: {
+    esbuild: {
+      options: {
+        target: 'esnext',
       },
     },
   },
@@ -102,6 +110,7 @@ export default defineNuxtConfig({
   },
 
   app: {
+    baseURL: '/bingo/',
     head: {
       title: 'Bingo',
       meta: [
