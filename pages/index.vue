@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-[#FFF0D9]">
     <div
-      class="background-bingo flex h-[90vh] flex-col items-center space-y-10 bg-[#FFF0D9] px-4"
+      class="background-bingo grid min-h-screen gap-x-4 px-4 md:grid-cols-3"
       :class="!currentDrawnNumbers.length ? 'justify-center' : ''"
     >
       <div class="absolute top-2">
@@ -11,36 +11,19 @@
           {{ publicClient.chain.nativeCurrency.symbol }}
         </div>
       </div>
-      <div v-if="currentDrawnNumbers.length > 0" class="md:self-end">
-        <ul
-          class="grid grid-cols-10 grid-rows-9 justify-center gap-0.5 rounded-lg bg-white p-2 shadow-xl"
-        >
-          <li
-            v-for="(currentDrawnNumber, index) in currentDrawnNumbers"
-            :key="index"
-            class="relative flex h-6 w-6 items-center justify-center text-center text-shadow md:h-8 md:w-8 md:text-lg xl:h-10 xl:w-10 xl:text-xl 2xl:h-12 2xl:w-12 2xl:text-2xl"
-          >
-            {{ currentDrawnNumber }}
-            <span
-              class="absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-40 transition-all duration-500 ease-in-out md:h-8 md:w-8 md:text-lg xl:h-10 xl:w-10"
-              :style="`background-color: ${calculateCardColor[0]}`"
-            ></span>
-          </li>
-        </ul>
-        <p v-if="!isGameFinishedInUi" class="my-4 text-center text-xl">
-          Remaining drawn Numbers count: {{ remainingDrawnNumbersCount }}
-        </p>
-      </div>
-      <div class="card space-y-10">
+
+      <div
+        class="card order-2 grid grid-rows-3 md:order-1 md:col-span-2 md:justify-self-end"
+      >
         <div
           v-if="isPlayerRegistered || !isGameFinishedInUi"
-          class="relative flex flex-col items-center justify-center"
+          class="relative flex flex-col items-center justify-end"
         >
           <button
             v-if="
               !isPlayerRegistered && !isGameFinished && !isUserOnOtherPlayerPage
             "
-            class="mb-8 rounded bg-[#5b75f4] px-6 py-3 text-lg text-white hover:bg-[#6981f6] md:text-xl"
+            class="my-4 rounded bg-[#5b75f4] px-6 py-3 text-lg text-white hover:bg-[#6981f6] md:text-xl"
             @click="buyBingoCard()"
           >
             Buy the card (<span>{{ bingoCardPriceFormatted }}</span>
@@ -103,24 +86,25 @@
             </div>
           </transition>
         </div>
-
         <div v-if="isGameFinishedInUi">
           <div
-            class="my-4 flex flex-col items-center justify-center rounded-md p-4"
+            class="my-4 flex flex-col items-center justify-center rounded-md"
           >
             <h2 class="my-1 text-center text-2xl md:text-2xl">Winners</h2>
             <span class="text-center md:text-xl"
               >Claim amount per winner: {{ rewardPerWinnerFormatted }}
               {{ publicClient.chain.nativeCurrency.symbol }}</span
             >
-            <ul v-for="winner in winners" :key="winner">
+            <div class="flex max-h-[168px] flex-col overflow-auto p-2">
               <a
+                v-for="winner in winners"
+                :key="winner"
                 class="my-0.5 cursor-pointer text-sm text-blue-600 underline md:text-xl"
                 @click="goToPageWithQuery(winner)"
               >
                 {{ winner }}
               </a>
-            </ul>
+            </div>
             <button
               v-if="
                 winners.length > 0 &&
@@ -136,34 +120,189 @@
             </button>
           </div>
         </div>
+        <div class="">
+          <div
+            v-if="playerAddresses.length > 0"
+            class="flex flex-col items-center"
+          >
+            <h2 class="my-1 text-center text-2xl md:text-2xl">Players</h2>
+            <div class="flex max-h-[168px] flex-col overflow-auto p-2">
+              <a
+                v-for="playerAddress in playerAddresses"
+                :key="playerAddress"
+                class="my-0.5 cursor-pointer text-sm text-blue-600 underline md:text-xl"
+                @click="goToPageWithQuery(playerAddress)"
+              >
+                {{ playerAddress }}
+              </a>
+              <a
+                v-for="playerAddress in playerAddresses"
+                :key="playerAddress"
+                class="my-0.5 cursor-pointer text-sm text-blue-600 underline md:text-xl"
+                @click="goToPageWithQuery(playerAddress)"
+              >
+                {{ playerAddress }}
+              </a>
+              <a
+                v-for="playerAddress in playerAddresses"
+                :key="playerAddress"
+                class="my-0.5 cursor-pointer text-sm text-blue-600 underline md:text-xl"
+                @click="goToPageWithQuery(playerAddress)"
+              >
+                {{ playerAddress }}
+              </a>
+              <a
+                v-for="playerAddress in playerAddresses"
+                :key="playerAddress"
+                class="my-0.5 cursor-pointer text-sm text-blue-600 underline md:text-xl"
+                @click="goToPageWithQuery(playerAddress)"
+              >
+                {{ playerAddress }}
+              </a>
+              <a
+                v-for="playerAddress in playerAddresses"
+                :key="playerAddress"
+                class="my-0.5 cursor-pointer text-sm text-blue-600 underline md:text-xl"
+                @click="goToPageWithQuery(playerAddress)"
+              >
+                {{ playerAddress }}
+              </a>
+              <a
+                v-for="playerAddress in playerAddresses"
+                :key="playerAddress"
+                class="my-0.5 cursor-pointer text-sm text-blue-600 underline md:text-xl"
+                @click="goToPageWithQuery(playerAddress)"
+              >
+                {{ playerAddress }}
+              </a>
+              <a
+                v-for="playerAddress in playerAddresses"
+                :key="playerAddress"
+                class="my-0.5 cursor-pointer text-sm text-blue-600 underline md:text-xl"
+                @click="goToPageWithQuery(playerAddress)"
+              >
+                {{ playerAddress }}
+              </a>
+              <a
+                v-for="playerAddress in playerAddresses"
+                :key="playerAddress"
+                class="my-0.5 cursor-pointer text-sm text-blue-600 underline md:text-xl"
+                @click="goToPageWithQuery(playerAddress)"
+              >
+                {{ playerAddress }}
+              </a>
+              <a
+                v-for="playerAddress in playerAddresses"
+                :key="playerAddress"
+                class="my-0.5 cursor-pointer text-sm text-blue-600 underline md:text-xl"
+                @click="goToPageWithQuery(playerAddress)"
+              >
+                {{ playerAddress }}
+              </a>
+              <a
+                v-for="playerAddress in playerAddresses"
+                :key="playerAddress"
+                class="my-0.5 cursor-pointer text-sm text-blue-600 underline md:text-xl"
+                @click="goToPageWithQuery(playerAddress)"
+              >
+                {{ playerAddress }}
+              </a>
+              <a
+                v-for="playerAddress in playerAddresses"
+                :key="playerAddress"
+                class="my-0.5 cursor-pointer text-sm text-blue-600 underline md:text-xl"
+                @click="goToPageWithQuery(playerAddress)"
+              >
+                {{ playerAddress }}
+              </a>
+              <a
+                v-for="playerAddress in playerAddresses"
+                :key="playerAddress"
+                class="my-0.5 cursor-pointer text-sm text-blue-600 underline md:text-xl"
+                @click="goToPageWithQuery(playerAddress)"
+              >
+                {{ playerAddress }}
+              </a>
+              <a
+                v-for="playerAddress in playerAddresses"
+                :key="playerAddress"
+                class="my-0.5 cursor-pointer text-sm text-blue-600 underline md:text-xl"
+                @click="goToPageWithQuery(playerAddress)"
+              >
+                {{ playerAddress }}
+              </a>
+              <a
+                v-for="playerAddress in playerAddresses"
+                :key="playerAddress"
+                class="my-0.5 cursor-pointer text-sm text-blue-600 underline md:text-xl"
+                @click="goToPageWithQuery(playerAddress)"
+              >
+                {{ playerAddress }}
+              </a>
+              <a
+                v-for="playerAddress in playerAddresses"
+                :key="playerAddress"
+                class="my-0.5 cursor-pointer text-sm text-blue-600 underline md:text-xl"
+                @click="goToPageWithQuery(playerAddress)"
+              >
+                {{ playerAddress }}
+              </a>
+              <a
+                v-for="playerAddress in playerAddresses"
+                :key="playerAddress"
+                class="my-0.5 cursor-pointer text-sm text-blue-600 underline md:text-xl"
+                @click="goToPageWithQuery(playerAddress)"
+              >
+                {{ playerAddress }}
+              </a>
+              <a
+                v-for="playerAddress in playerAddresses"
+                :key="playerAddress"
+                class="my-0.5 cursor-pointer text-sm text-blue-600 underline md:text-xl"
+                @click="goToPageWithQuery(playerAddress)"
+              >
+                {{ playerAddress }}
+              </a>
+            </div>
+          </div>
+          <div
+            v-if="isPlayerRegistered || !isGameFinishedInUi"
+            class="flex justify-center"
+          >
+            <button
+              v-if="
+                accountInfo.isConnected &&
+                !hasStarterPackClaimed &&
+                showClaimNativeToken
+              "
+              class="mt-5 rounded bg-[#5b75f4] p-2 text-xl text-white text-shadow hover:bg-[#6981f6]"
+              @click="claimNativeToken()"
+            >
+              Claim some native tokens
+            </button>
+          </div>
+        </div>
       </div>
-      <div v-if="playerAddresses.length > 0" class="flex flex-col">
-        <h2 class="my-1 text-center text-2xl md:text-2xl">Players</h2>
-        <a
-          v-for="playerAddress in playerAddresses"
-          :key="playerAddress"
-          class="my-0.5 cursor-pointer text-sm text-blue-600 underline md:text-xl"
-          @click="goToPageWithQuery(playerAddress)"
+      <div v-if="currentDrawnNumbers.length > 0" class="order-1 md:order-2">
+        <ul
+          class="grid grid-cols-10 grid-rows-9 justify-center gap-0.5 rounded-lg bg-white p-2 shadow-xl"
         >
-          {{ playerAddress }}
-        </a>
+          <li
+            v-for="(currentDrawnNumber, index) in currentDrawnNumbers"
+            :key="index"
+            class="relative flex h-6 w-6 items-center justify-center text-center text-shadow md:h-8 md:w-8 md:text-lg xl:h-10 xl:w-10 xl:text-xl 2xl:h-12 2xl:w-12 2xl:text-2xl"
+          >
+            {{ currentDrawnNumber }}
+            <span
+              class="absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-40 transition-all duration-500 ease-in-out md:h-8 md:w-8 md:text-lg xl:h-10 xl:w-10"
+              :style="`background-color: ${calculateCardColor[0]}`"
+            ></span>
+          </li>
+        </ul>
+        <p v-if="!isGameFinishedInUi" class="my-4 text-center text-xl">
+          Remaining drawn Numbers count: {{ remainingDrawnNumbersCount }}
+        </p>
       </div>
-    </div>
-    <div
-      v-if="isPlayerRegistered || !isGameFinishedInUi"
-      class="flex h-full items-end justify-center"
-    >
-      <button
-        v-if="
-          accountInfo.isConnected &&
-          !hasStarterPackClaimed &&
-          showClaimNativeToken
-        "
-        class="mt-5 rounded bg-[#5b75f4] p-2 text-xl text-white text-shadow hover:bg-[#6981f6]"
-        @click="claimNativeToken()"
-      >
-        Claim some native tokens
-      </button>
     </div>
   </div>
 </template>
@@ -641,21 +780,5 @@ const cells = computed(() => formatCells(cardNumbers.value))
 .number-fade-leave-to {
   transform: scale(0);
   opacity: 0;
-}
-
-.card {
-  margin-top: 0;
-}
-
-@media (min-width: 1000px) {
-  .card {
-    margin-top: -10px !important;
-  }
-}
-
-@media (min-width: 1700px) {
-  .card {
-    margin-top: -100px !important;
-  }
 }
 </style>
