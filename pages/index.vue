@@ -1,7 +1,7 @@
 <template>
   <div class="bg-[#FFF0D9]">
     <div
-      class="background-bingo flex min-h-screen flex-col items-center space-y-10 px-4"
+      class="background-bingo flex min-h-screen flex-col items-center px-4"
       :class="!currentDrawnNumbers.length ? 'justify-center' : ''"
     >
       <div class="absolute top-2">
@@ -70,7 +70,16 @@
           Remaining drawn Numbers count: {{ remainingDrawnNumbersCount }}
         </p>
       </div>
-      <div class="card space-y-10">
+
+      <div class="card flex flex-col items-center">
+        <button
+          v-if="isGameFinishedInUi"
+          :style="`background-color: ${calculateCardColor[0]}`"
+          class="my-3 rounded px-4 py-2 text-xl text-white text-shadow"
+          @click="isWinnerOpen = true"
+        >
+          Winners
+        </button>
         <div
           v-if="isPlayerRegistered || !isGameFinishedInUi"
           class="relative flex flex-col items-center justify-center"
@@ -85,8 +94,6 @@
             Buy the card (<span>{{ bingoCardPriceFormatted }}</span>
             {{ publicClient.chain.nativeCurrency.symbol }} )
           </button>
-
-          <div v-if="!gameStarted" class="mb-4"></div>
 
           <div
             v-if="
@@ -126,13 +133,6 @@
             </div>
           </div>
 
-          <button
-            :style="`background-color: ${calculateCardColor[0]}`"
-            class="mt-5 rounded px-4 py-2 text-xl text-white text-shadow"
-            @click="isPlayerOpen = true"
-          >
-            Players
-          </button>
           <transition name="number-fade" appear>
             <div
               v-if="currentNumber !== null"
@@ -147,38 +147,14 @@
             </div>
           </transition>
         </div>
-
-        <div v-if="isGameFinishedInUi">
-          <div
-            class="my-4 flex flex-col items-center justify-center rounded-md p-4"
-          >
-            <h2 class="my-1 text-center text-2xl md:text-2xl">Winners</h2>
-            <span class="text-center md:text-xl"
-              >Claim amount per winner: {{ rewardPerWinnerFormatted }}
-              {{ publicClient.chain.nativeCurrency.symbol }}</span
-            >
-            <ul v-for="winner in winners" :key="winner">
-              <a
-                class="my-0.5 cursor-pointer text-sm text-blue-600 underline md:text-xl"
-                @click="goToPageWithQuery(winner)"
-              >
-                {{ winner }}
-              </a>
-            </ul>
-            <button
-              v-if="
-                winners.length > 0 &&
-                isUserWinner &&
-                !isUserOnOtherPlayerPage &&
-                !isSuccessClaimReward
-              "
-              class="my-2 rounded bg-[#5b75f4] p-2 text-xl text-white text-shadow hover:bg-[#6981f6]"
-              @click="claimReward()"
-            >
-              Claim!
-            </button>
-          </div>
-        </div>
+        <button
+          v-if="playerAddresses.length > 0"
+          :style="`background-color: ${calculateCardColor[0]}`"
+          class="my-3 rounded px-4 py-2 text-xl text-white text-shadow"
+          @click="isPlayerOpen = true"
+        >
+          Players
+        </button>
       </div>
     </div>
     <div
@@ -212,6 +188,45 @@
         >
           {{ playerAddress }}
         </a>
+      </div>
+    </AppModal>
+
+    <AppModal
+      :is-open="isWinnerOpen"
+      :color="calculateCardColor[0]"
+      title="Winners"
+      @close="isWinnerOpen = false"
+    >
+      <div v-if="isGameFinishedInUi">
+        <div
+          class="my-4 flex flex-col items-center justify-center rounded-md p-4"
+        >
+          <h2 class="my-1 text-center text-2xl md:text-2xl">Winners</h2>
+          <span class="text-center md:text-xl"
+            >Claim amount per winner: {{ rewardPerWinnerFormatted }}
+            {{ publicClient.chain.nativeCurrency.symbol }}</span
+          >
+          <ul v-for="winner in winners" :key="winner">
+            <a
+              class="my-0.5 cursor-pointer text-sm text-blue-600 underline md:text-xl"
+              @click="goToPageWithQuery(winner)"
+            >
+              {{ winner }}
+            </a>
+          </ul>
+          <button
+            v-if="
+              winners.length > 0 &&
+              isUserWinner &&
+              !isUserOnOtherPlayerPage &&
+              !isSuccessClaimReward
+            "
+            class="my-2 rounded bg-[#5b75f4] p-2 text-xl text-white text-shadow hover:bg-[#6981f6]"
+            @click="claimReward()"
+          >
+            Claim!
+          </button>
+        </div>
       </div>
     </AppModal>
   </div>
@@ -320,6 +335,7 @@ const showClaimNativeToken = ref(true)
 const isSuccessCheckBingoCard = ref(false)
 const isSuccessClaimReward = ref(false)
 const isPlayerOpen = ref(false)
+const isWinnerOpen = ref(false)
 const randomUUID = useStorage('scmlacch', crypto.randomUUID())
 
 // --------[ Lifecycle ]-------- //
@@ -751,21 +767,5 @@ const cells = computed(() => formatCells(cardNumbers.value))
 .number-fade-leave-to {
   transform: scale(0);
   opacity: 0;
-}
-
-.card {
-  margin-top: 0;
-}
-
-@media (min-width: 1000px) {
-  .card {
-    margin-top: -10px !important;
-  }
-}
-
-@media (min-width: 1700px) {
-  .card {
-    margin-top: -100px !important;
-  }
 }
 </style>
