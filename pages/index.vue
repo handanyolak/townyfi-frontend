@@ -6,11 +6,19 @@
     >
       <div class="absolute top-2">
         <appkit-button />
-        <div v-if="!isGameFinished && isDrawnNumbersFilled">
-          <div>drawnNumbersTimestamp: {{ drawnNumbersTimestamp }}</div>
-          <div>finalizationCooldown: {{ finalizationCooldown }}</div>
-          <div @click="checkBingoCard()">Check bingo card</div>
-        </div>
+        <button
+          v-if="
+            !isGameFinished &&
+            isDrawnNumbersFilled &&
+            playerRemainingNumbersCount === 15n &&
+            !isSuccessCheckBingoCard &&
+            !isUserOnOtherPlayerPage
+          "
+          class="mb-8 rounded bg-[#5b75f4] px-6 py-3 text-lg text-white hover:bg-[#6981f6] md:text-xl"
+          @click="checkBingoCard()"
+        >
+          Check your card result
+        </button>
         <div v-if="playerAddresses.length > 0">
           prizePoolAmountFormatted: {{ prizePoolAmountFormatted }}
           {{ publicClient.chain.nativeCurrency.symbol }}
@@ -128,14 +136,13 @@
               v-if="
                 winners.length > 0 &&
                 isUserWinner &&
-                winners.includes(
-                  (accountInfo.address as Address) ?? zeroAddress,
-                )
+                !isUserOnOtherPlayerPage &&
+                !isSuccessClaimReward
               "
               class="my-2 rounded bg-[#5b75f4] p-2 text-xl text-white text-shadow hover:bg-[#6981f6]"
               @click="claimReward()"
             >
-              Claim
+              Claim!
             </button>
           </div>
         </div>
@@ -238,8 +245,13 @@ const contractStore = useContractStore()
 const { getBingoContractCaller } = storeToRefs(contractStore)
 const playerStore = usePlayerStore()
 const bingoStore = useBingoStore()
-const { isPlayerRegistered, playerNumbers, isUserWinner, otherPlayerAddress } =
-  storeToRefs(playerStore)
+const {
+  isPlayerRegistered,
+  playerNumbers,
+  isUserWinner,
+  otherPlayerAddress,
+  playerRemainingNumbersCount,
+} = storeToRefs(playerStore)
 const {
   drawnNumbers,
   bingoCardPrice,
@@ -265,6 +277,8 @@ const cardNumbers = ref<number[]>([])
 const unixTimestamp = ref(0)
 const currentDrawnNumbers = ref<number[]>([])
 const showClaimNativeToken = ref(true)
+const isSuccessCheckBingoCard = ref(false)
+const isSuccessClaimReward = ref(false)
 
 // --------[ Lifecycle ]-------- //
 onMounted(async () => {
@@ -408,6 +422,11 @@ const startTriggeringSequentially = async () => {
   const currentWorldTime = unixTimestamp.value
   let isFirstSync = true
   for (let i = 0; i < drawnNumbersWithTimestamp.value.length; i++) {
+    const shouldStop = i > winDrawnNumbersIndex.value
+    if (shouldStop) {
+      break
+    }
+
     const isLastIndex = i === winDrawnNumbersIndex.value
     const currentItem = drawnNumbersWithTimestamp.value[i]
     if (currentWorldTime >= currentItem.timestamp) {
@@ -558,17 +577,21 @@ const claimNativeToken = async () => {
 }
 
 const claimReward = async () => {
-  await getBingoContractCaller.value.callFunction({
+  const isSuccess = await getBingoContractCaller.value.callFunction({
     name: 'claimReward',
     type: 'write',
   })
+
+  isSuccessClaimReward.value = isSuccess
 }
 
 const checkBingoCard = async () => {
-  await getBingoContractCaller.value.callFunction({
+  const isSuccess = await getBingoContractCaller.value.callFunction({
     name: 'checkCardResult',
     type: 'write',
   })
+
+  isSuccessCheckBingoCard.value = isSuccess
 }
 
 const generateRandomNumbers = (

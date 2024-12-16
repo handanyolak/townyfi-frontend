@@ -2,6 +2,7 @@ import { zeroAddress, type Address } from 'viem'
 
 export const usePlayerStore = defineStore('playerStore', () => {
   const bingoStore = useBingoStore()
+  const { winners } = storeToRefs(bingoStore)
 
   const playerAddress = ref<Address>(zeroAddress)
   const playerNumbers = ref<readonly number[]>([])
@@ -27,7 +28,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
   const isPlayerRegistered = computed(() => playerAddress.value !== zeroAddress)
 
   const isUserWinner = computed(() =>
-    bingoStore.winners.includes(playerAddress.value),
+    winners.value.includes(playerAddress.value),
   )
 
   return {
