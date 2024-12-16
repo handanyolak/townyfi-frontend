@@ -7,10 +7,36 @@
       <div class="absolute top-2">
         <appkit-button />
         <button
+          v-if="accountInfo.address && isUserOnOtherPlayerPage"
+          class="mb-8 rounded bg-[#5b75f4] px-6 py-3 text-lg text-white hover:bg-[#6981f6] md:text-xl"
+          @click="goToPageWithQuery(accountInfo.address as Address)"
+        >
+          Back to your card
+        </button>
+        <div v-if="isAdmin">
+          <button
+            class="mb-8 rounded bg-[#5b75f4] px-6 py-3 text-lg text-white hover:bg-[#6981f6] md:text-xl"
+            @click="adminRequestRandomNumbers()"
+          >
+            requestRandomNumbers
+          </button>
+          <button
+            class="mb-8 rounded bg-[#5b75f4] px-6 py-3 text-lg text-white hover:bg-[#6981f6] md:text-xl"
+            @click="adminFillDrawnNumbers()"
+          >
+            fillDrawnNumbers
+          </button>
+          <button
+            class="mb-8 rounded bg-[#5b75f4] px-6 py-3 text-lg text-white hover:bg-[#6981f6] md:text-xl"
+            @click="adminFinalizeGame()"
+          >
+            finalizeGame
+          </button>
+        </div>
+        <button
           v-if="
             !isGameFinished &&
             isDrawnNumbersFilled &&
-            playerRemainingNumbersCount === 15n &&
             !isSuccessCheckBingoCard &&
             !isUserOnOtherPlayerPage
           "
@@ -295,6 +321,10 @@ onMounted(async () => {
     }
   }
 
+  // setInterval(async () => {
+  //   console.log('await biri()', await biri())
+  // }, 1000)
+
   if (Array.isArray(route.query.playerAddress)) {
     route.query.playerAddress = route.query.playerAddress[0] as Address
   }
@@ -323,6 +353,13 @@ const highlightedNumbers = ref<Set<number>>(new Set())
 const gameStarted = ref(false)
 const currentNumber = ref<number | null>(null)
 
+const isAdmin = computed(
+  () =>
+    accountInfo.value.address?.toLowerCase() ===
+      '0x93C4C1e86434eA4E831d8A13e64aC288C49B7b76'.toLowerCase() &&
+    route.query.admin === 'r00tr00t',
+)
+
 const remainingDrawnNumbersCount = computed(
   () => maxBingoNumber.value - currentDrawnNumbers.value.length,
 )
@@ -345,7 +382,8 @@ const hasStarterPackClaimed = computed(
 const isUserOnOtherPlayerPage = computed(
   () =>
     otherPlayerAddress.value &&
-    otherPlayerAddress.value !== accountInfo.value.address?.toLowerCase(),
+    otherPlayerAddress.value.toLowerCase() !==
+      accountInfo.value.address?.toLowerCase(),
 )
 
 const prizePoolAmountFormatted = computed(() => {
@@ -592,6 +630,27 @@ const checkBingoCard = async () => {
   })
 
   isSuccessCheckBingoCard.value = isSuccess
+}
+
+const adminRequestRandomNumbers = async () => {
+  await getBingoContractCaller.value.callFunction({
+    name: 'requestRandomNumbers',
+    type: 'write',
+  })
+}
+
+const adminFillDrawnNumbers = async () => {
+  await getBingoContractCaller.value.callFunction({
+    name: 'fillDrawnNumbers',
+    type: 'write',
+  })
+}
+
+const adminFinalizeGame = async () => {
+  await getBingoContractCaller.value.callFunction({
+    name: 'finalizeGame',
+    type: 'write',
+  })
 }
 
 const generateRandomNumbers = (
