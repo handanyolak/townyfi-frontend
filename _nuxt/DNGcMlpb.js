@@ -1,0 +1,1 @@
+import{a as t,b as o}from"./BxCO1X6t.js";import{d as r,t as s,v as l,aK as n}from"./DhnQA8TG.js";const i=r({__name:"default",setup(u){const e=t({selector:"body",storageKey:"theme",valueDark:"dark",valueLight:"light"});return o(e),(a,c)=>(s(),l("div",null,[n(a.$slots,"default")]))}});export{i as default};
