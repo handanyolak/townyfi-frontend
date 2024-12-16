@@ -1,1 +1,0 @@
-import{a as t,b as o}from"./fFme_ez3.js";import{d as r,t as s,v as l,ay as n}from"./eDcEAkA2.js";const i=r({__name:"default",setup(u){const e=t({selector:"body",storageKey:"theme",valueDark:"dark",valueLight:"light"});return o(e),(a,c)=>(s(),l("div",null,[n(a.$slots,"default")]))}});export{i as default};
