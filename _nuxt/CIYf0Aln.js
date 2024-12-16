@@ -1,1 +1,0 @@
-import{a as t,b as o}from"./D-Yjui-U.js";import{d as r,t as s,v as l,aK as n}from"./Cpou-kCF.js";const i=r({__name:"default",setup(u){const e=t({selector:"body",storageKey:"theme",valueDark:"dark",valueLight:"light"});return o(e),(a,c)=>(s(),l("div",null,[n(a.$slots,"default")]))}});export{i as default};
