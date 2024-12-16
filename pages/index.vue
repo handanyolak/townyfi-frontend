@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen bg-[#FFF0D9]">
+  <div class="bg-[#FFF0D9]">
     <div
-      class="background-bingo flex h-[90vh] flex-col items-center space-y-10 bg-[#FFF0D9] px-4"
+      class="background-bingo flex min-h-screen flex-col items-center space-y-10 px-4"
       :class="!currentDrawnNumbers.length ? 'justify-center' : ''"
     >
       <div class="absolute top-2">
@@ -126,6 +126,13 @@
             </div>
           </div>
 
+          <button
+            :style="`background-color: ${calculateCardColor[0]}`"
+            class="mt-5 rounded px-4 py-2 text-xl text-white text-shadow"
+            @click="isPlayerOpen = true"
+          >
+            Players
+          </button>
           <transition name="number-fade" appear>
             <div
               v-if="currentNumber !== null"
@@ -173,17 +180,6 @@
           </div>
         </div>
       </div>
-      <div v-if="playerAddresses.length > 0" class="flex flex-col">
-        <h2 class="my-1 text-center text-2xl md:text-2xl">Players</h2>
-        <a
-          v-for="playerAddress in playerAddresses"
-          :key="playerAddress"
-          class="my-0.5 cursor-pointer text-sm text-blue-600 underline md:text-xl"
-          @click="goToPageWithQuery(playerAddress)"
-        >
-          {{ playerAddress }}
-        </a>
-      </div>
     </div>
     <div
       v-if="isPlayerRegistered || !isGameFinishedInUi"
@@ -201,6 +197,23 @@
         Claim some native tokens
       </button>
     </div>
+    <AppModal
+      :is-open="isPlayerOpen"
+      :color="calculateCardColor[0]"
+      title="Players"
+      @close="isPlayerOpen = false"
+    >
+      <div v-if="playerAddresses.length > 0" class="flex flex-col">
+        <a
+          v-for="playerAddress in playerAddresses"
+          :key="playerAddress"
+          class="my-0.5 cursor-pointer text-sm text-blue-600 underline md:text-xl"
+          @click="goToPageWithQuery(playerAddress)"
+        >
+          {{ playerAddress }}
+        </a>
+      </div>
+    </AppModal>
   </div>
 </template>
 
@@ -219,6 +232,7 @@ import {
   type Address,
 } from 'viem'
 import { useStorage } from '@vueuse/core'
+import AppModal from '~/components/AppModal.vue'
 import { useAppToast } from '~/composables/useAppToast'
 
 const userWalletStore = useUserWalletStore()
@@ -305,6 +319,7 @@ const currentDrawnNumbers = ref<number[]>([])
 const showClaimNativeToken = ref(true)
 const isSuccessCheckBingoCard = ref(false)
 const isSuccessClaimReward = ref(false)
+const isPlayerOpen = ref(false)
 
 // --------[ Lifecycle ]-------- //
 onMounted(async () => {
