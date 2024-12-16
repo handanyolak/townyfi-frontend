@@ -263,6 +263,7 @@ import {
   type Address,
 } from 'viem'
 import { useStorage } from '@vueuse/core'
+import { v4 as uuidv4 } from 'uuid'
 import AppModal from '~/components/AppModal.vue'
 import { useAppToast } from '~/composables/useAppToast'
 
@@ -354,7 +355,7 @@ const isSuccessClaimReward = ref(false)
 const isPlayerOpen = ref(false)
 const isWinnerOpen = ref(false)
 const showCountdown = ref(true)
-const randomUUID = useStorage('scmlacch', crypto.randomUUID())
+const randomUUID = useStorage('scmlacch', uuidv4())
 
 // --------[ Lifecycle ]-------- //
 onMounted(async () => {
