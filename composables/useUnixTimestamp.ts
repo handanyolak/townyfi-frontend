@@ -1,4 +1,4 @@
-export const useUnixTimestamp = async (): Promise<number> => {
+export const useUnixTimestamp = (): number => {
   // const url = 'https://worldtimeapi.org/api/timezone/Etc/UTC'
   // const response = await fetch(url)
   // const data = await response.json()

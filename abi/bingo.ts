@@ -482,6 +482,25 @@ export const bingoAbi = [
     type: 'function',
   },
   {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'player',
+        type: 'address',
+      },
+    ],
+    name: 'hashByPlayer',
+    outputs: [
+      {
+        internalType: 'bytes32',
+        name: '_hash',
+        type: 'bytes32',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
     inputs: [],
     name: 'isDrawnNumbersFilled',
     outputs: [

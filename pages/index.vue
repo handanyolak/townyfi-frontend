@@ -33,18 +33,34 @@
             finalizeGame
           </button>
         </div>
-        <button
+        <div
           v-if="
             !isGameFinished &&
             isDrawnNumbersFilled &&
             !isSuccessCheckBingoCard &&
-            !isUserOnOtherPlayerPage
+            !isUserOnOtherPlayerPage &&
+            showCountdown
           "
-          class="mb-8 rounded bg-[#5b75f4] px-6 py-3 text-lg text-white hover:bg-[#6981f6] md:text-xl"
-          @click="checkBingoCard()"
         >
-          Check your card result
-        </button>
+          <vue-countdown
+            v-slot="{ days, hours, minutes, seconds }"
+            :time="
+              (Number(drawnNumbersTimestamp + finalizationCooldown) -
+                useUnixTimestamp()) *
+              1000
+            "
+            @end="showCountdown = false"
+          >
+            Time Remaining:
+            {{ minutes }} minutes, {{ seconds }} seconds.
+          </vue-countdown>
+          <button
+            class="mb-8 rounded bg-[#5b75f4] px-6 py-3 text-lg text-white hover:bg-[#6981f6] md:text-xl"
+            @click="checkBingoCard()"
+          >
+            Check your card result
+          </button>
+        </div>
         <div v-if="playerAddresses.length > 0">
           prizePoolAmountFormatted: {{ prizePoolAmountFormatted }}
           {{ publicClient.chain.nativeCurrency.symbol }}
@@ -263,6 +279,7 @@ const {
     ozDefenderRelayerMessage,
     drawnNumbersIntervalInSec,
     appUrl,
+    bingoContractAddress,
   },
 } = useRuntimeConfig()
 
@@ -336,6 +353,7 @@ const isSuccessCheckBingoCard = ref(false)
 const isSuccessClaimReward = ref(false)
 const isPlayerOpen = ref(false)
 const isWinnerOpen = ref(false)
+const showCountdown = ref(true)
 const randomUUID = useStorage('scmlacch', crypto.randomUUID())
 
 // --------[ Lifecycle ]-------- //
@@ -372,13 +390,12 @@ onMounted(async () => {
   if (drawnNumbersWithTimestamp.value.length > 0) {
     await startTriggeringSequentially()
   } else {
-    unixTimestamp.value = await useUnixTimestamp()
+    unixTimestamp.value = useUnixTimestamp()
   }
 })
 
 // --------[ Data ]-------- //
 const highlightedNumbers = ref<Set<number>>(new Set())
-const gameStarted = ref(false)
 const currentNumber = ref<number | null>(null)
 
 const isAdmin = computed(
@@ -403,8 +420,10 @@ const isGameFinishedInUi = computed(
 
 const hasStarterPackClaimed = computed(
   () =>
-    useStorage(`${accountInfo.value.address}:starter-pack-claimed`, false)
-      .value,
+    useStorage(
+      `${accountInfo.value.address}:${bingoContractAddress}:starter-pack-claimed`,
+      false,
+    ).value,
 )
 
 const isUserOnOtherPlayerPage = computed(
@@ -484,7 +503,7 @@ const goToPageWithQuery = (address: Address) => {
 }
 
 const startTriggeringSequentially = async () => {
-  unixTimestamp.value = await useUnixTimestamp()
+  unixTimestamp.value = useUnixTimestamp()
   const currentWorldTime = unixTimestamp.value
   let isFirstSync = true
   for (let i = 0; i < drawnNumbersWithTimestamp.value.length; i++) {
@@ -564,7 +583,7 @@ const startTriggeringSequentially = async () => {
       }
     }
   }
-  unixTimestamp.value = await useUnixTimestamp()
+  unixTimestamp.value = useUnixTimestamp()
 }
 
 const claimNativeToken = async () => {
@@ -616,7 +635,7 @@ const claimNativeToken = async () => {
     if (!result.success) {
       if (result?.message.toLowerCase().includes('already')) {
         localStorage.setItem(
-          `${accountInfo.value.address}:starter-pack-claimed`,
+          `${accountInfo.value.address}:${bingoContractAddress}:starter-pack-claimed`,
           'true',
         )
 
@@ -631,7 +650,7 @@ const claimNativeToken = async () => {
       `Claimed successfully\n${formatEventArgs(result)}`,
     )
     localStorage.setItem(
-      `${accountInfo.value.address}:starter-pack-claimed`,
+      `${accountInfo.value.address}:${bingoContractAddress}:starter-pack-claimed`,
       'true',
     )
     showClaimNativeToken.value = false

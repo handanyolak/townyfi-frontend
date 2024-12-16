@@ -13,6 +13,7 @@
     "string-width": "4.2.3"
   },
   "dependencies": {
+    "@chenfengyuan/vue-countdown": "2",
     "@reown/appkit": "^1.5.3",
     "@reown/appkit-adapter-wagmi": "^1.5.3",
     "@tanstack/vue-query": "^5.62.7",
