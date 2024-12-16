@@ -1,7 +1,8 @@
-import { useToggle, useStorage } from '@vueuse/core'
 import { isAddress, zeroAddress, type Address } from 'viem'
 import { useAppKitAccount } from '@reown/appkit/vue'
 import { TYPE } from 'vue-toastification'
+import type { ToastOptions } from 'vue-toastification/src/types'
+import moment from 'moment'
 import type { CoordinateStruct } from '~/types'
 import { transformPlayer } from '~/transformers'
 
@@ -26,15 +27,10 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const showSidebar = ref(false)
   const isGameInfo = ref(false)
   const isOptions = ref(false)
-  const music = ref(false)
   const originCoordinate = ref<CoordinateStruct>({
     _x: BigInt(0),
     _y: BigInt(0),
   })
-  const mainThemeAudio = ref<HTMLAudioElement | null>(null)
-  const audio = useStorage('audio', false)
-  const _toggleAudio = useToggle(audio)
-  const _toggleMusic = useToggle(music)
   const modalComponentName = ref('')
   const modalComponentProps = ref({})
   const isAnimation = ref(false)
@@ -200,6 +196,36 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                 logArgs: args,
                 useToast: true,
                 toastMessage: 'Bingo card purchased!',
+                toastOptions: {
+                  timeout: 1 * 1000,
+                },
+              })
+            }
+          } catch (error) {
+            console.error(`${logs[0].eventName} error`, error)
+          }
+        },
+      })
+
+      userWalletStore.publicClient.watchContractEvent({
+        ...bingoContractEventFilter,
+        eventName: 'DrawnNumbersFilled',
+        onLogs: (logs) => {
+          try {
+            const uniqueLogs = getUniqueLogs(logs)
+            for (const { eventName } of uniqueLogs) {
+              bingoStore.setIsDrawnNumbersFilled(true)
+
+              // eslint-disable-next-line import/no-named-as-default-member
+              const finalizationCooldownFormatted = moment
+                .duration(Number(bingoStore.finalizationCooldown))
+                .humanize(true)
+
+              processAndPrintLog({
+                logName: eventName,
+                logArgs: {},
+                useToast: true,
+                toastMessage: `Check your bingo card ${finalizationCooldownFormatted}`,
               })
             }
           } catch (error) {
@@ -215,22 +241,25 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
           try {
             const uniqueLogs = getUniqueLogs(logs)
             for (const { eventName } of uniqueLogs) {
-              const initialDrawnNumbersTimestamp =
-                bingoStore.drawnNumbersTimestamp
+              const initialIsGameFinished = bingoStore.isGameFinished
               while (true) {
                 const [
                   drawnNumbers,
                   winners,
                   newDrawnNumbersTimestamp,
                   rewardPerWinner,
+                  winDrawnNumbersIndex,
+                  newIsGameFinished,
                 ] = await Promise.all([
                   contractStore.getBingoContractPublic.read.getDrawnNumbers(),
                   contractStore.getBingoContractPublic.read.getWinners(),
                   contractStore.getBingoContractPublic.read.drawnNumbersTimestamp(),
                   contractStore.getBingoContractPublic.read.rewardPerWinner(),
+                  contractStore.getBingoContractPublic.read.winDrawnNumbersIndex(),
+                  contractStore.getBingoContractPublic.read.isGameFinished(),
                 ])
 
-                if (initialDrawnNumbersTimestamp === newDrawnNumbersTimestamp) {
+                if (initialIsGameFinished === newIsGameFinished) {
                   await sleep(0.5 * 1000)
                   continue
                 }
@@ -239,7 +268,10 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                   (number, index) => ({
                     number,
                     timestamp:
-                      Number(newDrawnNumbersTimestamp) +
+                      Number(
+                        newDrawnNumbersTimestamp +
+                          bingoStore.finalizationCooldown,
+                      ) +
                       index * drawnNumbersIntervalInSec +
                       drawnNumbersAdditionalTimeInSec,
                   }),
@@ -251,11 +283,11 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
                 bingoStore.setDrawnNumbersTimestamp(newDrawnNumbersTimestamp)
                 bingoStore.setWinners(winners)
                 bingoStore.setRewardPerWinner(rewardPerWinner)
+                bingoStore.setWinDrawnNumbersIndex(winDrawnNumbersIndex)
+                bingoStore.setIsGameFinished(newIsGameFinished)
                 eventStore.triggerGameFinishedEvent()
 
-                if (initialDrawnNumbersTimestamp !== newDrawnNumbersTimestamp) {
-                  break
-                }
+                break
               }
 
               processAndPrintLog({
@@ -280,11 +312,13 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     logArgs = {},
     useToast,
     toastMessage = '',
+    toastOptions,
   }: {
     logName: string
     logArgs?: any
     useToast: boolean
     toastMessage: string
+    toastOptions?: ToastOptions
   }) => {
     const eventNameMessage = `Event: ${logName}`
     const argsMessage = formatEventArgs(logArgs)
@@ -292,43 +326,8 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
 
     if (useToast) {
       const toastMsg = (toastMessage ? `${toastMessage}\n` : '') + eventMessage
-      useAppToast(TYPE.INFO, toastMsg)
+      useAppToast(TYPE.INFO, toastMsg, toastOptions)
     }
-  }
-
-  const toggleAudio = () => {
-    _toggleAudio()
-
-    if (!audio.value) {
-      pauseMusic()
-    }
-  }
-
-  const toggleMusic = () => {
-    _toggleMusic()
-
-    if (music.value && audio.value) {
-      playMusic()
-    } else {
-      pauseMusic()
-    }
-  }
-
-  const playMusic = async () => {
-    if (!mainThemeAudio.value) {
-      mainThemeAudio.value = new Audio(
-        // @ts-ignore
-        (await import('~/assets/sound/in-dreams.mp3')).default,
-      )
-      mainThemeAudio.value.loop = true
-    }
-
-    mainThemeAudio.value.play()
-  }
-
-  const pauseMusic = () => {
-    music.value = false
-    mainThemeAudio.value?.pause()
   }
 
   const setInitializeValues = async (playerAddress?: null | string) => {
@@ -344,6 +343,9 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
       rewardPerWinner,
       minPlayers,
       playerAddresses,
+      finalizationCooldown,
+      isDrawnNumbersFilled,
+      winDrawnNumbersIndex,
     ] = await Promise.all([
       contractStore.getBingoContractPublic.read.getDrawnNumbers(),
       contractStore.getBingoContractPublic.read.drawnNumbersTimestamp(),
@@ -356,13 +358,16 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
       contractStore.getBingoContractPublic.read.rewardPerWinner(),
       contractStore.getBingoContractPublic.read.MIN_PLAYERS(),
       contractStore.getBingoContractPublic.read.getPlayerAddresses(),
+      contractStore.getBingoContractPublic.read.FINALIZATION_COOLDOWN(),
+      contractStore.getBingoContractPublic.read.isDrawnNumbersFilled(),
+      contractStore.getBingoContractPublic.read.winDrawnNumbersIndex(),
     ])
 
     if (drawnNumbers.length > 0) {
       const drawnNumbersWithTimestamp = drawnNumbers.map((number, index) => ({
         number,
         timestamp:
-          Number(drawnNumbersTimestamp) +
+          Number(drawnNumbersTimestamp + bingoStore.finalizationCooldown) +
           index * drawnNumbersIntervalInSec +
           drawnNumbersAdditionalTimeInSec,
       }))
@@ -380,6 +385,9 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     bingoStore.setRewardPerWinner(rewardPerWinner)
     bingoStore.setMinPlayers(minPlayers)
     bingoStore.setPlayerAddresses(playerAddresses)
+    bingoStore.setFinalizationCooldown(finalizationCooldown)
+    bingoStore.setIsDrawnNumbersFilled(isDrawnNumbersFilled)
+    bingoStore.setWinDrawnNumbersIndex(winDrawnNumbersIndex)
 
     try {
       const playerInfo = transformPlayer(
@@ -398,8 +406,6 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   }
 
   return {
-    audio,
-    music,
     isOptions,
     isGameInfo,
     showSidebar,
@@ -413,8 +419,6 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     modalResultResolver,
     isAttackSuccess,
     sideLeave,
-    toggleMusic,
-    toggleAudio,
     initializeApp,
     setOriginCoordinate,
     setInitializeValues,

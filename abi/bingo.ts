@@ -86,6 +86,25 @@ export const bingoAbi = [
   {
     anonymous: false,
     inputs: [],
+    name: 'DrawnNumbersFilled',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'address[]',
+        name: 'winners',
+        type: 'address[]',
+      },
+      {
+        indexed: false,
+        internalType: 'uint8',
+        name: 'winDrawnNumbersIndex',
+        type: 'uint8',
+      },
+    ],
     name: 'GameFinished',
     type: 'event',
   },
@@ -162,6 +181,19 @@ export const bingoAbi = [
   {
     inputs: [],
     name: 'BINGO_CARD_PRICE',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'FINALIZATION_COOLDOWN',
     outputs: [
       {
         internalType: 'uint256',
@@ -311,6 +343,13 @@ export const bingoAbi = [
   },
   {
     inputs: [],
+    name: 'checkCardResult',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
     name: 'claimReward',
     outputs: [],
     stateMutability: 'nonpayable',
@@ -332,6 +371,13 @@ export const bingoAbi = [
   {
     inputs: [],
     name: 'fillDrawnNumbers',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'finalizeGame',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -425,6 +471,19 @@ export const bingoAbi = [
         internalType: 'address[]',
         name: '',
         type: 'address[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'isDrawnNumbersFilled',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
       },
     ],
     stateMutability: 'view',
@@ -541,6 +600,19 @@ export const bingoAbi = [
         internalType: 'uint256',
         name: '',
         type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'winDrawnNumbersIndex',
+    outputs: [
+      {
+        internalType: 'uint8',
+        name: '',
+        type: 'uint8',
       },
     ],
     stateMutability: 'view',

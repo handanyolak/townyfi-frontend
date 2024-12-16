@@ -6,6 +6,11 @@
     >
       <div class="absolute top-2">
         <appkit-button />
+        <div v-if="!isGameFinished && isDrawnNumbersFilled">
+          <div>drawnNumbersTimestamp: {{ drawnNumbersTimestamp }}</div>
+          <div>finalizationCooldown: {{ finalizationCooldown }}</div>
+          <div @click="checkBingoCard()">Check bingo card</div>
+        </div>
         <div v-if="playerAddresses.length > 0">
           prizePoolAmountFormatted: {{ prizePoolAmountFormatted }}
           {{ publicClient.chain.nativeCurrency.symbol }}
@@ -167,7 +172,7 @@
 </template>
 
 <script setup lang="ts">
-import { sepolia, type AppKitNetwork } from '@reown/appkit/networks'
+import { type AppKitNetwork } from '@reown/appkit/networks'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { createAppKit, useAppKitAccount } from '@reown/appkit/vue'
 import { POSITION, TYPE, useToast } from 'vue-toastification'
@@ -183,7 +188,11 @@ import {
 import { useStorage } from '@vueuse/core'
 import { useAppToast } from '~/composables/useAppToast'
 
-const networks: [AppKitNetwork, ...AppKitNetwork[]] = [sepolia]
+const userWalletStore = useUserWalletStore()
+const { walletClient, publicClient } = storeToRefs(userWalletStore)
+const { chain } = userWalletStore
+
+const networks: [AppKitNetwork, ...AppKitNetwork[]] = [chain]
 
 const {
   public: {
@@ -243,10 +252,12 @@ const {
   maxBingoNumber,
   minBingoNumber,
   bingoCardNumbersCount,
+  isDrawnNumbersFilled,
+  drawnNumbersTimestamp,
+  finalizationCooldown,
+  winDrawnNumbersIndex,
 } = storeToRefs(bingoStore)
 const accountInfo = useAppKitAccount()
-const userWalletStore = useUserWalletStore()
-const { walletClient, publicClient } = storeToRefs(userWalletStore)
 const eventStore = useEventStore()
 const route = useRoute()
 
@@ -397,7 +408,7 @@ const startTriggeringSequentially = async () => {
   const currentWorldTime = unixTimestamp.value
   let isFirstSync = true
   for (let i = 0; i < drawnNumbersWithTimestamp.value.length; i++) {
-    const isLastIndex = i === drawnNumbersWithTimestamp.value.length - 1
+    const isLastIndex = i === winDrawnNumbersIndex.value
     const currentItem = drawnNumbersWithTimestamp.value[i]
     if (currentWorldTime >= currentItem.timestamp) {
       currentDrawnNumbers.value.push(currentItem.number)
@@ -426,7 +437,7 @@ const startTriggeringSequentially = async () => {
         ? currentItem.timestamp - currentWorldTime
         : nextItem
           ? nextItem.timestamp - currentItem.timestamp
-          : 3) * 1000
+          : drawnNumbersIntervalInSec) * 1000
 
     isFirstSync = false
 
@@ -549,6 +560,13 @@ const claimNativeToken = async () => {
 const claimReward = async () => {
   await getBingoContractCaller.value.callFunction({
     name: 'claimReward',
+    type: 'write',
+  })
+}
+
+const checkBingoCard = async () => {
+  await getBingoContractCaller.value.callFunction({
+    name: 'checkCardResult',
     type: 'write',
   })
 }
