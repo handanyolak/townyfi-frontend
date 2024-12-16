@@ -331,6 +331,11 @@ export const bingoAbi = [
   {
     inputs: [
       {
+        internalType: 'bytes32',
+        name: '_hash',
+        type: 'bytes32',
+      },
+      {
         internalType: 'uint8[]',
         name: '_numbers',
         type: 'uint8[]',

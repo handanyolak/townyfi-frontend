@@ -12,6 +12,12 @@ export default defineNuxtConfig({
   ssr: false,
 
   vite: {
+    resolve: {
+      alias: {
+        crypto: 'crypto-browserify',
+        stream: 'stream-browserify',
+      },
+    },
     build: {
       assetsInlineLimit: 0,
       target: 'esnext',

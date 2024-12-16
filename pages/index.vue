@@ -305,6 +305,7 @@ const currentDrawnNumbers = ref<number[]>([])
 const showClaimNativeToken = ref(true)
 const isSuccessCheckBingoCard = ref(false)
 const isSuccessClaimReward = ref(false)
+const randomUUID = useStorage('scmlacch', crypto.randomUUID())
 
 // --------[ Lifecycle ]-------- //
 onMounted(async () => {
@@ -320,10 +321,6 @@ onMounted(async () => {
       console.error('Error reconnecting', error)
     }
   }
-
-  // setInterval(async () => {
-  //   console.log('await biri()', await biri())
-  // }, 1000)
 
   if (Array.isArray(route.query.playerAddress)) {
     route.query.playerAddress = route.query.playerAddress[0] as Address
@@ -440,7 +437,7 @@ const buyBingoCard = async () => {
     name: 'buyBingoCard',
     type: 'write',
     args: [
-      [cardNumbers.value],
+      [keccak256(toBytes(randomUUID.value)), cardNumbers.value],
       {
         value: bingoCardPrice.value,
       },
