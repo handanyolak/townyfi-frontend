@@ -73,7 +73,7 @@
               !isSuccessCheckBingoCard &&
               Number(playerRemainingNumbersCount) === bingoCardNumbersCount
             "
-            class="my-3 rounded bg-[#5b75f4] px-6 py-3 text-lg text-white hover:bg-[#6981f6] md:text-xl"
+            class="my-3 rounded bg-[#5b75f4] px-6 py-3 text-lg text-white transition-colors duration-500 ease-in-out hover:bg-[#6981f6] md:text-xl"
             @click="checkBingoCard()"
           >
             Check your card result
@@ -83,8 +83,7 @@
           <div class="flex flex-col items-center">
             <button
               v-if="isGameFinishedInUi"
-              :style="`background-color: ${calculateCardColor[0]}`"
-              class="my-3 rounded px-4 py-2 text-xl text-white text-shadow"
+              class="my-3 rounded bg-[#5b75f4] px-4 py-2 text-xl text-white transition-colors duration-500 ease-in-out text-shadow hover:bg-[#6981f6]"
               @click="isWinnerOpen = true"
             >
               Winners
@@ -100,7 +99,7 @@
                   showClaimNativeToken &&
                   !hasClaimedStarterPack
                 "
-                class="relative my-3 rounded bg-[#5b75f4] p-2 text-xl text-white text-shadow hover:bg-[#6981f6]"
+                class="relative my-3 rounded bg-[#5b75f4] p-2 text-xl text-white transition-colors duration-500 ease-in-out text-shadow hover:bg-[#6981f6]"
                 @click="claimNativeToken()"
               >
                 Claim some native tokens
@@ -122,7 +121,7 @@
                   !isUserOnOtherPlayerPage &&
                   randomNumbers.length === 0
                 "
-                class="mb-8 rounded bg-[#5b75f4] px-6 py-3 text-lg text-white hover:bg-[#6981f6] md:text-xl"
+                class="mb-8 rounded bg-[#5b75f4] px-6 py-3 text-lg text-white transition-colors duration-500 ease-in-out hover:bg-[#6981f6] md:text-xl"
                 @click="buyBingoCard()"
               >
                 Buy the card (<span>{{ bingoCardPriceFormatted }}</span>
@@ -168,8 +167,7 @@
             </div>
             <button
               v-if="playerAddresses.length > 0"
-              :style="`background-color: ${calculateCardColor[0]}`"
-              class="my-3 rounded px-4 py-2 text-xl text-white text-shadow"
+              class="my-3 rounded bg-[#5b75f4] px-4 py-2 text-xl text-white transition-colors duration-500 ease-in-out text-shadow hover:bg-[#6981f6]"
               @click="isPlayerOpen = true"
             >
               Players
@@ -263,7 +261,7 @@
               !isUserOnOtherPlayerPage &&
               !isSuccessClaimReward
             "
-            class="my-2 rounded bg-[#5b75f4] p-2 text-xl text-white text-shadow hover:bg-[#6981f6]"
+            class="my-2 rounded bg-[#5b75f4] p-2 text-xl text-white transition-colors duration-500 ease-in-out text-shadow hover:bg-[#6981f6]"
             @click="claimReward()"
           >
             Claim!
