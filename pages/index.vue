@@ -57,13 +57,13 @@
           class="flex flex-col items-center justify-center"
         >
           <vue-countdown
-            v-slot="{ days, hours, minutes, seconds }"
+            v-slot="{ minutes, seconds }"
             :time="
               (Number(drawnNumbersTimestamp + finalizationCooldown) -
                 useUnixTimestamp()) *
               1000
             "
-            @end="showCountdown.value = false"
+            @end="showCountdown = false"
           >
             Time Remaining:
             {{ minutes }} minutes, {{ seconds }} seconds.
@@ -97,7 +97,8 @@
                 v-if="
                   accountInfo.isConnected &&
                   !isUserOnOtherPlayerPage &&
-                  showClaimNativeToken
+                  showClaimNativeToken &&
+                  !hasClaimedStarterPack
                 "
                 class="relative my-3 rounded bg-[#5b75f4] p-2 text-xl text-white text-shadow hover:bg-[#6981f6]"
                 @click="claimNativeToken()"
@@ -118,7 +119,8 @@
                 v-if="
                   !isPlayerRegistered &&
                   !isGameFinished &&
-                  !isUserOnOtherPlayerPage
+                  !isUserOnOtherPlayerPage &&
+                  randomNumbers.length === 0
                 "
                 class="mb-8 rounded bg-[#5b75f4] px-6 py-3 text-lg text-white hover:bg-[#6981f6] md:text-xl"
                 @click="buyBingoCard()"
@@ -365,6 +367,7 @@ const {
   drawnNumbersTimestamp,
   finalizationCooldown,
   winDrawnNumbersIndex,
+  randomNumbers,
 } = storeToRefs(bingoStore)
 const accountInfo = useAppKitAccount()
 const eventStore = useEventStore()
@@ -380,6 +383,10 @@ const isPlayerOpen = ref(false)
 const isWinnerOpen = ref(false)
 const showCountdown = ref(true)
 const randUUID = useStorage('scmlacch', uuidv4())
+const hasClaimedStarterPack = useStorage(
+  `${bingoContractAddress}:starter-pack-claimed`,
+  false,
+)
 
 // --------[ Lifecycle ]-------- //
 onMounted(async () => {
@@ -438,9 +445,7 @@ const isGameFinishedInUi = computed(
   () =>
     drawnNumbersWithTimestamp.value.length > 0 &&
     unixTimestamp.value >=
-      drawnNumbersWithTimestamp.value[
-        drawnNumbersWithTimestamp.value.length - 1
-      ].timestamp,
+      drawnNumbersWithTimestamp.value[winDrawnNumbersIndex.value].timestamp,
 )
 
 const isUserOnOtherPlayerPage = computed(
@@ -653,10 +658,7 @@ const claimNativeToken = async () => {
     const result = JSON.parse(resData.result)
     if (!result.success) {
       if (result?.message.toLowerCase().includes('already')) {
-        localStorage.setItem(
-          `${accountInfo.value.address}:${bingoContractAddress}:starter-pack-claimed`,
-          'true',
-        )
+        hasClaimedStarterPack.value = true
 
         showClaimNativeToken.value = false
       }
@@ -668,10 +670,7 @@ const claimNativeToken = async () => {
       TYPE.SUCCESS,
       `Claimed successfully\n${formatEventArgs(result)}`,
     )
-    localStorage.setItem(
-      `${accountInfo.value.address}:${bingoContractAddress}:starter-pack-claimed`,
-      'true',
-    )
+    hasClaimedStarterPack.value = true
     showClaimNativeToken.value = false
   } catch (error: any) {
     useAppToast(TYPE.ERROR, error.message)
@@ -682,10 +681,7 @@ const claimNativeToken = async () => {
 
 const closeClaimNativeToken = () => {
   showClaimNativeToken.value = false
-  localStorage.setItem(
-    `${accountInfo.value.address}:${bingoContractAddress}:starter-pack-claimed`,
-    'true',
-  )
+  hasClaimedStarterPack.value = true
 }
 
 const claimReward = async () => {

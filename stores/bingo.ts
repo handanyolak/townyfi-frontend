@@ -18,6 +18,7 @@ export const useBingoStore = defineStore('bingoStore', () => {
   const playerAddresses = ref<readonly Address[]>([])
   const winDrawnNumbersIndex = ref(90)
   const finalizeGameTimestamp = ref(0n)
+  const randomNumbers = ref<readonly bigint[]>([])
   const drawnNumbersWithTimestamp = ref<
     {
       number: number
@@ -85,6 +86,10 @@ export const useBingoStore = defineStore('bingoStore', () => {
     finalizeGameTimestamp.value = newValue
   }
 
+  const setRandomNumbers = (newValue: readonly bigint[]) => {
+    randomNumbers.value = newValue
+  }
+
   const addPlayerAddress = (newValue: Address) => {
     playerAddresses.value = [...playerAddresses.value, newValue]
   }
@@ -133,6 +138,7 @@ export const useBingoStore = defineStore('bingoStore', () => {
     setIsDrawnNumbersFilled,
     setWinDrawnNumbersIndex,
     setFinalizeGameTimestamp,
+    setRandomNumbers,
     isGameFinished,
     drawnNumbers,
     drawnNumbersTimestamp,
@@ -153,5 +159,6 @@ export const useBingoStore = defineStore('bingoStore', () => {
     isDrawnNumbersFilled,
     winDrawnNumbersIndex,
     finalizeGameTimestamp,
+    randomNumbers,
   }
 })

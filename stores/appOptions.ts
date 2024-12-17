@@ -221,16 +221,21 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
             const uniqueLogs = getUniqueLogs(logs)
             console.debug('DrawnNumbersFilled logs', uniqueLogs)
             for (const { eventName } of uniqueLogs) {
+              await sleep(20 * 1000)
+
               while (true) {
-                const [drawnNumbersTimestamp] = await Promise.all([
-                  contractStore.getBingoContractPublic.read.drawnNumbersTimestamp(),
-                ])
+                const [drawnNumbersTimestamp, randomNumbers] =
+                  await Promise.all([
+                    contractStore.getBingoContractPublic.read.drawnNumbersTimestamp(),
+                    contractStore.getBingoContractPublic.read.getRandomNumbers(),
+                  ])
 
                 if (drawnNumbersTimestamp <= BigInt(0)) {
                   continue
                 }
 
                 bingoStore.setDrawnNumbersTimestamp(drawnNumbersTimestamp)
+                bingoStore.setRandomNumbers(randomNumbers)
 
                 break
               }
@@ -359,6 +364,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
       isDrawnNumbersFilled,
       winDrawnNumbersIndex,
       finalizeGameTimestamp,
+      randomNumbers,
     ] = await Promise.all([
       contractStore.getBingoContractPublic.read.getDrawnNumbers(),
       contractStore.getBingoContractPublic.read.drawnNumbersTimestamp(),
@@ -375,6 +381,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
       contractStore.getBingoContractPublic.read.isDrawnNumbersFilled(),
       contractStore.getBingoContractPublic.read.winDrawnNumbersIndex(),
       contractStore.getBingoContractPublic.read.finalizeGameTimestamp(),
+      contractStore.getBingoContractPublic.read.getRandomNumbers(),
     ])
 
     if (drawnNumbers.length > 0) {
@@ -402,6 +409,7 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     bingoStore.setFinalizationCooldown(finalizationCooldown)
     bingoStore.setIsDrawnNumbersFilled(isDrawnNumbersFilled)
     bingoStore.setWinDrawnNumbersIndex(winDrawnNumbersIndex)
+    bingoStore.setRandomNumbers(randomNumbers)
 
     try {
       const playerInfo = transformPlayer(
