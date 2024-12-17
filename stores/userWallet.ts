@@ -78,7 +78,7 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
   const startEthEvents = () => {
     window.ethereum.on('chainChanged', handleChainChanged)
     window.ethereum.on('accountsChanged', handleAccountsChanged)
-    // window.ethereum.on('disconnect', handleDisconnect)
+    window.ethereum.on('disconnect', handleDisconnect)
   }
 
   const handleChainChanged = () => {
@@ -86,6 +86,10 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
   }
 
   const handleAccountsChanged = () => {
+    window.location.reload()
+  }
+
+  const handleDisconnect = () => {
     window.location.reload()
   }
 
@@ -97,8 +101,6 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
     currentBlockNumber,
     connect,
     startEthEvents,
-    handleChainChanged,
-    handleAccountsChanged,
     setCurrentBlockNumber,
   }
 })

@@ -7,7 +7,7 @@
       <div class="absolute top-2">
         <appkit-button />
         <button
-          v-if="accountInfo.address && isUserOnOtherPlayerPage"
+          v-if="isUserOnOtherPlayerPage"
           class="mb-8 rounded bg-[#5b75f4] px-6 py-3 text-lg text-white hover:bg-[#6981f6] md:text-xl"
           @click="goToPageWithQuery(accountInfo.address as Address)"
         >
@@ -35,9 +35,11 @@
         </div>
         <div
           v-if="
+            Number(drawnNumbersTimestamp + finalizationCooldown) -
+              useUnixTimestamp() >
+              0 &&
             !isGameFinished &&
             isDrawnNumbersFilled &&
-            !isSuccessCheckBingoCard &&
             !isUserOnOtherPlayerPage &&
             showCountdown
           "
@@ -49,12 +51,16 @@
                 useUnixTimestamp()) *
               1000
             "
-            @end="showCountdown = false"
+            @end="showCountdown.value = false"
           >
             Time Remaining:
             {{ minutes }} minutes, {{ seconds }} seconds.
           </vue-countdown>
           <button
+            v-if="
+              !isSuccessCheckBingoCard &&
+              Number(playerRemainingNumbersCount) === bingoCardNumbersCount
+            "
             class="mb-8 rounded bg-[#5b75f4] px-6 py-3 text-lg text-white hover:bg-[#6981f6] md:text-xl"
             @click="checkBingoCard()"
           >
@@ -98,6 +104,28 @@
         </button>
         <div
           v-if="isPlayerRegistered || !isGameFinishedInUi"
+          class="my-3 flex h-full items-end justify-center"
+        >
+          <button
+            v-if="
+              accountInfo.isConnected &&
+              !hasStarterPackClaimed &&
+              showClaimNativeToken &&
+              !isUserOnOtherPlayerPage
+            "
+            class="relative rounded bg-[#5b75f4] p-2 text-xl text-white text-shadow hover:bg-[#6981f6]"
+            @click="claimNativeToken()"
+          >
+            Claim some native tokens
+            <Icon
+              name="ic:round-close"
+              class="absolute -right-6 -top-2 h-7 w-7 text-red-500"
+              @click.stop="closeClaimNativeToken()"
+            />
+          </button>
+        </div>
+        <div
+          v-if="isPlayerRegistered || !isGameFinishedInUi"
           class="relative flex flex-col items-center justify-center"
         >
           <button
@@ -110,7 +138,6 @@
             Buy the card (<span>{{ bingoCardPriceFormatted }}</span>
             {{ publicClient.chain.nativeCurrency.symbol }} )
           </button>
-
           <div
             v-if="
               (!isPlayerRegistered && drawnNumbers.length <= 0) ||
@@ -173,22 +200,7 @@
         </button>
       </div>
     </div>
-    <div
-      v-if="isPlayerRegistered || !isGameFinishedInUi"
-      class="flex h-full items-end justify-center"
-    >
-      <button
-        v-if="
-          accountInfo.isConnected &&
-          !hasStarterPackClaimed &&
-          showClaimNativeToken
-        "
-        class="mt-5 rounded bg-[#5b75f4] p-2 text-xl text-white text-shadow hover:bg-[#6981f6]"
-        @click="claimNativeToken()"
-      >
-        Claim some native tokens
-      </button>
-    </div>
+
     <AppModal
       :is-open="isPlayerOpen"
       :color="calculateCardColor[0]"
@@ -355,7 +367,7 @@ const isSuccessClaimReward = ref(false)
 const isPlayerOpen = ref(false)
 const isWinnerOpen = ref(false)
 const showCountdown = ref(true)
-const randomUUID = useStorage('scmlacch', uuidv4())
+const randUUID = useStorage('scmlacch', uuidv4())
 
 // --------[ Lifecycle ]-------- //
 onMounted(async () => {
@@ -455,10 +467,8 @@ const stop = watch(
 
 watch(
   () => accountInfo.value.isConnected,
-  async (newValue) => {
-    if (newValue) {
-      await setInitializeValues()
-    }
+  async () => {
+    await setInitializeValues()
   },
 )
 
@@ -484,11 +494,15 @@ const calculateCardColor = computed(() => {
 
 // --------[ Method ]-------- //
 const buyBingoCard = async () => {
+  if (!accountInfo.value.isConnected) {
+    return useAppToast(TYPE.ERROR, 'Connect your wallet first')
+  }
+
   await getBingoContractCaller.value.callFunction({
     name: 'buyBingoCard',
     type: 'write',
     args: [
-      [keccak256(toBytes(randomUUID.value)), cardNumbers.value],
+      [keccak256(toBytes(randUUID.value)), cardNumbers.value],
       {
         value: bingoCardPrice.value,
       },
@@ -662,7 +676,19 @@ const claimNativeToken = async () => {
   }
 }
 
+const closeClaimNativeToken = () => {
+  showClaimNativeToken.value = false
+  localStorage.setItem(
+    `${accountInfo.value.address}:${bingoContractAddress}:starter-pack-claimed`,
+    'true',
+  )
+}
+
 const claimReward = async () => {
+  if (!accountInfo.value.isConnected) {
+    return useAppToast(TYPE.ERROR, 'Connect your wallet first')
+  }
+
   const isSuccess = await getBingoContractCaller.value.callFunction({
     name: 'claimReward',
     type: 'write',
@@ -672,6 +698,10 @@ const claimReward = async () => {
 }
 
 const checkBingoCard = async () => {
+  if (!accountInfo.value.isConnected) {
+    return useAppToast(TYPE.ERROR, 'Connect your wallet first')
+  }
+
   const isSuccess = await getBingoContractCaller.value.callFunction({
     name: 'checkCardResult',
     type: 'write',

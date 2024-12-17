@@ -389,6 +389,19 @@ export const bingoAbi = [
   },
   {
     inputs: [],
+    name: 'finalizeGameTimestamp',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
     name: 'getDrawnNumbers',
     outputs: [
       {
