@@ -219,16 +219,16 @@
       title="Players"
       @close="isPlayerOpen = false"
     >
-      <div v-if="playerAddresses.length > 0" class="flex flex-col">
-        <a
+      <ul v-if="playerAddresses.length > 0" class="flex flex-col space-y-1">
+        <li
           v-for="playerAddress in playerAddresses"
           :key="playerAddress"
           class="my-0.5 cursor-pointer text-sm text-blue-600 underline md:text-xl"
           @click="goToPageWithQuery(playerAddress)"
         >
           {{ playerAddress }}
-        </a>
-      </div>
+        </li>
+      </ul>
     </AppModal>
 
     <AppModal
