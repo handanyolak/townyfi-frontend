@@ -8,7 +8,7 @@
       role="dialog"
       aria-labelledby="modal-title"
       aria-hidden="false"
-      class="relative flex h-5/6 w-5/6 flex-col items-center rounded-lg bg-white p-6 shadow-lg"
+      class="relative flex h-5/6 w-5/6 flex-col items-center overflow-auto rounded-lg bg-white p-6 shadow-lg"
     >
       <h2
         id="modal-title"
