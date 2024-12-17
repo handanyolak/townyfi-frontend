@@ -281,14 +281,17 @@ import {
   keccak256,
   parseEther,
   toBytes,
-  verifyMessage,
   zeroAddress,
   type Address,
 } from 'viem'
 import { useStorage } from '@vueuse/core'
 import { v4 as uuidv4 } from 'uuid'
 import { useWaitForTransactionReceipt, useWriteContract } from '@wagmi/vue'
-import { simulateContract } from '@wagmi/vue/actions'
+import {
+  signMessage,
+  simulateContract,
+  verifyMessage,
+} from '@wagmi/vue/actions'
 import AppModal from '~/components/AppModal.vue'
 import { useAppToast } from '~/composables/useAppToast'
 import { wagmiAdapter } from '~/config'
@@ -648,14 +651,15 @@ const claimNativeToken = async () => {
   try {
     const messageHash = keccak256(toBytes(ozDefenderRelayerMessage))
     const address = accountInfo.value.address as Address
-    const signature = await walletClient.value.signMessage({
+
+    const signature = await signMessage(wagmiAdapter.wagmiConfig, {
       message: {
         raw: messageHash,
       },
       account: address,
     })
 
-    const valid = await verifyMessage({
+    const valid = await verifyMessage(wagmiAdapter.wagmiConfig, {
       address,
       message: {
         raw: messageHash,
@@ -675,7 +679,7 @@ const claimNativeToken = async () => {
       body: JSON.stringify({
         address,
         signature,
-        amount: bingoCardPrice.value + parseEther('0.25'),
+        amount: bingoCardPrice.value + parseEther('0.1'),
       }),
     })
 
