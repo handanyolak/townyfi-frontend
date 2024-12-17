@@ -286,12 +286,12 @@ import {
 } from 'viem'
 import { useStorage } from '@vueuse/core'
 import { v4 as uuidv4 } from 'uuid'
-import { useWaitForTransactionReceipt, useWriteContract } from '@wagmi/vue'
 import {
-  signMessage,
-  simulateContract,
-  verifyMessage,
-} from '@wagmi/vue/actions'
+  useSignMessage,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from '@wagmi/vue'
+import { simulateContract } from '@wagmi/vue/actions'
 import AppModal from '~/components/AppModal.vue'
 import { useAppToast } from '~/composables/useAppToast'
 import { wagmiAdapter } from '~/config'
@@ -302,7 +302,7 @@ const { isSuccess: isConfirmed } = useWaitForTransactionReceipt({
   hash,
 })
 const userWalletStore = useUserWalletStore()
-const { walletClient, publicClient } = storeToRefs(userWalletStore)
+const { publicClient } = storeToRefs(userWalletStore)
 
 const networks: [AppKitNetwork, ...AppKitNetwork[]] = [sepolia]
 
@@ -390,6 +390,7 @@ const hasClaimedStarterPack = useStorage(
   false,
 )
 const toast = useToast()
+const { signMessageAsync } = useSignMessage()
 
 // --------[ Lifecycle ]-------- //
 onMounted(async () => {
@@ -652,24 +653,12 @@ const claimNativeToken = async () => {
     const messageHash = keccak256(toBytes(ozDefenderRelayerMessage))
     const address = accountInfo.value.address as Address
 
-    const signature = await signMessage(wagmiAdapter.wagmiConfig, {
+    const signature = await signMessageAsync({
       message: {
         raw: messageHash,
       },
       account: address,
     })
-
-    const valid = await verifyMessage(wagmiAdapter.wagmiConfig, {
-      address,
-      message: {
-        raw: messageHash,
-      },
-      signature,
-    })
-
-    if (!valid) {
-      throw new Error('Invalid signature')
-    }
 
     const response = await fetch(ozDefenderRelayerWebhookUrl, {
       method: 'POST',
