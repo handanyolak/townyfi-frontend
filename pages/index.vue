@@ -238,21 +238,20 @@
       @close="isWinnerOpen = false"
     >
       <div v-if="isGameFinishedInUi">
-        <div
-          class="my-4 flex flex-col items-center justify-center rounded-md p-4"
-        >
-          <h2 class="my-1 text-center text-2xl md:text-2xl">Winners</h2>
-          <span class="text-center md:text-xl"
+        <div class="flex flex-col items-center justify-center">
+          <span class="my-3 text-center md:text-xl"
             >Claim amount per winner: {{ rewardPerWinnerFormatted }}
             {{ publicClient.chain.nativeCurrency.symbol }}</span
           >
-          <ul v-for="winner in winners" :key="winner">
-            <a
+          <ul class="space-y-1">
+            <li
+              v-for="winner in winners"
+              :key="winner"
               class="my-0.5 cursor-pointer text-sm text-blue-600 underline md:text-xl"
               @click="goToPageWithQuery(winner)"
             >
               {{ winner }}
-            </a>
+            </li>
           </ul>
           <button
             v-if="
