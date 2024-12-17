@@ -109,9 +109,8 @@
           <button
             v-if="
               accountInfo.isConnected &&
-              !hasStarterPackClaimed &&
-              showClaimNativeToken &&
-              !isUserOnOtherPlayerPage
+              !isUserOnOtherPlayerPage &&
+              showClaimNativeToken
             "
             class="relative rounded bg-[#5b75f4] p-2 text-xl text-white text-shadow hover:bg-[#6981f6]"
             @click="claimNativeToken()"
@@ -145,7 +144,7 @@
             "
           >
             <div
-              v-if="cells.length"
+              v-if="cells.length > 0"
               class="w-fit rounded-md p-4"
               :style="`background-color: ${calculateCardColor[0]}`"
             >
@@ -429,14 +428,6 @@ const isGameFinishedInUi = computed(
       drawnNumbersWithTimestamp.value[
         drawnNumbersWithTimestamp.value.length - 1
       ].timestamp,
-)
-
-const hasStarterPackClaimed = computed(
-  () =>
-    useStorage(
-      `${accountInfo.value.address}:${bingoContractAddress}:starter-pack-claimed`,
-      false,
-    ).value,
 )
 
 const isUserOnOtherPlayerPage = computed(
