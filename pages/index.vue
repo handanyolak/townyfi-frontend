@@ -297,7 +297,7 @@ import { useAppToast } from '~/composables/useAppToast'
 import { wagmiAdapter } from '~/config'
 import { bingoAbi } from '~/abi'
 
-const { data: hash, writeContract } = useWriteContract()
+const { data: hash, writeContractAsync } = useWriteContract()
 const { isSuccess: isConfirmed } = useWaitForTransactionReceipt({
   hash,
 })
@@ -342,8 +342,6 @@ createAppKit({
 
 const appOptionsStore = useAppOptionsStore()
 const { initializeApp, setInitializeValues } = appOptionsStore
-const contractStore = useContractStore()
-const { getBingoContractCaller } = storeToRefs(contractStore)
 const playerStore = usePlayerStore()
 const bingoStore = useBingoStore()
 const {
@@ -522,7 +520,7 @@ const buyBingoCard = async () => {
     },
   )
   try {
-    writeContract({
+    await writeContractAsync({
       abi: bingoAbi,
       address: bingoContractAddress as Address,
       functionName,
@@ -650,13 +648,19 @@ const claimNativeToken = async () => {
     icon,
   })
   try {
-    const messageHash = keccak256(toBytes(ozDefenderRelayerMessage))
-    const address = accountInfo.value.address as Address
+    // const messageHash = keccak256(toBytes(ozDefenderRelayerMessage))
+    // const address = accountInfo.value.address as Address
 
+    // const signature = await signMessageAsync({
+    //   message: {
+    //     raw: messageHash,
+    //   },
+    //   account: address,
+    // })
+
+    const address = accountInfo.value.address as Address
     const signature = await signMessageAsync({
-      message: {
-        raw: messageHash,
-      },
+      message: ozDefenderRelayerMessage,
       account: address,
     })
 
@@ -728,7 +732,7 @@ const claimReward = async () => {
     },
   )
   try {
-    writeContract({
+    await writeContractAsync({
       abi: bingoAbi,
       address: bingoContractAddress as Address,
       functionName,
@@ -781,7 +785,7 @@ const checkBingoCard = async () => {
     },
   )
   try {
-    writeContract({
+    await writeContractAsync({
       abi: bingoAbi,
       address: bingoContractAddress as Address,
       functionName,
@@ -808,23 +812,26 @@ const checkBingoCard = async () => {
 }
 
 const adminRequestRandomNumbers = async () => {
-  await getBingoContractCaller.value.callFunction({
-    name: 'requestRandomNumbers',
-    type: 'write',
+  await writeContractAsync({
+    abi: bingoAbi,
+    address: bingoContractAddress as Address,
+    functionName: 'requestRandomNumbers',
   })
 }
 
 const adminFillDrawnNumbers = async () => {
-  await getBingoContractCaller.value.callFunction({
-    name: 'fillDrawnNumbers',
-    type: 'write',
+  await writeContractAsync({
+    abi: bingoAbi,
+    address: bingoContractAddress as Address,
+    functionName: 'fillDrawnNumbers',
   })
 }
 
 const adminFinalizeGame = async () => {
-  await getBingoContractCaller.value.callFunction({
-    name: 'finalizeGame',
-    type: 'write',
+  await writeContractAsync({
+    abi: bingoAbi,
+    address: bingoContractAddress as Address,
+    functionName: 'finalizeGame',
   })
 }
 
