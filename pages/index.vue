@@ -273,8 +273,7 @@
 </template>
 
 <script setup lang="ts">
-import { type AppKitNetwork } from '@reown/appkit/networks'
-import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import { sepolia, type AppKitNetwork } from '@reown/appkit/networks'
 import { createAppKit, useAppKitAccount } from '@reown/appkit/vue'
 import { POSITION, TYPE, useToast } from 'vue-toastification'
 import {
@@ -288,14 +287,21 @@ import {
 } from 'viem'
 import { useStorage } from '@vueuse/core'
 import { v4 as uuidv4 } from 'uuid'
+import { useWaitForTransactionReceipt, useWriteContract } from '@wagmi/vue'
+import { simulateContract } from '@wagmi/vue/actions'
 import AppModal from '~/components/AppModal.vue'
 import { useAppToast } from '~/composables/useAppToast'
+import { wagmiAdapter } from '~/config'
+import { bingoAbi } from '~/abi'
 
+const { data: hash, writeContract } = useWriteContract()
+const { isSuccess: isConfirmed } = useWaitForTransactionReceipt({
+  hash,
+})
 const userWalletStore = useUserWalletStore()
 const { walletClient, publicClient } = storeToRefs(userWalletStore)
-const { chain } = userWalletStore
 
-const networks: [AppKitNetwork, ...AppKitNetwork[]] = [chain]
+const networks: [AppKitNetwork, ...AppKitNetwork[]] = [sepolia]
 
 const {
   public: {
@@ -308,16 +314,11 @@ const {
   },
 } = useRuntimeConfig()
 
-const wagmiAdapter = new WagmiAdapter({
-  ssr: false,
-  projectId: reownAppkitProjectId,
-  networks,
-})
-
 createAppKit({
   adapters: [wagmiAdapter],
   networks,
   projectId: reownAppkitProjectId,
+  themeMode: 'light',
   metadata: {
     name: 'Bingo!',
     description: 'Bingo!',
@@ -385,22 +386,10 @@ const hasClaimedStarterPack = useStorage(
   `${bingoContractAddress}:starter-pack-claimed`,
   false,
 )
+const toast = useToast()
 
 // --------[ Lifecycle ]-------- //
 onMounted(async () => {
-  const connectedConnector = localStorage.getItem('@appkit/connected_connector')
-  if (connectedConnector) {
-    try {
-      await wagmiAdapter.reconnect({
-        id: connectedConnector,
-        type: undefined as unknown as string,
-        // type: 'injected',
-      })
-    } catch (error) {
-      console.error('Error reconnecting', error)
-    }
-  }
-
   if (Array.isArray(route.query.playerAddress)) {
     route.query.playerAddress = route.query.playerAddress[0] as Address
   }
@@ -505,16 +494,54 @@ const buyBingoCard = async () => {
     return useAppToast(TYPE.ERROR, 'Connect your wallet first')
   }
 
-  await getBingoContractCaller.value.callFunction({
-    name: 'buyBingoCard',
-    type: 'write',
-    args: [
-      [keccak256(toBytes(randUUID.value)), cardNumbers.value],
-      {
-        value: bingoCardPrice.value,
-      },
-    ],
-  })
+  const functionName = 'buyBingoCard'
+  try {
+    await simulateContract(wagmiAdapter.wagmiConfig, {
+      abi: bingoAbi,
+      address: bingoContractAddress as Address,
+      functionName,
+      args: [keccak256(toBytes(randUUID.value)), cardNumbers.value],
+      value: bingoCardPrice.value,
+    })
+  } catch (error: any) {
+    const trimmedMessage = error?.message.split('Contract Call:')[0].trim()
+    return useAppToast(TYPE.ERROR, trimmedMessage)
+  }
+
+  const toastId = toast(
+    `Sending transaction of '${functionName}' function...`,
+    {
+      timeout: 0,
+      icon: defineAsyncComponent(
+        () => import(`../components/toast/Loading.vue`),
+      ),
+    },
+  )
+  try {
+    writeContract({
+      abi: bingoAbi,
+      address: bingoContractAddress as Address,
+      functionName,
+      args: [keccak256(toBytes(randUUID.value)), cardNumbers.value],
+      value: bingoCardPrice.value,
+    })
+
+    while (!isConfirmed.value) {
+      await sleep(0.1 * 1000)
+    }
+
+    useAppToast(
+      TYPE.SUCCESS,
+      `Transaction of '${functionName}' function confirmed\n` +
+        `Transaction hash: ${hash.value}`,
+    )
+  } catch (error) {
+    useAppToast(TYPE.ERROR, 'Transaction failed: Something went wrong')
+  } finally {
+    if (toastId !== undefined) {
+      toast.dismiss(toastId)
+    }
+  }
 }
 
 const goToPageWithQuery = (address: Address) => {
@@ -679,7 +706,6 @@ const claimNativeToken = async () => {
 
 const closeClaimNativeToken = () => {
   showClaimNativeToken.value = false
-  hasClaimedStarterPack.value = true
 }
 
 const claimReward = async () => {
@@ -687,12 +713,52 @@ const claimReward = async () => {
     return useAppToast(TYPE.ERROR, 'Connect your wallet first')
   }
 
-  const isSuccess = await getBingoContractCaller.value.callFunction({
-    name: 'claimReward',
-    type: 'write',
-  })
+  const functionName = 'claimReward'
+  try {
+    await simulateContract(wagmiAdapter.wagmiConfig, {
+      abi: bingoAbi,
+      address: bingoContractAddress as Address,
+      functionName,
+    })
+  } catch (error: any) {
+    const trimmedMessage = error?.message.split('Contract Call:')[0].trim()
+    return useAppToast(TYPE.ERROR, trimmedMessage)
+  }
 
-  isSuccessClaimReward.value = isSuccess
+  const toastId = toast(
+    `Sending transaction of '${functionName}' function...`,
+    {
+      timeout: 0,
+      icon: defineAsyncComponent(
+        () => import(`../components/toast/Loading.vue`),
+      ),
+    },
+  )
+  try {
+    writeContract({
+      abi: bingoAbi,
+      address: bingoContractAddress as Address,
+      functionName,
+    })
+
+    while (!isConfirmed.value) {
+      await sleep(0.1 * 1000)
+    }
+
+    useAppToast(
+      TYPE.SUCCESS,
+      `Transaction of '${functionName}' function confirmed\n` +
+        `Transaction hash: ${hash.value}`,
+    )
+
+    isSuccessClaimReward.value = true
+  } catch (error) {
+    useAppToast(TYPE.ERROR, 'Transaction failed: Something went wrong')
+  } finally {
+    if (toastId !== undefined) {
+      toast.dismiss(toastId)
+    }
+  }
 }
 
 const checkBingoCard = async () => {
@@ -700,12 +766,52 @@ const checkBingoCard = async () => {
     return useAppToast(TYPE.ERROR, 'Connect your wallet first')
   }
 
-  const isSuccess = await getBingoContractCaller.value.callFunction({
-    name: 'checkCardResult',
-    type: 'write',
-  })
+  const functionName = 'checkCardResult'
+  try {
+    await simulateContract(wagmiAdapter.wagmiConfig, {
+      abi: bingoAbi,
+      address: bingoContractAddress as Address,
+      functionName,
+    })
+  } catch (error: any) {
+    const trimmedMessage = error?.message.split('Contract Call:')[0].trim()
+    return useAppToast(TYPE.ERROR, trimmedMessage)
+  }
 
-  isSuccessCheckBingoCard.value = isSuccess
+  const toastId = toast(
+    `Sending transaction of '${functionName}' function...`,
+    {
+      timeout: 0,
+      icon: defineAsyncComponent(
+        () => import(`../components/toast/Loading.vue`),
+      ),
+    },
+  )
+  try {
+    writeContract({
+      abi: bingoAbi,
+      address: bingoContractAddress as Address,
+      functionName,
+    })
+
+    while (!isConfirmed.value) {
+      await sleep(0.1 * 1000)
+    }
+
+    useAppToast(
+      TYPE.SUCCESS,
+      `Transaction of '${functionName}' function confirmed\n` +
+        `Transaction hash: ${hash.value}`,
+    )
+
+    isSuccessCheckBingoCard.value = true
+  } catch (error) {
+    useAppToast(TYPE.ERROR, 'Transaction failed: Something went wrong')
+  } finally {
+    if (toastId !== undefined) {
+      toast.dismiss(toastId)
+    }
+  }
 }
 
 const adminRequestRandomNumbers = async () => {
