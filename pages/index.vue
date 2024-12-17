@@ -28,10 +28,11 @@
       </div>
       <div v-if="isUserOnOtherPlayerPage" class="col-span-2">
         <button
-          class="mb-8 rounded bg-[#5b75f4] px-6 py-3 text-lg text-white hover:bg-[#6981f6] md:text-xl"
+          class="ml-2 mt-1 space-x-2 rounded bg-[#5b75f4] p-3 text-lg text-white hover:bg-[#6981f6] md:text-xl"
           @click="goToPageWithQuery(accountInfo.address as Address)"
         >
-          Back to your card
+          <Icon name="ic:round-arrow-back-ios" class="h-5 w-5" />
+          <span>Back to My Game</span>
         </button>
       </div>
       <div
