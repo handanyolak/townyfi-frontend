@@ -38,7 +38,7 @@
       <div
         class="card col-span-2 grid md:col-start-3 md:col-end-6 md:grid-rows-8"
       >
-        <div class="row-start-1 flex flex-col items-center">
+        <div class="row-start-1 mt-2 flex flex-col items-center">
           <appkit-button />
           <div v-if="playerAddresses.length > 0">
             Prize Pool: {{ prizePoolAmountFormatted }}
