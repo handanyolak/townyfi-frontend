@@ -58,7 +58,7 @@
           class="flex flex-col items-center justify-center"
         >
           <vue-countdown
-            v-slot="{ minutes, seconds }"
+            v-slot="{ minutes, seconds, totalSeconds }"
             :time="
               (Number(drawnNumbersTimestamp + finalizationCooldown) -
                 useUnixTimestamp()) *
@@ -66,6 +66,18 @@
             "
             @end="showCountdown = false"
           >
+            <span>
+              <client-only>
+                <Vue3Lottie
+                  :animation-data="Timer"
+                  :width="100"
+                  :height="100"
+                  :speed="lottieSpeed"
+                  :loop="false"
+                  @on-animation-loaded="handleAnimationLoaded(totalSeconds)"
+                />
+              </client-only>
+            </span>
             Time Remaining:
             {{ minutes }} minutes, {{ seconds }} seconds.
           </vue-countdown>
@@ -276,6 +288,9 @@
 import { sepolia, type AppKitNetwork } from '@reown/appkit/networks'
 import { createAppKit, useAppKitAccount } from '@reown/appkit/vue'
 import { POSITION, TYPE, useToast } from 'vue-toastification'
+
+import { Vue3Lottie } from 'vue3-lottie'
+
 import {
   formatUnits,
   keccak256,
@@ -292,6 +307,7 @@ import {
   useWriteContract,
 } from '@wagmi/vue'
 import { simulateContract } from '@wagmi/vue/actions'
+import Timer from '~/assets/lotties/timer.json'
 import AppModal from '~/components/AppModal.vue'
 import { useAppToast } from '~/composables/useAppToast'
 import { wagmiAdapter } from '~/config'
@@ -385,6 +401,7 @@ const isPlayerOpen = ref(false)
 const isWinnerOpen = ref(false)
 const showCountdown = ref(true)
 const randUUID = useStorage('scmlacch', uuidv4())
+const lottieSpeed = ref(1)
 const hasClaimedStarterPack = useStorage(
   `${bingoContractAddress}:starter-pack-claimed`,
   false,
@@ -868,6 +885,12 @@ const formatCells = (cardNumbers: number[]): (number | null)[] => {
     }
   })
   return result
+}
+
+const handleAnimationLoaded = (totalSeconds: any) => {
+  const totalFrames = Timer.op - Timer.ip
+  const frameRate = Timer.fr || 30
+  lottieSpeed.value = totalFrames / (totalSeconds * frameRate)
 }
 
 const cells = computed(() => formatCells(cardNumbers.value))
