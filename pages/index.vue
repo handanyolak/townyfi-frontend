@@ -38,10 +38,12 @@
       <div
         class="card col-span-2 grid md:col-start-3 md:col-end-6 md:grid-rows-8"
       >
-        <div class="row-start-1 mt-2 flex flex-col items-center">
+        <div
+          class="row-start-1 mt-2 flex flex-col items-center text-lg md:text-xl"
+        >
           <appkit-button />
           <div v-if="playerAddresses.length > 0">
-            Prize Pool: {{ prizePoolAmountFormatted }}
+            Pool: {{ prizePoolAmountFormatted }}
             {{ publicClient.chain.nativeCurrency.symbol }}
           </div>
         </div>
@@ -66,6 +68,16 @@
             "
             @end="showCountdown = false"
           >
+            <button
+              v-if="
+                !isSuccessCheckBingoCard &&
+                Number(playerRemainingNumbersCount) === bingoCardNumbersCount
+              "
+              class="my-3 rounded bg-[#5b75f4] px-6 py-3 text-lg text-white transition-colors duration-500 ease-in-out hover:bg-[#6981f6] md:text-xl"
+              @click="checkBingoCard()"
+            >
+              Submit your card for validation
+            </button>
             <span>
               <client-only>
                 <Vue3Lottie
@@ -81,16 +93,6 @@
             Time Remaining:
             {{ minutes }} minutes, {{ seconds }} seconds.
           </vue-countdown>
-          <button
-            v-if="
-              !isSuccessCheckBingoCard &&
-              Number(playerRemainingNumbersCount) === bingoCardNumbersCount
-            "
-            class="my-3 rounded bg-[#5b75f4] px-6 py-3 text-lg text-white transition-colors duration-500 ease-in-out hover:bg-[#6981f6] md:text-xl"
-            @click="checkBingoCard()"
-          >
-            Check your card result
-          </button>
         </div>
         <div class="row-span-6 row-start-3 flex flex-col items-center">
           <div class="flex flex-col items-center">
@@ -101,28 +103,7 @@
             >
               Winners
             </button>
-            <div
-              v-if="isPlayerRegistered || !isGameFinishedInUi"
-              class="flex h-full items-end justify-center"
-            >
-              <button
-                v-if="
-                  accountInfo.isConnected &&
-                  !isUserOnOtherPlayerPage &&
-                  showClaimNativeToken &&
-                  !hasClaimedStarterPack
-                "
-                class="relative my-3 rounded bg-[#5b75f4] p-2 text-xl text-white transition-colors duration-500 ease-in-out text-shadow hover:bg-[#6981f6]"
-                @click="claimNativeToken()"
-              >
-                Claim some native tokens
-                <Icon
-                  name="ic:round-close"
-                  class="absolute -right-6 -top-2 h-7 w-7 text-red-500"
-                  @click.stop="closeClaimNativeToken()"
-                />
-              </button>
-            </div>
+
             <div
               v-if="isPlayerRegistered || !isGameFinishedInUi"
               class="relative flex flex-col items-center justify-center"
@@ -153,7 +134,7 @@
               >
                 <div
                   v-if="cells.length > 0"
-                  class="w-fit rounded-md p-4"
+                  class="mt-2 w-fit rounded-md p-4"
                   :style="`background-color: ${calculateCardColor[0]}`"
                 >
                   <div class="rounded-md bg-white p-2">
@@ -190,6 +171,28 @@
             >
               Players
             </button>
+            <div
+              v-if="isPlayerRegistered || !isGameFinishedInUi"
+              class="absolute bottom-0 flex h-fit items-end justify-center"
+            >
+              <button
+                v-if="
+                  accountInfo.isConnected &&
+                  !isUserOnOtherPlayerPage &&
+                  showClaimNativeToken &&
+                  !hasClaimedStarterPack
+                "
+                class="relative my-3 rounded bg-[#5b75f4] p-2 text-xl text-white transition-colors duration-500 ease-in-out text-shadow hover:bg-[#6981f6]"
+                @click="claimNativeToken()"
+              >
+                Claim some native tokens
+                <Icon
+                  name="ic:round-close"
+                  class="absolute -right-6 -top-2 h-7 w-7 text-red-500"
+                  @click.stop="closeClaimNativeToken()"
+                />
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -198,7 +201,7 @@
         class="relative col-span-2 flex flex-col items-center justify-start md:col-start-6 md:items-end"
       >
         <ul
-          class="grid grid-cols-9 justify-center gap-0.5 rounded-lg bg-white p-2 shadow-xl md:grid-cols-6 lg:grid-cols-9 lg:grid-rows-10"
+          class="relative grid grid-cols-9 grid-rows-10 justify-center gap-0.5 rounded-lg bg-white p-2 shadow-xl md:grid-cols-6 lg:grid-cols-9 lg:grid-rows-10"
         >
           <li
             v-for="(currentDrawnNumber, index) in currentDrawnNumbers"
@@ -211,23 +214,23 @@
               :style="`background-color: ${calculateCardColor[0]}`"
             ></span>
           </li>
+          <transition name="number-fade" appear>
+            <div
+              v-if="currentNumber !== null"
+              class="transform-center absolute flex h-20 w-20 justify-center rounded-full bg-white text-3xl font-bold text-white md:h-40 md:w-40 md:text-9xl"
+            >
+              <div
+                :style="`background-color: ${calculateCardColor[0]}`"
+                class="flex h-full w-full items-center justify-center rounded-full bg-opacity-40"
+              >
+                {{ currentNumber }}
+              </div>
+            </div>
+          </transition>
         </ul>
         <p v-if="!isGameFinishedInUi" class="my-4 w-full text-center text-xl">
           Remaining drawn Numbers count: {{ remainingDrawnNumbersCount }}
         </p>
-        <transition name="number-fade" appear>
-          <div
-            v-if="currentNumber !== null"
-            class="transform-center absolute flex h-40 w-40 justify-center rounded-full bg-white text-9xl font-bold text-white"
-          >
-            <div
-              :style="`background-color: ${calculateCardColor[0]}`"
-              class="flex h-full w-full justify-center rounded-full bg-opacity-40"
-            >
-              {{ currentNumber }}
-            </div>
-          </div>
-        </transition>
       </div>
     </div>
 
@@ -241,7 +244,7 @@
         <li
           v-for="playerAddress in playerAddresses"
           :key="playerAddress"
-          class="my-0.5 cursor-pointer text-sm text-blue-600 underline md:text-xl"
+          class="my-0.5 cursor-pointer text-sm text-blue-600 md:text-xl"
           @click="goToPageWithQuery(playerAddress)"
         >
           {{ playerAddress }}
@@ -265,7 +268,7 @@
             <li
               v-for="winner in winners"
               :key="winner"
-              class="my-0.5 cursor-pointer text-sm text-blue-600 underline md:text-xl"
+              class="my-0.5 cursor-pointer text-sm text-blue-600 md:text-xl"
               @click="goToPageWithQuery(winner)"
             >
               {{ winner }}
@@ -934,13 +937,6 @@ const cells = computed(() => formatCells(cardNumbers.value))
   }
 }
 
-.transform-center {
-  position: absolute;
-  top: 30%;
-  right: 20%;
-  transform: translate(-20%, -20%);
-}
-
 .number-fade-enter-active,
 .number-fade-leave-active {
   transition:
@@ -949,12 +945,22 @@ const cells = computed(() => formatCells(cardNumbers.value))
 }
 
 .number-fade-enter-from {
-  transform: scale(1);
+  transform: translateY(100%) scale(1);
+  opacity: 0;
+}
+
+.number-fade-enter-to {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.number-fade-leave-from {
+  transform: translateY(0) scale(1);
   opacity: 1;
 }
 
 .number-fade-leave-to {
-  transform: scale(0);
+  transform: translateY(-100%) scale(0.5);
   opacity: 0;
 }
 </style>

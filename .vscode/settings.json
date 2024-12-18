@@ -2,7 +2,7 @@
   "[json][jsonc][javascript][typescript][vue]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "editor.formatOnSave": true,
+  // "editor.formatOnSave": true,
   "typescript.tsdk": "node_modules/typescript/lib",
   "css.lint.unknownAtRules": "ignore",
   "scss.lint.unknownAtRules": "ignore",
@@ -11,6 +11,6 @@
   "vue.inlayHints.missingProps": true,
   "vue.inlayHints.optionsWrapper": true,
   "liveServer.settings.AdvanceCustomBrowserCmdLine": "chrome",
-  "liveshare.allowGuestDebugControl": true,
-  "vue3snippets.enable-compile-vue-file-on-did-save-code": true
+  "liveshare.allowGuestDebugControl": true
+  // "vue3snippets.enable-compile-vue-file-on-did-save-code": true
 }
