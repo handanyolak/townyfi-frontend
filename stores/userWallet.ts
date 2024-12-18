@@ -1,13 +1,4 @@
-import { useAppKitAccount } from '@reown/appkit/vue'
-import {
-  type Address,
-  custom,
-  publicActions,
-  createWalletClient,
-  createPublicClient,
-  http,
-  fallback,
-} from 'viem'
+import { createPublicClient, http, fallback } from 'viem'
 import * as chains from 'viem/chains'
 import { custom as customChain } from '~/chains/custom'
 
@@ -17,25 +8,13 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
     public: { chain: runtimeChain, publicRpcUrls },
   } = useRuntimeConfig()
 
-  // --------[ Stores ]-------- //
-  const connectionStore = useConnectionStore()
-
   // --------[ States ]-------- //
-  const ethereum = window.ethereum
   const chain =
     runtimeChain !== 'custom'
       ? (chains[
           runtimeChain as keyof typeof chains // eslint-disable-line import/namespace
         ] as chains.Chain)
       : customChain
-
-  const walletClient = computed(() =>
-    createWalletClient({
-      chain,
-      transport: custom(ethereum),
-      account: useAppKitAccount().value.address as Address,
-    }).extend(publicActions),
-  )
 
   const publicClient = computed(() =>
     createPublicClient({
@@ -62,17 +41,11 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
     }),
   )
 
-  const chainClient = connectionStore.hasMetamask ? walletClient : publicClient
   const currentBlockNumber = ref(BigInt(0))
 
   // --------[ Actions ]-------- //
   const setCurrentBlockNumber = (newBlockNumber: bigint) => {
     currentBlockNumber.value = newBlockNumber
-  }
-
-  const connect = async () => {
-    await walletClient.value.getAddresses()
-    await walletClient.value.requestAddresses()
   }
 
   const startEthEvents = () => {
@@ -95,11 +68,8 @@ export const useUserWalletStore = defineStore('userWalletStore', () => {
 
   return {
     chain,
-    chainClient,
     publicClient,
-    walletClient,
     currentBlockNumber,
-    connect,
     startEthEvents,
     setCurrentBlockNumber,
   }

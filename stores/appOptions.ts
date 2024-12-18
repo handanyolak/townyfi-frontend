@@ -2,14 +2,12 @@ import { isAddress, zeroAddress, type Address } from 'viem'
 import { useAppKitAccount } from '@reown/appkit/vue'
 import { TYPE } from 'vue-toastification'
 import type { ToastOptions } from 'vue-toastification/src/types'
-import type { CoordinateStruct } from '~/types'
 import { transformPlayer } from '~/transformers'
 
 export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   // --------[ Stores ]-------- //
   const userWalletStore = useUserWalletStore()
   const contractStore = useContractStore()
-  const appOptionStore = useAppOptionsStore()
   const bingoStore = useBingoStore()
   const playerStore = usePlayerStore()
   const accountInfo = useAppKitAccount()
@@ -26,106 +24,16 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const showSidebar = ref(false)
   const isGameInfo = ref(false)
   const isOptions = ref(false)
-  const originCoordinate = ref<CoordinateStruct>({
-    _x: BigInt(0),
-    _y: BigInt(0),
-  })
-  const modalComponentName = ref('')
-  const modalComponentProps = ref({})
   const isAnimation = ref(false)
   const isConfirmed = ref(false)
   const isAttackSuccess = ref(false)
 
-  const modalResultResolver = ref<((value: unknown) => void) | null>(null)
-
   // --------[ Actions ]-------- //
-  const setModalInfo = (
-    newModalComponentName: string,
-    newModalComponentProps?: any,
-  ) => {
-    modalComponentName.value = newModalComponentName
-    modalComponentProps.value = newModalComponentProps
-    isAnimation.value = Object.prototype.hasOwnProperty.call(
-      modalComponentProps.value ?? {},
-      'animation',
-    )
-    sideLeave({
-      isGameInfo: true,
-      isContractInfo: true,
-      isBlockchainInfo: true,
-      isOptions: true,
-    })
-    return new Promise((resolve) => {
-      modalResultResolver.value = resolve
-    })
-  }
-
-  const clearModalInfo = () => {
-    modalComponentName.value = ''
-    modalComponentProps.value = {}
-    if (modalResultResolver.value) {
-      modalResultResolver.value(false)
-      modalResultResolver.value = null
-    }
-    isConfirmed.value = false
-    isAttackSuccess.value = false
-
-    return true
-  }
-
-  const closeModalWithResponse = (response: boolean) => {
-    if (modalResultResolver.value) {
-      modalResultResolver.value(response)
-      modalResultResolver.value = null
-    }
-  }
-
-  const sideLeave = ({
-    isGameInfo,
-    isContractInfo,
-    isBlockchainInfo,
-    isOptions,
-  }: {
-    isGameInfo: boolean
-    isContractInfo: boolean
-    isBlockchainInfo: boolean
-    isOptions: boolean
-  }) => {
-    showSidebar.value = false
-
-    requestAnimationFrame(() => {
-      if (isGameInfo) {
-        appOptionStore.isGameInfo = false
-      }
-      if (isContractInfo) {
-        appOptionStore.isContractInfo = false
-      }
-      if (isBlockchainInfo) {
-        appOptionStore.isBlockchainInfo = false
-      }
-      if (isOptions) {
-        appOptionStore.isOptions = false
-      }
-    })
-  }
-
-  const setOriginCoordinate = (newOriginCoordinate: CoordinateStruct) => {
-    originCoordinate.value = newOriginCoordinate
-  }
-
   const initializeApp = async (playerAddress?: null | string) => {
-    await sleep(250)
-
     if (playerAddress && isAddress(playerAddress)) {
       playerStore.setOtherPlayerAddress(playerAddress)
     } else {
       playerAddress = null
-    }
-
-    if (accountInfo.value.isConnected) {
-      await userWalletStore.connect()
-
-      userWalletStore.startEthEvents()
     }
 
     if (!initialized.value) {
@@ -433,19 +341,10 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     showSidebar,
     isContractInfo,
     isBlockchainInfo,
-    originCoordinate,
-    modalComponentName,
-    modalComponentProps,
     isConfirmed,
     isAnimation,
-    modalResultResolver,
     isAttackSuccess,
-    sideLeave,
     initializeApp,
-    setOriginCoordinate,
     setInitializeValues,
-    setModalInfo,
-    clearModalInfo,
-    closeModalWithResponse,
   }
 })

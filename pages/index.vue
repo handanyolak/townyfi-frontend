@@ -123,8 +123,13 @@
                   randomNumbers.length === 0
                 "
                 class="mb-8 rounded bg-[#5b75f4] px-6 py-3 text-lg text-white transition-colors duration-500 ease-in-out hover:bg-[#6981f6] md:text-xl"
+                :disabled="isClaimingNativeToken"
                 @click="buyBingoCard()"
               >
+                <Icon
+                  v-if="isClaimingNativeToken"
+                  name="svg-spinners:tadpole"
+                />
                 Buy the card (<span>{{ bingoCardPriceFormatted }}</span>
                 {{ publicClient.chain.nativeCurrency.symbol }} )
               </button>
@@ -301,6 +306,7 @@ const { data: hash, writeContractAsync } = useWriteContract()
 const { isSuccess: isConfirmed } = useWaitForTransactionReceipt({
   hash,
 })
+const { signMessageAsync } = useSignMessage()
 const userWalletStore = useUserWalletStore()
 const { publicClient } = storeToRefs(userWalletStore)
 
@@ -377,6 +383,7 @@ const cardNumbers = ref<number[]>([])
 const unixTimestamp = ref(0)
 const currentDrawnNumbers = ref<number[]>([])
 const showClaimNativeToken = ref(true)
+const isClaimingNativeToken = ref(false)
 const isSuccessCheckBingoCard = ref(false)
 const isSuccessClaimReward = ref(false)
 const isPlayerOpen = ref(false)
@@ -388,7 +395,6 @@ const hasClaimedStarterPack = useStorage(
   false,
 )
 const toast = useToast()
-const { signMessageAsync } = useSignMessage()
 
 // --------[ Lifecycle ]-------- //
 onMounted(async () => {
@@ -498,7 +504,7 @@ const buyBingoCard = async () => {
 
   const functionName = 'buyBingoCard'
   try {
-    await simulateContract(wagmiAdapter.wagmiConfig, {
+    simulateContract(wagmiAdapter.wagmiConfig, {
       abi: bingoAbi,
       address: bingoContractAddress as Address,
       functionName,
@@ -694,6 +700,12 @@ const claimNativeToken = async () => {
     )
     hasClaimedStarterPack.value = true
     showClaimNativeToken.value = false
+
+    isClaimingNativeToken.value = true
+
+    setTimeout(() => {
+      isClaimingNativeToken.value = false
+    }, 15000)
   } catch (error: any) {
     useAppToast(TYPE.ERROR, error.message)
   } finally {
@@ -712,7 +724,7 @@ const claimReward = async () => {
 
   const functionName = 'claimReward'
   try {
-    await simulateContract(wagmiAdapter.wagmiConfig, {
+    simulateContract(wagmiAdapter.wagmiConfig, {
       abi: bingoAbi,
       address: bingoContractAddress as Address,
       functionName,
@@ -765,7 +777,7 @@ const checkBingoCard = async () => {
 
   const functionName = 'checkCardResult'
   try {
-    await simulateContract(wagmiAdapter.wagmiConfig, {
+    simulateContract(wagmiAdapter.wagmiConfig, {
       abi: bingoAbi,
       address: bingoContractAddress as Address,
       functionName,
