@@ -1,0 +1,1 @@
+import{a as t,b as o}from"./BrgJGm82.js";import{d as r,t as s,v as l,cX as n}from"./CNNafByF.js";const i=r({__name:"default",setup(u){const e=t({selector:"body",storageKey:"theme",valueDark:"dark",valueLight:"light"});return o(e),(a,c)=>(s(),l("div",null,[n(a.$slots,"default")]))}});export{i as default};
