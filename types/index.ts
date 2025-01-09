@@ -1,10 +1,7 @@
 import { type Message } from 'yup'
 
 export * from './composables'
-export * from './components'
 export * from './toastification'
-export * from './contract'
-export * from './store'
 
 export type ParamType<T> = T extends (...args: infer P) => any ? P : never
 
@@ -18,11 +15,5 @@ declare module 'yup' {
     ethereumAddress(message?: Message<any>): this
     coordinate(message?: Message<any>): this
     townyIsRegistered(message?: Message<any>): this
-  }
-}
-
-declare global {
-  interface Window {
-    ethereum?: any
   }
 }

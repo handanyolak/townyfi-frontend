@@ -1,10 +1,15 @@
 import { createResolver } from '@nuxt/kit'
+import vueDevTools from 'vite-plugin-vue-devtools'
 import { convertToInteger } from './utils'
 
 const { resolve } = createResolver(import.meta.url)
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  telemetry: {
+    enabled: false,
+  },
+
   experimental: {
     localLayerAliases: true,
   },
@@ -12,6 +17,7 @@ export default defineNuxtConfig({
   ssr: false,
 
   vite: {
+    plugins: [vueDevTools()],
     resolve: {
       alias: {
         crypto: 'crypto-browserify',
@@ -37,7 +43,14 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: ['@pinia/nuxt', '@vueuse/nuxt', '@vee-validate/nuxt', 'nuxt-icon'],
+  modules: [
+    '@nuxt/devtools',
+    '@pinia/nuxt',
+    '@vueuse/nuxt',
+    '@vee-validate/nuxt',
+    '@nuxt/icon',
+    '@wagmi/vue/nuxt',
+  ],
 
   css: ['~/assets/css/main.css'],
 
@@ -59,11 +72,11 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      appUrl: process.env.NUXT_APP_URL || 'https://emretepedev.github.io',
-      bingoContractAddress:
-        process.env.NUXT_BINGO_CONTRACT_ADDRESS ||
-        '0xabb847e1619bfa36d7531793052a5f0989b23585',
-      chain: process.env.NUXT_CHAIN || 'sepolia',
+      appUrl: process.env.NUXT_APP_URL || 'http://localhost:3000',
+      appBaseUrl: process.env.NUXT_APP_BASE_URL || '/',
+      appEnv: process.env.NUXT_APP_ENV || 'development',
+      bingoContractAddress: process.env.NUXT_BINGO_CONTRACT_ADDRESS || '',
+      chain: process.env.NUXT_CHAIN || '',
       drawnNumbersIntervalInSec: convertToInteger(
         process.env.NUXT_DRAWN_NUMBERS_INTERVAL_IN_SEC,
         3,
@@ -76,20 +89,15 @@ export default defineNuxtConfig({
         process.env.NUXT_CHAIN_BLOCK_TIME_IN_SEC,
         5,
       ),
-      publicRpcUrls: (
-        process.env.NUXT_PUBLIC_RPC_URLS ||
-        'https://sepolia.gateway.tenderly.co,https://eth-sepolia.public.blastapi.io,https://gateway.tenderly.co/public/sepolia,https://ethereum-sepolia.blockpi.network/v1/rpc/private,https://sepolia.drpc.org,https://ethereum-sepolia-rpc.publicnode.com,https://endpoints.omniatech.io/v1/eth/sepolia/public,https://ethereum-sepolia.rpc.subquery.network/public,https://1rpc.io/sepolia,https://api.zan.top/eth-sepolia,https://eth-sepolia.g.alchemy.com/v2/demo,https://eth-sepolia.api.onfinality.io/public,https://eth-testnet.4everland.org/v1/37fa9972c1b1cd5fab542c7bdd4cde2f,https://eth-sepolia-public.unifra.io'
-      ).split(','),
+      rpcUrls: (process.env.NUXT_RPC_URLS || '').split(','),
+      rpcUrlsPublic: (process.env.NUXT_RPC_URLS_PUBLIC || '').split(','),
       ozDefenderRelayerWebhookUrl:
-        process.env.NUXT_OZ_DEFENDER_RELAYER_WEBHOOK_URL ||
-        'https://api.defender.openzeppelin.com/actions/4ede244c-65a3-4ab9-9c8a-1eb265782cd4/runs/webhook/333bd302-898d-4ba9-9a60-77e2a0af814a/PL4mQLTJw2AZ61pTSA73Wj',
+        process.env.NUXT_OZ_DEFENDER_RELAYER_WEBHOOK_URL || '',
       ozDefenderRelayerMessage:
-        process.env.NUXT_OZ_DEFENDER_RELAYER_MESSAGE || 'Bingo!',
+        process.env.NUXT_OZ_DEFENDER_RELAYER_MESSAGE || '',
       chainExtendExplorerUrls:
         process.env.NUXT_CHAIN_EXTEND_EXPLORER_URLS?.split(',') || [],
-      reownAppkitProjectId:
-        process.env.NUXT_REOWN_APPKIT_PROJECT_ID ||
-        'f1af70943ebd1ef87a5642ad2b859a82',
+      reownAppkitProjectId: process.env.NUXT_REOWN_APPKIT_PROJECT_ID || '',
     },
   },
 
@@ -110,19 +118,18 @@ export default defineNuxtConfig({
   typescript: {
     tsConfig: {
       compilerOptions: {
-        sourceMap: true,
+        sourceMap: process.env.NUXT_APP_ENV === 'development',
       },
     },
   },
 
   devtools: {
     timeline: {
-      enabled: true,
+      enabled: process.env.NUXT_APP_ENV === 'development',
     },
   },
 
   app: {
-    baseURL: '/bingo/',
     head: {
       title: 'Bingo',
       meta: [
@@ -133,7 +140,11 @@ export default defineNuxtConfig({
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       ],
       link: [
-        { rel: 'icon', type: 'image/x-icon', href: '/favicon.svg' },
+        {
+          rel: 'icon',
+          type: 'image/x-icon',
+          href: `${process.env.NUXT_APP_BASE_URL || '/'}favicon.svg`,
+        },
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         {
           rel: 'preconnect',
@@ -147,10 +158,6 @@ export default defineNuxtConfig({
       ],
     },
   },
-  // devServer: {
-  //   https: {
-  //     key: './localhost.key',
-  //     cert: './localhost.crt',
-  //   },
-  // },
+
+  compatibilityDate: '2024-12-31',
 })

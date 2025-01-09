@@ -1,8 +1,7 @@
 import { isAddress, zeroAddress, type Address } from 'viem'
-import { useAppKitAccount } from '@reown/appkit/vue'
 import { TYPE } from 'vue-toastification'
 import type { ToastOptions } from 'vue-toastification/src/types'
-import { transformPlayer } from '~/transformers'
+import { useAccount } from '@wagmi/vue'
 
 export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   // --------[ Stores ]-------- //
@@ -10,26 +9,23 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
   const contractStore = useContractStore()
   const bingoStore = useBingoStore()
   const playerStore = usePlayerStore()
-  const accountInfo = useAppKitAccount()
-  const eventStore = useEventStore()
+  const accountInfo = useAccount()
+
+  const { bingoContractPublic } = contractStore
+  const { publicClient } = userWalletStore
 
   const {
     public: { drawnNumbersIntervalInSec, drawnNumbersAdditionalTimeInSec },
   } = useRuntimeConfig()
 
   // --------[ States ]-------- //
-  const isBlockchainInfo = ref(false)
-  const isContractInfo = ref(false)
   const initialized = ref(false)
-  const showSidebar = ref(false)
-  const isGameInfo = ref(false)
-  const isOptions = ref(false)
-  const isAnimation = ref(false)
-  const isConfirmed = ref(false)
-  const isAttackSuccess = ref(false)
 
   // --------[ Actions ]-------- //
-  const initializeApp = async (playerAddress?: null | string) => {
+  const initializeApp = async (
+    playerAddress?: null | string,
+    gameId?: bigint,
+  ) => {
     if (playerAddress && isAddress(playerAddress)) {
       playerStore.setOtherPlayerAddress(playerAddress)
     } else {
@@ -39,196 +35,210 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     if (!initialized.value) {
       initialized.value = true
 
-      await setInitializeValues(playerAddress)
+      await setInitializeValues(playerAddress, gameId)
 
-      // userWalletStore.chainClient.watchBlockNumber({
-      //   onBlockNumber: async (blockNumber) => {
-      //     userWalletStore.setCurrentBlockNumber(blockNumber)
-      //     userWalletStore.setBalance(
-      //       await userWalletStore.publicClient.getBalance({
-      //         address: userWalletStore.address,
-      //       }),
-      //     )
-      //   },
-      // })
+      userWalletStore.startEthEvents()
+
+      publicClient.watchBlocks({
+        includeTransactions: false,
+        emitOnBegin: true,
+        emitMissed: false,
+        pollingInterval: 5 * 1000,
+        onError: (error: Error) => console.error('watchBlocks', error),
+        onBlock: async (block) => {
+          const contractBalance = await publicClient.getBalance({
+            address: bingoContractPublic.address,
+          })
+
+          bingoStore.setContractBalance(contractBalance)
+          userWalletStore.setCurrentBlockNumber(block.number)
+
+          const chainNamespace =
+            // @ts-expect-error
+            accountInfo.chain.value?.chainNamespace ||
+            userWalletStore.appkit.getActiveChainNamespace()
+          if (
+            accountInfo.address.value &&
+            accountInfo.isConnected.value &&
+            accountInfo.chain.value &&
+            chainNamespace
+          ) {
+            // @ts-expect-error
+            userWalletStore.appkit.syncBalance({
+              address: accountInfo.address.value,
+              chainId: accountInfo.chain.value.id,
+              chainNamespace,
+            })
+          }
+        },
+      })
 
       const bingoContractEventFilter = {
-        address: contractStore.getBingoContractPublic.address,
-        abi: contractStore.getBingoContractPublic.abi,
+        address: bingoContractPublic.address,
+        abi: bingoContractPublic.abi,
         strict: true,
-        onError: (error: Error) =>
-          console.error('bingoContractEventFilter', error),
+        batch: true,
+        pollingInterval: 10 * 1000,
+        onError: (error: Error) => console.error('watchContractEvent', error),
       } as const
 
-      userWalletStore.publicClient.watchContractEvent({
+      publicClient.watchContractEvent({
         ...bingoContractEventFilter,
-        eventName: 'BingoCardPurchased',
-        onLogs: async (logs) => {
-          try {
-            const uniqueLogs = getUniqueLogs(logs)
-            console.debug('BingoCardPurchased logs', uniqueLogs)
-            for (const { eventName, args } of uniqueLogs) {
-              const { playerAddress: playerAddressFromLog } = args
-
-              while (true) {
-                if (
-                  playerAddressFromLog.toLowerCase() ===
-                  accountInfo.value.address?.toLowerCase()
-                ) {
-                  let playerInfoRaw
-                  try {
-                    playerInfoRaw =
-                      await contractStore.getBingoContractPublic.read.getPlayerInfo(
-                        [playerAddressFromLog],
-                      )
-                  } catch (error) {
-                    await sleep(0.5 * 1000)
-                    continue
-                  }
-
-                  const { playerAddress, numbers, remainingNumbersCount } =
-                    transformPlayer(playerInfoRaw)
-
-                  playerStore.setPlayerAddress(playerAddress)
-                  playerStore.setPlayerNumbers(
-                    numbers as unknown as readonly number[],
-                  )
-                  playerStore.setRemainingNumbersCount(remainingNumbersCount)
-                }
-
-                if (
-                  !bingoStore.playerAddresses.includes(playerAddressFromLog)
-                ) {
-                  bingoStore.addPlayerAddress(playerAddressFromLog)
-                }
-
-                break
+        eventName: 'CardPurchased',
+        onLogs: (logs) => {
+          const uniqueLogs = getUniqueLogs(logs)
+          for (const { eventName, args } of uniqueLogs) {
+            try {
+              const { gameId, player, value } = args
+              // TODO: think about the game id
+              // we can check if the game id is the same as the current game id
+              if (bingoStore.availableGameId !== gameId) {
+                throw new Error(
+                  'Game id is not the same as the current game id.',
+                )
               }
+
+              if (
+                player.playerAddress.toLowerCase() ===
+                accountInfo.address.value?.toLowerCase()
+              ) {
+                setPlayerValues(player, true)
+              }
+
+              bingoStore.increasePrizePoolBalance(value)
 
               processAndPrintLog({
                 logName: eventName,
                 logArgs: args,
                 useToast: true,
-                toastMessage: 'Bingo card purchased!',
+                toastMessage: 'New player joined the game!',
                 toastOptions: {
                   timeout: 2 * 1000,
                 },
               })
+            } catch (error) {
+              console.error(`${eventName} error`, error)
             }
-          } catch (error) {
-            console.error(`${logs[0].eventName} error`, error)
           }
         },
       })
 
-      userWalletStore.publicClient.watchContractEvent({
+      publicClient.watchContractEvent({
+        ...bingoContractEventFilter,
+        eventName: 'RequestRandomness',
+        onLogs: (logs) => {
+          const uniqueLogs = getUniqueLogs(logs)
+          for (const { eventName, args } of uniqueLogs) {
+            try {
+              const {
+                gameId,
+                requestId,
+                requestPrice,
+                refundAmount,
+                requestTimestamp,
+              } = args
+              // TODO: think about the game id
+              // we can check if the game id is the same as the current game id
+              if (bingoStore.availableGameId !== gameId) {
+                throw new Error(
+                  'Game id is not the same as the current game id.',
+                )
+              }
+
+              bingoStore.setVrfRequestId(requestId)
+              bingoStore.setVrfRequested(true)
+              bingoStore.increaseRequestRandomNumbersRefund(refundAmount)
+              bingoStore.increaseRequestRandomnessPayment(requestPrice)
+              bingoStore.decreasePrizePoolBalance(requestPrice + refundAmount)
+
+              processAndPrintLog({
+                logName: eventName,
+                logArgs: args,
+                useToast: true,
+                toastMessage:
+                  'Randomness requested! Waiting for the Verifiable Randomness Function (VRF) callback...',
+                toastOptions: {
+                  timeout: 2 * 1000,
+                },
+              })
+            } catch (error) {
+              console.error(`${eventName} error`, error)
+            }
+          }
+        },
+      })
+
+      publicClient.watchContractEvent({
         ...bingoContractEventFilter,
         eventName: 'DrawnNumbersFilled',
         onLogs: async (logs) => {
-          try {
-            const uniqueLogs = getUniqueLogs(logs)
-            console.debug('DrawnNumbersFilled logs', uniqueLogs)
-            for (const { eventName } of uniqueLogs) {
-              await sleep(20 * 1000)
+          const uniqueLogs = getUniqueLogs(logs)
+          for (const { eventName, args } of uniqueLogs) {
+            try {
+              const {
+                gameId,
+                drawnNumbersTimestamp: drawnNumbersTimestampFromLog,
+              } = args
 
-              while (true) {
-                const [drawnNumbersTimestamp, randomNumbers] =
-                  await Promise.all([
-                    contractStore.getBingoContractPublic.read.drawnNumbersTimestamp(),
-                    contractStore.getBingoContractPublic.read.getRandomNumbers(),
-                  ])
-
-                if (drawnNumbersTimestamp <= BigInt(0)) {
-                  continue
-                }
-
-                bingoStore.setDrawnNumbersTimestamp(drawnNumbersTimestamp)
-                bingoStore.setRandomNumbers(randomNumbers)
-
-                break
+              // TODO: think about the game id, maybe we can check if the game id is the same as the current game id
+              if (bingoStore.availableGameId !== gameId) {
+                throw new Error(
+                  'Game id is not the same as the current game id.',
+                )
               }
 
-              bingoStore.setIsDrawnNumbersFilled(true)
+              await sleep(10 * 1000)
 
-              processAndPrintLog({
-                logName: eventName,
-                useToast: true,
-                toastMessage: `Drawn numbers filled!`,
-              })
-            }
-          } catch (error) {
-            console.error(`${logs[0].eventName} error`, error)
-          }
-        },
-      })
-
-      userWalletStore.publicClient.watchContractEvent({
-        ...bingoContractEventFilter,
-        eventName: 'GameFinished',
-        onLogs: async (logs) => {
-          try {
-            const uniqueLogs = getUniqueLogs(logs)
-            console.debug('GameFinished logs', uniqueLogs)
-            for (const { eventName } of uniqueLogs) {
-              const initialIsGameFinished = bingoStore.isGameFinished
               while (true) {
                 const [
+                  drawnNumbersTimestamp,
                   drawnNumbers,
-                  winners,
-                  rewardPerWinner,
-                  winDrawnNumbersIndex,
-                  newIsGameFinished,
-                  finalizeGameTimestamp,
+                  FINALIZATION_COOLDOWN,
                 ] = await Promise.all([
-                  contractStore.getBingoContractPublic.read.getDrawnNumbers(),
-                  contractStore.getBingoContractPublic.read.getWinners(),
-                  contractStore.getBingoContractPublic.read.rewardPerWinner(),
-                  contractStore.getBingoContractPublic.read.winDrawnNumbersIndex(),
-                  contractStore.getBingoContractPublic.read.isGameFinished(),
-                  contractStore.getBingoContractPublic.read.finalizeGameTimestamp(),
+                  bingoContractPublic.read.drawnNumbersTimestamp([gameId]),
+                  bingoContractPublic.read.drawnNumbers([gameId]),
+                  bingoContractPublic.read.FINALIZATION_COOLDOWN(),
                 ])
 
-                if (initialIsGameFinished === newIsGameFinished) {
-                  await sleep(0.1 * 1000)
-                  continue
+                if (drawnNumbersTimestamp === drawnNumbersTimestampFromLog) {
+                  bingoStore.setDrawnNumbersTimestamp(drawnNumbersTimestamp)
+                  bingoStore.setDrawnNumbers([...drawnNumbers])
+
+                  const drawnNumbersWithTimestamp = drawnNumbers.map(
+                    (number, index) => ({
+                      number,
+                      timestamp:
+                        Number(drawnNumbersTimestamp) +
+                        index * drawnNumbersIntervalInSec +
+                        drawnNumbersAdditionalTimeInSec +
+                        Number(FINALIZATION_COOLDOWN),
+                    }),
+                  )
+
+                  bingoStore.setDrawnNumbersWithTimestamp(
+                    drawnNumbersWithTimestamp,
+                  )
+                  bingoStore.setIsDrawnNumbersFilled(true)
+
+                  break
                 }
 
-                const drawnNumbersWithTimestamp = drawnNumbers.map(
-                  (number, index) => ({
-                    number,
-                    timestamp:
-                      Number(finalizeGameTimestamp) +
-                      index * drawnNumbersIntervalInSec +
-                      drawnNumbersAdditionalTimeInSec,
-                  }),
-                )
-                bingoStore.setDrawnNumbersWithTimestamp(
-                  drawnNumbersWithTimestamp,
-                )
-                bingoStore.setDrawnNumbers(drawnNumbers)
-                bingoStore.setWinners(winners)
-                bingoStore.setRewardPerWinner(rewardPerWinner)
-                bingoStore.setWinDrawnNumbersIndex(winDrawnNumbersIndex)
-                bingoStore.setIsGameFinished(newIsGameFinished)
-                eventStore.triggerGameFinishedEvent()
-
-                break
+                await sleep(0.1 * 1000)
               }
 
               processAndPrintLog({
                 logName: eventName,
-                logArgs: {
-                  drawnNumbersTimestamp: bingoStore.drawnNumbersTimestamp,
-                },
                 useToast: true,
-                toastMessage: `Drawn numbers filled! The game will begin in a few seconds`,
+                toastMessage: `Drawn numbers filled! The game will begin in a few minutes. Submit your card numbers and wait for the game to start.`,
               })
+            } catch (error) {
+              console.error(`${logs[0].eventName} error`, error)
             }
-          } catch (error) {
-            console.error(`${logs[0].eventName} error`, error)
           }
         },
       })
+
+      // TODO: implement reward claimed
     }
   }
 
@@ -255,95 +265,141 @@ export const useAppOptionsStore = defineStore('appOptionsStore', () => {
     }
   }
 
-  const setInitializeValues = async (playerAddress?: null | string) => {
+  const setInitializeValues = async (
+    playerAddress?: null | Address,
+    gameId?: bigint,
+  ) => {
+    playerAddress = (playerAddress ??
+      accountInfo.address.value ??
+      zeroAddress) as Address
+
+    gameId = gameId ?? 0n
+
     const [
+      availableGameId,
+      isPlayerExists,
+      [winners, winnersCursor],
+      [players, playersCursor],
       drawnNumbers,
+      winningDrawnNumberIndex,
       drawnNumbersTimestamp,
-      winners,
-      isGameFinished,
-      bingoCardNumbersCount,
-      minBingoNumber,
-      maxBingoNumber,
-      bingoCardPrice,
-      rewardPerWinner,
-      minPlayers,
-      playerAddresses,
-      finalizationCooldown,
       isDrawnNumbersFilled,
-      winDrawnNumbersIndex,
-      finalizeGameTimestamp,
-      randomNumbers,
+      isGameFinished,
+      vrfRequested,
+      vrfRequestId,
+      prizePoolBalance,
+      requestRandomnessPayment,
+      requestRandomNumbersRefund,
+      MIN_VRF_REQUEST_RETRY_INTERVAL,
+      MIN_VRF_CALLBACK_GAS_LIMIT,
+      MAX_VRF_CALLBACK_GAS_LIMIT,
+      VRF_NUM_WORDS,
+      VRF_REQUEST_CONFIRMATIONS,
+      VRF_V2_PLUS_WRAPPER_ADDRESS,
+      BINGO_NUMBERS_COUNT,
+      BINGO_MAX_NUMBER,
+      BINGO_MIN_NUMBER,
+      BINGO_CARD_NUMBERS_COUNT,
+      MIN_PLAYERS,
+      BINGO_CARD_PRICE,
+      FINALIZATION_COOLDOWN,
     ] = await Promise.all([
-      contractStore.getBingoContractPublic.read.getDrawnNumbers(),
-      contractStore.getBingoContractPublic.read.drawnNumbersTimestamp(),
-      contractStore.getBingoContractPublic.read.getWinners(),
-      contractStore.getBingoContractPublic.read.isGameFinished(),
-      contractStore.getBingoContractPublic.read.BINGO_CARD_NUMBERS_COUNT(),
-      contractStore.getBingoContractPublic.read.MIN_BINGO_NUMBER(),
-      contractStore.getBingoContractPublic.read.MAX_BINGO_NUMBER(),
-      contractStore.getBingoContractPublic.read.BINGO_CARD_PRICE(),
-      contractStore.getBingoContractPublic.read.rewardPerWinner(),
-      contractStore.getBingoContractPublic.read.MIN_PLAYERS(),
-      contractStore.getBingoContractPublic.read.getPlayerAddresses(),
-      contractStore.getBingoContractPublic.read.FINALIZATION_COOLDOWN(),
-      contractStore.getBingoContractPublic.read.isDrawnNumbersFilled(),
-      contractStore.getBingoContractPublic.read.winDrawnNumbersIndex(),
-      contractStore.getBingoContractPublic.read.finalizeGameTimestamp(),
-      contractStore.getBingoContractPublic.read.getRandomNumbers(),
+      bingoContractPublic.read.availableGameId(),
+      bingoContractPublic.read.isPlayerExists([gameId, playerAddress]),
+      bingoContractPublic.read.winners([gameId, 0n, 100n]),
+      bingoContractPublic.read.players([gameId, 0n, 100n]),
+      bingoContractPublic.read.drawnNumbers([gameId]),
+      bingoContractPublic.read.winningDrawnNumberIndex([gameId]),
+      bingoContractPublic.read.drawnNumbersTimestamp([gameId]),
+      bingoContractPublic.read.isDrawnNumbersFilled([gameId]),
+      bingoContractPublic.read.isGameFinished([gameId]),
+      bingoContractPublic.read.vrfRequested([gameId]),
+      bingoContractPublic.read.vrfRequestId([gameId]),
+      bingoContractPublic.read.prizePoolBalance([gameId]),
+      bingoContractPublic.read.requestRandomnessPayment([gameId]),
+      bingoContractPublic.read.requestRandomNumbersRefund([gameId]),
+      bingoContractPublic.read.MIN_VRF_REQUEST_RETRY_INTERVAL(),
+      bingoContractPublic.read.MIN_VRF_CALLBACK_GAS_LIMIT(),
+      bingoContractPublic.read.MAX_VRF_CALLBACK_GAS_LIMIT(),
+      bingoContractPublic.read.VRF_NUM_WORDS(),
+      bingoContractPublic.read.VRF_REQUEST_CONFIRMATIONS(),
+      bingoContractPublic.read.i_vrfV2PlusWrapper(),
+      bingoContractPublic.read.BINGO_NUMBERS_COUNT(),
+      bingoContractPublic.read.BINGO_MAX_NUMBER(),
+      bingoContractPublic.read.BINGO_MIN_NUMBER(),
+      bingoContractPublic.read.BINGO_CARD_NUMBERS_COUNT(),
+      bingoContractPublic.read.MIN_PLAYERS(),
+      bingoContractPublic.read.BINGO_CARD_PRICE(),
+      bingoContractPublic.read.FINALIZATION_COOLDOWN(),
     ])
 
-    if (drawnNumbers.length > 0) {
+    bingoStore.setWinnersCursor(winnersCursor)
+    bingoStore.setPlayersCursor(playersCursor)
+
+    bingoStore.setAvailableGameId(availableGameId)
+    bingoStore.setWinners([...winners])
+    bingoStore.setPlayers([...players])
+    bingoStore.setDrawnNumbers([...drawnNumbers])
+    bingoStore.setWinningDrawnNumberIndex(winningDrawnNumberIndex)
+    bingoStore.setDrawnNumbersTimestamp(drawnNumbersTimestamp)
+    bingoStore.setIsDrawnNumbersFilled(isDrawnNumbersFilled)
+    bingoStore.setIsGameFinished(isGameFinished)
+    bingoStore.setVrfRequested(vrfRequested)
+    bingoStore.setVrfRequestId(vrfRequestId)
+    bingoStore.setPrizePoolBalance(prizePoolBalance)
+    bingoStore.setRequestRandomnessPayment(requestRandomnessPayment)
+    bingoStore.setRequestRandomNumbersRefund(requestRandomNumbersRefund)
+    bingoStore.setMinVrfRequestRetryInterval(MIN_VRF_REQUEST_RETRY_INTERVAL)
+    bingoStore.setMinVrfCallbackGasLimit(MIN_VRF_CALLBACK_GAS_LIMIT)
+    bingoStore.setMaxVrfCallbackGasLimit(MAX_VRF_CALLBACK_GAS_LIMIT)
+    bingoStore.setVrfNumWords(VRF_NUM_WORDS)
+    bingoStore.setVrfRequestConfirmations(VRF_REQUEST_CONFIRMATIONS)
+    bingoStore.setVrfV2PlusWrapperAddress(VRF_V2_PLUS_WRAPPER_ADDRESS)
+    bingoStore.setBingoNumbersCount(BINGO_NUMBERS_COUNT)
+    bingoStore.setMaxBingoNumber(BINGO_MAX_NUMBER)
+    bingoStore.setMinBingoNumber(BINGO_MIN_NUMBER)
+    bingoStore.setBingoCardNumbersCount(BINGO_CARD_NUMBERS_COUNT)
+    bingoStore.setMinPlayers(MIN_PLAYERS)
+    bingoStore.setBingoCardPrice(BINGO_CARD_PRICE)
+    bingoStore.setFinalizationCooldown(FINALIZATION_COOLDOWN)
+
+    if (isDrawnNumbersFilled) {
       const drawnNumbersWithTimestamp = drawnNumbers.map((number, index) => ({
         number,
         timestamp:
-          Number(finalizeGameTimestamp) +
+          Number(drawnNumbersTimestamp) +
           index * drawnNumbersIntervalInSec +
-          drawnNumbersAdditionalTimeInSec,
+          drawnNumbersAdditionalTimeInSec +
+          Number(FINALIZATION_COOLDOWN),
       }))
       bingoStore.setDrawnNumbersWithTimestamp(drawnNumbersWithTimestamp)
     }
 
-    bingoStore.setDrawnNumbers(drawnNumbers)
-    bingoStore.setDrawnNumbersTimestamp(drawnNumbersTimestamp)
-    bingoStore.setWinners(winners)
-    bingoStore.setIsGameFinished(isGameFinished)
-    bingoStore.setBingoCardNumbersCount(bingoCardNumbersCount)
-    bingoStore.setMinBingoNumber(minBingoNumber)
-    bingoStore.setMaxBingoNumber(maxBingoNumber)
-    bingoStore.setBingoCardPrice(bingoCardPrice)
-    bingoStore.setRewardPerWinner(rewardPerWinner)
-    bingoStore.setMinPlayers(minPlayers)
-    bingoStore.setPlayerAddresses(playerAddresses)
-    bingoStore.setFinalizationCooldown(finalizationCooldown)
-    bingoStore.setIsDrawnNumbersFilled(isDrawnNumbersFilled)
-    bingoStore.setWinDrawnNumbersIndex(winDrawnNumbersIndex)
-    bingoStore.setRandomNumbers(randomNumbers)
+    if (isPlayerExists) {
+      const player = await bingoContractPublic.read.playerDetails([
+        gameId,
+        playerAddress,
+      ])
 
-    try {
-      const playerInfo = transformPlayer(
-        await contractStore.getBingoContractPublic.read.getPlayerInfo([
-          ((playerAddress ?? accountInfo.value.address) as Address) ??
-            zeroAddress,
-        ]),
-      )
+      setPlayerValues(player, isPlayerExists)
+    }
+  }
 
-      playerStore.setPlayerAddress(playerInfo.playerAddress)
-      playerStore.setPlayerNumbers(
-        playerInfo.numbers as unknown as readonly number[],
-      )
-      playerStore.setRemainingNumbersCount(playerInfo.remainingNumbersCount)
-    } catch (error) {}
+  const setPlayerValues = (
+    player?: Awaited<ReturnType<typeof bingoContractPublic.read.playerDetails>>,
+    isPlayerExists?: boolean,
+  ) => {
+    if (player) {
+      playerStore.setPlayerAddress(player.playerAddress)
+      playerStore.setRemainingNumbersCount(player.remainingNumbersCount)
+      playerStore.setCardNumbers([...player.cardNumbers])
+      playerStore.setNumberBitmap(player.numberBitmap)
+    }
+
+    playerStore.setIsPlayerExists(isPlayerExists ?? false)
   }
 
   return {
-    isOptions,
-    isGameInfo,
-    showSidebar,
-    isContractInfo,
-    isBlockchainInfo,
-    isConfirmed,
-    isAnimation,
-    isAttackSuccess,
     initializeApp,
     setInitializeValues,
   }

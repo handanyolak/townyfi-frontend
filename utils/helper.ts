@@ -1,5 +1,4 @@
-import type { Address } from 'viem'
-import { abs } from 'extra-bigint.web'
+import { http } from 'viem'
 
 export const uppercaseFirstChar = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1)
@@ -11,35 +10,12 @@ export const toCapitalizedWords = (name: string) => {
   return words.map(capitalize).join(' ')
 }
 
-export const middleCropping = (str: string) => {
-  return str.substring(0, 5) + '...' + str.substring(str.length - 5)
-}
-
-export const addHexPrefix = (str: string) => {
-  return (str.startsWith('0x') ? str : '0x' + str) as Address
-}
-
 const capitalize = (word: string) => {
   return word.charAt(0).toUpperCase() + word.substring(1)
 }
 
-export const middleElement = <T>(array: T[]): T => {
-  const middleIndex = Math.floor(array.length / 2)
-
-  return array[middleIndex]
-}
-
 export const sleep = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
-export const enumKeys = (enumValue: any) => {
-  return Object.keys(enumValue).filter((key) => isNaN(Number(key)))
-}
-
-export const formattedDate = (dateValue: any) => {
-  const date = new Date(dateValue)
-  return `${date.toLocaleString('default', { month: 'short' })}-${date.getDate()}-${date.getFullYear()}-${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
 }
 
 export const convertToInteger = (
@@ -65,33 +41,62 @@ export const convertToInteger = (
   return result
 }
 
-export const replaceAtKeys = (inputObj: { [key: string]: any }): any => {
-  const outputObj: { [key: string]: any } = {}
-  for (const key in inputObj) {
-    const value = inputObj[key]
-    if (typeof value === 'object' && '_at' in value) {
-      outputObj[key] = value._at
-    } else {
-      outputObj[key] = value
-    }
+export const prepare = (h: string) => {
+  let str = ''
+  const len = h.length
+  for (let i = 0; i < len; i += 2) {
+    str += String.fromCharCode(parseInt(h.substring(i, i + 2), 16))
   }
-  return outputObj
+
+  return str
 }
 
-export function getEnumKeyByEnumValue<
-  R extends string | number,
-  T extends { [key: string]: R },
->(myEnum: T, enumValue: T[keyof T]) {
-  const keys = Object.keys(myEnum).filter((x) => myEnum[x] === enumValue)
+export const shuffleArray = (arr: any[]) => {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[arr[i], arr[j]] = [arr[j], arr[i]]
+  }
 
-  return keys.length > 0 ? keys[0] : null
+  return arr
 }
 
-export const getDifference = (
-  x1: number | string | bigint,
-  y1: number | string | bigint,
-  x2: number | string | bigint,
-  y2: number | string | bigint,
-) => {
-  return abs(BigInt(x2) - BigInt(x1)) + abs(BigInt(y2) - BigInt(y1))
+export const generateHttpTransports = ({
+  appEnv,
+  logging,
+  logPrefix,
+  rpcUrlsPublic,
+  rpcUrls,
+  count,
+}: {
+  appEnv: string
+  logging?: boolean
+  logPrefix?: string
+  rpcUrlsPublic: string[]
+  rpcUrls: string[]
+  count?: number
+}) => {
+  const httpTransports = shuffleArray(
+    rpcUrlsPublic.concat(
+      (appEnv === 'production' ? rpcUrls : []).map((url) =>
+        url
+          .split('/')
+          .map((part, i, arr) => (i === arr.length - 1 ? prepare(part) : part))
+          .join('/'),
+      ),
+    ),
+  ).map((url) =>
+    http(url, {
+      ...(logging && {
+        onFetchRequest: (request, init) => {
+          console.log(
+            `${logPrefix ? `${logPrefix} ` : ''}onFetchRequest`,
+            request.url,
+            init.body && JSON.parse(init?.body as any)?.method,
+          )
+        },
+      }),
+    }),
+  )
+
+  return count ? httpTransports.slice(0, count) : httpTransports
 }

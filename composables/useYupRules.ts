@@ -2,13 +2,7 @@ import { number, string } from 'yup'
 import type { RuleOptions } from '~/types'
 
 export const getUintRule = (options?: RuleOptions) => {
-  let rule = number()
-    .typeError('this must be a `number` type')
-    // .transform((value, originalValue) => {
-    //   return originalValue === '' ? 0 : value
-    // })
-    .integer()
-    .min(0)
+  let rule = number().typeError('this must be a `number` type').integer().min(0)
 
   if (options?.required) {
     rule = rule.required()

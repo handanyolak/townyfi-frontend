@@ -5,42 +5,56 @@ export const usePlayerStore = defineStore('playerStore', () => {
   const { winners } = storeToRefs(bingoStore)
 
   const playerAddress = ref<Address>(zeroAddress)
-  const playerNumbers = ref<readonly number[]>([])
-  const playerRemainingNumbersCount = ref(0n)
+  const remainingNumbersCount = ref(0)
+  const cardNumbers = ref<number[]>([])
+  const numberBitmap = ref(0n)
+  const isPlayerExists = ref(false)
   const otherPlayerAddress = ref<Address | null>(null)
 
   const setPlayerAddress = (newValue: Address) => {
     playerAddress.value = newValue
   }
 
-  const setOtherPlayerAddress = (newValue: Address) => {
-    otherPlayerAddress.value = newValue
+  const setRemainingNumbersCount = (newValue: number) => {
+    remainingNumbersCount.value = newValue
   }
 
-  const setPlayerNumbers = (newValue: readonly number[]) => {
-    playerNumbers.value = newValue
+  const setCardNumbers = (newValue: number[]) => {
+    cardNumbers.value = newValue
   }
 
-  const setRemainingNumbersCount = (newValue: bigint) => {
-    playerRemainingNumbersCount.value = newValue
+  const setNumberBitmap = (newValue: bigint) => {
+    numberBitmap.value = newValue
   }
 
-  const isPlayerRegistered = computed(() => playerAddress.value !== zeroAddress)
-
+  // extra
   const isUserWinner = computed(() =>
     winners.value.includes(playerAddress.value),
   )
 
+  const setOtherPlayerAddress = (newValue: Address) => {
+    otherPlayerAddress.value = newValue
+  }
+
+  const setIsPlayerExists = (newValue: boolean) => {
+    isPlayerExists.value = newValue
+  }
+
+  // extra
+
   return {
-    setPlayerAddress,
-    setOtherPlayerAddress,
-    setPlayerNumbers,
-    setRemainingNumbersCount,
     playerAddress,
-    playerNumbers,
-    isPlayerRegistered,
-    isUserWinner,
-    playerRemainingNumbersCount,
+    remainingNumbersCount,
+    cardNumbers,
+    numberBitmap,
+    isPlayerExists,
     otherPlayerAddress,
+    setPlayerAddress,
+    setRemainingNumbersCount,
+    setCardNumbers,
+    setNumberBitmap,
+    isUserWinner,
+    setOtherPlayerAddress,
+    setIsPlayerExists,
   }
 })

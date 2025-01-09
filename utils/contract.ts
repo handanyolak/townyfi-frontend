@@ -1,7 +1,5 @@
-import type { Log } from 'viem'
-import { TYPE } from 'vue-toastification'
+import { type Log } from 'viem'
 import { toCapitalizedWords } from './helper'
-import type { User } from '~/types'
 
 export const formatEventArgs = (eventArgs: any) => {
   let str = ''
